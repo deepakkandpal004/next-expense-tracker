@@ -68,7 +68,7 @@ export async function generateExpenseInsights(
     Return only valid JSON array, no additional text.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'google/gemini-2.0-flash-exp:free',
+      model: 'deepseek/deepseek-chat-v3-0324:free',
       messages: [
         {
           role: 'system',
@@ -202,7 +202,7 @@ export async function generateAIAnswer(
     Return only the answer text, no additional formatting.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'google/gemini-2.0-flash-exp:free',
+      model: 'deepseek/deepseek-chat-v3-0324:free',
       messages: [
         {
           role: 'system',
