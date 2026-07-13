@@ -112,13 +112,13 @@ const BarChart = ({ records }: { records: Record[] }) => {
       }; // Yellow for medium spending
     if (amount > 50)
       return {
-        bg: isDark ? 'rgba(54, 162, 235, 0.3)' : 'rgba(54, 162, 235, 0.2)',
-        border: isDark ? 'rgba(54, 162, 235, 0.8)' : 'rgba(54, 162, 235, 1)',
-      }; // Blue for moderate spending
+        bg: isDark ? 'rgba(58, 80, 107, 0.3)' : 'rgba(58, 80, 107, 0.2)',
+        border: isDark ? 'rgba(58, 80, 107, 0.8)' : 'rgba(58, 80, 107, 1)',
+      }; // Indigo for moderate spending
     return {
-      bg: isDark ? 'rgba(75, 192, 192, 0.3)' : 'rgba(75, 192, 192, 0.2)',
-      border: isDark ? 'rgba(75, 192, 192, 0.8)' : 'rgba(75, 192, 192, 1)',
-    }; // Green for low spending
+      bg: isDark ? 'rgba(91, 192, 190, 0.3)' : 'rgba(91, 192, 190, 0.2)',
+      border: isDark ? 'rgba(91, 192, 190, 0.8)' : 'rgba(91, 192, 190, 1)',
+    }; // Purple for low spending
   };
 
   // Prepare data for the chart

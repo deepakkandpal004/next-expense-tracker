@@ -1,12 +1,12 @@
 'use server';
 
-import { checkUser } from '@/lib/checkUser';
+import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { generateAIAnswer, ExpenseRecord } from '@/lib/ai';
 
 export async function generateInsightAnswer(question: string): Promise<string> {
   try {
-    const user = await checkUser();
+    const user = await getAuthUser();
     if (!user) {
       throw new Error('User not authenticated');
     }
@@ -17,7 +17,7 @@ export async function generateInsightAnswer(question: string): Promise<string> {
 
     const expenses = await db.record.findMany({
       where: {
-        userId: user.clerkUserId,
+        userId: user.id,
         createdAt: {
           gte: thirtyDaysAgo,
         },

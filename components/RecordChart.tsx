@@ -1,12 +1,12 @@
 import getRecords from '@/app/actions/getRecords';
-import BarChart from './BarChart'; // Ensure BarChart.tsx or BarChart.jsx exists in the same directory
+import RecordChartTabs from './RecordChartTabs';
 
 const RecordChart = async () => {
   const { records, error } = await getRecords();
 
   if (error) {
     return (
-      <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
+      <div className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-xl border border-gray-150/40 dark:border-gray-800/40 hover:shadow-2xl'>
         <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
           <div className='w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
             <span className='text-white text-sm sm:text-lg'>📊</span>
@@ -37,7 +37,7 @@ const RecordChart = async () => {
 
   if (!records || records.length === 0) {
     return (
-      <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
+      <div className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-xl border border-gray-150/40 dark:border-gray-800/40 hover:shadow-2xl'>
         <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
           <div className='w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
             <span className='text-white text-sm sm:text-lg'>📊</span>
@@ -68,7 +68,7 @@ const RecordChart = async () => {
   }
 
   return (
-    <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
+    <div className='bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-xl border border-gray-150/40 dark:border-gray-800/40 hover:shadow-2xl'>
       <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
         <div className='w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
           <span className='text-white text-sm sm:text-lg'>📊</span>
@@ -82,14 +82,7 @@ const RecordChart = async () => {
           </p>
         </div>
       </div>
-      <div className='overflow-x-auto'>
-        <BarChart
-          records={records.map((record) => ({
-            ...record,
-            date: String(record.date),
-          }))}
-        />
-      </div>
+      <RecordChartTabs records={records} />
     </div>
   );
 };

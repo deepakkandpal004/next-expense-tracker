@@ -7,7 +7,16 @@ const config: Config = {
     './components/**/*.{ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        theme: {
+          deep: '#0b132b',
+          dark: '#1c2541',
+          muted: '#3a506b',
+          cyan: '#5bc0be',
+        }
+      }
+    },
   },
   plugins: [],
 };
