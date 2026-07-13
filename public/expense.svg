@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <!-- Background Rounded Rect (Standard rounded square favicon proportions) -->
+  <rect width="100" height="100" rx="22" fill="#0b132b" />
+  
+  <!-- Original expense.png rendered with aspect ratio preservation and enlarged proportions (86%) -->
+  <image href="/expense.png" x="7" y="7" width="86" height="86" preserveAspectRatio="xMidYMid meet" />
+</svg>

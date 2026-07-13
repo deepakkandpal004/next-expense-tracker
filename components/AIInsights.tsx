@@ -262,13 +262,13 @@ const AIInsights = () => {
               <span>{formatLastUpdated()}</span>
             </div>
             <button
-              onClick={loadInsights}
-              className='w-7.5 h-7.5 bg-gray-50 dark:bg-theme-deep border border-gray-250 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-theme-cyan dark:hover:text-theme-cyan rounded-lg flex items-center justify-center shadow-sm transition-all duration-200 cursor-pointer'
-              disabled={isLoading}
-              title='Refresh Insights'
-            >
-              <span className='text-xs'>🔄</span>
-            </button>
+               onClick={loadInsights}
+               className='w-7.5 h-7.5 bg-white/40 hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-gray-200 dark:border-white/10 hover:border-theme-cyan/40 dark:hover:border-theme-cyan/30 text-gray-655 dark:text-gray-350 hover:text-theme-cyan dark:hover:text-cyan-300 rounded-lg flex items-center justify-center shadow-sm transition-all duration-200 active:scale-95 cursor-pointer'
+               disabled={isLoading}
+               title='Refresh Insights'
+             >
+               <span className='text-xs'>🔄</span>
+             </button>
           </div>
         </div>
 
@@ -304,11 +304,11 @@ const AIInsights = () => {
                     {insight.action && (
                       <div className='text-left'>
                         <button
-                          onClick={() => handleActionClick(insight)}
-                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] cursor-pointer transition-all duration-200 bg-white/80 hover:bg-white dark:bg-theme-dark/60 dark:hover:bg-gray-900 shadow-sm border border-gray-200/50 dark:border-white/5 ${getButtonColors(
-                            insight.type
-                          )}`}
-                        >
+                           onClick={() => handleActionClick(insight)}
+                           className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-[10px] cursor-pointer transition-all duration-200 bg-white/80 hover:bg-white dark:bg-theme-dark/60 dark:hover:bg-gray-900 shadow-sm border border-gray-200/50 dark:border-white/5 active:scale-[0.97] ${getButtonColors(
+                             insight.type
+                           )}`}
+                         >
                           <span>{insight.action}</span>
                           {currentAnswer?.isLoading ? (
                             <div className='w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin'></div>
@@ -409,7 +409,7 @@ const AIInsights = () => {
                 key={idx}
                 onClick={(e) => handleCustomQuestionSubmit(e, q)}
                 disabled={isChatLoading}
-                className='text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-theme-cyan dark:hover:text-theme-cyan bg-gray-50/70 hover:bg-theme-cyan/10 dark:bg-[#1c2541]/40 dark:hover:bg-[#1c2541]/80 border border-gray-250/20 dark:border-white/5 px-3 py-1.5 rounded-xl transition-all duration-200 shadow-sm disabled:opacity-50 cursor-pointer'
+                className='text-[10px] sm:text-xs font-bold text-theme-cyan bg-theme-cyan/5 hover:bg-theme-cyan/15 dark:bg-theme-cyan/10 dark:hover:bg-theme-cyan/20 border border-theme-cyan/25 dark:border-theme-cyan/20 px-3 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.97] shadow-sm disabled:opacity-50 cursor-pointer'
               >
                 {q}
               </button>
@@ -431,7 +431,7 @@ const AIInsights = () => {
           <button
             type='submit'
             disabled={isChatLoading || !customQuestion.trim()}
-            className='px-5 bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg disabled:bg-gray-300 disabled:text-gray-500 transition-all duration-200 flex items-center justify-center gap-1.5 border border-theme-cyan/20 cursor-pointer'
+            className='px-5 bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg disabled:bg-gray-200 dark:disabled:bg-white/5 disabled:text-gray-505 border border-theme-cyan/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer'
           >
             {isChatLoading ? (
               <div className='w-4.5 h-4.5 border-2 border-[#0b132b]/30 border-t-[#0b132b] rounded-full animate-spin'></div>
