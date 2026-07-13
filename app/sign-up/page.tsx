@@ -65,8 +65,11 @@ export default function SignUpPage() {
             <Link href='/' className='inline-flex items-center gap-2 group text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-theme-cyan dark:hover:text-cyan-400 transition-colors'>
               <span className='group-hover:-translate-x-1 transition-transform'>←</span> Back to home
             </Link>
-            <div className='w-12 h-12 bg-gradient-to-br from-theme-cyan via-theme-muted to-theme-dark rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-theme-cyan/20'>
-              💰
+            <div className='flex items-center gap-3 mb-2'>
+              <img src="/expense.png" alt="Expense Logo" className="h-10 w-auto object-contain filter brightness-100 dark:brightness-110 rounded-xl" />
+              <span className='font-extrabold text-2xl text-gray-900 dark:text-gray-100 tracking-tight select-none'>
+                Expense <span className='text-[#5BC0BE]'>AI</span>
+              </span>
             </div>
             <h2 className='text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight'>
               Create Account
@@ -154,7 +157,7 @@ export default function SignUpPage() {
             <button
               type='submit'
               disabled={isLoading}
-              className='w-full relative group overflow-hidden bg-gradient-to-r from-theme-cyan via-theme-muted to-theme-dark hover:from-purple-700 hover:to-theme-magenta text-white px-5 py-3.5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-98 flex items-center justify-center gap-2 mt-2 disabled:opacity-50'
+              className='w-full bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-5 py-3.5 rounded-2xl font-bold shadow-lg hover:shadow-xl border border-theme-cyan/20 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 mt-2 disabled:opacity-50 cursor-pointer'
             >
               {isLoading ? (
                 <>

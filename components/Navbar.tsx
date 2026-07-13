@@ -41,17 +41,12 @@ export default function Navbar() {
           <div className='flex items-center'>
             <Link
               href='/'
-              className='flex items-center gap-3 sm:gap-4 flex-shrink-0 group transition-all duration-300'
+              className='flex items-center gap-3 sm:gap-3.5 flex-shrink-0 group transition-all duration-300'
               onClick={closeMobileMenu}
             >
-              <div className='w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 bg-gradient-to-br from-theme-cyan via-theme-muted to-theme-dark rounded-xl flex items-center justify-center shadow-lg shadow-theme-cyan/15 dark:shadow-theme-cyan/25 border border-theme-cyan/20 group-hover:shadow-theme-cyan/35 transition-all duration-300 group-hover:rotate-3'>
-                <span className='text-white text-sm sm:text-base md:text-xl font-bold filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]'>
-                  💰
-                </span>
-              </div>
-              <span className='text-lg sm:text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-theme-cyan via-cyan-400 to-cyan-200 bg-clip-text text-transparent group-hover:opacity-95 transition-opacity duration-200'>
-                <span className='hidden sm:inline'>ExpenseTracker AI</span>
-                <span className='sm:hidden'>ExpenseTracker</span>
+              <img src="/expense.png" alt="Expense Logo" className="h-9 sm:h-10 w-auto object-contain filter brightness-100 dark:brightness-110 group-hover:scale-105 transition-transform duration-300 rounded-xl" />
+              <span className='font-extrabold text-lg sm:text-xl md:text-2xl text-gray-900 dark:text-gray-100 tracking-tight transition-colors duration-300 group-hover:text-theme-cyan select-none'>
+                Expense <span className='text-[#5BC0BE]'>AI</span>
               </span>
             </Link>
           </div>
@@ -111,7 +106,7 @@ export default function Navbar() {
                 <div className='relative' ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className='flex items-center gap-2 p-1.5 rounded-xl bg-gray-50 dark:bg-theme-dark border border-gray-250/30 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-theme-muted/20 transition-all duration-205 shadow-sm'
+                    className='flex items-center gap-2 p-1.5 rounded-xl bg-gray-50 dark:bg-theme-dark border border-gray-250/30 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-theme-muted/20 hover:border-theme-cyan/30 active:scale-[0.98] transition-all duration-200 shadow-sm'
                   >
                     <img
                       src={user.imageUrl || '/default-avatar.png'}
@@ -152,7 +147,7 @@ export default function Navbar() {
               ) : (
                 /* Not authenticated buttons */
                 <Link href='/sign-in'>
-                  <button className='relative overflow-hidden bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-5 py-2.5 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(91,192,190,0.2)] hover:shadow-[0_4px_25px_rgba(91,192,190,0.35)] border border-theme-cyan/20 hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 active:scale-[0.98] cursor-pointer flex items-center gap-1.5 group'>
+                  <button className='relative overflow-hidden bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-5 py-2.5 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(91,192,190,0.25)] hover:shadow-[0_4px_25px_rgba(91,192,190,0.45)] border border-theme-cyan/20 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center gap-1.5 group'>
                     <span>Sign In</span>
                     <span className='inline-block group-hover:translate-x-1 transition-transform duration-200 ml-0.5'>→</span>
                   </button>
@@ -253,7 +248,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link href='/sign-in' onClick={closeMobileMenu}>
-                  <button className='w-full bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-4 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(91,192,190,0.15)] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer'>
+                  <button className='w-full bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-4 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(91,192,190,0.2)] hover:shadow-[0_4px_25px_rgba(91,192,190,0.4)] border border-theme-cyan/20 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer'>
                     <span>Sign In</span>
                     <span>→</span>
                   </button>

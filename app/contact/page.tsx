@@ -29,7 +29,7 @@ const ContactPage = () => {
           <div className='mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2 sm:px-0'>
             <a
               href='mailto:dkandpal757@gmail.com'
-              className='group relative overflow-hidden bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-305 border border-theme-cyan/20 cursor-pointer flex items-center justify-center gap-2'
+              className='group relative overflow-hidden bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300 border border-theme-cyan/20 cursor-pointer flex items-center justify-center gap-2'
             >
               <span className='relative z-10 flex items-center justify-center gap-2'>
                 Send us an Email
@@ -38,7 +38,7 @@ const ContactPage = () => {
             </a>
             <a
               href='tel:+919123495043'
-              className='group border border-gray-250 dark:border-white/10 text-gray-855 dark:text-gray-300 hover:bg-theme-cyan/10 hover:border-theme-cyan/40 hover:text-theme-cyan px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer'
+              className='group bg-white/40 hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-gray-250 dark:border-white/10 hover:border-theme-cyan/40 dark:hover:border-theme-cyan/30 text-gray-855 dark:text-gray-300 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 cursor-pointer'
             >
               Call Us
               <span className='text-lg'>📞</span>

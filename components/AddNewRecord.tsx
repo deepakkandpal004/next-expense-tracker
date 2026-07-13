@@ -115,11 +115,11 @@ const AddRecord = () => {
                 type='button'
                 onClick={handleAISuggestCategory}
                 disabled={isCategorizingAI || !description.trim()}
-                className='absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-7 bg-theme-cyan hover:bg-[#4ea8a6] disabled:bg-gray-205 dark:disabled:bg-gray-800 text-[#0b132b] disabled:text-gray-400 rounded-lg text-xs font-medium flex items-center justify-center shadow-md hover:shadow-lg disabled:shadow-none transition-all duration-200 cursor-pointer'
+                className='absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-7 bg-theme-cyan/15 hover:bg-theme-cyan/25 disabled:bg-gray-100 dark:disabled:bg-white/5 text-theme-cyan disabled:text-gray-400 border border-theme-cyan/25 dark:border-theme-cyan/20 rounded-lg text-xs font-medium flex items-center justify-center shadow-sm hover:shadow-md disabled:shadow-none transition-all duration-200 active:scale-95 cursor-pointer'
                 title='AI Category Suggestion'
               >
                 {isCategorizingAI ? (
-                  <div className='w-3 h-3 border-2 border-[#0b132b]/30 border-t-[#0b132b] rounded-full animate-spin'></div>
+                  <div className='w-3 h-3 border-2 border-theme-cyan/30 border-t-theme-cyan rounded-full animate-spin'></div>
                 ) : (
                   <span className='text-xs'>✨</span>
                 )}
@@ -260,7 +260,7 @@ const AddRecord = () => {
         {/* Submit Button */}
         <button
           type='submit'
-          className='w-full bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-bold shadow-xl hover:shadow-theme-cyan/20 transition-all duration-300 border border-theme-cyan/20 text-sm sm:text-base cursor-pointer'
+          className='w-full bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-bold shadow-xl hover:shadow-theme-cyan/30 border border-theme-cyan/20 hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.98] transition-all duration-300 text-sm sm:text-base cursor-pointer'
           disabled={isLoading}
         >
           <div className='relative flex items-center justify-center gap-2'>

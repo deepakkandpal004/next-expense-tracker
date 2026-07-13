@@ -28,14 +28,14 @@ const AboutPage = () => {
           <div className='mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2 sm:px-0'>
             <Link
               href='/sign-up'
-              className='group relative overflow-hidden bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 border border-theme-cyan/20 cursor-pointer flex items-center justify-center gap-2'
+              className='group relative overflow-hidden bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300 border border-theme-cyan/20 cursor-pointer flex items-center justify-center gap-2'
             >
               <span className='relative z-10'>Start Your Journey</span>
               <span className='inline-block group-hover:translate-x-1 transition-transform duration-200'>→</span>
             </Link>
             <Link
               href='/contact'
-              className='group border border-gray-250 dark:border-white/10 text-gray-805 dark:text-gray-300 hover:bg-theme-cyan/10 hover:border-theme-cyan/40 hover:text-theme-cyan px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm backdrop-blur-sm cursor-pointer'
+              className='group bg-white/40 hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-gray-250 dark:border-white/10 hover:border-theme-cyan/40 dark:hover:border-theme-cyan/30 text-gray-855 dark:text-gray-300 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm cursor-pointer flex items-center justify-center'
             >
               Learn More
             </Link>
@@ -269,7 +269,7 @@ const AboutPage = () => {
           <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
             <Link
               href='/sign-up'
-              className='w-full sm:w-auto bg-theme-cyan hover:bg-[#4ea8a6] text-[#0b132b] px-8 py-4 rounded-xl font-bold shadow-[0_4px_20px_rgba(91,192,190,0.25)] hover:shadow-[0_4px_30px_rgba(91,192,190,0.45)] border border-theme-cyan/20 hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group'
+              className='w-full sm:w-auto bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] px-8 py-4 rounded-xl font-bold shadow-[0_4px_20px_rgba(91,192,190,0.25)] hover:shadow-[0_4px_30px_rgba(91,192,190,0.45)] border border-theme-cyan/20 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 group'
             >
               Get Started Free
               <span className='inline-block group-hover:translate-x-1 transition-transform duration-200 ml-1'>→</span>
@@ -277,7 +277,7 @@ const AboutPage = () => {
 
             <Link
               href='/contact'
-              className='w-full sm:w-auto border border-gray-250 dark:border-white/10 text-gray-805 dark:text-gray-300 hover:bg-theme-cyan/10 hover:border-theme-cyan/40 hover:text-theme-cyan px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm backdrop-blur-sm cursor-pointer'
+              className='w-full sm:w-auto bg-white/40 hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-gray-250 dark:border-white/10 hover:border-theme-cyan/40 dark:hover:border-theme-cyan/30 text-gray-855 dark:text-gray-300 px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm cursor-pointer flex items-center justify-center'
             >
               Contact Us
             </Link>
