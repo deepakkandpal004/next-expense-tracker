@@ -15,11 +15,12 @@ datasource db {
 
 
 model User {
-  id    String   @id @default(uuid())
-  clerkUserId  String   @unique
+  id           String   @id @default(uuid())
   email        String   @unique
+  password     String
   name         String?
   imageUrl     String?
+  refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Records      Record[]
@@ -32,7 +33,7 @@ model Record {
   category    String @default("other")
   date        DateTime @default(now())
   userId      String
-  user        User     @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   @@index([userId])
 }

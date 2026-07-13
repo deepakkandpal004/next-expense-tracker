@@ -1,17 +1,19 @@
 'use server';
 import { db } from '@/lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUser } from '@/lib/auth';
 
 async function getBestWorstExpense(): Promise<{
   bestExpense?: number;
   worstExpense?: number;
   error?: string;
 }> {
-  const { userId } = await auth();
+  const user = await getAuthUser();
 
-  if (!userId) {
+  if (!user) {
     return { error: 'User not found' };
   }
+
+  const userId = user.id;
 
   try {
     // Fetch all records for the authenticated user

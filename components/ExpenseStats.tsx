@@ -14,85 +14,109 @@ const ExpenseStats = async () => {
     const { bestExpense, worstExpense } = rangeResult;
 
     // Calculate average expense
-    const validRecord = record || 0;
-    const validDays =
-      daysWithRecords && daysWithRecords > 0 ? daysWithRecords : 1;
-    const averageExpense = validRecord / validDays;
+    const totalSpent = record || 0;
+    const validDays = daysWithRecords && daysWithRecords > 0 ? daysWithRecords : 1;
+    const averageExpense = totalSpent / validDays;
+
+    // Budget Progress Configuration
+    const monthlyBudget = 50000;
+    const percentage = Math.min((totalSpent / monthlyBudget) * 100, 100);
+    const isOverBudget = totalSpent > monthlyBudget;
 
     return (
-      <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
-        <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
-          <div className='w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
-            <span className='text-white text-sm sm:text-lg'>📊</span>
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 w-full'>
+        {/* Total Spent Card */}
+        <div className='bg-white/80 dark:bg-theme-dark/80 backdrop-blur-sm p-4 rounded-3xl shadow-lg border border-gray-150/40 dark:border-white/5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[120px] relative overflow-hidden group hover:scale-[1.02]'>
+          <div className='absolute top-0 right-0 w-24 h-24 bg-red-500/5 dark:bg-red-500/2 rounded-full blur-xl -mr-8 -mt-8 group-hover:scale-125 transition-transform duration-500'></div>
+          <div className='flex items-center justify-between mb-2 relative z-10'>
+            <span className='text-[10px] sm:text-xs font-black uppercase text-gray-400 dark:text-gray-500 tracking-wider'>
+              Total Spent
+            </span>
+            <div className='w-7 h-7 bg-red-50 dark:bg-red-950/40 rounded-lg flex items-center justify-center text-sm shadow-sm'>
+              💸
+            </div>
           </div>
-          <div>
-            <h3 className='text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100'>
-              Expense Statistics
-            </h3>
-            <p className='text-xs text-gray-500 dark:text-gray-400 mt-0.5'>
-              Your spending insights and ranges
+          <div className='relative z-10'>
+            <div className={`text-xl sm:text-2xl font-black ${isOverBudget ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'} tracking-tight`}>
+              ₹{totalSpent.toLocaleString('en-IN')}
+            </div>
+            
+            {/* Progress bar */}
+            <div className='mt-3.5 space-y-1'>
+              <div className='w-full bg-gray-150 dark:bg-gray-850 h-1.5 rounded-full overflow-hidden' style={{ borderRadius: 'inherit' }}>
+                <div 
+                  className={`h-full rounded-full transition-all duration-500 ${isOverBudget ? 'bg-red-500' : 'bg-red-400'}`}
+                  style={{ width: `${percentage}%`, borderRadius: 'inherit' }}
+                ></div>
+              </div>
+              <div className='flex items-center justify-between text-[9px] font-semibold text-gray-400 dark:text-gray-500'>
+                <span>Budget: ₹50K</span>
+                <span>{percentage.toFixed(0)}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Daily Average Card */}
+        <div className='bg-white/80 dark:bg-theme-dark/80 backdrop-blur-sm p-4 rounded-3xl shadow-lg border border-gray-150/40 dark:border-white/5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[120px] relative overflow-hidden group hover:scale-[1.02]'>
+          <div className='absolute top-0 right-0 w-24 h-24 bg-theme-cyan/10 dark:bg-theme-cyan/5 rounded-full blur-xl -mr-8 -mt-8 group-hover:scale-125 transition-transform duration-500'></div>
+          <div className='flex items-center justify-between mb-2 relative z-10'>
+            <span className='text-[10px] sm:text-xs font-black uppercase text-gray-400 dark:text-gray-500 tracking-wider'>
+              Daily Average
+            </span>
+            <div className='w-7 h-7 bg-theme-cyan/10 dark:bg-theme-cyan/30 rounded-lg flex items-center justify-center text-sm shadow-sm'>
+              📊
+            </div>
+          </div>
+          <div className='relative z-10'>
+            <div className='text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight'>
+              ₹{averageExpense.toLocaleString('en-IN', { maximumFractionDigits: 1 })}
+            </div>
+            <div className='mt-3 bg-theme-cyan/10 dark:bg-theme-cyan/25 text-theme-cyan dark:text-cyan-300 px-2 py-0.5 rounded-md text-[9px] font-bold w-fit border border-theme-purple/20 dark:border-white/5'>
+              Over {validDays} Active {validDays === 1 ? 'Day' : 'Days'}
+            </div>
+          </div>
+        </div>
+
+        {/* Highest Expense Card */}
+        <div className='bg-white/80 dark:bg-theme-dark/80 backdrop-blur-sm p-4 rounded-3xl shadow-lg border border-gray-150/40 dark:border-white/5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[120px] relative overflow-hidden group hover:scale-[1.02]'>
+          <div className='absolute top-0 right-0 w-24 h-24 bg-amber-500/5 dark:bg-amber-500/2 rounded-full blur-xl -mr-8 -mt-8 group-hover:scale-125 transition-transform duration-500'></div>
+          <div className='flex items-center justify-between mb-2 relative z-10'>
+            <span className='text-[10px] sm:text-xs font-black uppercase text-gray-400 dark:text-gray-505 tracking-wider'>
+              Highest Expense
+            </span>
+            <div className='w-7 h-7 bg-amber-50 dark:bg-amber-955/30 rounded-lg flex items-center justify-center text-sm shadow-sm'>
+              ▲
+            </div>
+          </div>
+          <div className='relative z-10'>
+            <div className='text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight'>
+              {bestExpense !== undefined ? `₹${bestExpense.toLocaleString('en-IN')}` : '₹0'}
+            </div>
+            <p className='text-[9px] text-gray-400 dark:text-gray-505 font-medium mt-3.5'>
+              Single peak transaction
             </p>
           </div>
         </div>
 
-        <div className='space-y-3 sm:space-y-4'>
-          {/* Average Daily Spending */}
-          <div className='bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-3 sm:p-4 border border-gray-200/50 dark:border-gray-600/50'>
-            <div className='text-center'>
-              <p className='text-xs font-medium text-gray-600 dark:text-gray-300 mb-2 tracking-wide uppercase'>
-                Average Daily Spending
-              </p>
-              <div className='text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
-                ₹{averageExpense.toFixed(2)}
-              </div>
-              <div className='inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full text-xs font-medium'>
-                <span className='w-1.5 h-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full'></span>
-                Based on {validDays} days with expenses
-              </div>
+        {/* Lowest Expense Card */}
+        <div className='bg-white/80 dark:bg-theme-dark/80 backdrop-blur-sm p-4 rounded-3xl shadow-lg border border-gray-150/40 dark:border-white/5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[120px] relative overflow-hidden group hover:scale-[1.02]'>
+          <div className='absolute top-0 right-0 w-24 h-24 bg-theme-muted/10 dark:bg-theme-muted/5 rounded-full blur-xl -mr-8 -mt-8 group-hover:scale-125 transition-transform duration-500'></div>
+          <div className='flex items-center justify-between mb-2 relative z-10'>
+            <span className='text-[10px] sm:text-xs font-black uppercase text-gray-400 dark:text-gray-505 tracking-wider'>
+              Lowest Expense
+            </span>
+            <div className='w-7 h-7 bg-theme-muted/10 dark:bg-theme-muted/30 rounded-lg flex items-center justify-center text-sm shadow-sm'>
+              ▼
             </div>
           </div>
-
-          {/* Expense Range */}
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3'>
-            {/* Highest Expense */}
-            <div className='bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl border-l-4 border-l-red-500 hover:bg-red-50 dark:hover:bg-red-900/30'>
-              <div className='flex items-center gap-2'>
-                <div className='w-6 h-6 bg-red-100 dark:bg-red-800 rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <span className='text-sm leading-none text-red-600 dark:text-red-300 font-bold'>
-                    ↑
-                  </span>
-                </div>
-                <div className='flex-1'>
-                  <h4 className='font-bold text-gray-900 dark:text-gray-100 text-xs mb-0.5'>
-                    Highest
-                  </h4>
-                  <p className='text-lg font-bold text-red-600 dark:text-red-300'>
-                    {bestExpense !== undefined ? `₹${bestExpense}` : 'No data'}
-                  </p>
-                </div>
-              </div>
+          <div className='relative z-10'>
+            <div className='text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 tracking-tight'>
+              {worstExpense !== undefined ? `₹${worstExpense.toLocaleString('en-IN')}` : '₹0'}
             </div>
-
-            {/* Lowest Expense */}
-            <div className='bg-green-50/80 dark:bg-green-900/20 backdrop-blur-sm p-3 sm:p-4 rounded-xl border-l-4 border-l-green-500 hover:bg-green-50 dark:hover:bg-green-900/30'>
-              <div className='flex items-center gap-2'>
-                <div className='w-6 h-6 bg-green-100 dark:bg-green-800 rounded-xl flex items-center justify-center flex-shrink-0'>
-                  <span className='text-sm leading-none text-green-600 dark:text-green-300 font-bold'>
-                    ↓
-                  </span>
-                </div>
-                <div className='flex-1'>
-                  <h4 className='font-bold text-gray-900 dark:text-gray-100 text-xs mb-0.5'>
-                    Lowest
-                  </h4>
-                  <p className='text-lg font-bold text-green-600 dark:text-green-300'>
-                    {worstExpense !== undefined
-                      ? `₹${worstExpense}`
-                      : 'No data'}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className='text-[9px] text-gray-400 dark:text-gray-505 font-medium mt-3.5'>
+              Single lowest transaction
+            </p>
           </div>
         </div>
       </div>
@@ -100,33 +124,8 @@ const ExpenseStats = async () => {
   } catch (error) {
     console.error('Error fetching expense statistics:', error);
     return (
-      <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
-        <div className='flex items-center gap-3 mb-6'>
-          <div className='w-12 h-12 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
-            <span className='text-white text-xl'>📊</span>
-          </div>
-          <div>
-            <h3 className='text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent'>
-              Expense Statistics
-            </h3>
-            <p className='text-sm text-gray-500 dark:text-gray-400 mt-1'>
-              Your spending insights and ranges
-            </p>
-          </div>
-        </div>
-        <div className='bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm p-6 rounded-xl border-l-4 border-l-red-500'>
-          <div className='flex items-center gap-3 mb-2'>
-            <div className='w-8 h-8 bg-red-100 dark:bg-red-800 rounded-full flex items-center justify-center'>
-              <span className='text-lg'>⚠️</span>
-            </div>
-            <p className='text-red-800 dark:text-red-300 font-semibold'>
-              Unable to load expense statistics
-            </p>
-          </div>
-          <p className='text-red-700 dark:text-red-400 text-sm ml-11'>
-            Please try again later
-          </p>
-        </div>
+      <div className='w-full bg-white/80 dark:bg-theme-dark/80 backdrop-blur-sm p-5 rounded-3xl border border-red-150 dark:border-red-950/30 text-center shadow-lg'>
+        <span className='text-red-500 font-semibold text-sm'>Unable to load spending statistics.</span>
       </div>
     );
   }

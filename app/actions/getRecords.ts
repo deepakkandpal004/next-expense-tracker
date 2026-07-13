@@ -1,17 +1,19 @@
 'use server';
 import { db } from '@/lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUser } from '@/lib/auth';
 import { Record } from '@/types/Record';
 
 async function getRecords(): Promise<{
   records?: Record[];
   error?: string;
 }> {
-  const { userId } = await auth();
+  const user = await getAuthUser();
 
-  if (!userId) {
+  if (!user) {
     return { error: 'User not found' };
   }
+
+  const userId = user.id;
 
   try {
     const records = await db.record.findMany({

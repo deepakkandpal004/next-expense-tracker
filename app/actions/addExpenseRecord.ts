@@ -1,5 +1,5 @@
 'use server';
-import { auth } from '@clerk/nextjs/server';
+import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
@@ -53,12 +53,14 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
   }
 
   // Get logged in user
-  const { userId } = await auth();
+  const user = await getAuthUser();
 
   // Check for user
-  if (!userId) {
+  if (!user) {
     return { error: 'User not found' };
   }
+
+  const userId = user.id;
 
   try {
     // Create a new record (allow multiple expenses per day)

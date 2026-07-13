@@ -9,10 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.24.0",
-    "@clerk/themes": "^2.2.55",
     "@prisma/client": "^6.11.1",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
     "chart.js": "^4.5.1",
+    "jose": "^6.2.3",
     "next": "^15.5.9",
     "openai": "^5.23.2",
     "perfect-debounce": "^2.0.0",
