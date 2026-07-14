@@ -9,8 +9,8 @@ const Footer = () => {
           {/* Logo and Tagline */}
           <div className='text-center md:text-left'>
             <div className='inline-flex items-center gap-2.5 mb-4'>
-              <img src="/expense.png" alt="Expense Logo" className="h-8 w-auto object-contain filter brightness-100 dark:brightness-110 rounded-lg" />
-              <span className='font-extrabold text-base sm:text-lg text-gray-900 dark:text-gray-100 tracking-tight select-none'>
+              <img src="/icon.png" alt="Expense Logo" width={32} height={32} className="h-8 w-8 object-contain filter brightness-100 dark:brightness-110 rounded-lg" />
+              <span className='font-sora font-extrabold text-base sm:text-lg text-gray-900 dark:text-gray-100 tracking-tight select-none'>
                 Expense <span className='text-[#5BC0BE]'>AI</span>
               </span>
             </div>

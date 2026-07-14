@@ -66,8 +66,8 @@ export default function SignUpPage() {
               <span className='group-hover:-translate-x-1 transition-transform'>←</span> Back to home
             </Link>
             <div className='flex items-center gap-3 mb-2'>
-              <img src="/expense.png" alt="Expense Logo" className="h-10 w-auto object-contain filter brightness-100 dark:brightness-110 rounded-xl" />
-              <span className='font-extrabold text-2xl text-gray-900 dark:text-gray-100 tracking-tight select-none'>
+              <img src="/icon.png" alt="Expense Logo" width={40} height={40} className="h-10 w-10 object-contain filter brightness-100 dark:brightness-110 rounded-xl" />
+              <span className='font-sora font-extrabold text-2xl text-gray-900 dark:text-gray-100 tracking-tight select-none'>
                 Expense <span className='text-[#5BC0BE]'>AI</span>
               </span>
             </div>

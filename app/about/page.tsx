@@ -15,7 +15,7 @@ const AboutPage = () => {
             <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-theme-cyan rounded-full animate-pulse'></span>
             <span>Powered by AI Technology</span>
           </div>
-          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
             About{' '}
             <span className='bg-gradient-to-r from-theme-cyan via-cyan-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(91,192,190,0.2)]'>
               Expense AI

@@ -70,7 +70,7 @@ const Guest = () => {
             </div>
             
             {/* Main Header */}
-            <h1 className='text-4xl sm:text-5.5xl lg:text-6xl font-black text-gray-900 dark:text-gray-100 leading-[1.05] tracking-tight max-w-[90%] lg:max-w-none animate-slide-up mb-5'>
+            <h1 className='text-4xl sm:text-5.5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 leading-[1.05] tracking-tight max-w-[90%] lg:max-w-none animate-slide-up mb-5'>
               Master Your Money <br className='hidden lg:inline' /> with{' '}
               <span className='bg-gradient-to-r from-theme-cyan via-cyan-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(91,192,190,0.25)]'>
                 Autonomous AI
@@ -132,7 +132,7 @@ const Guest = () => {
               <div className='flex items-center justify-between mb-6 pb-4 border-b border-gray-150/40 dark:border-white/5'>
                 <div className='flex items-center gap-3'>
                   <div className='w-12 h-12 rounded-xl bg-gray-50/80 dark:bg-theme-dark/85 flex items-center justify-center border border-gray-200 dark:border-white/5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.08)] overflow-hidden p-1.5'>
-                    <img src="/expense.png" alt="Expense AI Icon" className="w-full h-full object-contain" />
+                    <img src="/icon.png" alt="Expense AI Icon" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h4 className='font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight'>My Dashboard</h4>
@@ -583,7 +583,7 @@ const Guest = () => {
           <h2 className='text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight'>
             Take Control of Your Spending Today
           </h2>
-          <p className='text-base sm:text-lg text-gray-650 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed'>
+          <p className='text-base sm:text-lg text-gray-655 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed'>
             Join thousands of savers who use Expense AI to automate tracking, discover habits, and accumulate wealth.
           </p>
           <div className='pt-4'>

@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { Record } from '@/types/Record';
 
-async function getRecords(): Promise<{
+async function getAllRecords(): Promise<{
   records?: Record[];
   error?: string;
 }> {
@@ -19,16 +19,16 @@ async function getRecords(): Promise<{
     const records = await db.record.findMany({
       where: { userId },
       orderBy: {
-        date: 'desc', // Sort by the `date` field in descending order
+        date: 'desc',
       },
-      take: 10, // Limit the request to 10 records
+      // No take limit — fetches all records
     });
 
     return { records: records as unknown as Record[] };
   } catch (error) {
-    console.error('Error fetching records:', error); // Log the error
+    console.error('Error fetching all records:', error);
     return { error: 'Database error' };
   }
 }
 
-export default getRecords;
+export default getAllRecords;
