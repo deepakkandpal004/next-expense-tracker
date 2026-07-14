@@ -6,8 +6,9 @@ import { revalidatePath } from 'next/cache';
 interface RecordData {
   text: string;
   amount: number;
+  type: string;
   category: string;
-  date: string; // Added date field
+  date: string;
 }
 
 interface RecordResult {
@@ -19,28 +20,27 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
   const textValue = formData.get('text');
   const amountValue = formData.get('amount');
   const categoryValue = formData.get('category');
-  const dateValue = formData.get('date'); // Extract date from formData
+  const dateValue = formData.get('date');
+  const typeValue = formData.get('type') ?? 'expense';
 
-  // Check for input values
-  if (
-    !textValue ||
-    textValue === '' ||
-    !amountValue ||
-    !categoryValue ||
-    categoryValue === '' ||
-    !dateValue ||
-    dateValue === ''
-  ) {
-    return { error: 'Text, amount, category, or date is missing' };
+  if (!textValue || textValue === '' || !amountValue || !dateValue || dateValue === '') {
+    return { error: 'Text, amount, or date is missing' };
   }
 
-  const text: string = textValue.toString(); // Ensure text is a string
-  const amount: number = parseFloat(amountValue.toString()); // Parse amount as number
-  const category: string = categoryValue.toString(); // Ensure category is a string
-  // Convert date to ISO-8601 format while preserving the user's input date
+  const type = typeValue.toString();
+  const text: string = textValue.toString();
+  const amount: number = parseFloat(amountValue.toString());
+
+  // For income records, category is not required
+  const category: string =
+    type === 'income' ? 'Income' : (categoryValue?.toString() || 'Other');
+
+  if (type === 'expense' && (!categoryValue || categoryValue === '')) {
+    return { error: 'Category is required for expense records' };
+  }
+
   let date: string;
   try {
-    // Parse the date string (YYYY-MM-DD format) and create a date at noon UTC to avoid timezone issues
     const inputDate = dateValue.toString();
     const [year, month, day] = inputDate.split('-');
     const dateObj = new Date(
@@ -48,14 +48,11 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
     );
     date = dateObj.toISOString();
   } catch (error) {
-    console.error('Invalid date format:', error); // Log the error
+    console.error('Invalid date format:', error);
     return { error: 'Invalid date format' };
   }
 
-  // Get logged in user
   const user = await getAuthUser();
-
-  // Check for user
   if (!user) {
     return { error: 'User not found' };
   }
@@ -63,13 +60,13 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
   const userId = user.id;
 
   try {
-    // Create a new record (allow multiple expenses per day)
     const createdRecord = await db.record.create({
       data: {
         text,
         amount,
+        type,
         category,
-        date, // Save the date to the database
+        date,
         userId,
       },
     });
@@ -77,6 +74,7 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
     const recordData: RecordData = {
       text: createdRecord.text,
       amount: createdRecord.amount,
+      type: createdRecord.type,
       category: createdRecord.category,
       date: createdRecord.date?.toISOString() || date,
     };
@@ -85,9 +83,9 @@ async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
 
     return { data: recordData };
   } catch (error) {
-    console.error('Error adding expense record:', error); // Log the error
+    console.error('Error adding record:', error);
     return {
-      error: 'An unexpected error occurred while adding the expense record.',
+      error: 'An unexpected error occurred while adding the record.',
     };
   }
 }

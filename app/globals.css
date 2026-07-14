@@ -17,7 +17,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   overflow-x: hidden;
 }
 
@@ -34,8 +34,12 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
-h1, h2, h3, h4, h5, h6, button, label, select, input, textarea, nav, .font-heading {
-  font-family: var(--font-geist-sans), sans-serif;
+h1, h2, h3, h4, h5, h6, .font-sora {
+  font-family: var(--font-sora), sans-serif;
+}
+
+button, label, select, input, textarea, nav, .font-heading, .font-sans {
+  font-family: var(--font-inter), sans-serif;
 }
 
 /* Custom premium design system additions */

@@ -16,10 +16,10 @@ const ContactPage = () => {
             <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-theme-cyan rounded-full animate-pulse'></span>
             Get in Touch
           </div>
-          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
             Contact{' '}
             <span className='bg-gradient-to-r from-theme-cyan via-cyan-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(91,192,190,0.2)]'>
-              ExpenseTracker AI
+              Expense AI
             </span>
           </h1>
           <p className='text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed px-2 sm:px-0 font-medium'>
@@ -62,8 +62,8 @@ const ContactPage = () => {
               </span>
             </h2>
             <p className='text-sm sm:text-base md:text-lg text-gray-655 dark:text-gray-400 max-w-2xl mx-auto px-2 sm:px-0 font-medium'>
-              Choose the most convenient way to reach out to our ExpenseTracker
-              AI support team.
+              Choose the most convenient way to reach out to our Expense AI
+              support team.
             </p>
           </div>
 

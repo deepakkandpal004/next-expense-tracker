@@ -15,10 +15,10 @@ const AboutPage = () => {
             <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-theme-cyan rounded-full animate-pulse'></span>
             <span>Powered by AI Technology</span>
           </div>
-          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 leading-tight tracking-tight'>
             About{' '}
             <span className='bg-gradient-to-r from-theme-cyan via-cyan-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(91,192,190,0.2)]'>
-              ExpenseTracker AI
+              Expense AI
             </span>
           </h1>
           <p className='text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed px-2 sm:px-0 font-medium'>
@@ -55,7 +55,7 @@ const AboutPage = () => {
             <span className='text-theme-cyan dark:text-cyan-400 font-bold'>AI</span>
           </h2>
           <p className='text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto font-medium'>
-            At ExpenseTracker AI, we leverage cutting-edge artificial
+            At Expense AI, we leverage cutting-edge artificial
             intelligence to revolutionize how individuals achieve financial
             wellness. Our AI analyzes your spending patterns to deliver
             personalized recommendations and actionable insights that lead to
@@ -101,7 +101,7 @@ const AboutPage = () => {
             <h2 className='text-4xl md:text-5xl font-black mb-6 text-gray-900 dark:text-gray-100 tracking-tight'>
               Why Choose{' '}
               <span className='text-theme-cyan dark:text-cyan-400'>
-                ExpenseTracker AI?
+                Expense AI?
               </span>
             </h2>
             <p className='text-lg text-gray-655 dark:text-gray-400 max-w-2xl mx-auto font-medium'>
@@ -187,7 +187,7 @@ const AboutPage = () => {
           <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
             <div className='space-y-6'>
               <p className='text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-medium'>
-                ExpenseTracker AI was born from the vision of creating truly
+                Expense AI was born from the vision of creating truly
                 intelligent financial management tools. Our team of financial
                 experts, data scientists, and technologists came together to
                 solve a critical problem: making personal finance management
@@ -262,7 +262,7 @@ const AboutPage = () => {
 
           <p className='text-base sm:text-lg md:text-xl mb-10 text-gray-655 dark:text-gray-405 max-w-2xl mx-auto leading-relaxed font-medium'>
             Join thousands of users who have already transformed their financial
-            habits with ExpenseTracker AI. Start your journey towards smarter
+            habits with Expense AI. Start your journey towards smarter
             budgeting today.
           </p>
 

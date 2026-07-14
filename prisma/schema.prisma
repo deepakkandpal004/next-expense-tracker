@@ -30,6 +30,7 @@ model Record {
   id          String  @id @default(uuid())
   text        String
   amount      Float
+  type        String  @default("expense")
   category    String @default("other")
   date        DateTime @default(now())
   userId      String

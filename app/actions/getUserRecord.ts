@@ -3,7 +3,9 @@ import { db } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 async function getUserRecord(): Promise<{
-  record?: number;
+  totalExpenses?: number;
+  totalIncome?: number;
+  netBalance?: number;
   daysWithRecords?: number;
   error?: string;
 }> {
@@ -20,21 +22,29 @@ async function getUserRecord(): Promise<{
       where: { userId },
     });
 
-    const record = records.reduce((sum, r) => sum + r.amount, 0);
+    const totalExpenses = records
+      .filter((r) => r.type !== 'income')
+      .reduce((sum, r) => sum + r.amount, 0);
 
-    // Count the number of unique days with valid expense records
-    const validRecords = records.filter((r) => r.amount > 0);
+    const totalIncome = records
+      .filter((r) => r.type === 'income')
+      .reduce((sum, r) => sum + r.amount, 0);
+
+    const netBalance = totalIncome - totalExpenses;
+
+    // Count unique days with expense records (for average calculation)
+    const expenseRecords = records.filter((r) => r.type !== 'income' && r.amount > 0);
     const uniqueDays = new Set(
-      validRecords.map((r) => {
+      expenseRecords.map((r) => {
         const d = new Date(r.date);
         return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
       })
     );
     const daysWithRecords = uniqueDays.size;
 
-    return { record, daysWithRecords };
+    return { totalExpenses, totalIncome, netBalance, daysWithRecords };
   } catch (error) {
-    console.error('Error fetching user record:', error); // Log the error
+    console.error('Error fetching user record:', error);
     return { error: 'Database error' };
   }
 }

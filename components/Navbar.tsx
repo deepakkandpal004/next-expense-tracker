@@ -44,8 +44,8 @@ export default function Navbar() {
               className='flex items-center gap-3 sm:gap-3.5 flex-shrink-0 group transition-all duration-300'
               onClick={closeMobileMenu}
             >
-              <img src="/expense.png" alt="Expense Logo" className="h-9 sm:h-10 w-auto object-contain filter brightness-100 dark:brightness-110 group-hover:scale-105 transition-transform duration-300 rounded-xl" />
-              <span className='font-extrabold text-lg sm:text-xl md:text-2xl text-gray-900 dark:text-gray-100 tracking-tight transition-colors duration-300 group-hover:text-theme-cyan select-none'>
+              <img src="/icon.png" alt="Expense Logo" width={36} height={36} className="h-9 sm:h-10 w-9 sm:w-10 object-contain filter brightness-100 dark:brightness-110 group-hover:scale-105 transition-transform duration-300 rounded-xl" />
+              <span className='font-sora font-extrabold text-lg sm:text-xl md:text-2xl text-gray-900 dark:text-gray-100 tracking-tight transition-colors duration-300 group-hover:text-theme-cyan select-none'>
                 Expense <span className='text-[#5BC0BE]'>AI</span>
               </span>
             </Link>

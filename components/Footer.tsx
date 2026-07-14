@@ -9,8 +9,8 @@ const Footer = () => {
           {/* Logo and Tagline */}
           <div className='text-center md:text-left'>
             <div className='inline-flex items-center gap-2.5 mb-4'>
-              <img src="/expense.png" alt="Expense Logo" className="h-8 w-auto object-contain filter brightness-100 dark:brightness-110 rounded-lg" />
-              <span className='font-extrabold text-base sm:text-lg text-gray-900 dark:text-gray-100 tracking-tight select-none'>
+              <img src="/icon.png" alt="Expense Logo" width={32} height={32} className="h-8 w-8 object-contain filter brightness-100 dark:brightness-110 rounded-lg" />
+              <span className='font-sora font-extrabold text-base sm:text-lg text-gray-900 dark:text-gray-100 tracking-tight select-none'>
                 Expense <span className='text-[#5BC0BE]'>AI</span>
               </span>
             </div>
@@ -86,7 +86,7 @@ const Footer = () => {
         <div className='flex flex-col md:flex-row justify-between items-center animate-fade-in'>
           <div className='text-center md:text-left mb-4 md:mb-0'>
             <p className='text-gray-500 dark:text-gray-450 text-sm font-medium'>
-              © {new Date().getFullYear()} ExpenseTracker AI. All rights
+              © {new Date().getFullYear()} Expense AI. All rights
               reserved.
             </p>
           </div>
