@@ -132,7 +132,7 @@ const Guest = () => {
               <div className='flex items-center justify-between mb-6 pb-4 border-b border-gray-150/40 dark:border-white/5'>
                 <div className='flex items-center gap-3'>
                   <div className='w-12 h-12 rounded-xl bg-gray-50/80 dark:bg-theme-dark/85 flex items-center justify-center border border-gray-200 dark:border-white/5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.08)] overflow-hidden p-1.5'>
-                    <img src="/expense.png" alt="ExpenseTracker Icon" className="w-full h-full object-contain" />
+                    <img src="/expense.png" alt="Expense AI Icon" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h4 className='font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight'>My Dashboard</h4>
@@ -442,16 +442,16 @@ const Guest = () => {
             <h2 className='text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight'>
               Frequently Asked Questions
             </h2>
-            <p className='text-base text-gray-550 dark:text-gray-400 mt-4 leading-relaxed'>
-              Find answers to the most common questions about how ExpenseTracker AI helps you control your budget.
+            <p className='text-base text-gray-555 dark:text-gray-400 mt-4 leading-relaxed'>
+              Find answers to the most common questions about how Expense AI helps you control your budget.
             </p>
           </div>
 
           <div className='space-y-4.5'>
             <FAQItem
               icon='❓'
-              question='What is ExpenseTracker AI?'
-              answer='ExpenseTracker AI is an intelligent financial management tool that uses artificial intelligence to help you monitor your spending patterns, get smart category suggestions, and receive personalized insights to improve your financial health.'
+              question='What is Expense AI?'
+              answer='Expense AI is an intelligent financial management tool that uses artificial intelligence to help you monitor your spending patterns, get smart category suggestions, and receive personalized insights to improve your financial health.'
             />
             <FAQItem
               icon='🤖'
@@ -584,7 +584,7 @@ const Guest = () => {
             Take Control of Your Spending Today
           </h2>
           <p className='text-base sm:text-lg text-gray-650 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed'>
-            Join thousands of savers who use ExpenseTracker AI to automate tracking, discover habits, and accumulate wealth.
+            Join thousands of savers who use Expense AI to automate tracking, discover habits, and accumulate wealth.
           </p>
           <div className='pt-4'>
             <Link href='/sign-up' className='w-full sm:w-auto'>

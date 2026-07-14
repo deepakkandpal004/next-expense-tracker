@@ -201,7 +201,7 @@ export default function SignInPage() {
           <div className='text-center space-y-2 px-6'>
             <h3 className='text-lg font-bold text-white tracking-tight'>Smart Insights, Powerful Controls</h3>
             <p className='text-xs text-gray-400 leading-relaxed max-w-sm mx-auto font-medium'>
-              Join users who use ExpenseTracker AI to automate tracking, optimize budgets, and grow their wealth.
+              Join users who use Expense AI to automate tracking, optimize budgets, and grow their wealth.
             </p>
           </div>
         </div>
