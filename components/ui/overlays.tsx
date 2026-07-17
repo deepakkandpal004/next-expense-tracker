@@ -28,6 +28,8 @@ interface ModalContentProps {
   footer?: ReactNode;
   closeLabel?: string;
   className?: string;
+  /** Keeps the title in the accessibility tree but visually hides it. Useful for nav drawers. */
+  hideTitle?: boolean;
 }
 
 const closeButtonClassName =
@@ -39,12 +41,33 @@ function ModalHeading({
   titleId,
   descriptionId,
   headingRef,
+  hidden,
 }: Pick<ModalContentProps, "title" | "description"> & {
   titleId: string;
   descriptionId: string;
   headingRef: RefObject<HTMLHeadingElement | null>;
+  hidden?: boolean;
 }) {
   enforceSentenceCase(title, "Modal title");
+  if (hidden) {
+    return (
+      <>
+        <h2
+          id={titleId}
+          ref={headingRef}
+          tabIndex={-1}
+          className="sr-only"
+        >
+          {title}
+        </h2>
+        {description ? (
+          <p id={descriptionId} className="sr-only">
+            {description}
+          </p>
+        ) : null}
+      </>
+    );
+  }
   return (
     <header className="min-w-0 pr-11">
       <h2
@@ -97,6 +120,51 @@ function TriggerWrapper({ trigger, onOpen }: { trigger: ReactElement; onOpen: ()
   return <span className="contents" onClick={() => onOpen()}>{trigger}</span>;
 }
 
+function useDialog(
+  dialogRef: RefObject<HTMLDialogElement | null>,
+  isOpen: boolean,
+  onOpenChange: ((open: boolean) => void) | undefined,
+  handleChange: (next: boolean, onOpenChange?: (open: boolean) => void) => void,
+) {
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    if (isOpen && !el.open) {
+      el.showModal();
+    } else if (!isOpen && el.open) {
+      el.close();
+    }
+  }, [isOpen, dialogRef]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    const onClose = () => handleChange(false, onOpenChange);
+    el.addEventListener("close", onClose);
+    return () => el.removeEventListener("close", onClose);
+  }, [dialogRef, handleChange, onOpenChange]);
+}
+
+function DialogSurface({
+  children,
+  headingRef,
+  isOpen,
+}: {
+  children: ReactNode;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+  isOpen: boolean;
+}) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const raf = requestAnimationFrame(() => headingRef.current?.focus());
+    return () => cancelAnimationFrame(raf);
+  }, [isOpen, headingRef]);
+
+  return <>{children}</>;
+}
+
+// ─── Dialog ────────────────────────────────────────────────────────────────
+
 export interface DialogProps extends OverlayRootProps, ModalContentProps {
   trigger?: ReactElement;
 }
@@ -112,6 +180,7 @@ export function Dialog({
   footer,
   closeLabel = "Close dialog",
   className,
+  hideTitle,
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -121,25 +190,7 @@ export function Dialog({
   const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
   const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
 
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    if (isOpen && !el.open) el.showModal();
-    else if (!isOpen && el.open) el.close();
-  }, [isOpen]);
-
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
-    el.addEventListener("close", onClose);
-    return () => el.removeEventListener("close", onClose);
-  }, [isOpen, handleChange, onOpenChange]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    requestAnimationFrame(() => headingRef.current?.focus());
-  }, [isOpen]);
+  useDialog(dialogRef, isOpen, onOpenChange, handleChange);
 
   return (
     <>
@@ -147,7 +198,7 @@ export function Dialog({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -155,34 +206,25 @@ export function Dialog({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container border border-border bg-surface p-6 shadow-overlay",
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl border border-border bg-surface p-6 shadow-overlay",
               className,
             )}
             role="dialog"
           >
-            <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
-            <div className="mt-6 min-w-0 flex-1">{children}</div>
-            {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
-            <CloseButton label={closeLabel} onClose={close} />
+            <DialogSurface headingRef={headingRef} isOpen={isOpen}>
+              <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} hidden={hideTitle} title={title} titleId={titleId} />
+              <div className={cn("min-w-0 flex-1", !hideTitle && "mt-6")}>{children}</div>
+              {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
+              {!hideTitle ? <CloseButton label={closeLabel} onClose={close} /> : null}
+            </DialogSurface>
           </div>
         </dialog>
       </Portal>
-      {isOpen ? (
-        <style jsx>{`
-          dialog::backdrop {
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(2px);
-          }
-          @media (prefers-reduced-motion: reduce) {
-            dialog::backdrop {
-              backdrop-filter: none;
-            }
-          }
-        `}</style>
-      ) : null}
     </>
   );
 }
+
+// ─── Sheet ─────────────────────────────────────────────────────────────────
 
 export interface SheetProps extends OverlayRootProps, ModalContentProps {
   trigger?: ReactElement;
@@ -200,6 +242,7 @@ export function Sheet({
   footer,
   closeLabel = "Close sheet",
   className,
+  hideTitle,
   side = "right",
 }: SheetProps) {
   const titleId = useId();
@@ -210,25 +253,7 @@ export function Sheet({
   const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
   const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
 
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    if (isOpen && !el.open) el.showModal();
-    else if (!isOpen && el.open) el.close();
-  }, [isOpen]);
-
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
-    el.addEventListener("close", onClose);
-    return () => el.removeEventListener("close", onClose);
-  }, [isOpen, handleChange, onOpenChange]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    requestAnimationFrame(() => headingRef.current?.focus());
-  }, [isOpen]);
+  useDialog(dialogRef, isOpen, onOpenChange, handleChange);
 
   const sideClassName = side === "left" ? "left-0" : "right-0";
 
@@ -238,7 +263,7 @@ export function Sheet({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none bg-transparent p-0 open:flex"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -252,29 +277,20 @@ export function Sheet({
             )}
             role="dialog"
           >
-            <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
-            <div className="mt-6 min-w-0 flex-1">{children}</div>
-            {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
-            <CloseButton label={closeLabel} onClose={close} />
+            <DialogSurface headingRef={headingRef} isOpen={isOpen}>
+              <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} hidden={hideTitle} title={title} titleId={titleId} />
+              <div className={cn("min-w-0 flex-1", !hideTitle && "mt-6")}>{children}</div>
+              {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
+              {!hideTitle ? <CloseButton label={closeLabel} onClose={close} /> : null}
+            </DialogSurface>
           </div>
         </dialog>
       </Portal>
-      {isOpen ? (
-        <style jsx>{`
-          dialog::backdrop {
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(2px);
-          }
-          @media (prefers-reduced-motion: reduce) {
-            dialog::backdrop {
-              backdrop-filter: none;
-            }
-          }
-        `}</style>
-      ) : null}
     </>
   );
 }
+
+// ─── AlertDialog ────────────────────────────────────────────────────────────
 
 export interface AlertDialogAction {
   label: string;
@@ -316,25 +332,7 @@ export function AlertDialog({
   const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
   const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
 
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    if (isOpen && !el.open) el.showModal();
-    else if (!isOpen && el.open) el.close();
-  }, [isOpen]);
-
-  useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
-    el.addEventListener("close", onClose);
-    return () => el.removeEventListener("close", onClose);
-  }, [isOpen, handleChange, onOpenChange]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    requestAnimationFrame(() => headingRef.current?.focus());
-  }, [isOpen]);
+  useDialog(dialogRef, isOpen, onOpenChange, handleChange);
 
   return (
     <>
@@ -342,7 +340,7 @@ export function AlertDialog({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -355,55 +353,46 @@ export function AlertDialog({
             )}
             role="alertdialog"
           >
-            <header className="min-w-0">
-              <h2 id={titleId} ref={headingRef} tabIndex={-1} className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                {title}
-              </h2>
-              {description ? (
-                <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
-                  {description}
-                </p>
-              ) : null}
-            </header>
-            {children ? <div className="mt-6 min-w-0 flex-1">{children}</div> : null}
-            <footer className="mt-6 flex flex-wrap justify-end gap-3">
-              <button
-                className="min-h-11 min-w-11 rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground transition-colors hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle"
-                disabled={cancel.disabled || cancel.loading}
-                onClick={() => { cancel.onSelect?.(); close(); }}
-                type="button"
-              >
-                {cancel.label}
-              </button>
-              <button
-                aria-busy={action.loading || undefined}
-                className="min-h-11 min-w-11 rounded-control border border-danger-border bg-danger-surface px-4 py-2 text-interface-sm font-semibold text-danger-foreground transition-[filter,background-color] hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={action.disabled || action.loading}
-                onClick={() => { action.onSelect?.(); close(); }}
-                type="button"
-              >
-                {action.label}
-              </button>
-            </footer>
+            <DialogSurface headingRef={headingRef} isOpen={isOpen}>
+              <header className="min-w-0">
+                <h2 id={titleId} ref={headingRef} tabIndex={-1} className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                  {title}
+                </h2>
+                {description ? (
+                  <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
+                    {description}
+                  </p>
+                ) : null}
+              </header>
+              {children ? <div className="mt-6 min-w-0 flex-1">{children}</div> : null}
+              <footer className="mt-6 flex flex-wrap justify-end gap-3">
+                <button
+                  className="min-h-11 min-w-11 rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground transition-colors hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle"
+                  disabled={cancel.disabled || cancel.loading}
+                  onClick={() => { cancel.onSelect?.(); close(); }}
+                  type="button"
+                >
+                  {cancel.label}
+                </button>
+                <button
+                  aria-busy={action.loading || undefined}
+                  className="min-h-11 min-w-11 rounded-control border border-danger-border bg-danger-surface px-4 py-2 text-interface-sm font-semibold text-danger-foreground transition-[filter,background-color] hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={action.disabled || action.loading}
+                  onClick={() => { action.onSelect?.(); close(); }}
+                  type="button"
+                >
+                  {action.label}
+                </button>
+              </footer>
+            </DialogSurface>
           </div>
         </dialog>
       </Portal>
-      {isOpen ? (
-        <style jsx>{`
-          dialog::backdrop {
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(2px);
-          }
-          @media (prefers-reduced-motion: reduce) {
-            dialog::backdrop {
-              backdrop-filter: none;
-            }
-          }
-        `}</style>
-      ) : null}
     </>
   );
 }
+
+// ─── ConfirmDestructiveAction ───────────────────────────────────────────────
 
 export interface DestructiveRecordSummary {
   description: ReactNode;
@@ -466,6 +455,8 @@ export function ConfirmDestructiveAction({
   );
 }
 
+// ─── DropdownMenu ───────────────────────────────────────────────────────────
+
 export interface DropdownMenuItem {
   id: string;
   label: string;
@@ -495,7 +486,6 @@ export function DropdownMenu({
   items.forEach((item) => enforceSentenceCase(item.label, "Menu item label"));
   const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
   const containerRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
   const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
   const toggle = useCallback(() => handleChange(!isOpen, onOpenChange), [handleChange, isOpen, onOpenChange]);
 
@@ -521,7 +511,6 @@ export function DropdownMenu({
       <TriggerWrapper trigger={trigger} onOpen={toggle} />
       {isOpen ? (
         <div
-          ref={menuRef}
           aria-label={label}
           className="absolute right-0 top-full z-50 mt-2 min-w-56 origin-top-right rounded-container border border-border bg-surface p-1 shadow-overlay"
           role="menu"
@@ -554,6 +543,8 @@ export function DropdownMenu({
     </div>
   );
 }
+
+// ─── CompactNavigation ──────────────────────────────────────────────────────
 
 export interface CompactNavigationItem {
   id: string;

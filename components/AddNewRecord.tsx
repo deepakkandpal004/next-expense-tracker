@@ -28,8 +28,14 @@ export interface AddNewRecordProps {
   requestCategorySuggestion?: typeof suggestCategoryResult;
   /** Opens the dialog on mount, e.g. when a route signal like ?addTransaction=1 is present. */
   initialOpen?: boolean;
+  /** Fully-controlled open state. When set, overrides internal state and `initialOpen`. */
+  open?: boolean;
   /** Notified whenever the dialog opens or closes so callers can clear route signals. */
   onOpenChange?: (open: boolean) => void;
+  /** Pre-selects a transaction type when opened. Useful for entrypoints like Quick Actions. */
+  defaultType?: TransactionType;
+  /** Hides the built-in trigger button. Callers can then open the dialog via `open`. */
+  hideTrigger?: boolean;
 }
 
 interface TransactionDraft {
@@ -67,14 +73,22 @@ export default function AddNewRecord({
   submitTransaction,
   requestCategorySuggestion = suggestCategoryResult,
   initialOpen = false,
+  open: controlledOpen,
   onOpenChange,
+  defaultType,
+  hideTrigger = false,
 }: AddNewRecordProps) {
-  const [open, setOpenState] = useState(initialOpen);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
   const setOpen = (nextOpen: boolean) => {
-    setOpenState(nextOpen);
+    if (!isControlled) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
   };
-  const [draft, setDraft] = useState<TransactionDraft>(createEmptyDraft);
+  const [draft, setDraft] = useState<TransactionDraft>(() => ({
+    ...createEmptyDraft(),
+    type: defaultType ?? "expense",
+  }));
   const [fieldErrors, setFieldErrors] = useState<TransactionCommandFieldErrors>({});
   const [pending, setPending] = useState(false);
   const [aiPending, setAiPending] = useState(false);
@@ -259,7 +273,7 @@ export default function AddNewRecord({
         onOpenChange={setOpen}
         open={open}
         title="Add transaction"
-        trigger={<Button label="Add transaction" />}
+        trigger={hideTrigger ? undefined : <Button label="Add transaction" />}
         className="sm:max-w-xl"
       >
         <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); void validateAndSubmit(); }}>

@@ -228,7 +228,7 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
         title="AI highlights unavailable"
       /> : null}
       {insightSet ? <InsightContent insightSet={insightSet} /> : null}
-      <LinkButton href={insightsHref} icon={<ArrowUpRight size={18} />} intent="secondary" label="Open detailed Insights" />
+      <LinkButton href={insightsHref} icon={<ArrowUpRight size={18} />} intent="secondary" label="Open detailed insights" />
     </Card>
   );
 }

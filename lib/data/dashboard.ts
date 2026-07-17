@@ -4,10 +4,15 @@ import {
   type DashboardAiFactInputs,
   type DashboardDTO,
 } from "../domain/dashboard";
+import { previousResolvedPeriod } from "../domain/reporting-period";
 import type {
   Budget,
   BudgetMetric,
+  CategoryBreakdownRow,
   ChartModel,
+  DashboardKpiInsights,
+  DashboardSnapshot,
+  KpiInsight,
   MetricValue,
   ResolvedPeriod,
   Transaction,
@@ -114,6 +119,45 @@ function copyAiFactInputs(inputs: DashboardAiFactInputs): DashboardAiFactInputs 
   };
 }
 
+function copyKpiInsight(insight: KpiInsight): KpiInsight {
+  return {
+    currentMinor: insight.currentMinor,
+    trend: insight.trend ? { ...insight.trend } : null,
+    sparkline: [...insight.sparkline],
+  };
+}
+
+function copyInsights(insights: DashboardKpiInsights): DashboardKpiInsights {
+  return {
+    balance: copyKpiInsight(insights.balance),
+    income: copyKpiInsight(insights.income),
+    spending: copyKpiInsight(insights.spending),
+    savings: copyKpiInsight(insights.savings),
+  };
+}
+
+function copySnapshot(snapshot: DashboardSnapshot): DashboardSnapshot {
+  return {
+    daysInPeriod: snapshot.daysInPeriod,
+    averageDailyExpenseMinor: snapshot.averageDailyExpenseMinor,
+    transactionCount: snapshot.transactionCount,
+    savingsRate: snapshot.savingsRate,
+    highestExpense: snapshot.highestExpense ? { ...snapshot.highestExpense } : null,
+    sparklines: {
+      dailyIncome: [...snapshot.sparklines.dailyIncome],
+      dailyExpense: [...snapshot.sparklines.dailyExpense],
+      dailyNet: [...snapshot.sparklines.dailyNet],
+      dailyTransactionCount: [...snapshot.sparklines.dailyTransactionCount],
+    },
+  };
+}
+
+function copyCategoryBreakdown(
+  breakdown: readonly CategoryBreakdownRow[],
+): readonly CategoryBreakdownRow[] {
+  return breakdown.map((row) => ({ ...row }));
+}
+
 /**
  * Copies the aggregate into an RSC/client-safe DTO: dates are ISO strings and every nested
  * collection contains only primitive data. AI generation is deliberately not loaded here;
@@ -123,6 +167,7 @@ function copyAiFactInputs(inputs: DashboardAiFactInputs): DashboardAiFactInputs 
 export function toSerializableDashboardDTO(snapshot: DashboardDTO): DashboardDTO {
   return {
     period: copyPeriod(snapshot.period),
+    previousPeriod: snapshot.previousPeriod ? copyPeriod(snapshot.previousPeriod) : null,
     currency: snapshot.currency,
     updatedAt: snapshot.updatedAt,
     kpis: {
@@ -131,6 +176,9 @@ export function toSerializableDashboardDTO(snapshot: DashboardDTO): DashboardDTO
       spending: copyMetric(snapshot.kpis.spending),
       budget: copyBudgetMetric(snapshot.kpis.budget),
     },
+    insights: copyInsights(snapshot.insights),
+    snapshot: copySnapshot(snapshot.snapshot),
+    categoryBreakdown: copyCategoryBreakdown(snapshot.categoryBreakdown),
     trend: copyChart(snapshot.trend),
     categories: copyChart(snapshot.categories),
     recentTransactions: snapshot.recentTransactions.map((transaction) => ({ ...transaction })),
@@ -144,22 +192,35 @@ export function createDashboardQueryService(source: DashboardQuerySource) {
     period: ResolvedPeriod,
     currency = DEFAULT_CURRENCY,
   ): Promise<DashboardDTO> {
+    const previousPeriod = previousResolvedPeriod(period);
     const query: DashboardRecordQuery = {
       userId,
       period,
       startsAt: boundaryAtStart(period.start),
       endsAt: boundaryAtEnd(period.end),
     };
-    const [records, budget] = await Promise.all([
+    const previousQuery: DashboardRecordQuery = {
+      userId,
+      period: previousPeriod,
+      startsAt: boundaryAtStart(previousPeriod.start),
+      endsAt: boundaryAtEnd(previousPeriod.end),
+    };
+
+    const [records, previousRecords, budget] = await Promise.all([
       source.loadRecords(query),
+      source.loadRecords(previousQuery),
       source.loadBudget(userId, period),
     ]);
 
     return toSerializableDashboardDTO(
       aggregateDashboard({
         period,
+        previousPeriod,
         currency,
         records: records.map((record) => toDashboardTransactionDTO(record, currency)),
+        previousRecords: previousRecords.map((record) =>
+          toDashboardTransactionDTO(record, currency),
+        ),
         budget,
       }),
     );

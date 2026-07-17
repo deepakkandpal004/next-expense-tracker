@@ -81,6 +81,42 @@ function resolvePreset(kind: "current-month" | "previous-month", now: Date): Res
   return resolvedPeriod(kind, toISODate(firstDay), toISODate(lastDay));
 }
 
+function shiftISODate(date: string, days: number): string {
+  const parsed = new Date(`${date}T00:00:00Z`);
+  parsed.setUTCDate(parsed.getUTCDate() + days);
+  return toISODate(parsed);
+}
+
+/** Inclusive day count between two ISO dates on the same calendar. */
+export function daysInResolvedPeriod(period: ResolvedPeriod): number {
+  const startTime = new Date(`${period.start}T00:00:00Z`).getTime();
+  const endTime = new Date(`${period.end}T00:00:00Z`).getTime();
+  return Math.round((endTime - startTime) / (24 * 60 * 60 * 1000)) + 1;
+}
+
+/**
+ * Produces the previous equivalent reporting period. Calendar presets shift by a full
+ * calendar month so 28/29/30/31-day differences are preserved. Custom ranges shift by
+ * their own length, ending the day before the current period starts.
+ */
+export function previousResolvedPeriod(period: ResolvedPeriod): ResolvedPeriod {
+  if (period.kind === "current-month" || period.kind === "previous-month") {
+    const parsedStart = new Date(`${period.start}T00:00:00Z`);
+    const previousStart = new Date(
+      Date.UTC(parsedStart.getUTCFullYear(), parsedStart.getUTCMonth() - 1, 1),
+    );
+    const previousEnd = new Date(
+      Date.UTC(previousStart.getUTCFullYear(), previousStart.getUTCMonth() + 1, 0),
+    );
+    return resolvedPeriod(period.kind, toISODate(previousStart), toISODate(previousEnd));
+  }
+
+  const previousEnd = shiftISODate(period.start, -1);
+  const days = daysInResolvedPeriod(period);
+  const previousStart = shiftISODate(previousEnd, -(days - 1));
+  return resolvedPeriod("custom", previousStart, previousEnd);
+}
+
 /**
  * Validates user input without rewriting it. Invalid custom values remain in
  * `input` so form fields can display exactly what the user entered.

@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/ui/cn";
 import { enforceActionLabel, enforceSentenceCase } from "@/lib/ui/primitive-registry";
 
-const alertVariants = cva("rounded-container border p-4", {
+const alertVariants = cva("rounded-2xl border p-4", {
   variants: {
     tone: {
       info: "border-info-border bg-info-surface text-info-foreground",
@@ -72,10 +72,15 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 export function Skeleton({ label, minimumHeight = "8rem", lines = 3, className, style, ...props }: SkeletonProps) {
   enforceSentenceCase(label, "Skeleton label");
   return (
-    <div aria-busy="true" aria-label={label} aria-live="polite" className={cn("w-full rounded-container border border-border p-4", className)} data-feedback-state="loading" role="status" style={{ minHeight: minimumHeight, ...style }} {...props}>
+    <div aria-busy="true" aria-label={label} aria-live="polite" className={cn("w-full overflow-hidden rounded-2xl border border-border bg-surface p-4", className)} data-feedback-state="loading" role="status" style={{ minHeight: minimumHeight, ...style }} {...props}>
       <span className="sr-only">{label}</span>
       <div aria-hidden="true" className="grid gap-3">
-        {Array.from({ length: Math.max(1, lines) }, (_, index) => <span className={cn("block h-4 rounded-control bg-surface-subtle", index === lines - 1 && "w-2/3")} key={index} />)}
+        {Array.from({ length: Math.max(1, lines) }, (_, index) => (
+          <span
+            className={cn("block h-4 rounded-lg animate-shimmer motion-reduce:animate-none motion-reduce:bg-surface-subtle", index === lines - 1 && "w-2/3")}
+            key={index}
+          />
+        ))}
       </div>
     </div>
   );
@@ -95,12 +100,12 @@ export interface EmptyStateProps extends StatePanelProps {
 export function EmptyState({ title, description, action, icon, scope, className, ...props }: EmptyStateProps) {
   enforceSentenceCase(title, "Empty state title");
   return (
-    <div className={cn("rounded-container border border-dashed border-border-strong bg-surface p-6 text-center", className)} {...props}>
-      {icon ? <div aria-hidden="true" className="mb-3 text-foreground-secondary">{icon}</div> : null}
+    <div className={cn("rounded-2xl border border-dashed border-border-strong bg-surface p-8 text-center", className)} {...props}>
+      {icon ? <div aria-hidden="true" className="mb-4 flex justify-center text-foreground-secondary">{icon}</div> : null}
       <h3 className="text-interface-md font-semibold text-foreground">{title}</h3>
       <div className="mx-auto mt-2 max-w-prose text-interface-sm text-foreground-secondary">{description}</div>
       {scope ? <p className="mt-2 text-interface-xs text-foreground-secondary">{scope}</p> : null}
-      {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
+      {action ? <div className="mt-5 flex justify-center">{action}</div> : null}
     </div>
   );
 }
@@ -113,7 +118,7 @@ export function ErrorState({ title, description, action, icon, retryLabel, class
   enforceSentenceCase(title, "Error state title");
   if (retryLabel) enforceActionLabel(retryLabel, "Retry label");
   return (
-    <div className={cn("rounded-container border border-danger-border bg-danger-surface p-6 text-danger-foreground", className)} role="alert" {...props}>
+    <div className={cn("rounded-2xl border border-danger-border bg-danger-surface p-6 text-danger-foreground", className)} role="alert" {...props}>
       <div className="flex min-w-0 gap-3">
         {icon ? <span aria-hidden="true" className="shrink-0">{icon}</span> : null}
         <div className="min-w-0">

@@ -200,6 +200,63 @@ export interface DashboardMetrics {
   budget: BudgetMetric;
 }
 
+export type TrendDirection = "up" | "down" | "flat";
+
+export interface KpiTrend {
+  /** Signed change ratio versus previous period; e.g. 0.125 = +12.5%. */
+  changePercent: number;
+  direction: TrendDirection;
+  previousMinor: MinorUnitAmount;
+}
+
+export interface KpiInsight {
+  currentMinor: MinorUnitAmount;
+  /** `null` when previous-period data is unavailable or its value is zero. */
+  trend: KpiTrend | null;
+  /** Daily aggregate for the current period, ordered chronologically. */
+  sparkline: readonly number[];
+}
+
+export interface DashboardKpiInsights {
+  balance: KpiInsight;
+  income: KpiInsight;
+  spending: KpiInsight;
+  savings: KpiInsight;
+}
+
+export interface DashboardHighestExpense {
+  amountMinor: MinorUnitAmount;
+  occurredOn: ISODateTime;
+  description: string;
+  categoryId: string;
+}
+
+export interface DashboardDailySparklines {
+  dailyIncome: readonly number[];
+  dailyExpense: readonly number[];
+  dailyNet: readonly number[];
+  dailyTransactionCount: readonly number[];
+}
+
+export interface DashboardSnapshot {
+  daysInPeriod: number;
+  averageDailyExpenseMinor: MinorUnitAmount;
+  transactionCount: number;
+  /** Ratio 0..1. Non-finite ratios collapse to 0 to keep displays safe. */
+  savingsRate: number;
+  highestExpense: DashboardHighestExpense | null;
+  sparklines: DashboardDailySparklines;
+}
+
+export interface CategoryBreakdownRow {
+  categoryId: string;
+  label: string;
+  semanticToken: string;
+  amountMinor: MinorUnitAmount;
+  /** Share of total spending; 0..1. */
+  percentage: number;
+}
+
 export type FieldErrors<TField extends string = string> = Partial<
   Record<TField, readonly string[]>
 >;

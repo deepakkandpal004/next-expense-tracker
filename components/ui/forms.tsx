@@ -3,7 +3,7 @@ import { cn } from "@/lib/ui/cn";
 import { enforceSentenceCase } from "@/lib/ui/primitive-registry";
 
 const controlClasses =
-  "min-h-11 w-full rounded-control border border-border bg-surface px-3 py-2 text-interface-sm text-foreground shadow-flat transition-colors placeholder:text-foreground-secondary hover:border-border-strong focus-visible:border-focus disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-foreground-secondary aria-[busy=true]:cursor-wait aria-[invalid=true]:border-danger-border aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-danger-border data-[state=success]:border-success-border data-[state=success]:ring-1 data-[state=success]:ring-success-border";
+  "min-h-11 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-interface-sm text-foreground shadow-flat transition-colors placeholder:text-foreground-secondary hover:border-border-strong focus-visible:border-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-foreground-secondary aria-[busy=true]:cursor-wait aria-[invalid=true]:border-danger-border aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-danger-border data-[state=success]:border-success-border data-[state=success]:ring-1 data-[state=success]:ring-success-border";
 
 interface FieldFrameProps {
   id: string;

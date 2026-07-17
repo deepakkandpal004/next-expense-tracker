@@ -57,6 +57,56 @@ const config: Config = {
           surface: 'var(--color-danger-surface)',
           border: 'var(--color-danger-border)',
         },
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          foreground: 'var(--color-accent-foreground)',
+          surface: 'var(--color-accent-surface)',
+          border: 'var(--color-accent-border)',
+        },
+        kpi: {
+          balance: {
+            DEFAULT: 'var(--color-kpi-balance)',
+            surface: 'var(--color-kpi-balance-surface)',
+            foreground: 'var(--color-kpi-balance-foreground)',
+          },
+          income: {
+            DEFAULT: 'var(--color-kpi-income)',
+            surface: 'var(--color-kpi-income-surface)',
+            foreground: 'var(--color-kpi-income-foreground)',
+          },
+          expense: {
+            DEFAULT: 'var(--color-kpi-expense)',
+            surface: 'var(--color-kpi-expense-surface)',
+            foreground: 'var(--color-kpi-expense-foreground)',
+          },
+          savings: {
+            DEFAULT: 'var(--color-kpi-savings)',
+            surface: 'var(--color-kpi-savings-surface)',
+            foreground: 'var(--color-kpi-savings-foreground)',
+          },
+        },
+        trend: {
+          up: {
+            DEFAULT: 'var(--color-trend-up)',
+            foreground: 'var(--color-trend-up-foreground)',
+            surface: 'var(--color-trend-up-surface)',
+          },
+          down: {
+            DEFAULT: 'var(--color-trend-down)',
+            foreground: 'var(--color-trend-down-foreground)',
+            surface: 'var(--color-trend-down-surface)',
+          },
+        },
+        sidebar: {
+          bg: 'var(--color-sidebar-bg)',
+          'bg-end': 'var(--color-sidebar-bg-end)',
+          foreground: 'var(--color-sidebar-foreground)',
+          'foreground-muted': 'var(--color-sidebar-foreground-muted)',
+          'item-hover': 'var(--color-sidebar-item-hover)',
+          'item-active-bg': 'var(--color-sidebar-item-active-bg)',
+          'item-active-foreground': 'var(--color-sidebar-item-active-foreground)',
+          border: 'var(--color-sidebar-border)',
+        },
         // Compatibility aliases while route components migrate to semantic roles.
         theme: {
           deep: 'var(--color-bg)',
@@ -98,6 +148,12 @@ const config: Config = {
       maxWidth: {
         '7xl': 'var(--content-frame-max)',
         frame: 'var(--content-frame-max)',
+      },
+      backgroundImage: {
+        'sidebar-gradient':
+          'linear-gradient(180deg, var(--color-sidebar-bg) 0%, var(--color-sidebar-bg-end) 100%)',
+        'accent-gradient':
+          'linear-gradient(135deg, var(--color-accent) 0%, var(--color-kpi-savings) 100%)',
       },
     },
   },

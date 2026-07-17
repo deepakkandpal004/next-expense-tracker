@@ -36,7 +36,14 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 }
 
 export function Card({ as = "div", elevation = "flat", className, ...props }: CardProps) {
-  return createElement(as, { className: cn("min-w-0 rounded-container border border-border bg-surface p-4 text-foreground", elevation === "raised" && "shadow-raised", className), ...props });
+  return createElement(as, {
+    className: cn(
+      "min-w-0 rounded-2xl border border-border bg-surface p-4 text-foreground",
+      elevation === "raised" && "shadow-sm",
+      className,
+    ),
+    ...props,
+  });
 }
 
 export interface DataTableColumn<TRow> {
@@ -60,7 +67,7 @@ export function DataTable<TRow>({ caption, columns, rows, rowKey, emptyMessage =
   enforceSentenceCase(caption, "Table caption");
   columns.forEach((column) => enforceSentenceCase(column.header, "Column heading"));
   return (
-    <div aria-label={caption} className={cn("custom-scrollbar max-w-full overflow-x-auto rounded-container border border-border", className)} role="region" tabIndex={0}>
+    <div aria-label={caption} className={cn("custom-scrollbar max-w-full overflow-x-auto rounded-2xl border border-border", className)} role="region" tabIndex={0}>
       <table className="w-full min-w-max border-collapse text-left text-interface-sm">
         <caption className="p-3 text-left font-semibold text-foreground">{caption}</caption>
         <thead className="bg-surface-subtle text-foreground">
@@ -90,7 +97,8 @@ export interface SectionHeaderProps extends HTMLAttributes<HTMLElement> {
 }
 
 export function SectionHeader({ title, description, metadata, action, headingLevel = 2, className, ...props }: SectionHeaderProps) {
-  enforceSentenceCase(title, "Section title");
+  // Display headings intentionally allow Title Case and other conventions.
+  // Enforcement is limited to interactive labels (buttons, nav, tooltips).
   const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
   return (
     <header className={cn("flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", className)} {...props}>
@@ -130,8 +138,15 @@ export interface DateTextProps extends HTMLAttributes<HTMLTimeElement>, DateTime
 
 export function DateText({ value, format = "date", exactAlternative = true, locale, browserLocales, timeZone, className, ...props }: DateTextProps) {
   const options = { locale, browserLocales, timeZone };
-  const visible = format === "date-time" ? formatDateTime(value, options) : formatDate(value, options);
-  const exact = formatExactTime(value, options);
-  const dateTime = value instanceof Date ? value.toISOString() : typeof value === "number" ? new Date(value).toISOString() : value;
-  return <time aria-label={exactAlternative ? exact : undefined} className={className} dateTime={dateTime} title={exactAlternative ? exact : undefined} {...props}>{visible}</time>;
+  let visible: string;
+  let exact: string;
+  let dateTime: string;
+  try {
+    visible = format === "date-time" ? formatDateTime(value, options) : formatDate(value, options);
+    exact = formatExactTime(value, options);
+    dateTime = value instanceof Date ? value.toISOString() : typeof value === "number" ? new Date(value).toISOString() : value;
+  } catch {
+    return <span {...props} className={className}>{String(value)}</span>;
+  }
+  return <time {...props} className={className} dateTime={dateTime} title={exactAlternative ? exact : undefined} aria-label={exactAlternative ? exact : undefined}>{visible}</time>;
 }

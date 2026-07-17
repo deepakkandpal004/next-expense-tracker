@@ -47,6 +47,48 @@
   --color-category-income: #15803d;
   --color-category-other: #475569;
 
+  /* Accent (purple) — active navigation, premium CTAs, key highlights. */
+  --color-accent: #7c3aed;
+  --color-accent-foreground: #ffffff;
+  --color-accent-surface: #ede9fe;
+  --color-accent-border: #a78bfa;
+
+  /* KPI role palette — one distinct hue per card. */
+  --color-kpi-balance: #14b8a6;
+  --color-kpi-balance-surface: #ccfbf1;
+  --color-kpi-balance-foreground: #0f766e;
+
+  --color-kpi-income: #22c55e;
+  --color-kpi-income-surface: #dcfce7;
+  --color-kpi-income-foreground: #15803d;
+
+  --color-kpi-expense: #f97316;
+  --color-kpi-expense-surface: #ffedd5;
+  --color-kpi-expense-foreground: #c2410c;
+
+  --color-kpi-savings: #8b5cf6;
+  --color-kpi-savings-surface: #ede9fe;
+  --color-kpi-savings-foreground: #6d28d9;
+
+  /* Trend directionals — context-agnostic up/down. Not tied to KPI role. */
+  --color-trend-up: #22c55e;
+  --color-trend-up-foreground: #15803d;
+  --color-trend-up-surface: #dcfce7;
+
+  --color-trend-down: #ef4444;
+  --color-trend-down-foreground: #b91c1c;
+  --color-trend-down-surface: #fee2e2;
+
+  /* Sidebar palette — intentionally stays dark in every appearance. */
+  --color-sidebar-bg: #16173a;
+  --color-sidebar-bg-end: #2a1e5c;
+  --color-sidebar-foreground: #e2e8f0;
+  --color-sidebar-foreground-muted: #94a3b8;
+  --color-sidebar-item-hover: rgb(255 255 255 / 0.06);
+  --color-sidebar-item-active-bg: rgb(139 92 246 / 0.18);
+  --color-sidebar-item-active-foreground: #ffffff;
+  --color-sidebar-border: rgb(255 255 255 / 0.08);
+
   /* 8px foundation with documented 4px half-steps. */
   --space-0: 0;
   --space-1: 0.25rem;
@@ -139,6 +181,36 @@
   --color-category-healthcare: #fca5a5;
   --color-category-income: #86efac;
   --color-category-other: #cbd5e1;
+
+  --color-accent: #a78bfa;
+  --color-accent-foreground: #0b132b;
+  --color-accent-surface: rgb(167 139 250 / 0.15);
+  --color-accent-border: #a78bfa;
+
+  --color-kpi-balance: #5eead4;
+  --color-kpi-balance-surface: rgb(94 234 212 / 0.15);
+  --color-kpi-balance-foreground: #99f6e4;
+
+  --color-kpi-income: #86efac;
+  --color-kpi-income-surface: rgb(134 239 172 / 0.15);
+  --color-kpi-income-foreground: #bbf7d0;
+
+  --color-kpi-expense: #fdba74;
+  --color-kpi-expense-surface: rgb(253 186 116 / 0.15);
+  --color-kpi-expense-foreground: #fed7aa;
+
+  --color-kpi-savings: #c4b5fd;
+  --color-kpi-savings-surface: rgb(196 181 253 / 0.15);
+  --color-kpi-savings-foreground: #ddd6fe;
+
+  --color-trend-up: #86efac;
+  --color-trend-up-foreground: #bbf7d0;
+  --color-trend-up-surface: rgb(134 239 172 / 0.15);
+
+  --color-trend-down: #fca5a5;
+  --color-trend-down-foreground: #fecaca;
+  --color-trend-down-surface: rgb(252 165 165 / 0.15);
+
   --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.28), 0 8px 24px rgb(0 0 0 / 0.24);
   --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.48);
 }
@@ -182,6 +254,36 @@
     --color-category-healthcare: #fca5a5;
     --color-category-income: #86efac;
     --color-category-other: #cbd5e1;
+
+    --color-accent: #a78bfa;
+    --color-accent-foreground: #0b132b;
+    --color-accent-surface: rgb(167 139 250 / 0.15);
+    --color-accent-border: #a78bfa;
+
+    --color-kpi-balance: #5eead4;
+    --color-kpi-balance-surface: rgb(94 234 212 / 0.15);
+    --color-kpi-balance-foreground: #99f6e4;
+
+    --color-kpi-income: #86efac;
+    --color-kpi-income-surface: rgb(134 239 172 / 0.15);
+    --color-kpi-income-foreground: #bbf7d0;
+
+    --color-kpi-expense: #fdba74;
+    --color-kpi-expense-surface: rgb(253 186 116 / 0.15);
+    --color-kpi-expense-foreground: #fed7aa;
+
+    --color-kpi-savings: #c4b5fd;
+    --color-kpi-savings-surface: rgb(196 181 253 / 0.15);
+    --color-kpi-savings-foreground: #ddd6fe;
+
+    --color-trend-up: #86efac;
+    --color-trend-up-foreground: #bbf7d0;
+    --color-trend-up-surface: rgb(134 239 172 / 0.15);
+
+    --color-trend-down: #fca5a5;
+    --color-trend-down-foreground: #fecaca;
+    --color-trend-down-surface: rgb(252 165 165 / 0.15);
+
     --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.28), 0 8px 24px rgb(0 0 0 / 0.24);
     --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.48);
   }
@@ -380,6 +482,22 @@ p {
   border: 2px solid transparent;
   border-radius: var(--radius-circular);
   background-clip: padding-box;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-subtle) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
 
 @keyframes fade-in {
