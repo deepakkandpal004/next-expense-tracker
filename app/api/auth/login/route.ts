@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { comparePassword, generateAccessToken, generateRefreshToken } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { comparePassword, createSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -26,33 +25,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
-    // Generate tokens
-    const accessToken = await generateAccessToken(user.id, user.email);
-    const refreshToken = await generateRefreshToken(user.id, user.email);
-
-    // Save refresh token to DB
-    await db.user.update({
-      where: { id: user.id },
-      data: { refreshToken },
-    });
-
-    // Set cookies
-    const cookieStore = await cookies();
-    cookieStore.set('access_token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60,
-      path: '/',
-    });
-
-    cookieStore.set('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    await createSession(user.id);
 
     return NextResponse.json({
       user: {

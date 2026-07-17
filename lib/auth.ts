@@ -1,106 +1,75 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { createHash, randomBytes } from 'node:crypto';
+import { cache } from 'react';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { db } from './db';
 
-const getSecretKey = () => {
-  const secret = process.env.JWT_SECRET || 'super-secret-key-expense-tracker-ai-token-secret-xyz';
-  return new TextEncoder().encode(secret);
-};
+export const SESSION_COOKIE_NAME = 'session_token';
+const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
+  return bcrypt.hash(password, salt);
 }
 
 export async function comparePassword(password: string, hash: string): Promise<boolean> {
-  return await bcrypt.compare(password, hash);
+  return bcrypt.compare(password, hash);
 }
 
-export async function generateAccessToken(userId: string, email: string): Promise<string> {
-  return await new SignJWT({ userId, email })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('15m')
-    .sign(getSecretKey());
+export function hashSessionToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
 }
 
-export async function generateRefreshToken(userId: string, email: string): Promise<string> {
-  return await new SignJWT({ userId, email })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(getSecretKey());
-}
+export async function createSession(userId: string): Promise<void> {
+  const token = randomBytes(32).toString('base64url');
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
-export async function verifyJWT(token: string): Promise<{ userId: string; email: string } | null> {
-  try {
-    const { payload } = await jwtVerify(token, getSecretKey());
-    return payload as { userId: string; email: string };
-  } catch {
-    return null;
-  }
-}
+  await db.session.create({
+    data: {
+      userId,
+      tokenHash: hashSessionToken(token),
+      expiresAt,
+    },
+  });
 
-export async function refreshSession() {
   const cookieStore = await cookies();
-  const refreshToken = cookieStore.get('refresh_token')?.value;
-  if (!refreshToken) return null;
-
-  const decoded = await verifyJWT(refreshToken);
-  if (!decoded) return null;
-
-  const user = await db.user.findUnique({
-    where: { id: decoded.userId },
-  });
-
-  if (!user || user.refreshToken !== refreshToken) {
-    return null;
-  }
-
-  const newAccessToken = await generateAccessToken(user.id, user.email);
-  const newRefreshToken = await generateRefreshToken(user.id, user.email);
-
-  await db.user.update({
-    where: { id: user.id },
-    data: { refreshToken: newRefreshToken },
-  });
-
-  cookieStore.set('access_token', newAccessToken, {
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 15 * 60,
+    expires: expiresAt,
     path: '/',
   });
 
-  cookieStore.set('refresh_token', newRefreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60,
-    path: '/',
-  });
-
-  return user;
+  // Remove cookies from the retired JWT authentication system.
+  cookieStore.delete('access_token');
+  cookieStore.delete('refresh_token');
 }
-
-export async function getAuthUser() {
+export async function deleteCurrentSession(): Promise<void> {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('access_token')?.value;
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
-  if (!accessToken) {
-    return await refreshSession();
+  if (token) {
+    await db.session.deleteMany({
+      where: { tokenHash: hashSessionToken(token) },
+    });
   }
 
-  const decoded = await verifyJWT(accessToken);
-  if (!decoded) {
-    return await refreshSession();
-  }
+  cookieStore.delete(SESSION_COOKIE_NAME);
+  cookieStore.delete('access_token');
+  cookieStore.delete('refresh_token');
+}
 
-  const user = await db.user.findUnique({
-    where: { id: decoded.userId },
+export const getAuthUser = cache(async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (!token) return null;
+
+  const session = await db.session.findUnique({
+    where: { tokenHash: hashSessionToken(token) },
+    include: { user: true },
   });
 
-  return user;
-}
+  if (!session || session.expiresAt <= new Date()) return null;
+  return session.user;
+});

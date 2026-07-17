@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "motion/react";
 import { Download, RefreshCw, Trash2, X } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
 import { deleteTransactionRecord } from "@/app/actions/deleteRecord";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
@@ -315,9 +317,16 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
             rows={selection.records}
           />
 
-          <ul aria-label={`Records for ${resolvedPeriod.label}`} className="grid gap-3 md:hidden" data-record-view="cards">
+          <motion.ul
+            animate="visible"
+            aria-label={`Records for ${resolvedPeriod.label}`}
+            className="grid gap-3 md:hidden"
+            data-record-view="cards"
+            initial="hidden"
+            variants={listContainerVariants}
+          >
             {selection.records.map((row) => (
-              <li key={row.id}>
+              <motion.li key={row.id} layout variants={listItemVariants}>
                 <Card as="article" className="grid gap-4" elevation="raised">
                   <h2 className="break-words text-interface-md font-semibold text-foreground">{row.description}</h2>
                   <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-interface-sm">
@@ -332,9 +341,9 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
                   </dl>
                   <div className="flex justify-end">{deleteAction(row)}</div>
                 </Card>
-              </li>
+              </motion.li>
             ))}
-          </ul>
+          </motion.ul>
         </div>
       )}
 

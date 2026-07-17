@@ -248,7 +248,6 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
       const response = await fetch('/api/auth/logout', { method: 'POST' });
       if (!response.ok) throw new Error('Unable to sign out');
       router.replace('/sign-in');
-      router.refresh();
     } catch {
       setAccountError('We couldn’t sign you out. Please try again.');
       setSigningOut(false);

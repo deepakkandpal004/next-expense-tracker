@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
 import { getAiAnswerDisclosure } from '@/lib/domain/ai';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
 import { ConversationPanel } from '@/components/patterns/conversation-panel';
@@ -21,9 +19,6 @@ function toSearchParams(query: Record<string, string | string[] | undefined>): U
 }
 
 export default async function InsightsPage({ searchParams }: InsightsPageProps) {
-  const user = await getAuthUser();
-  if (!user) redirect('/sign-in');
-
   const query = await searchParams;
   const { input: periodInput } = resolveValidReportingPeriod(toSearchParams(query));
   const disclosure = getAiAnswerDisclosure();

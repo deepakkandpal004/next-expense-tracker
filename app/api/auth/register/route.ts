@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { hashPassword, generateAccessToken, generateRefreshToken } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { createSession, hashPassword } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -37,33 +36,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // Generate tokens
-    const accessToken = await generateAccessToken(newUser.id, newUser.email);
-    const refreshToken = await generateRefreshToken(newUser.id, newUser.email);
-
-    // Save refresh token to DB
-    await db.user.update({
-      where: { id: newUser.id },
-      data: { refreshToken },
-    });
-
-    // Set cookies
-    const cookieStore = await cookies();
-    cookieStore.set('access_token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60,
-      path: '/',
-    });
-
-    cookieStore.set('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    await createSession(newUser.id);
 
     return NextResponse.json(
       {

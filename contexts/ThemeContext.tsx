@@ -137,7 +137,6 @@ function ThemeState({
   initialDensity,
 }: Required<ThemeProviderProps>) {
   const {
-    theme: nextThemePreference,
     systemTheme,
     setTheme: setNextTheme,
   } = useNextTheme();

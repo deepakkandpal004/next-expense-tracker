@@ -3,7 +3,6 @@ import { cookies } from 'next/headers';
 import { Sora, Inter } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
-import { getAuthUser } from '@/lib/auth';
 import {
   APPEARANCE_COOKIE_NAME,
   DENSITY_COOKIE_NAME,
@@ -54,27 +53,6 @@ export default async function RootLayout({
     ? densityCookie
     : 'comfortable';
 
-  // Resolve the current auth user on the server and pass a safe initial user down to the
-  // client provider. This prevents a client-side fetch to /api/auth/me on every page load
-  // or navigation and removes the loading flicker.
-  let initialUser = undefined;
-  try {
-    const user = await getAuthUser();
-    if (user) {
-      initialUser = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        imageUrl: user.imageUrl,
-      };
-    } else {
-      initialUser = null;
-    }
-  } catch (e) {
-    // Do not block rendering if auth resolution fails; client can still refresh explicitly.
-    initialUser = undefined;
-  }
-
   return (
     <html
       lang='en'
@@ -99,7 +77,6 @@ export default async function RootLayout({
         <RootProviders
           initialAppearance={initialAppearance}
           initialDensity={initialDensity}
-          initialUser={initialUser}
         >
           <main id='main-content' tabIndex={-1}>
             {children}

@@ -4,7 +4,7 @@ import { cn } from "@/lib/ui/cn";
 import { enforceActionLabel, enforceAccessibleName } from "@/lib/ui/primitive-registry";
 
 export const buttonVariants = cva(
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control border px-4 py-2 text-interface-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-60 aria-[busy=true]:cursor-wait",
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control border px-4 py-2 text-interface-sm font-semibold transition-[background-color,color,border-color,filter,transform] duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-60 aria-[busy=true]:cursor-wait",
   {
     variants: {
       intent: {

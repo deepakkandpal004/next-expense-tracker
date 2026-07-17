@@ -1,24 +1,9 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { getAuthUser } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { deleteCurrentSession } from '@/lib/auth';
 
 export async function POST() {
   try {
-    const user = await getAuthUser();
-    
-    if (user) {
-      // Clear refresh token in DB
-      await db.user.update({
-        where: { id: user.id },
-        data: { refreshToken: null },
-      });
-    }
-
-    // Clear cookies
-    const cookieStore = await cookies();
-    cookieStore.delete('access_token');
-    cookieStore.delete('refresh_token');
+    await deleteCurrentSession();
 
     return NextResponse.json({ message: 'Logged out successfully' });
   } catch (error) {

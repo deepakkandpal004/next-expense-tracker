@@ -4,16 +4,15 @@ import { useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Field } from '@/components/ui';
 import { AuthTaskLinks, AuthenticationForm, focusFirstAuthError, getEmailError, PasswordField, type AuthFieldErrors } from '@/components/patterns/authentication-form';
-import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignUpPage() {
   const [name, setName] = useState(''); const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [confirmation, setConfirmation] = useState(''); const [errors, setErrors] = useState<AuthFieldErrors>({}); const [formError, setFormError] = useState<string | null>(null); const [pending, setPending] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null); const router = useRouter(); const { refreshUser } = useAuth();
+  const formRef = useRef<HTMLFormElement>(null); const router = useRouter();
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); const next: AuthFieldErrors = {}; if (!name.trim()) next.name = 'Enter your name.'; const emailError = getEmailError(email); if (emailError) next.email = emailError; if (!password) next.password = 'Enter a password.'; if (!confirmation) next.confirmation = 'Confirm your password.'; else if (password !== confirmation) next.confirmation = 'Passwords must match.'; setErrors(next); setFormError(null);
     if (Object.keys(next).length) { requestAnimationFrame(() => focusFirstAuthError(formRef.current)); return; }
     setPending(true);
-    try { const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password }) }); if (!response.ok) { setFormError('We could not create your account. Check the details and try again.'); return; } setFormError(null); await refreshUser(); router.push('/'); router.refresh(); }
+    try { const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password }) }); if (!response.ok) { setFormError('We could not create your account. Check the details and try again.'); return; } setFormError(null); router.replace('/dashboard'); }
     catch { setFormError('We could not complete account creation. Check your connection and retry.'); }
     finally { setPending(false); }
   };

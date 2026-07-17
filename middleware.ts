@@ -13,9 +13,7 @@ function matchesRouteBoundary(pathname: string, routes: readonly string[]) {
  * queries remain responsible for authenticating and authorizing every request.
  */
 function hasSessionHint(request: NextRequest) {
-  return Boolean(
-    request.cookies.get('access_token')?.value || request.cookies.get('refresh_token')?.value,
-  );
+  return Boolean(request.cookies.get('session_token')?.value);
 }
 
 export function middleware(request: NextRequest) {

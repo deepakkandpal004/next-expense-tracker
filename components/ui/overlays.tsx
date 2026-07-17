@@ -1,10 +1,17 @@
 "use client";
 
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { X } from "lucide-react";
-import { useId, useRef, useState, type ReactElement, type ReactNode, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+  type RefObject,
+} from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/ui/cn";
 import { enforceActionLabel, enforceSentenceCase } from "@/lib/ui/primitive-registry";
 
@@ -21,51 +28,160 @@ interface ModalContentProps {
   footer?: ReactNode;
   closeLabel?: string;
   className?: string;
-  onOpenAutoFocus?: (event: Event) => void;
-  onCloseAutoFocus?: (event: Event) => void;
 }
 
-const overlayClassName = "fixed inset-0 z-50 bg-foreground/40 backdrop-blur-[1px] motion-reduce:backdrop-blur-none";
-const closeButtonClassName = "absolute right-4 top-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-foreground-secondary hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle";
+const closeButtonClassName =
+  "absolute right-4 top-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-foreground-secondary hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle";
 
-function ModalHeading({ title, description, titleId, descriptionId, headingRef }: Pick<ModalContentProps, "title" | "description"> & { titleId: string; descriptionId: string; headingRef: RefObject<HTMLHeadingElement | null> }) {
+function ModalHeading({
+  title,
+  description,
+  titleId,
+  descriptionId,
+  headingRef,
+}: Pick<ModalContentProps, "title" | "description"> & {
+  titleId: string;
+  descriptionId: string;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+}) {
   enforceSentenceCase(title, "Modal title");
-  return <header className="min-w-0 pr-11"><DialogPrimitive.Title id={titleId} ref={headingRef} tabIndex={-1} className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{title}</DialogPrimitive.Title>{description ? <DialogPrimitive.Description id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">{description}</DialogPrimitive.Description> : null}</header>;
+  return (
+    <header className="min-w-0 pr-11">
+      <h2
+        id={titleId}
+        ref={headingRef}
+        tabIndex={-1}
+        className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      >
+        {title}
+      </h2>
+      {description ? (
+        <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
+          {description}
+        </p>
+      ) : null}
+    </header>
+  );
 }
 
-function CloseButton({ label }: { label: string }) {
+function CloseButton({ label, onClose }: { label: string; onClose: () => void }) {
   enforceActionLabel(label, "Modal close label");
-  return <DialogPrimitive.Close asChild><button aria-label={label} className={closeButtonClassName} type="button"><X aria-hidden="true" size={20} /></button></DialogPrimitive.Close>;
+  return (
+    <button aria-label={label} className={closeButtonClassName} onClick={onClose} type="button">
+      <X aria-hidden="true" size={20} />
+    </button>
+  );
 }
 
-function focusHeading(event: Event, heading: RefObject<HTMLHeadingElement | null>, callback?: (event: Event) => void) {
-  callback?.(event);
-  if (!event.defaultPrevented) {
-    event.preventDefault();
-    heading.current?.focus();
-  }
+function useOverlayOpenState(open: boolean | undefined, defaultOpen: boolean | undefined) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : uncontrolledOpen;
+  return {
+    isOpen,
+    handleChange: (next: boolean, onOpenChange?: (open: boolean) => void) => {
+      if (!isControlled) setUncontrolledOpen(next);
+      onOpenChange?.(next);
+    },
+  };
+}
+
+function Portal({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+  return createPortal(children, document.body);
+}
+
+function TriggerWrapper({ trigger, onOpen }: { trigger: ReactElement; onOpen: () => void }) {
+  return <span className="contents" onClick={() => onOpen()}>{trigger}</span>;
 }
 
 export interface DialogProps extends OverlayRootProps, ModalContentProps {
   trigger?: ReactElement;
 }
 
-export function Dialog({ trigger, open, defaultOpen, onOpenChange, title, description, children, footer, closeLabel = "Close dialog", className, onOpenAutoFocus, onCloseAutoFocus }: DialogProps) {
+export function Dialog({
+  trigger,
+  open,
+  defaultOpen,
+  onOpenChange,
+  title,
+  description,
+  children,
+  footer,
+  closeLabel = "Close dialog",
+  className,
+}: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  return <DialogPrimitive.Root defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
-    {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
-    <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className={overlayClassName} />
-      <DialogPrimitive.Content aria-describedby={description ? descriptionId : undefined} aria-labelledby={titleId} className={cn("fixed inset-0 z-50 flex h-[100dvh] w-full flex-col overflow-y-auto bg-surface p-6 shadow-overlay focus:outline-none sm:inset-auto sm:left-1/2 sm:top-1/2 sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100%-2rem)] sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-container sm:border sm:border-border", className)} onCloseAutoFocus={onCloseAutoFocus} onOpenAutoFocus={(event) => focusHeading(event, headingRef, onOpenAutoFocus)}>
-        <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
-        <div className="mt-6 min-w-0 flex-1">{children}</div>
-        {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
-        <CloseButton label={closeLabel} />
-      </DialogPrimitive.Content>
-    </DialogPrimitive.Portal>
-  </DialogPrimitive.Root>;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
+  const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
+  const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    if (isOpen && !el.open) el.showModal();
+    else if (!isOpen && el.open) el.close();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
+    el.addEventListener("close", onClose);
+    return () => el.removeEventListener("close", onClose);
+  }, [isOpen, handleChange, onOpenChange]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    requestAnimationFrame(() => headingRef.current?.focus());
+  }, [isOpen]);
+
+  return (
+    <>
+      {trigger ? <TriggerWrapper onOpen={openFn} trigger={trigger} /> : null}
+      <Portal>
+        <dialog
+          ref={dialogRef}
+          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex"
+          onClick={(e) => { if (e.target === dialogRef.current) close(); }}
+        >
+          <div
+            aria-describedby={description ? descriptionId : undefined}
+            aria-labelledby={titleId}
+            aria-modal="true"
+            className={cn(
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container border border-border bg-surface p-6 shadow-overlay",
+              className,
+            )}
+            role="dialog"
+          >
+            <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
+            <div className="mt-6 min-w-0 flex-1">{children}</div>
+            {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
+            <CloseButton label={closeLabel} onClose={close} />
+          </div>
+        </dialog>
+      </Portal>
+      {isOpen ? (
+        <style jsx>{`
+          dialog::backdrop {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            dialog::backdrop {
+              backdrop-filter: none;
+            }
+          }
+        `}</style>
+      ) : null}
+    </>
+  );
 }
 
 export interface SheetProps extends OverlayRootProps, ModalContentProps {
@@ -73,23 +189,91 @@ export interface SheetProps extends OverlayRootProps, ModalContentProps {
   side?: "left" | "right";
 }
 
-export function Sheet({ trigger, open, defaultOpen, onOpenChange, title, description, children, footer, closeLabel = "Close sheet", className, side = "right", onOpenAutoFocus, onCloseAutoFocus }: SheetProps) {
+export function Sheet({
+  trigger,
+  open,
+  defaultOpen,
+  onOpenChange,
+  title,
+  description,
+  children,
+  footer,
+  closeLabel = "Close sheet",
+  className,
+  side = "right",
+}: SheetProps) {
   const titleId = useId();
   const descriptionId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const sideClassName = side === "left" ? "left-0 border-r sm:rounded-r-container" : "right-0 border-l sm:rounded-l-container";
-  return <DialogPrimitive.Root defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
-    {trigger ? <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger> : null}
-    <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className={overlayClassName} />
-      <DialogPrimitive.Content aria-describedby={description ? descriptionId : undefined} aria-labelledby={titleId} className={cn("fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto border-border bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay focus:outline-none sm:w-[min(32rem,calc(100%-2rem))]", sideClassName, className)} onCloseAutoFocus={onCloseAutoFocus} onOpenAutoFocus={(event) => focusHeading(event, headingRef, onOpenAutoFocus)}>
-        <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
-        <div className="mt-6 min-w-0 flex-1">{children}</div>
-        {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
-        <CloseButton label={closeLabel} />
-      </DialogPrimitive.Content>
-    </DialogPrimitive.Portal>
-  </DialogPrimitive.Root>;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
+  const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
+  const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    if (isOpen && !el.open) el.showModal();
+    else if (!isOpen && el.open) el.close();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
+    el.addEventListener("close", onClose);
+    return () => el.removeEventListener("close", onClose);
+  }, [isOpen, handleChange, onOpenChange]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    requestAnimationFrame(() => headingRef.current?.focus());
+  }, [isOpen]);
+
+  const sideClassName = side === "left" ? "left-0" : "right-0";
+
+  return (
+    <>
+      {trigger ? <TriggerWrapper onOpen={openFn} trigger={trigger} /> : null}
+      <Portal>
+        <dialog
+          ref={dialogRef}
+          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none bg-transparent p-0 open:flex"
+          onClick={(e) => { if (e.target === dialogRef.current) close(); }}
+        >
+          <div
+            aria-describedby={description ? descriptionId : undefined}
+            aria-labelledby={titleId}
+            aria-modal="true"
+            className={cn(
+              "fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto border-border bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay",
+              sideClassName,
+              className,
+            )}
+            role="dialog"
+          >
+            <ModalHeading description={description} descriptionId={descriptionId} headingRef={headingRef} title={title} titleId={titleId} />
+            <div className="mt-6 min-w-0 flex-1">{children}</div>
+            {footer ? <footer className="mt-6 flex flex-wrap justify-end gap-3">{footer}</footer> : null}
+            <CloseButton label={closeLabel} onClose={close} />
+          </div>
+        </dialog>
+      </Portal>
+      {isOpen ? (
+        <style jsx>{`
+          dialog::backdrop {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            dialog::backdrop {
+              backdrop-filter: none;
+            }
+          }
+        `}</style>
+      ) : null}
+    </>
+  );
 }
 
 export interface AlertDialogAction {
@@ -107,30 +291,118 @@ export interface AlertDialogProps extends OverlayRootProps {
   cancel: AlertDialogAction;
   action: AlertDialogAction;
   className?: string;
-  onCloseAutoFocus?: (event: Event) => void;
 }
 
-export function AlertDialog({ trigger, open, defaultOpen, onOpenChange, title, description, children, cancel, action, className, onCloseAutoFocus }: AlertDialogProps) {
+export function AlertDialog({
+  trigger,
+  open,
+  defaultOpen,
+  onOpenChange,
+  title,
+  description,
+  children,
+  cancel,
+  action,
+  className,
+}: AlertDialogProps) {
   enforceSentenceCase(title, "Alert dialog title");
   enforceActionLabel(cancel.label, "Alert dialog cancel label");
   enforceActionLabel(action.label, "Alert dialog action label");
   const titleId = useId();
   const descriptionId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  return <AlertDialogPrimitive.Root defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
-    {trigger ? <AlertDialogPrimitive.Trigger asChild>{trigger}</AlertDialogPrimitive.Trigger> : null}
-    <AlertDialogPrimitive.Portal>
-      <AlertDialogPrimitive.Overlay className={overlayClassName} />
-      <AlertDialogPrimitive.Content aria-describedby={description ? descriptionId : undefined} aria-labelledby={titleId} className={cn("fixed inset-0 z-50 flex h-[100dvh] w-full flex-col overflow-y-auto bg-surface p-6 shadow-overlay focus:outline-none sm:inset-auto sm:left-1/2 sm:top-1/2 sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100%-2rem)] sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-container sm:border sm:border-border", className)} onCloseAutoFocus={onCloseAutoFocus} onOpenAutoFocus={(event) => focusHeading(event, headingRef)}>
-        <header className="min-w-0"><AlertDialogPrimitive.Title id={titleId} ref={headingRef} tabIndex={-1} className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{title}</AlertDialogPrimitive.Title>{description ? <AlertDialogPrimitive.Description id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">{description}</AlertDialogPrimitive.Description> : null}</header>
-        {children ? <div className="mt-6 min-w-0 flex-1">{children}</div> : null}
-        <footer className="mt-6 flex flex-wrap justify-end gap-3">
-          <AlertDialogPrimitive.Cancel asChild><button className="min-h-11 min-w-11 rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle" disabled={cancel.disabled || cancel.loading} onClick={cancel.onSelect} type="button">{cancel.label}</button></AlertDialogPrimitive.Cancel>
-          <AlertDialogPrimitive.Action asChild><button aria-busy={action.loading || undefined} className="min-h-11 min-w-11 rounded-control border border-danger-border bg-danger-surface px-4 py-2 text-interface-sm font-semibold text-danger-foreground hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60" disabled={action.disabled || action.loading} onClick={action.onSelect} type="button">{action.label}</button></AlertDialogPrimitive.Action>
-        </footer>
-      </AlertDialogPrimitive.Content>
-    </AlertDialogPrimitive.Portal>
-  </AlertDialogPrimitive.Root>;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
+  const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
+  const openFn = useCallback(() => handleChange(true, onOpenChange), [handleChange, onOpenChange]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    if (isOpen && !el.open) el.showModal();
+    else if (!isOpen && el.open) el.close();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
+    const onClose = () => { if (isOpen) handleChange(false, onOpenChange); };
+    el.addEventListener("close", onClose);
+    return () => el.removeEventListener("close", onClose);
+  }, [isOpen, handleChange, onOpenChange]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    requestAnimationFrame(() => headingRef.current?.focus());
+  }, [isOpen]);
+
+  return (
+    <>
+      {trigger ? <TriggerWrapper onOpen={openFn} trigger={trigger} /> : null}
+      <Portal>
+        <dialog
+          ref={dialogRef}
+          className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex"
+          onClick={(e) => { if (e.target === dialogRef.current) close(); }}
+        >
+          <div
+            aria-describedby={description ? descriptionId : undefined}
+            aria-labelledby={titleId}
+            aria-modal="true"
+            className={cn(
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container border border-border bg-surface p-6 shadow-overlay",
+              className,
+            )}
+            role="alertdialog"
+          >
+            <header className="min-w-0">
+              <h2 id={titleId} ref={headingRef} tabIndex={-1} className="text-display-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                {title}
+              </h2>
+              {description ? (
+                <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
+                  {description}
+                </p>
+              ) : null}
+            </header>
+            {children ? <div className="mt-6 min-w-0 flex-1">{children}</div> : null}
+            <footer className="mt-6 flex flex-wrap justify-end gap-3">
+              <button
+                className="min-h-11 min-w-11 rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground transition-colors hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle"
+                disabled={cancel.disabled || cancel.loading}
+                onClick={() => { cancel.onSelect?.(); close(); }}
+                type="button"
+              >
+                {cancel.label}
+              </button>
+              <button
+                aria-busy={action.loading || undefined}
+                className="min-h-11 min-w-11 rounded-control border border-danger-border bg-danger-surface px-4 py-2 text-interface-sm font-semibold text-danger-foreground transition-[filter,background-color] hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={action.disabled || action.loading}
+                onClick={() => { action.onSelect?.(); close(); }}
+                type="button"
+              >
+                {action.label}
+              </button>
+            </footer>
+          </div>
+        </dialog>
+      </Portal>
+      {isOpen ? (
+        <style jsx>{`
+          dialog::backdrop {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            dialog::backdrop {
+              backdrop-filter: none;
+            }
+          }
+        `}</style>
+      ) : null}
+    </>
+  );
 }
 
 export interface DestructiveRecordSummary {
@@ -149,13 +421,49 @@ export interface ConfirmDestructiveActionProps extends OverlayRootProps {
   processing?: boolean;
   onCancel?: () => void;
   onConfirm: () => void;
-  onCloseAutoFocus?: (event: Event) => void;
 }
 
-export function ConfirmDestructiveAction({ trigger, title = "Delete transaction", record, consequence, cancelLabel = "Cancel", confirmLabel = "Delete transaction", processing = false, onCancel, onConfirm, open, defaultOpen, onOpenChange, onCloseAutoFocus }: ConfirmDestructiveActionProps) {
-  return <AlertDialog action={{ label: confirmLabel, loading: processing, onSelect: onConfirm }} cancel={{ label: cancelLabel, disabled: processing, onSelect: onCancel }} defaultOpen={defaultOpen} description={consequence} onCloseAutoFocus={onCloseAutoFocus} onOpenChange={onOpenChange} open={open} title={title} trigger={trigger}>
-    <dl className="grid gap-3 rounded-container border border-border bg-surface-subtle p-4 text-interface-sm"><div className="grid gap-1"><dt className="font-medium text-foreground-secondary">Description</dt><dd className="break-words text-foreground">{record.description}</dd></div><div className="grid gap-1"><dt className="font-medium text-foreground-secondary">Amount</dt><dd className="financial-value break-words text-foreground">{record.amount}</dd></div><div className="grid gap-1"><dt className="font-medium text-foreground-secondary">Date</dt><dd className="break-words text-foreground">{record.date}</dd></div></dl>
-  </AlertDialog>;
+export function ConfirmDestructiveAction({
+  trigger,
+  title = "Delete transaction",
+  record,
+  consequence,
+  cancelLabel = "Cancel",
+  confirmLabel = "Delete transaction",
+  processing = false,
+  onCancel,
+  onConfirm,
+  open,
+  defaultOpen,
+  onOpenChange,
+}: ConfirmDestructiveActionProps) {
+  return (
+    <AlertDialog
+      action={{ label: confirmLabel, loading: processing, onSelect: onConfirm }}
+      cancel={{ label: cancelLabel, disabled: processing, onSelect: onCancel }}
+      defaultOpen={defaultOpen}
+      description={consequence}
+      onOpenChange={onOpenChange}
+      open={open}
+      title={title}
+      trigger={trigger}
+    >
+      <dl className="grid gap-3 rounded-container border border-border bg-surface-subtle p-4 text-interface-sm">
+        <div className="grid gap-1">
+          <dt className="font-medium text-foreground-secondary">Description</dt>
+          <dd className="break-words text-foreground">{record.description}</dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="font-medium text-foreground-secondary">Amount</dt>
+          <dd className="financial-value break-words text-foreground">{record.amount}</dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="font-medium text-foreground-secondary">Date</dt>
+          <dd className="break-words text-foreground">{record.date}</dd>
+        </div>
+      </dl>
+    </AlertDialog>
+  );
 }
 
 export interface DropdownMenuItem {
@@ -175,19 +483,76 @@ export interface DropdownMenuProps extends OverlayRootProps {
   side?: "top" | "right" | "bottom" | "left";
 }
 
-export function DropdownMenu({ trigger, label, items, open, defaultOpen, onOpenChange, align = "end", side = "bottom" }: DropdownMenuProps) {
+export function DropdownMenu({
+  trigger,
+  label,
+  items,
+  open,
+  defaultOpen,
+  onOpenChange,
+}: DropdownMenuProps) {
   enforceSentenceCase(label, "Menu label");
   items.forEach((item) => enforceSentenceCase(item.label, "Menu item label"));
-  return <DropdownMenuPrimitive.Root defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
-    <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Content align={align} aria-label={label} aria-labelledby="" className="z-50 min-w-56 rounded-container border border-border bg-surface p-1 shadow-overlay focus:outline-none" side={side} sideOffset={8}>
-        {items.map((item) => <DropdownMenuPrimitive.Item className={cn("flex min-h-11 cursor-default items-center gap-2 rounded-control px-3 py-2 text-interface-sm font-medium text-foreground outline-none hover:bg-surface-subtle focus:bg-surface-subtle data-[highlighted]:bg-surface-subtle data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60", item.destructive && "text-danger-foreground")} disabled={item.disabled} key={item.id} onSelect={item.onSelect}>
-          {item.icon ? <span aria-hidden="true" className="shrink-0">{item.icon}</span> : null}<span>{item.label}</span>
-        </DropdownMenuPrimitive.Item>)}
-      </DropdownMenuPrimitive.Content>
-    </DropdownMenuPrimitive.Portal>
-  </DropdownMenuPrimitive.Root>;
+  const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
+  const toggle = useCallback(() => handleChange(!isOpen, onOpenChange), [handleChange, isOpen, onOpenChange]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current?.contains(e.target as Node)) return;
+      close();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [isOpen, close]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isOpen, close]);
+
+  return (
+    <div ref={containerRef} className="relative inline-flex">
+      <TriggerWrapper trigger={trigger} onOpen={toggle} />
+      {isOpen ? (
+        <div
+          ref={menuRef}
+          aria-label={label}
+          className="absolute right-0 top-full z-50 mt-2 min-w-56 origin-top-right rounded-container border border-border bg-surface p-1 shadow-overlay"
+          role="menu"
+        >
+          {items.map((item) => (
+            <div
+              className={cn(
+                "flex min-h-11 cursor-default items-center gap-2 rounded-control px-3 py-2 text-interface-sm font-medium text-foreground outline-none transition-colors hover:bg-surface-subtle",
+                item.destructive && "text-danger-foreground",
+                item.disabled && "cursor-not-allowed opacity-60",
+              )}
+              key={item.id}
+              onClick={() => { if (!item.disabled) { item.onSelect?.(); close(); } }}
+              onKeyDown={(e) => {
+                if (!item.disabled && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  item.onSelect?.();
+                  close();
+                }
+              }}
+              role="menuitem"
+              tabIndex={item.disabled ? -1 : 0}
+            >
+              {item.icon ? <span aria-hidden="true" className="shrink-0">{item.icon}</span> : null}
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export interface CompactNavigationItem {
@@ -206,7 +571,15 @@ export interface CompactNavigationProps extends OverlayRootProps {
   className?: string;
 }
 
-export function CompactNavigation({ label = "Menu", title = "Navigation menu", items, className, open, defaultOpen = false, onOpenChange }: CompactNavigationProps) {
+export function CompactNavigation({
+  label = "Menu",
+  title = "Navigation menu",
+  items,
+  className,
+  open,
+  defaultOpen = false,
+  onOpenChange,
+}: CompactNavigationProps) {
   enforceSentenceCase(label, "Compact navigation label");
   enforceSentenceCase(title, "Compact navigation title");
   items.forEach((item) => enforceSentenceCase(item.label, "Navigation item label"));
@@ -217,11 +590,45 @@ export function CompactNavigation({ label = "Menu", title = "Navigation menu", i
     if (!isControlled) setUncontrolledOpen(nextOpen);
     onOpenChange?.(nextOpen);
   };
-  return <Sheet closeLabel="Close menu" onOpenChange={setOpen} open={isOpen} title={title} className={className} trigger={<button aria-label={label} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle" type="button">{label}</button>}>
-    <nav aria-label={title} className="grid gap-2">
-      {items.map((item) => <a aria-current={item.current ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-control border border-transparent px-3 py-2 text-interface-sm font-semibold text-foreground hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle", item.current && "border-primary bg-surface-subtle text-primary")} href={item.href} key={item.id} onClick={() => { item.onSelect?.(); setOpen(false); }}>
-        {item.icon ? <span aria-hidden="true" className="shrink-0">{item.icon}</span> : null}<span>{item.label}</span>{item.current ? <span className="ml-auto rounded-circular border border-primary px-2 py-0.5 text-interface-xs" aria-label="Current page">Current</span> : null}
-      </a>)}
-    </nav>
-  </Sheet>;
+  return (
+    <Sheet
+      closeLabel="Close menu"
+      onOpenChange={setOpen}
+      open={isOpen}
+      title={title}
+      className={className}
+      trigger={
+        <button
+          aria-label={label}
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-control border border-border-strong bg-surface px-4 py-2 text-interface-sm font-semibold text-foreground transition-colors hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle"
+          type="button"
+        >
+          {label}
+        </button>
+      }
+    >
+      <nav aria-label={title} className="grid gap-2">
+        {items.map((item) => (
+          <a
+            aria-current={item.current ? "page" : undefined}
+            className={cn(
+              "flex min-h-11 items-center gap-3 rounded-control border border-transparent px-3 py-2 text-interface-sm font-semibold text-foreground transition-colors hover:bg-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle",
+              item.current && "border-primary bg-surface-subtle text-primary",
+            )}
+            href={item.href}
+            key={item.id}
+            onClick={() => { item.onSelect?.(); setOpen(false); }}
+          >
+            {item.icon ? <span aria-hidden="true" className="shrink-0">{item.icon}</span> : null}
+            <span>{item.label}</span>
+            {item.current ? (
+              <span className="ml-auto rounded-circular border border-primary px-2 py-0.5 text-interface-xs" aria-label="Current page">
+                Current
+              </span>
+            ) : null}
+          </a>
+        ))}
+      </nav>
+    </Sheet>
+  );
 }

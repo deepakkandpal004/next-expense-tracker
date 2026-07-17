@@ -10,21 +10,32 @@ generator client {
 
 datasource db {
   provider = "postgresql" // or mysql, sqlite, etc.
-    url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  password     String
-  name         String?
-  imageUrl     String?
-  refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  Records      Record[]
-  Budgets      Budget[]
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String?
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Records   Record[]
+  Budgets   Budget[]
+  Sessions  Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model Budget {
@@ -43,15 +54,16 @@ model Budget {
 }
 
 model Record {
-  id          String   @id @default(uuid())
-  text        String
-  amount      Float
-  type        String   @default("expense")
-  category    String   @default("other")
-  date        DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  text      String
+  amount    Float
+  type      String   @default("expense")
+  category  String   @default("other")
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
   @@index([userId])
 }
 

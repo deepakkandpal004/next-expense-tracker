@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { ArrowUpRight, Plus, RefreshCw, Wallet } from "lucide-react";
 import { useState } from "react";
 import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
@@ -10,6 +11,7 @@ import { AiHighlightList } from "@/components/patterns/ai-highlight-list";
 import { ChartPanel } from "@/components/patterns/chart-panel";
 import {
   Alert,
+  AnimatedNumber,
   Badge,
   Button,
   Card,
@@ -24,6 +26,7 @@ import {
 } from "@/components/ui";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
+import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import type { AiDataUseDisclosure, BudgetMetric, MetricValue, ReportingPeriod } from "@/lib/domain/types";
 import { formatMetricValue, formatPercentage } from "@/lib/formatters/locale";
 
@@ -34,12 +37,32 @@ export interface DashboardViewProps {
 }
 
 function KpiCard({ label, metric, currency }: { label: string; metric: MetricValue; currency: string }) {
+  const formatted = formatMetricValue(metric, currency);
   return (
-    <Card as="article" elevation="raised" className="min-w-0">
-      <p className="text-interface-sm font-medium text-foreground-secondary">{label}</p>
-      <p className="financial-value mt-2 text-display-md font-bold text-foreground">{formatMetricValue(metric, currency)}</p>
-      {metric.status === "unavailable" ? <p className="mt-1 text-interface-xs text-foreground-secondary">{metric.reason}</p> : null}
-    </Card>
+    <motion.div variants={listItemVariants} className="min-w-0">
+      <Card as="article" elevation="raised" className="min-w-0 transition-shadow duration-200 hover:shadow-overlay">
+        <p className="text-interface-sm font-medium text-foreground-secondary">{label}</p>
+        <p className="financial-value mt-2 text-display-md font-bold text-foreground">
+          {metric.status === "available" ? (
+            <AnimatedNumber
+              value={metric.minorValue / 100}
+              format={(current) =>
+                formatMetricValue(
+                  { status: "available", minorValue: Math.round(current * 100) },
+                  currency,
+                )
+              }
+              fallback={formatted}
+            />
+          ) : (
+            formatted
+          )}
+        </p>
+        {metric.status === "unavailable" ? (
+          <p className="mt-1 text-interface-xs text-foreground-secondary">{metric.reason}</p>
+        ) : null}
+      </Card>
+    </motion.div>
   );
 }
 
@@ -222,12 +245,21 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         />
       ) : null}
 
-      <section aria-busy={refreshing || undefined} aria-label="Key metrics" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <motion.section
+        animate="visible"
+        aria-busy={refreshing || undefined}
+        aria-label="Key metrics"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        initial="hidden"
+        variants={listContainerVariants}
+      >
         <KpiCard currency={currentDashboard.currency} label="Balance" metric={currentDashboard.kpis.balance} />
         <KpiCard currency={currentDashboard.currency} label="Income" metric={currentDashboard.kpis.income} />
         <KpiCard currency={currentDashboard.currency} label="Spending" metric={currentDashboard.kpis.spending} />
-        <BudgetCard budget={currentDashboard.kpis.budget} onRefresh={() => refreshDashboard("Budget saved. Dashboard refreshed.")} />
-      </section>
+        <motion.div variants={listItemVariants} className="min-w-0">
+          <BudgetCard budget={currentDashboard.kpis.budget} onRefresh={() => refreshDashboard("Budget saved. Dashboard refreshed.")} />
+        </motion.div>
+      </motion.section>
 
       <div aria-busy={refreshing || undefined} aria-label="Dashboard reporting data" className="grid gap-8 lg:grid-cols-12">
         <div className="grid gap-8 lg:col-span-8">
