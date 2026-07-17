@@ -1,34 +1,20 @@
 'use server';
-import { db } from '@/lib/db';
+
 import { getAuthUser } from '@/lib/auth';
-import { Record } from '@/types/Record';
+import { db } from '@/lib/db';
+import type { ActionResult } from '@/lib/domain/types';
+import { createActionBoundary, parsed } from '@/lib/server/action-boundary';
+import type { Record } from '@/types/Record';
 
-async function getAllRecords(): Promise<{
-  records?: Record[];
-  error?: string;
-}> {
-  const user = await getAuthUser();
+type RecordsResult = ActionResult<{ records: Record[] }>;
+type LegacyRecordsResult = RecordsResult & { records?: Record[]; error?: string };
+const run = createActionBoundary({ authenticate: getAuthUser, revalidate: () => undefined, reportError: (scope, error) => console.error(`${scope} query failed`, error) });
 
-  if (!user) {
-    return { error: 'User not found' };
-  }
-
-  const userId = user.id;
-
-  try {
-    const records = await db.record.findMany({
-      where: { userId },
-      orderBy: {
-        date: 'desc',
-      },
-      // No take limit — fetches all records
-    });
-
-    return { records: records as unknown as Record[] };
-  } catch (error) {
-    console.error('Error fetching all records:', error);
-    return { error: 'Database error' };
-  }
+export async function getAllRecordsResult(): Promise<RecordsResult> {
+  return run({ scope: 'record', input: undefined, parse: () => parsed(undefined), execute: async (actor) => ({ records: (await db.record.findMany({ where: { userId: actor.userId }, orderBy: { date: 'desc' } })) as unknown as Record[] }), message: 'Records loaded.' });
 }
 
-export default getAllRecords;
+export default async function getAllRecords(): Promise<LegacyRecordsResult> {
+  const result = await getAllRecordsResult();
+  return result.status === 'success' ? { ...result, records: result.data.records } : { ...result, error: result.message };
+}

@@ -1,42 +1,25 @@
 'use server';
-import { db } from '@/lib/db';
+
 import { getAuthUser } from '@/lib/auth';
+import { db } from '@/lib/db';
+import type { ActionResult } from '@/lib/domain/types';
+import { createActionBoundary, parsed } from '@/lib/server/action-boundary';
 
-async function getBestWorstExpense(): Promise<{
-  bestExpense?: number;
-  worstExpense?: number;
-  error?: string;
-}> {
-  const user = await getAuthUser();
+export interface ExpenseRange { bestExpense: number; worstExpense: number }
+type RangeResult = ActionResult<ExpenseRange>;
+type LegacyRangeResult = RangeResult & Partial<ExpenseRange> & { error?: string };
+const run = createActionBoundary({ authenticate: getAuthUser, revalidate: () => undefined, reportError: (scope, error) => console.error(`${scope} query failed`, error) });
 
-  if (!user) {
-    return { error: 'User not found' };
-  }
-
-  const userId = user.id;
-
-  try {
-    // Fetch all records for the authenticated user
-    const records = await db.record.findMany({
-      where: { userId },
-      select: { amount: true }, // Fetch only the `amount` field for efficiency
-    });
-
-    if (!records || records.length === 0) {
-      return { bestExpense: 0, worstExpense: 0 }; // Return 0 if no records exist
-    }
-
+export async function getDashboardExpenseRange(): Promise<RangeResult> {
+  return run({ scope: 'dashboard', input: undefined, parse: () => parsed(undefined), execute: async (actor) => {
+    const records = await db.record.findMany({ where: { userId: actor.userId }, select: { amount: true } });
+    if (!records.length) return { bestExpense: 0, worstExpense: 0 };
     const amounts = records.map((record) => record.amount);
-
-    // Calculate best and worst expense amounts
-    const bestExpense = Math.max(...amounts); // Highest amount
-    const worstExpense = Math.min(...amounts); // Lowest amount
-
-    return { bestExpense, worstExpense };
-  } catch (error) {
-    console.error('Error fetching expense amounts:', error); // Log the error
-    return { error: 'Database error' };
-  }
+    return { bestExpense: Math.max(...amounts), worstExpense: Math.min(...amounts) };
+  }, message: 'Dashboard range loaded.' });
 }
 
-export default getBestWorstExpense;
+export default async function getBestWorstExpense(): Promise<LegacyRangeResult> {
+  const result = await getDashboardExpenseRange();
+  return result.status === 'success' ? { ...result, ...result.data } : { ...result, error: result.message };
+}

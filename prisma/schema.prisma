@@ -24,17 +24,47 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Records      Record[]
+  Budgets      Budget[]
+}
+
+model Budget {
+  id            String   @id @default(uuid())
+  userId        String
+  amount        Float
+  cadence       String   @default("monthly")
+  effectiveFrom DateTime
+  currency      String   @default("INR")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cadence, effectiveFrom])
+  @@index([userId, effectiveFrom])
 }
 
 model Record {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   text        String
   amount      Float
-  type        String  @default("expense")
-  category    String @default("other")
+  type        String   @default("expense")
+  category    String   @default("other")
   date        DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
+  @@index([userId])
+}
+
+// Stores completed mutation tokens so a retry can return the original result
+// instead of creating or deleting another user-owned record.
+model MutationRequest {
+  id        String   @id @default(uuid())
+  userId    String
+  requestId String
+  operation String
+  recordId  String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, requestId, operation])
   @@index([userId])
 }

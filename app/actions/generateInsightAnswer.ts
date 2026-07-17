@@ -1,47 +1,102 @@
 'use server';
 
+import { generateAIAnswer } from '@/lib/ai';
 import { getAuthUser } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { generateAIAnswer, ExpenseRecord } from '@/lib/ai';
+import {
+  AI_DISCLOSURE_VERSION,
+  AI_INFORMATIONAL_DISCLAIMER,
+  buildPeriodScopedAiGenerationContext,
+  getAiAnswerDisclosure,
+} from '@/lib/domain/ai';
+import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
+import type {
+  ActionResult,
+  AiConversationAnswer,
+  AiDataUseDisclosure,
+  ReportingPeriod,
+} from '@/lib/domain/types';
+import { getDashboardData } from '@/lib/data/dashboard';
+import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
 
-export async function generateInsightAnswer(question: string): Promise<string> {
-  try {
-    const user = await getAuthUser();
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
+const run = createActionBoundary({
+  authenticate: getAuthUser,
+  revalidate: () => undefined,
+  reportError: (scope, error) => console.error(`${scope} action failed`, error),
+});
 
-    // Get user's recent expenses (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+export interface AnswerRequest {
+  question: string;
+  period?: ReportingPeriod;
+  disclosureVersion?: string;
+  previousAnswer?: AiConversationAnswer;
+}
 
-    const expenses = await db.record.findMany({
-      where: {
-        userId: user.id,
-        createdAt: {
-          gte: thirtyDaysAgo,
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 50, // Limit to recent 50 expenses for analysis
-    });
+export type AnswerData =
+  | { state: 'disclosure-required'; disclosure: AiDataUseDisclosure; question: string }
+  | { state: 'ready'; answer: AiConversationAnswer };
 
-    // Convert to format expected by AI
-    const expenseData: ExpenseRecord[] = expenses.map((expense) => ({
-      id: expense.id,
-      amount: expense.amount,
-      category: expense.category || 'Other',
-      description: expense.text,
-      date: expense.createdAt.toISOString(),
-    }));
+type AnswerResult = ActionResult<AnswerData, 'question' | 'period' | 'disclosure'>;
 
-    // Generate AI answer
-    const answer = await generateAIAnswer(question, expenseData);
-    return answer;
-  } catch (error) {
-    console.error('Error generating insight answer:', error);
-    return "I'm unable to provide a detailed answer at the moment. Please try refreshing the insights or check your connection.";
+function disclosureRequired(question: string): AnswerData {
+  return { state: 'disclosure-required', disclosure: getAiAnswerDisclosure(), question };
+}
+
+function parseQuestion(
+  input: AnswerRequest,
+): ParseResult<AnswerRequest & { period: ReportingPeriod }, 'question' | 'period' | 'disclosure'> {
+  const question = input.question?.trim();
+  if (!question) {
+    return invalid({ question: ['Enter a question before requesting an answer.'] }, 'Enter a question before requesting an answer.');
   }
+  const normalized = normalizeReportingPeriod(input.period ?? { kind: 'current-month' });
+  if (!normalized.valid) {
+    return invalid({ period: ['Choose a valid reporting period before requesting an answer.'] }, 'Choose a valid reporting period before requesting an answer.');
+  }
+  if (input.disclosureVersion !== AI_DISCLOSURE_VERSION) {
+    return invalid({ disclosure: ['Review the AI data-use disclosure before requesting an answer.'] }, 'Review the AI data-use disclosure before requesting an answer.');
+  }
+  return parsed({ ...input, question, period: normalized.input });
+}
+
+export async function generateInsightAnswerResult(input: AnswerRequest): Promise<AnswerResult> {
+  return run({
+    scope: 'ai',
+    input,
+    parse: parseQuestion,
+    execute: async (actor, request): Promise<AnswerData> => {
+      const normalized = normalizeReportingPeriod(request.period);
+      if (!normalized.valid) throw new Error('Validated reporting period became invalid.');
+      const dashboard = await getDashboardData(actor.userId, normalized.period);
+      const context = buildPeriodScopedAiGenerationContext(dashboard.aiFactInputs);
+      const answer = context
+        ? await generateAIAnswer(request.question, context.providerPayload)
+        : 'There are no available recorded transactions in the selected reporting period to analyze.';
+      return {
+        state: 'ready',
+        answer: {
+          source: 'ai-generated',
+          question: request.question,
+          answer,
+          period: normalized.period,
+          generatedAt: new Date().toISOString(),
+          facts: context?.facts ?? [],
+          disclaimer: AI_INFORMATIONAL_DISCLAIMER,
+          disclosure: getAiAnswerDisclosure(),
+          stale: false,
+        },
+      };
+    },
+    message: 'AI answer generated.',
+    preserve: (request) => request.previousAnswer
+      ? { state: 'ready', answer: { ...request.previousAnswer, stale: true } }
+      : disclosureRequired(request.question),
+  });
+}
+
+/** Compatibility adapter for the legacy dashboard island; it never bypasses disclosure. */
+export async function generateInsightAnswer(question: string): Promise<string> {
+  const result = await generateInsightAnswerResult({ question });
+  return result.status === 'success' && result.data.state === 'ready'
+    ? result.data.answer.answer
+    : "I'm unable to provide a detailed answer at the moment. Please retry your question.";
 }

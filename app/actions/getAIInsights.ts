@@ -1,83 +1,142 @@
 'use server';
 
+import { generateExpenseInsights, type AIInsight } from '@/lib/ai';
 import { getAuthUser } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { generateExpenseInsights, AIInsight, ExpenseRecord } from '@/lib/ai';
+import {
+  AI_INFORMATIONAL_DISCLAIMER,
+  AI_DISCLOSURE_VERSION,
+  buildPeriodScopedAiGenerationContext,
+  getAiInsightsDisclosure,
+  markAiInsightSetStale,
+} from '@/lib/domain/ai';
+import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
+import type {
+  ActionResult,
+  AiDataUseDisclosure,
+  AiInsightSet,
+  AiInterpretation,
+  AiRecommendation,
+  ReportingPeriod,
+} from '@/lib/domain/types';
+import { getDashboardData } from '@/lib/data/dashboard';
+import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
 
-export async function getAIInsights(): Promise<AIInsight[]> {
-  try {
-    const user = await getAuthUser();
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
+const run = createActionBoundary({
+  authenticate: getAuthUser,
+  revalidate: () => undefined,
+  reportError: (scope, error) => console.error(`${scope} action failed`, error),
+});
 
-    // Get user's recent expenses (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+export interface AiInsightsRequest {
+  period?: ReportingPeriod;
+  disclosureVersion?: string;
+  previousInsightSet?: AiInsightSet;
+}
 
-    const expenses = await db.record.findMany({
-      where: {
-        userId: user.id,
-        createdAt: {
-          gte: thirtyDaysAgo,
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 50, // Limit to recent 50 expenses for analysis
-    });
+export type AiInsightsData =
+  | { state: 'disclosure-required'; disclosure: AiDataUseDisclosure }
+  | { state: 'ready'; insightSet: AiInsightSet };
 
-    if (expenses.length === 0) {
-      // Return default insights for new users
-      return [
-        {
-          id: 'welcome-1',
-          type: 'info',
-          title: 'Welcome to Expense AI!',
-          message:
-            'Start adding your expenses to get personalized AI insights about your spending patterns.',
-          action: 'Add your first expense',
-          confidence: 1.0,
-        },
-        {
-          id: 'welcome-2',
-          type: 'tip',
-          title: 'Track Regularly',
-          message:
-            'For best results, try to log expenses daily. This helps our AI provide more accurate insights.',
-          action: 'Set daily reminders',
-          confidence: 1.0,
-        },
-      ];
-    }
+type InsightsResult = ActionResult<AiInsightsData, 'period' | 'disclosure'>;
 
-    // Convert to format expected by AI
-    const expenseData: ExpenseRecord[] = expenses.map((expense) => ({
-      id: expense.id,
-      amount: expense.amount,
-      category: expense.category || 'Other',
-      description: expense.text,
-      date: expense.createdAt.toISOString(),
-    }));
+function disclosureRequired(): AiInsightsData {
+  return { state: 'disclosure-required', disclosure: getAiInsightsDisclosure() };
+}
 
-    // Generate AI insights
-    const insights = await generateExpenseInsights(expenseData);
-    return insights;
-  } catch (error) {
-    console.error('Error getting AI insights:', error);
-
-    // Return fallback insights
-    return [
-      {
-        id: 'error-1',
-        type: 'warning',
-        title: 'Insights Temporarily Unavailable',
-        message:
-          "We're having trouble analyzing your expenses right now. Please try again in a few minutes.",
-        action: 'Retry analysis',
-        confidence: 0.5,
-      },
-    ];
+function parseRequest(
+  input: AiInsightsRequest,
+): ParseResult<Required<Pick<AiInsightsRequest, 'period'>> & AiInsightsRequest, 'period' | 'disclosure'> {
+  const normalized = normalizeReportingPeriod(input.period ?? { kind: 'current-month' });
+  if (!normalized.valid) {
+    return invalid({ period: ['Choose a valid reporting period before requesting AI insights.'] }, 'Choose a valid reporting period before requesting AI insights.');
   }
+  if (input.disclosureVersion !== AI_DISCLOSURE_VERSION) {
+    return invalid({ disclosure: ['Review the AI data-use disclosure before requesting insights.'] }, 'Review the AI data-use disclosure before requesting insights.');
+  }
+  return parsed({ ...input, period: normalized.input });
+}
+
+function toInsightSet(
+  period: AiInsightSet['period'],
+  facts: AiInsightSet['facts'],
+  generated: readonly AIInsight[],
+): AiInsightSet {
+  const interpretations: AiInterpretation[] = generated.map((insight) => ({
+    id: insight.id,
+    title: insight.title,
+    kind: insight.type,
+    text: insight.message,
+    source: 'ai-generated',
+    confidence: insight.confidence,
+    confidenceExplanation: insight.confidenceExplanation,
+  }));
+  const recommendations: AiRecommendation[] = generated.flatMap((insight) => insight.action ? [{
+    id: `${insight.id}-recommendation`,
+    text: insight.action,
+    source: 'ai-generated' as const,
+    relatedInterpretationId: insight.id,
+    confidence: insight.confidence,
+    confidenceExplanation: insight.confidenceExplanation,
+  }] : []);
+
+  return {
+    source: 'ai-generated',
+    period,
+    generatedAt: new Date().toISOString(),
+    facts,
+    interpretations,
+    recommendations,
+    disclaimer: AI_INFORMATIONAL_DISCLAIMER,
+    disclosure: getAiInsightsDisclosure(),
+    stale: false,
+  };
+}
+
+export async function getAIInsightsResult(input: AiInsightsRequest = {}): Promise<InsightsResult> {
+  return run({
+    scope: 'ai',
+    input,
+    parse: parseRequest,
+    execute: async (actor, request): Promise<AiInsightsData> => {
+      const normalized = normalizeReportingPeriod(request.period);
+      if (!normalized.valid) throw new Error('Validated reporting period became invalid.');
+      const dashboard = await getDashboardData(actor.userId, normalized.period);
+      const context = buildPeriodScopedAiGenerationContext(dashboard.aiFactInputs);
+      const generated = context ? await generateExpenseInsights(context.providerPayload) : [];
+      return {
+        state: 'ready',
+        insightSet: toInsightSet(
+          normalized.period,
+          context?.facts ?? [],
+          generated,
+        ),
+      };
+    },
+    message: 'AI insights generated.',
+    preserve: (request) => request.previousInsightSet
+      ? { state: 'ready', insightSet: markAiInsightSetStale(request.previousInsightSet) }
+      : disclosureRequired(),
+  });
+}
+
+/** Compatibility adapter for the legacy dashboard island; it never bypasses disclosure. */
+export async function getAIInsights(): Promise<AIInsight[]> {
+  const result = await getAIInsightsResult();
+  if (result.status !== 'success' || result.data.state !== 'ready') return [];
+  const recommendations = new Map(
+    result.data.insightSet.recommendations.map((recommendation) => [
+      recommendation.relatedInterpretationId,
+      recommendation,
+    ]),
+  );
+  return result.data.insightSet.interpretations.map((interpretation) => ({
+    id: interpretation.id,
+    type: interpretation.kind,
+    title: interpretation.title,
+    message: interpretation.text,
+    action: recommendations.get(interpretation.id)?.text,
+    confidence: interpretation.confidence,
+    confidenceExplanation: interpretation.confidenceExplanation,
+    source: 'ai-generated',
+  }));
 }

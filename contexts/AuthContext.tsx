@@ -19,9 +19,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export function AuthProvider({ children, initialUser }: { children: ReactNode; initialUser?: User | null }) {
+  // If an initialUser was provided from the server, use it and avoid an immediate client-side fetch.
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
+  const [loading, setLoading] = useState<boolean>(initialUser === undefined);
   const router = useRouter();
 
   const refreshUser = async () => {
@@ -58,7 +59,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    refreshUser();
+    // Only fetch client-side when an initial server-provided user was not supplied.
+    if (initialUser !== undefined) {
+      // ensure loading reflects the provided initial value
+      setLoading(false);
+      return;
+    }
+    let mounted = true;
+    // perform initial client-side session check
+    void (async () => {
+      if (!mounted) return;
+      await refreshUser();
+    })();
+    return () => { mounted = false; };
+    // initialUser intentionally omitted from deps so effect runs only on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -1,52 +1,26 @@
 'use server';
-import { db } from '@/lib/db';
+
 import { getAuthUser } from '@/lib/auth';
+import { db } from '@/lib/db';
+import type { ActionResult } from '@/lib/domain/types';
+import { createActionBoundary, parsed } from '@/lib/server/action-boundary';
 
-async function getUserRecord(): Promise<{
-  totalExpenses?: number;
-  totalIncome?: number;
-  netBalance?: number;
-  daysWithRecords?: number;
-  error?: string;
-}> {
-  const user = await getAuthUser();
+export interface DashboardRecordSummary { totalExpenses: number; totalIncome: number; netBalance: number; daysWithRecords: number }
+type SummaryResult = ActionResult<DashboardRecordSummary>;
+type LegacySummaryResult = SummaryResult & Partial<DashboardRecordSummary> & { error?: string };
+const run = createActionBoundary({ authenticate: getAuthUser, revalidate: () => undefined, reportError: (scope, error) => console.error(`${scope} query failed`, error) });
 
-  if (!user) {
-    return { error: 'User not found' };
-  }
-
-  const userId = user.id;
-
-  try {
-    const records = await db.record.findMany({
-      where: { userId },
-    });
-
-    const totalExpenses = records
-      .filter((r) => r.type !== 'income')
-      .reduce((sum, r) => sum + r.amount, 0);
-
-    const totalIncome = records
-      .filter((r) => r.type === 'income')
-      .reduce((sum, r) => sum + r.amount, 0);
-
-    const netBalance = totalIncome - totalExpenses;
-
-    // Count unique days with expense records (for average calculation)
-    const expenseRecords = records.filter((r) => r.type !== 'income' && r.amount > 0);
-    const uniqueDays = new Set(
-      expenseRecords.map((r) => {
-        const d = new Date(r.date);
-        return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-      })
-    );
-    const daysWithRecords = uniqueDays.size;
-
-    return { totalExpenses, totalIncome, netBalance, daysWithRecords };
-  } catch (error) {
-    console.error('Error fetching user record:', error);
-    return { error: 'Database error' };
-  }
+export async function getDashboardRecordSummary(): Promise<SummaryResult> {
+  return run({ scope: 'dashboard', input: undefined, parse: () => parsed(undefined), execute: async (actor) => {
+    const records = await db.record.findMany({ where: { userId: actor.userId } });
+    const totalExpenses = records.filter((record) => record.type !== 'income').reduce((sum, record) => sum + record.amount, 0);
+    const totalIncome = records.filter((record) => record.type === 'income').reduce((sum, record) => sum + record.amount, 0);
+    const daysWithRecords = new Set(records.filter((record) => record.type !== 'income' && record.amount > 0).map((record) => record.date.toISOString().slice(0, 10))).size;
+    return { totalExpenses, totalIncome, netBalance: totalIncome - totalExpenses, daysWithRecords };
+  }, message: 'Dashboard records loaded.' });
 }
 
-export default getUserRecord;
+export default async function getUserRecord(): Promise<LegacySummaryResult> {
+  const result = await getDashboardRecordSummary();
+  return result.status === 'success' ? { ...result, ...result.data } : { ...result, error: result.message };
+}

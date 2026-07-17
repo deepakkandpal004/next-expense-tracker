@@ -37,7 +37,7 @@ export async function verifyJWT(token: string): Promise<{ userId: string; email:
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
     return payload as { userId: string; email: string };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

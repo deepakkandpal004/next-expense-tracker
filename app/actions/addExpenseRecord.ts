@@ -1,93 +1,36 @@
 'use server';
+
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { type TransactionCommand, type TransactionCommandField, type TransactionCommandInput, validateTransactionCommand } from '@/lib/domain/transaction-command';
+import type { ActionResult, FieldErrors } from '@/lib/domain/types';
+import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
+import { createRecordOnce } from '@/lib/server/transaction-mutations';
 import { revalidatePath } from 'next/cache';
 
-interface RecordData {
-  text: string;
-  amount: number;
-  type: string;
-  category: string;
-  date: string;
+type TransactionActionField = TransactionCommandField | 'requestId';
+interface RecordData { id: string; text: string; amount: number; type: 'income' | 'expense'; category: string; date: string }
+interface TransactionActionData { transaction?: RecordData; draft: TransactionCommandInput; replayed?: boolean }
+export interface CreateTransactionRequest { requestId: string; command: TransactionCommandInput }
+export type CreateTransactionResult = ActionResult<TransactionActionData, TransactionActionField>;
+export type LegacyAddExpenseRecordResult = CreateTransactionResult & { error?: string };
+
+const run = createActionBoundary({ authenticate: getAuthUser, revalidate: revalidatePath, reportError: (scope, error) => console.error(`${scope} action failed`, error) });
+const requestIdError: FieldErrors<TransactionActionField> = { requestId: ['Retry this action with its original request token.'] };
+function parseRequest(input: CreateTransactionRequest): ParseResult<{ requestId: string; command: TransactionCommand }, TransactionActionField> {
+  if (typeof input.requestId !== 'string' || input.requestId.trim().length < 1 || input.requestId.length > 128) return invalid(requestIdError, 'The transaction request could not be identified.');
+  const result = validateTransactionCommand(input.command);
+  if (!result.success) return invalid(result.fieldErrors, 'Correct the highlighted transaction fields.');
+  return parsed({ requestId: input.requestId, command: result.data });
+}
+const toRecordData = (record: Awaited<ReturnType<typeof createRecordOnce>>['value']): RecordData => ({ id: record.id, text: record.text, amount: record.amount, type: record.type === 'income' ? 'income' : 'expense', category: record.category, date: record.date.toISOString() });
+
+export async function createTransaction(input: CreateTransactionRequest): Promise<CreateTransactionResult> {
+  return run({ scope: 'transaction', input, parse: parseRequest, execute: async (actor, request): Promise<TransactionActionData> => { const mutation = await createRecordOnce(db, actor.userId, request.requestId, request.command); return { transaction: toRecordData(mutation.value), draft: input.command, replayed: mutation.replayed }; }, message: (data) => data.replayed ? 'Transaction already added.' : 'Transaction added.', revalidatePaths: ['/', '/dashboard', '/records', '/insights'], preserve: (request): TransactionActionData => ({ draft: request.command }) });
 }
 
-interface RecordResult {
-  data?: RecordData;
-  error?: string;
+/** Compatibility adapter for the existing form; new workflows should call createTransaction with a stable requestId. */
+export default async function addExpenseRecord(formData: FormData): Promise<LegacyAddExpenseRecordResult> {
+  const result = await createTransaction({ requestId: String(formData.get('requestId') ?? crypto.randomUUID()), command: { type: formData.get('type') ?? 'expense', description: formData.get('text'), amount: formData.get('amount'), category: formData.get('category'), date: formData.get('date'), categorySource: formData.get('categorySource') ?? undefined, categoryConfirmed: formData.get('categoryConfirmed') ?? undefined } });
+  return result.status === 'success' ? result : { ...result, error: result.message };
 }
-
-async function addExpenseRecord(formData: FormData): Promise<RecordResult> {
-  const textValue = formData.get('text');
-  const amountValue = formData.get('amount');
-  const categoryValue = formData.get('category');
-  const dateValue = formData.get('date');
-  const typeValue = formData.get('type') ?? 'expense';
-
-  if (!textValue || textValue === '' || !amountValue || !dateValue || dateValue === '') {
-    return { error: 'Text, amount, or date is missing' };
-  }
-
-  const type = typeValue.toString();
-  const text: string = textValue.toString();
-  const amount: number = parseFloat(amountValue.toString());
-
-  // For income records, category is not required
-  const category: string =
-    type === 'income' ? 'Income' : (categoryValue?.toString() || 'Other');
-
-  if (type === 'expense' && (!categoryValue || categoryValue === '')) {
-    return { error: 'Category is required for expense records' };
-  }
-
-  let date: string;
-  try {
-    const inputDate = dateValue.toString();
-    const [year, month, day] = inputDate.split('-');
-    const dateObj = new Date(
-      Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), 12, 0, 0)
-    );
-    date = dateObj.toISOString();
-  } catch (error) {
-    console.error('Invalid date format:', error);
-    return { error: 'Invalid date format' };
-  }
-
-  const user = await getAuthUser();
-  if (!user) {
-    return { error: 'User not found' };
-  }
-
-  const userId = user.id;
-
-  try {
-    const createdRecord = await db.record.create({
-      data: {
-        text,
-        amount,
-        type,
-        category,
-        date,
-        userId,
-      },
-    });
-
-    const recordData: RecordData = {
-      text: createdRecord.text,
-      amount: createdRecord.amount,
-      type: createdRecord.type,
-      category: createdRecord.category,
-      date: createdRecord.date?.toISOString() || date,
-    };
-
-    revalidatePath('/');
-
-    return { data: recordData };
-  } catch (error) {
-    console.error('Error adding record:', error);
-    return {
-      error: 'An unexpected error occurred while adding the record.',
-    };
-  }
-}
-
-export default addExpenseRecord;

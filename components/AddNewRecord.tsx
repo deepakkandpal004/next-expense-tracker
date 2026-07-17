@@ -1,287 +1,349 @@
-'use client';
-import { useRef, useState } from 'react';
-import addExpenseRecord from '@/app/actions/addExpenseRecord';
-import { suggestCategory } from '@/app/actions/suggestCategory';
+"use client";
 
-const CATEGORIES = [
-  { value: 'Food', label: '🍔 Food & Dining' },
-  { value: 'Transportation', label: '🚗 Transportation' },
-  { value: 'Shopping', label: '🛒 Shopping' },
-  { value: 'Entertainment', label: '🎬 Entertainment' },
-  { value: 'Bills', label: '💡 Bills & Utilities' },
-  { value: 'Healthcare', label: '🏥 Healthcare' },
-  { value: 'Other', label: '📦 Other' },
-];
+import { useRef, useState } from "react";
+import { suggestCategoryResult } from "@/app/actions/suggestCategory";
+import { Button, Alert, Dialog, Field, Select, StatusRegion } from "@/components/ui";
+import { AI_DISCLOSURE_VERSION } from "@/lib/domain/ai";
+import { CATEGORY_REGISTRY, EXPENSE_CATEGORY_IDS, type ExpenseCategoryId } from "@/lib/domain/categories";
+import {
+  type ExpenseCategorySource,
+  type TransactionCommand,
+  type TransactionCommandField,
+  type TransactionCommandFieldErrors,
+  type TransactionCommandInput,
+  validateTransactionCommand,
+} from "@/lib/domain/transaction-command";
+import type { ActionResult, TransactionType } from "@/lib/domain/types";
 
-const AddRecord = () => {
-  const formRef = useRef<HTMLFormElement>(null);
-  const [amount, setAmount] = useState(100);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState('');
-  const [description, setDescription] = useState('');
-  const [isCategorizingAI, setIsCategorizingAI] = useState(false);
-  const [recordType, setRecordType] = useState<'expense' | 'income'>('expense');
+type TransactionSubmissionResult = ActionResult<unknown, TransactionCommandField | "requestId">;
 
-  const clientAction = async (formData: FormData) => {
-    setIsLoading(true);
-    setAlertMessage(null);
+export interface TransactionSubmission {
+  requestId: string;
+  command: TransactionCommand;
+}
 
-    formData.set('amount', amount.toString());
-    formData.set('type', recordType);
-    if (recordType === 'expense') {
-      formData.set('category', category);
-    }
+export interface AddNewRecordProps {
+  /** Persistence is deliberately supplied by task 8.2 rather than owned by this form. */
+  submitTransaction?: (submission: TransactionSubmission) => Promise<TransactionSubmissionResult>;
+  requestCategorySuggestion?: typeof suggestCategoryResult;
+  /** Opens the dialog on mount, e.g. when a route signal like ?addTransaction=1 is present. */
+  initialOpen?: boolean;
+  /** Notified whenever the dialog opens or closes so callers can clear route signals. */
+  onOpenChange?: (open: boolean) => void;
+}
 
-    const { error } = await addExpenseRecord(formData);
+interface TransactionDraft {
+  type: TransactionType;
+  description: string;
+  date: string;
+  amount: string;
+  category: string;
+  categorySource: ExpenseCategorySource;
+  categoryConfirmed: boolean;
+}
 
-    if (error) {
-      setAlertMessage(`Error: ${error}`);
-      setAlertType('error');
-    } else {
-      setAlertMessage(
-        recordType === 'income'
-          ? 'Income record added successfully!'
-          : 'Expense record added successfully!'
-      );
-      setAlertType('success');
-      formRef.current?.reset();
-      setAmount(100);
-      setCategory('');
-      setDescription('');
-    }
+interface SubmissionFailure {
+  message: string;
+  retryable: boolean;
+}
 
-    setIsLoading(false);
+const createEmptyDraft = (): TransactionDraft => ({
+  type: "expense",
+  description: "",
+  date: "",
+  amount: "",
+  category: "",
+  categorySource: "manual",
+  categoryConfirmed: false,
+});
+
+const categoryOptions = EXPENSE_CATEGORY_IDS.map((id) => ({ value: id, label: CATEGORY_REGISTRY[id].label }));
+
+function createRequestId(): string {
+  return globalThis.crypto?.randomUUID?.() ?? `transaction-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+export default function AddNewRecord({
+  submitTransaction,
+  requestCategorySuggestion = suggestCategoryResult,
+  initialOpen = false,
+  onOpenChange,
+}: AddNewRecordProps) {
+  const [open, setOpenState] = useState(initialOpen);
+  const setOpen = (nextOpen: boolean) => {
+    setOpenState(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
+  const [draft, setDraft] = useState<TransactionDraft>(createEmptyDraft);
+  const [fieldErrors, setFieldErrors] = useState<TransactionCommandFieldErrors>({});
+  const [pending, setPending] = useState(false);
+  const [aiPending, setAiPending] = useState(false);
+  const [submissionFailure, setSubmissionFailure] = useState<SubmissionFailure | null>(null);
+  const [status, setStatus] = useState<{ message: string; politeness: "polite" | "assertive" } | null>(null);
+  const requestIdRef = useRef<string | null>(null);
+  const retrySubmissionRef = useRef<TransactionSubmission | null>(null);
+
+  const focusField = (field: TransactionCommandField) => {
+    requestAnimationFrame(() => document.getElementById(`transaction-${field}`)?.focus());
   };
 
-  const handleAISuggestCategory = async () => {
-    if (!description.trim()) {
-      setAlertMessage('Please enter a description first');
-      setAlertType('error');
+  const updateDraft = (patch: Partial<TransactionDraft>) => {
+    requestIdRef.current = null;
+    retrySubmissionRef.current = null;
+    setSubmissionFailure(null);
+    setDraft((current) => ({ ...current, ...patch }));
+  };
+
+  const clearFieldError = (field: TransactionCommandField) => {
+    setFieldErrors((current) => ({ ...current, [field]: undefined }));
+  };
+
+  const changeType = (type: TransactionType) => {
+    updateDraft({
+      type,
+      category: type === "income" ? "Income" : draft.category === "Income" ? "" : draft.category,
+      categorySource: "manual",
+      categoryConfirmed: false,
+    });
+    setFieldErrors((current) => ({ ...current, type: undefined, category: undefined }));
+  };
+
+  const changeCategory = (category: string) => {
+    const replacesSuggestion = draft.categorySource === "ai-suggested" && category !== draft.category;
+    updateDraft({
+      category,
+      categorySource: replacesSuggestion ? "ai-replaced" : "manual",
+      categoryConfirmed: false,
+    });
+    clearFieldError("category");
+  };
+
+  const applyResult = (result: TransactionSubmissionResult) => {
+    if (result.status === "success") {
+      requestIdRef.current = null;
+      retrySubmissionRef.current = null;
+      setDraft(createEmptyDraft());
+      setFieldErrors({});
+      setSubmissionFailure(null);
+      setStatus({ message: result.message, politeness: "polite" });
+      setOpen(false);
       return;
     }
 
-    setIsCategorizingAI(true);
-    setAlertMessage(null);
+    if (result.status === "validation-error") {
+      const errors = result.fieldErrors as TransactionCommandFieldErrors;
+      setFieldErrors(errors);
+      setSubmissionFailure(null);
+      const firstInvalidField = (["type", "description", "date", "amount", "category"] as const)
+        .find((field) => errors[field] !== undefined);
+      if (firstInvalidField) focusField(firstInvalidField);
+      setStatus({ message: result.message, politeness: "assertive" });
+      return;
+    }
 
+    setSubmissionFailure({ message: result.message, retryable: result.retryable });
+    setStatus({ message: result.message, politeness: "assertive" });
+  };
+
+  const submit = async (submission: TransactionSubmission) => {
+    if (!submitTransaction || pending) return;
+    setPending(true);
+    setSubmissionFailure(null);
+    setStatus({ message: "Adding transaction...", politeness: "polite" });
     try {
-      const result = await suggestCategory(description);
-      if (result.error) {
-        setAlertMessage(`AI Suggestion: ${result.error}`);
-        setAlertType('error');
-      } else {
-        setCategory(result.category);
-        setAlertMessage(`AI suggested category: ${result.category}`);
-        setAlertType('success');
-      }
+      applyResult(await submitTransaction(submission));
     } catch {
-      setAlertMessage('Failed to get AI category suggestion');
-      setAlertType('error');
+      const message = "Transaction could not be added. Retry the transaction.";
+      setSubmissionFailure({ message, retryable: true });
+      setStatus({ message, politeness: "assertive" });
     } finally {
-      setIsCategorizingAI(false);
+      setPending(false);
     }
   };
 
-  const isIncome = recordType === 'income';
+  const validateAndSubmit = async () => {
+    const input: TransactionCommandInput = {
+      type: draft.type,
+      description: draft.description,
+      date: draft.date,
+      amount: draft.amount,
+      category: draft.category,
+      categorySource: draft.categorySource,
+      categoryConfirmed: draft.categoryConfirmed,
+    };
+    const validation = validateTransactionCommand(input);
+    if (!validation.success) {
+      setFieldErrors(validation.fieldErrors);
+      setSubmissionFailure(null);
+      focusField(validation.firstInvalidField);
+      setStatus({ message: "Correct the highlighted transaction fields.", politeness: "assertive" });
+      return;
+    }
+
+    setFieldErrors({});
+    const submission = {
+      requestId: requestIdRef.current ?? createRequestId(),
+      command: validation.data,
+    };
+    requestIdRef.current = submission.requestId;
+    retrySubmissionRef.current = submission;
+
+    if (!submitTransaction) {
+      setStatus({ message: "Transaction details are valid and ready to save.", politeness: "polite" });
+      return;
+    }
+    await submit(submission);
+  };
+
+  const retry = async () => {
+    if (retrySubmissionRef.current) await submit(retrySubmissionRef.current);
+  };
+
+  const requestSuggestion = async () => {
+    if (aiPending || pending || draft.type !== "expense") return;
+
+    setAiPending(true);
+    setStatus({ message: "AI-generated category suggestion is being prepared.", politeness: "polite" });
+    try {
+      const result = await requestCategorySuggestion({
+        description: draft.description,
+        disclosureVersion: AI_DISCLOSURE_VERSION,
+      });
+
+      if (result.status === "success" && result.data.state === "ready") {
+        const suggestedCategory = result.data.suggestion.categoryId;
+        if (!EXPENSE_CATEGORY_IDS.includes(suggestedCategory as ExpenseCategoryId)) {
+          setFieldErrors((current) => ({
+            ...current,
+            category: ["The AI suggestion is not a supported expense category. Choose a category manually."],
+          }));
+          focusField("category");
+          setStatus({ message: "AI-generated category suggestion needs a manual category selection.", politeness: "assertive" });
+          return;
+        }
+
+        requestIdRef.current = null;
+        retrySubmissionRef.current = null;
+        setSubmissionFailure(null);
+        setDraft((current) => ({
+          ...current,
+          category: suggestedCategory,
+          categorySource: "ai-suggested",
+          categoryConfirmed: false,
+        }));
+        clearFieldError("category");
+        setStatus({ message: "AI-generated category suggestion is ready for your confirmation or replacement.", politeness: "polite" });
+        return;
+      }
+
+      if (result.status === "validation-error") {
+        const descriptionError = result.fieldErrors?.description;
+        if (descriptionError) setFieldErrors((current) => ({ ...current, description: descriptionError }));
+        focusField("description");
+      }
+      setStatus({ message: result.message, politeness: "assertive" });
+    } catch {
+      setStatus({ message: "AI-generated category suggestion could not be requested. You can choose a category manually.", politeness: "assertive" });
+    } finally {
+      setAiPending(false);
+    }
+  };
+
+  const categoryError = fieldErrors.category?.[0];
 
   return (
-    <div className='glass-card p-4 sm:p-6 rounded-2xl border border-gray-150/40 dark:border-white/5 hover:shadow-2xl transition-all duration-300'>
-      {/* Header */}
-      <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5'>
-        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-lg ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-emerald-500/15' : 'bg-gradient-to-br from-theme-cyan via-cyan-400 to-theme-muted shadow-theme-cyan/15'}`}>
-          <span className='text-white text-sm sm:text-lg'>{isIncome ? '💰' : '💳'}</span>
-        </div>
-        <div>
-          <h3 className='text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight'>
-            {isIncome ? 'Add Income' : 'Add New Expense'}
-          </h3>
-          <p className='text-xs text-gray-500 dark:text-gray-400 mt-0.5'>
-            {isIncome ? 'Record your earnings and income' : 'Track your spending with AI assistance'}
-          </p>
-        </div>
-      </div>
-
-      {/* Expense / Income Toggle */}
-      <div className='flex gap-1 p-1 bg-gray-100/60 dark:bg-theme-deep/60 rounded-xl border border-gray-150/30 dark:border-white/5 mb-5'>
-        <button
-          type='button'
-          onClick={() => { setRecordType('expense'); setCategory(''); }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${!isIncome ? 'bg-white dark:bg-theme-dark shadow-sm text-red-600 dark:text-red-400 border border-gray-150/50 dark:border-white/5' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
-        >
-          💸 Expense
-        </button>
-        <button
-          type='button'
-          onClick={() => { setRecordType('income'); setCategory(''); }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${isIncome ? 'bg-white dark:bg-theme-dark shadow-sm text-emerald-600 dark:text-emerald-400 border border-gray-150/50 dark:border-white/5' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
-        >
-          💰 Income
-        </button>
-      </div>
-
-      <form
-        ref={formRef}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(formRef.current!);
-          clientAction(formData);
-        }}
-        className='space-y-4 sm:space-y-5'
+    <>
+      <Dialog
+        closeLabel="Close Add transaction"
+        description="Enter one income or expense transaction. Required fields are marked with an asterisk."
+        onOpenChange={setOpen}
+        open={open}
+        title="Add transaction"
+        trigger={<Button label="Add transaction" />}
+        className="sm:max-w-xl"
       >
-        {/* Description and Date */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50/50 to-gray-55/30 dark:from-[#1c2541]/40 dark:to-[#0b132b]/40 rounded-xl border border-gray-150/20 dark:border-[#1c2541]/60'>
-          {/* Description */}
-          <div className='space-y-1.5'>
-            <label htmlFor='text' className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'>
-              <span className={`w-1.5 h-1.5 rounded-full ${isIncome ? 'bg-emerald-400' : 'bg-theme-cyan'}`}></span>
-              {isIncome ? 'Income Source' : 'Expense Description'}
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                id='text'
-                name='text'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className='w-full pl-3 pr-12 sm:pr-14 py-2.5 bg-white/70 dark:bg-theme-deep/50 border border-gray-250 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-theme-cyan/25 focus:bg-white dark:focus:bg-theme-dark/80 focus:border-theme-cyan dark:focus:border-theme-cyan text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm shadow-sm hover:shadow-md transition-all duration-200'
-                placeholder={isIncome ? 'Salary, freelance, dividends...' : 'Coffee, groceries, gas...'}
+        <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); void validateAndSubmit(); }}>
+          <Select
+            disabled={pending}
+            error={fieldErrors.type?.[0]}
+            id="transaction-type"
+            label="Type"
+            onChange={(event) => changeType(event.target.value as TransactionType)}
+            options={[{ value: "expense", label: "Expense" }, { value: "income", label: "Income" }]}
+            required
+            value={draft.type}
+          />
+          <Field
+            disabled={pending}
+            error={fieldErrors.description?.[0]}
+            id="transaction-description"
+            label="Description"
+            onChange={(event) => { updateDraft({ description: event.target.value }); clearFieldError("description"); }}
+            required
+            value={draft.description}
+          />
+          <div className="grid gap-2">
+            <Button disabled={draft.type !== "expense" || pending} label="Get AI category suggestion" loading={aiPending} onClick={() => void requestSuggestion()} type="button" />
+            <p className="text-interface-xs text-foreground-secondary">AI-generated suggestions use the transaction description you enter and always require confirmation or replacement.</p>
+          </div>
+          <Field
+            disabled={pending}
+            error={fieldErrors.date?.[0]}
+            id="transaction-date"
+            label="Date"
+            onChange={(event) => { updateDraft({ date: event.target.value }); clearFieldError("date"); }}
+            required
+            type="date"
+            value={draft.date}
+          />
+          <Field
+            disabled={pending}
+            error={fieldErrors.amount?.[0]}
+            id="transaction-amount"
+            label="Amount"
+            min="0.01"
+            onChange={(event) => { updateDraft({ amount: event.target.value }); clearFieldError("amount"); }}
+            required
+            step="0.01"
+            type="number"
+            value={draft.amount}
+          />
+          {draft.type === "expense" ? (
+            <div className="grid gap-3">
+              <Select
+                disabled={pending}
+                error={categoryError}
+                id="transaction-category"
+                label="Category"
+                onChange={(event) => changeCategory(event.target.value)}
+                options={categoryOptions}
+                placeholder="Choose a category"
                 required
+                value={draft.category}
               />
-              {!isIncome && (
-                <button
-                  type='button'
-                  onClick={handleAISuggestCategory}
-                  disabled={isCategorizingAI || !description.trim()}
-                  className='absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-7 bg-theme-cyan/15 hover:bg-theme-cyan/25 disabled:bg-gray-100 dark:disabled:bg-white/5 text-theme-cyan disabled:text-gray-400 border border-theme-cyan/25 dark:border-theme-cyan/20 rounded-lg text-xs font-medium flex items-center justify-center shadow-sm hover:shadow-md disabled:shadow-none transition-all duration-200 active:scale-95 cursor-pointer'
-                  title='AI Category Suggestion'
-                >
-                  {isCategorizingAI ? (
-                    <div className='w-3 h-3 border-2 border-theme-cyan/30 border-t-theme-cyan rounded-full animate-spin'></div>
-                  ) : (
-                    <span className='text-xs'>✨</span>
-                  )}
-                </button>
-              )}
+              {draft.categorySource === "ai-suggested" ? (
+                <Alert
+                  actionRequired
+                  description={<div className="grid gap-3"><p>Suggested category: <strong>{CATEGORY_REGISTRY[draft.category as ExpenseCategoryId]?.label ?? draft.category}</strong>.</p><label className="flex min-h-11 items-center gap-2"><input checked={draft.categoryConfirmed} disabled={pending} onChange={(event) => { updateDraft({ categoryConfirmed: event.target.checked }); clearFieldError("category"); }} type="checkbox" />Confirm this AI-generated category</label></div>}
+                  title="AI-generated category suggestion"
+                  tone="info"
+                />
+              ) : null}
             </div>
-            {isCategorizingAI && (
-              <div className='flex items-center gap-2 text-xs text-theme-cyan dark:text-cyan-400'>
-                <div className='w-1.5 h-1.5 bg-theme-cyan rounded-full animate-pulse'></div>
-                AI is analyzing your description...
-              </div>
-            )}
-          </div>
-
-          {/* Date */}
-          <div className='space-y-1.5'>
-            <label htmlFor='date' className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'>
-              <span className={`w-1.5 h-1.5 rounded-full ${isIncome ? 'bg-emerald-400' : 'bg-theme-cyan'}`}></span>
-              Date
-            </label>
-            <input
-              type='date'
-              name='date'
-              id='date'
-              className='w-full px-3 py-2.5 bg-white/70 dark:bg-theme-deep/50 border border-gray-250 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-theme-cyan/25 focus:bg-white dark:focus:bg-theme-dark/80 focus:border-theme-cyan dark:focus:border-theme-cyan text-gray-900 dark:text-gray-100 text-sm shadow-sm hover:shadow-md transition-all duration-200'
-              required
-              onFocus={(e) => e.target.showPicker()}
-            />
-          </div>
-        </div>
-
-        {/* Category (expense only) and Amount */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-gray-50/50 to-gray-55/30 dark:from-theme-deep/30 dark:to-theme-dark/30 rounded-xl border border-gray-150/20 dark:border-[#1c2541]/60'>
-          {/* Category (expense only) */}
-          {!isIncome && (
-            <div className='space-y-1.5'>
-              <label htmlFor='category' className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'>
-                <span className='w-1.5 h-1.5 bg-theme-cyan rounded-full'></span>
-                Category
-                <span className='text-xs text-gray-400 dark:text-gray-505 ml-2 font-normal hidden sm:inline'>
-                  Use the ✨ button for AI suggestions
-                </span>
-              </label>
-              <select
-                id='category'
-                name='category'
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className='w-full px-3 py-2.5 bg-white/70 dark:bg-theme-deep/50 border border-gray-250 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-theme-cyan/25 focus:bg-white dark:focus:bg-theme-dark/80 focus:border-theme-cyan dark:focus:border-theme-cyan text-gray-900 dark:text-gray-100 cursor-pointer text-sm shadow-sm hover:shadow-md transition-all duration-200'
-                required={!isIncome}
-              >
-                <option value='' disabled className='text-gray-450 dark:text-gray-500'>
-                  Select category...
-                </option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat.value} value={cat.value} className='text-gray-900 dark:text-gray-100'>
-                    {cat.label}
-                  </option>
-                ))}
-              </select>
+          ) : (
+            <div aria-label="Category" className="grid gap-1 rounded-container border border-border bg-surface-subtle p-4">
+              <p className="text-interface-sm font-medium text-foreground">Category</p>
+              <p className="text-interface-sm text-foreground-secondary">Income is assigned automatically.</p>
             </div>
           )}
-
-          {/* Amount */}
-          <div className={`space-y-1.5 ${isIncome ? 'md:col-span-2' : ''}`}>
-            <label htmlFor='amount' className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'>
-              <span className={`w-1.5 h-1.5 rounded-full ${isIncome ? 'bg-emerald-400' : 'bg-theme-cyan'}`}></span>
-              Amount
-            </label>
-            <div className='relative'>
-              <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium text-sm'>
-                ₹
-              </span>
-              <input
-                type='number'
-                name='amount'
-                id='amount'
-                min='1'
-                step='0.01'
-                value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                className='w-full pl-6 pr-3 py-2.5 bg-white/70 dark:bg-theme-deep/50 border border-gray-250 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-theme-cyan/25 focus:bg-white dark:focus:bg-theme-dark/80 focus:border-theme-cyan dark:focus:border-theme-cyan text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200'
-                placeholder='0.00'
-                required
-              />
-            </div>
+          {submissionFailure ? <Alert action={<Button disabled={!submissionFailure.retryable || pending} label="Retry transaction" loading={pending} onClick={() => void retry()} />} actionRequired description={submissionFailure.message} title="Transaction could not be added" tone="danger" /> : null}
+          <div className="flex flex-wrap justify-end gap-3 border-t border-border pt-5">
+            <Button disabled={pending} intent="secondary" label="Cancel" onClick={() => setOpen(false)} />
+            <Button label="Add transaction" loading={pending} type="submit" />
           </div>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type='submit'
-          className={`w-full px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-bold shadow-xl hover:-translate-y-0.5 hover:scale-[1.01] active:translate-y-0 active:scale-[0.98] transition-all duration-300 text-sm sm:text-base cursor-pointer border ${isIncome ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-400/20 hover:shadow-emerald-500/30' : 'bg-gradient-to-r from-theme-cyan to-[#00B4D8] dark:from-[#5BC0BE] dark:to-[#0096B4] text-[#0b132b] border-theme-cyan/20 hover:shadow-theme-cyan/30'}`}
-          disabled={isLoading}
-        >
-          <div className='relative flex items-center justify-center gap-2'>
-            {isLoading ? (
-              <>
-                <div className={`w-4 h-4 border-2 rounded-full animate-spin ${isIncome ? 'border-white/30 border-t-white' : 'border-[#0b132b]/30 border-t-[#0b132b]'}`}></div>
-                <span>Processing...</span>
-              </>
-            ) : (
-              <>
-                <span className='text-lg'>{isIncome ? '💰' : '💳'}</span>
-                <span>{isIncome ? 'Add Income' : 'Add Expense'}</span>
-              </>
-            )}
-          </div>
-        </button>
-      </form>
-
-      {/* Alert Message */}
-      {alertMessage && (
-        <div className={`mt-4 p-3 rounded-xl border-l-4 backdrop-blur-sm ${alertType === 'success' ? (isIncome ? 'bg-emerald-50/80 dark:bg-emerald-900/20 border-l-emerald-500 text-gray-800 dark:text-emerald-200' : 'bg-theme-cyan/10 dark:bg-theme-dark/20 border-l-theme-cyan text-gray-800 dark:text-cyan-200') : 'bg-red-50/80 dark:bg-red-900/20 border-l-red-500 text-red-800 dark:text-red-200'}`}>
-          <div className='flex items-center gap-2'>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${alertType === 'success' ? (isIncome ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-theme-cyan/20 dark:bg-theme-muted/40') : 'bg-red-100 dark:bg-red-800'}`}>
-              <span className='text-sm'>{alertType === 'success' ? '✅' : '⚠️'}</span>
-            </div>
-            <p className='font-medium text-sm'>{alertMessage}</p>
-          </div>
-        </div>
-      )}
-    </div>
+        </form>
+      </Dialog>
+      <StatusRegion message={status?.message} politeness={status?.politeness} visible={Boolean(status)} />
+    </>
   );
-};
-
-export default AddRecord;
+}
