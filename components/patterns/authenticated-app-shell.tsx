@@ -23,6 +23,7 @@ import {
   Sheet,
 } from '@/components/ui';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   APP_PERIOD_DESTINATIONS,
   appPeriodHref,
@@ -40,8 +41,7 @@ import type {
 } from '@/lib/domain/types';
 import { cn } from '@/lib/ui/cn';
 
-/** Serializable account data deliberately excludes passwords, tokens, and timestamps. */
-export interface SafeUser {
+interface SafeUser {
   id: string;
   email: string;
   name: string | null;
@@ -50,7 +50,6 @@ export interface SafeUser {
 
 interface AuthenticatedAppShellProps {
   children: ReactNode;
-  user: SafeUser;
 }
 
 interface AppDestination {
@@ -172,7 +171,7 @@ function CompactPreferences({
   signingOut,
   onSignOut,
 }: {
-  user: SafeUser;
+  user: { id: string; email: string; name: string | null; imageUrl: string | null };
   signingOut: boolean;
   onSignOut: () => void;
 }) {
@@ -208,10 +207,11 @@ function CompactPreferences({
  * Route-owned signed-in chrome. URL period parameters remain authoritative;
  * sessionStorage only mirrors a valid period when the URL has no period state.
  */
-export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellProps) {
+export function AuthenticatedAppShell({ children }: AuthenticatedAppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, loading: userLoading } = useAuth();
   const periodSearch = searchParams.toString();
   const [sessionPeriod, setSessionPeriod] = useState<ReportingPeriod>({ kind: 'current-month' });
   const [signingOut, setSigningOut] = useState(false);
@@ -234,6 +234,16 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
     setSessionPeriod(nextPeriod.input);
     writeReportingPeriodSession(window.sessionStorage, nextPeriod.input);
   }, [periodSearch]);
+
+  useEffect(() => {
+    if (!userLoading && !user) {
+      router.replace('/sign-in');
+    }
+  }, [userLoading, user, router]);
+
+  if (userLoading || !user) {
+    return <div className="flex min-h-[100dvh] items-center justify-center bg-bg text-foreground">Loading…</div>;
+  }
 
   const navigation = projectNavigation(
     APP_DESTINATIONS,

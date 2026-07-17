@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
-import { getDashboardData } from '@/lib/data/dashboard';
-import { getAiInsightsDisclosure } from '@/lib/domain/ai';
+import { getDashboardData, DEFAULT_CURRENCY } from '@/lib/data/dashboard';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
+import { getAiInsightsDisclosure } from '@/lib/domain/ai';
 import { DashboardView } from '@/components/patterns/dashboard-view';
 
 export const metadata: Metadata = { title: 'Dashboard – Expense AI' };
@@ -27,7 +27,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
-  const dashboard = await getDashboardData(user.id, period);
+  const dashboard = await getDashboardData(user.id, period, DEFAULT_CURRENCY);
   const disclosure = getAiInsightsDisclosure();
 
   return <DashboardView dashboard={dashboard} disclosure={disclosure} period={periodInput} />;
