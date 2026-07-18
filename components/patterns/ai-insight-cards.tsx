@@ -48,39 +48,39 @@ const TYPE_STYLES: Record<
   { gradient: string; border: string; iconBg: string; iconColor: string; badgeClass: string }
 > = {
   positive: {
-    gradient: "from-kpi-income-surface/50 to-kpi-balance-surface/50",
-    border: "border-kpi-income/30",
-    iconBg: "bg-kpi-income-surface",
-    iconColor: "text-kpi-income",
+    gradient: "bg-surface",
+    border: "border-border/50",
+    iconBg: "bg-success-surface",
+    iconColor: "text-success",
     badgeClass: "badge-premium--success",
   },
   warning: {
-    gradient: "from-warning-surface/50 to-kpi-expense-surface/50",
-    border: "border-warning/30",
+    gradient: "bg-surface",
+    border: "border-border/50",
     iconBg: "bg-warning-surface",
     iconColor: "text-warning",
     badgeClass: "badge-premium--warning",
   },
   info: {
-    gradient: "from-info-surface/50 to-accent-surface/50",
-    border: "border-info/30",
+    gradient: "bg-surface",
+    border: "border-border/50",
     iconBg: "bg-info-surface",
     iconColor: "text-info",
     badgeClass: "badge-premium--info",
   },
   celebration: {
-    gradient: "from-kpi-savings-surface/50 to-accent-surface/50",
-    border: "border-kpi-savings/30",
-    iconBg: "bg-kpi-savings-surface",
-    iconColor: "text-kpi-savings",
-    badgeClass: "badge-premium--savings",
+    gradient: "bg-surface",
+    border: "border-border/50",
+    iconBg: "bg-success-surface",
+    iconColor: "text-success",
+    badgeClass: "badge-premium--success",
   },
   tip: {
-    gradient: "from-accent-surface/50 to-kpi-savings-surface/50",
-    border: "border-accent/30",
-    iconBg: "bg-accent-surface",
-    iconColor: "text-accent",
-    badgeClass: "badge-premium--accent",
+    gradient: "bg-surface",
+    border: "border-border/50",
+    iconBg: "bg-info-surface",
+    iconColor: "text-info",
+    badgeClass: "badge-premium--info",
   },
 };
 
@@ -113,24 +113,16 @@ export function AIInsightCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "relative overflow-hidden rounded-xl p-5 border transition-all duration-300 hover:shadow-lg",
+        "relative overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:shadow-lg",
         styles.gradient,
         styles.border,
-        "hover:border-opacity-50",
         className,
       )}
     >
-      <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: `radial-gradient(ellipse at center, var(--color-${type === "positive" ? "kpi-income" : type === "warning" ? "warning" : type === "info" ? "info" : type === "celebration" ? "kpi-savings" : "accent"}) 0%, transparent 70%)`,
-        }}
-      />
       <div className="relative flex items-start gap-4">
         <span
           className={cn(
-            "icon-premium-lg flex-shrink-0",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
             iconBg || styles.iconBg,
             iconColor || styles.iconColor,
           )}
@@ -141,7 +133,7 @@ export function AIInsightCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h3 className="text-label font-semibold text-foreground">{title}</h3>
+              <h3 className="text-interface-sm font-semibold text-foreground">{title}</h3>
               {badge && (
                 <span className={cn("mt-1.5 inline-block", styles.badgeClass)}>
                   {badge}
@@ -150,16 +142,16 @@ export function AIInsightCard({
             </div>
             {metric && (
               <div className="flex-shrink-0 text-right">
-                <p className="financial-value text-display-4xl font-bold text-foreground tabular-nums">
+                <p className="financial-value text-lg font-bold text-foreground tabular-nums">
                   {metric.value}
                 </p>
-                <p className="text-caption text-foreground-secondary">{metric.label}</p>
+                <p className="text-interface-xs text-foreground-secondary">{metric.label}</p>
                 {metric.trend && (
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 mt-0.5 text-caption-strong",
-                      metric.trend === "up" && "text-trend-up-foreground",
-                      metric.trend === "down" && "text-trend-down-foreground",
+                      "inline-flex items-center gap-1 mt-0.5 text-interface-xs font-medium",
+                      metric.trend === "up" && "text-success",
+                      metric.trend === "down" && "text-danger",
                       metric.trend === "neutral" && "text-foreground-secondary",
                     )}
                   >
@@ -171,11 +163,11 @@ export function AIInsightCard({
               </div>
             )}
           </div>
-          <p className="mt-2 text-body text-foreground-secondary">{description}</p>
+          <p className="mt-2 text-interface-sm text-foreground-secondary leading-relaxed">{description}</p>
           {action && (
             <a
               href={action.href}
-              className="mt-4 inline-flex items-center gap-1.5 text-label font-semibold text-primary hover:text-primary/80 transition-colors"
+              className="mt-4 inline-flex items-center gap-1.5 text-interface-sm font-semibold text-primary hover:text-primary/80 transition-colors"
             >
               {action.label}
               {action.icon || <ArrowUpRight size={14} strokeWidth={2.5} />}

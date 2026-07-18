@@ -48,7 +48,7 @@ function StatusPill({ status }: { status: BudgetMetric["status"] }) {
     success: "bg-kpi-income-surface text-kpi-income-foreground",
     warning: "bg-warning-surface text-warning-foreground",
     danger: "bg-danger-surface text-danger-foreground",
-    neutral: "bg-surface-subtle text-foreground-secondary",
+      neutral: "bg-surface-subtle text-foreground-secondary",
   };
 
   return (
@@ -122,7 +122,7 @@ function CategoryRow({
 
   return (
     <motion.div
-      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle"
+      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle/50"
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
@@ -271,7 +271,7 @@ export function BudgetOverviewCard({
   return (
     <section
       aria-labelledby="budget-overview-title"
-      className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-premium-sm"
+      className="relative overflow-hidden glass-vessel"
     >
       {/* Header */}
       <header className="flex items-center justify-between px-5 pt-5 pb-4">

@@ -125,7 +125,7 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
   return (
     <section aria-labelledby="monthly-snapshot-title" className="grid gap-4">
       <h2
-        className="text-label font-semibold text-foreground"
+        className="text-label font-semibold text-on-surface"
         id="monthly-snapshot-title"
       >
         Monthly Snapshot
@@ -140,7 +140,7 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
         {cards.map((card) => (
           <motion.article
             className={cn(
-              "relative overflow-hidden rounded-2xl bg-surface p-4 shadow-premium-sm transition-all duration-300 hover:shadow-premium hover:-translate-y-1",
+              "relative overflow-hidden glass-vessel p-4 transition-all duration-300 hover:shadow-premium hover:-translate-y-1",
             )}
             key={card.id}
             variants={listItemVariants}
@@ -156,20 +156,20 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
               >
                 {card.icon}
               </span>
-              <p className="text-caption-strong text-foreground-secondary">{card.label}</p>
+              <p className="text-caption-strong text-on-surface-variant/60">{card.label}</p>
             </div>
 
             <p
               aria-label={`${card.label}: ${card.srValue}`}
               className={cn(
-                "financial-value mt-2 text-display-3xl font-bold text-foreground",
+                "financial-value mt-2 text-display-3xl font-bold text-on-surface",
                 card.id === "savings-rate" && "tabular-nums",
               )}
             >
               {card.value}
             </p>
 
-            <p className="mt-1 text-caption text-foreground-secondary">{card.sublabel}</p>
+            <p className="mt-1 text-caption text-on-surface-variant/60">{card.sublabel}</p>
           </motion.article>
         ))}
       </motion.div>

@@ -990,7 +990,7 @@ export function SavingsGoalsPage() {
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="h-40 animate-pulse rounded-2xl border border-border/60 bg-surface" />
+            <div key={i} className="h-40 animate-shimmer rounded-2xl border border-border/50 bg-surface" />
           ))}
         </div>
       ) : goals.length === 0 ? (

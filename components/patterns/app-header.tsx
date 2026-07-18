@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, LogOut, Menu, Monitor, Moon, Search, Settings, Sun, User } from "lucide-react";
+import { Bell, LogOut, Menu, Monitor, Moon, Search, Settings, Sun, User, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -54,7 +54,7 @@ function AppearanceToggle() {
   return (
     <button
       aria-label={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
       onClick={cycle}
       title={label}
       type="button"
@@ -69,7 +69,7 @@ function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
   return (
     <button
       aria-label={label}
-      className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
       title={label}
       type="button"
     >
@@ -77,7 +77,7 @@ function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
       {unreadCount > 0 ? (
         <span
           aria-hidden="true"
-          className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-danger shadow-[0_0_0_2px_var(--color-surface)]"
+          className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-secondary-container shadow-[0_0_6px_#ff24e4]"
         />
       ) : null}
     </button>
@@ -94,7 +94,7 @@ function UserAvatar({ user, onSignOut, signingOut }: { user: SafeUser; onSignOut
       trigger={
         <button
           aria-label="Open user menu"
-          className="group relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-surface-subtle transition-colors duration-150 hover:bg-surface-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="group relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary-fixed/30 p-0.5 transition-all duration-500 hover:border-primary-fixed/60 hover:shadow-[0_0_15px_rgba(0,220,229,0.3)]"
           type="button"
         >
           {user.imageUrl ? (
@@ -102,10 +102,10 @@ function UserAvatar({ user, onSignOut, signingOut }: { user: SafeUser; onSignOut
             <img
               alt=""
               src={user.imageUrl}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover rounded-full"
             />
           ) : (
-            <span className="text-xs font-semibold text-foreground-secondary">{initial}</span>
+            <span className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary-fixed">{initial}</span>
           )}
         </button>
       }
@@ -163,33 +163,33 @@ function SearchInput({
       }}
       role="search"
     >
-      <div className="relative">
+      <div className="relative group">
         <Search
           aria-hidden="true"
-          className={`pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-150 ${isFocused ? "text-foreground" : "text-foreground-secondary"}`}
+          className={`pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-500 ${isFocused ? "text-primary-fixed" : "text-on-surface-variant/40"}`}
           size={15}
         />
         <input
           aria-label="Search transactions and categories"
-          className={`h-9 w-full rounded-lg border bg-surface-subtle pl-9 pr-14 text-sm text-foreground placeholder:text-foreground-secondary transition-colors duration-150 ${
+          className={`h-9 w-full rounded-full border-none bg-surface-container-low/50 pl-9 pr-14 text-sm text-on-surface backdrop-blur-md transition-all duration-500 placeholder:text-on-surface-variant/40 ${
             isFocused
-              ? "border-focus ring-1 ring-focus/20"
-              : "border-transparent hover:border-border"
+              ? "ring-1 ring-primary-fixed/50 bg-surface-container-low"
+              : ""
           }`}
           onBlur={() => setIsFocused(false)}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={() => setIsFocused(true)}
-          placeholder="Search..."
+          placeholder="Search currents..."
           ref={inputRef}
           type="search"
           value={query}
         />
         <kbd
           aria-hidden="true"
-          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium transition-colors duration-150 sm:flex ${
+          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium transition-colors duration-500 sm:flex font-geist ${
             isFocused
-              ? "border-focus/30 bg-focus/10 text-focus"
-              : "border-border bg-surface text-foreground-secondary"
+              ? "border-primary-fixed/30 bg-primary/10 text-primary-fixed"
+              : "border-white/10 bg-surface-container-high text-on-surface-variant/50"
           }`}
         >
           {shortcutHint}
@@ -210,19 +210,22 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-surface">
-      <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6 md:gap-4 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-white/5 bg-surface/60 backdrop-blur-xl">
+      <div className="flex items-center gap-3 px-4 py-3 sm:px-6 md:gap-4 lg:px-8">
         <button
           aria-label="Open navigation"
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-foreground md:hidden"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed md:hidden"
           onClick={onMobileMenuOpen}
           type="button"
         >
           <Menu aria-hidden="true" size={18} />
         </button>
 
-        <div className="hidden min-w-0 shrink-0 md:block">
-          <span className="text-sm font-semibold text-foreground tracking-tight">Expense AI</span>
+        <div className="hidden min-w-0 shrink-0 md:flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container text-on-primary-fixed shadow-[0_0_20px_rgba(0,245,255,0.3)]">
+            <Wallet size={16} strokeWidth={2.2} />
+          </div>
+          <span className="pulse-logo text-xl">Expense AI</span>
         </div>
 
         <div className="flex flex-1 justify-center md:justify-start">

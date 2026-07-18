@@ -87,21 +87,21 @@ export function TransactionTable({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-premium-sm">
+    <div className="relative overflow-hidden glass-vessel">
       <div className="custom-scrollbar max-w-full overflow-x-auto">
         <table className="w-full min-w-max border-collapse text-left text-interface-sm">
           <thead>
-            <tr className="sticky top-0 z-10 border-b border-border/60 bg-surface-subtle/95 backdrop-blur-sm">
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-foreground-secondary" scope="col">
+            <tr className="sticky top-0 z-10 border-b border-white/5 bg-white/5/95 backdrop-blur-sm">
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60" scope="col">
                 Transaction
               </th>
-              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-foreground-secondary md:table-cell" scope="col">
+              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 md:table-cell" scope="col">
                 Category
               </th>
-              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-foreground-secondary sm:table-cell" scope="col">
+              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 sm:table-cell" scope="col">
                 Date
               </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-foreground-secondary" scope="col">
+              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60" scope="col">
                 Amount
               </th>
               <th className="w-10 px-4 py-3" scope="col">
@@ -129,8 +129,8 @@ export function TransactionTable({
                   onMouseEnter={() => setHoveredRow(row.id)}
                   onMouseLeave={() => setHoveredRow(null)}
                   className={cn(
-                    "group border-b border-border last:border-0 transition-colors duration-150",
-                    isHovered && "bg-surface-subtle/50",
+                    "group border-b border-white/5 last:border-0 transition-colors duration-150",
+                    isHovered && "bg-white/5/50",
                     isDeleting && "opacity-50 pointer-events-none",
                   )}
                 >
@@ -150,7 +150,7 @@ export function TransactionTable({
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="truncate text-sm font-semibold text-foreground">
+                          <span className="truncate text-sm font-semibold text-on-surface">
                             {row.description}
                           </span>
                           <div
@@ -161,9 +161,9 @@ export function TransactionTable({
                             {getMerchantInitials(row.description)}
                           </div>
                         </div>
-                        <div className="mt-0.5 flex items-center gap-1.5 text-xs text-foreground-secondary md:hidden">
+                        <div className="mt-0.5 flex items-center gap-1.5 text-xs text-on-surface-variant/60 md:hidden">
                           <span>{categoryDef?.label ?? row.categoryId}</span>
-                          <span className="h-0.5 w-0.5 rounded-full bg-foreground-secondary/40" />
+                          <span className="h-0.5 w-0.5 rounded-full bg-on-surface-variant/60/40" />
                           <DateText value={row.occurredOn} />
                         </div>
                       </div>
@@ -181,7 +181,7 @@ export function TransactionTable({
                       {categoryDef?.label ?? row.categoryId}
                     </Badge>
                   </td>
-                  <td className="hidden px-4 py-3 text-sm text-foreground-secondary sm:table-cell">
+                  <td className="hidden px-4 py-3 text-sm text-on-surface-variant/60 sm:table-cell">
                     <DateText value={row.occurredOn} />
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -215,7 +215,7 @@ export function TransactionTable({
                           aria-label={`Delete transaction: ${row.description}`}
                           onClick={() => onDelete(row)}
                           disabled={isDeleting}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-foreground-secondary transition-colors hover:bg-danger-surface hover:text-danger"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant/60 transition-colors hover:bg-danger-surface hover:text-danger"
                           type="button"
                         >
                           <Trash2 size={14} strokeWidth={2} />

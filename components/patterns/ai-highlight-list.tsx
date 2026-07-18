@@ -49,18 +49,22 @@ function confidenceText(confidence: number | undefined): string | undefined {
 
 function DisclosurePanel({ disclosure, onContinue }: { disclosure: AiDataUseDisclosure; onContinue: () => void }) {
   return (
-    <section aria-labelledby="ai-disclosure-title" className="rounded-container border border-info-border bg-info-surface p-4">
-      <div className="flex gap-3">
-        <Database aria-hidden="true" className="mt-0.5 shrink-0" size={20} />
-        <div className="min-w-0">
-          <h3 className="text-interface-md font-semibold" id="ai-disclosure-title">AI data-use disclosure</h3>
-          <p className="mt-1 text-interface-sm">{disclosure.purpose}</p>
-          <p className="mt-3 text-interface-sm font-semibold">Fields sent for generation</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-interface-sm">
-            {disclosure.fields.map((field) => <li key={field}>{field}</li>)}
-          </ul>
-          <p className="mt-3 text-interface-sm">{disclosure.providerRetention.statement}</p>
-          <Button className="mt-4" icon={<Bot size={18} />} intent="secondary" label="Continue and generate highlights" onClick={onContinue} />
+    <section aria-labelledby="ai-disclosure-title" className="rounded-2xl border border-border/60 bg-surface-subtle/50 p-5">
+      <div className="flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Database aria-hidden="true" size={18} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-interface-sm font-semibold text-foreground" id="ai-disclosure-title">AI data-use disclosure</h3>
+          <p className="mt-1 text-interface-xs text-foreground-secondary leading-relaxed">{disclosure.purpose}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-interface-xs font-medium text-foreground-secondary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              {disclosure.fields.length} data fields
+            </span>
+            <span className="text-interface-xs text-foreground-secondary/70">{disclosure.providerRetention.statement}</span>
+          </div>
+          <Button className="mt-4" icon={<Bot size={16} />} intent="primary" label="Continue and generate highlights" onClick={onContinue} />
         </div>
       </div>
     </section>
@@ -74,13 +78,13 @@ function InsightContent({ insightSet }: { insightSet: AiInsightSet }) {
   const hasConfidence = [...insightSet.interpretations, ...insightSet.recommendations].some((item) => confidenceText(item.confidence));
 
   return (
-    <div className="grid gap-5">
-      <section aria-labelledby="recorded-facts-title" className="rounded-container bg-surface-subtle p-4">
-        <h3 className="text-interface-md font-semibold text-foreground" id="recorded-facts-title">Recorded data facts</h3>
-        <p className="mt-1 text-interface-sm text-foreground-secondary">Observed from recorded transactions in this reporting period.</p>
-        <dl className="mt-3 grid gap-2 text-interface-sm">
+    <div className="grid gap-4">
+      <section aria-labelledby="recorded-facts-title" className="rounded-2xl border border-border/50 bg-surface p-4">
+        <h3 className="text-interface-sm font-semibold text-foreground" id="recorded-facts-title">Recorded data facts</h3>
+        <p className="mt-0.5 text-interface-xs text-foreground-secondary">Observed from recorded transactions in this reporting period.</p>
+        <dl className="mt-3 grid gap-1.5 text-interface-sm">
           {insightSet.facts.map((fact) => (
-            <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 pt-2 first:border-0 first:pt-0" key={`${fact.label}-${fact.value}`}>
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg px-3 py-2 first:pt-0 last:pb-0 hover:bg-surface-subtle/50" key={`${fact.label}-${fact.value}`}>
               <dt className="text-foreground-secondary">{fact.label}</dt>
               <dd className="financial-value font-semibold text-foreground">{fact.value}</dd>
             </div>
@@ -89,37 +93,46 @@ function InsightContent({ insightSet }: { insightSet: AiInsightSet }) {
       </section>
 
       <section aria-labelledby="ai-interpretations-title" className="grid gap-3">
-        <h3 className="text-interface-md font-semibold text-foreground" id="ai-interpretations-title">AI-generated interpretations</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-interface-sm font-semibold text-foreground" id="ai-interpretations-title">AI-generated interpretations</h3>
+          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-interface-xs font-medium text-primary">{insightSet.interpretations.length}</span>
+        </div>
         {insightSet.interpretations.length ? insightSet.interpretations.map((interpretation) => {
           const confidence = confidenceText(interpretation.confidence);
           return (
-            <article className="rounded-container border border-info-border bg-info-surface p-4" key={interpretation.id}>
-              <p className="text-interface-xs font-semibold uppercase tracking-wide">AI-generated</p>
-              <h4 className="mt-1 font-semibold">{interpretation.title}</h4>
-              <p className="mt-1 text-interface-sm">{interpretation.text}</p>
-              {confidence ? <p className="mt-2 text-interface-xs font-semibold">Confidence: {confidence}</p> : null}
+            <article className="rounded-2xl border border-border/50 bg-surface p-4" key={interpretation.id}>
+              <div className="flex items-start justify-between gap-2">
+                <h4 className="font-semibold text-foreground">{interpretation.title}</h4>
+                {confidence ? <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-interface-xs font-semibold text-primary">{confidence}</span> : null}
+              </div>
+              <p className="mt-1.5 text-interface-sm text-foreground-secondary leading-relaxed">{interpretation.text}</p>
             </article>
           );
-        }) : <p className="rounded-container bg-surface-subtle p-4 text-interface-sm text-foreground-secondary">No AI-generated interpretations are available for this period.</p>}
+        }) : <p className="rounded-2xl border border-dashed border-border bg-surface-subtle/30 p-4 text-center text-interface-sm text-foreground-secondary">No AI-generated interpretations are available for this period.</p>}
       </section>
 
       <section aria-labelledby="ai-recommendations-title" className="grid gap-3">
-        <h3 className="text-interface-md font-semibold text-foreground" id="ai-recommendations-title">AI-generated recommendations</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-interface-sm font-semibold text-foreground" id="ai-recommendations-title">AI-generated recommendations</h3>
+          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-interface-xs font-medium text-primary">{insightSet.recommendations.length}</span>
+        </div>
         {insightSet.recommendations.length ? <ul className="grid gap-2">
           {insightSet.recommendations.map((recommendation) => {
             const confidence = confidenceText(recommendation.confidence);
-            return <li className="rounded-container border border-primary/40 bg-surface p-4 text-interface-sm" key={recommendation.id}>
-              <p className="text-interface-xs font-semibold uppercase tracking-wide text-primary">AI-generated recommendation</p>
-              <p className="mt-1">{recommendation.text}</p>
-              {confidence ? <p className="mt-2 text-interface-xs font-semibold">Confidence: {confidence}</p> : null}
+            return <li className="rounded-2xl border border-border/50 bg-surface p-4" key={recommendation.id}>
+              <div className="flex items-start justify-between gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-interface-xs font-medium text-primary">Recommendation</span>
+                {confidence ? <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-interface-xs font-semibold text-primary">{confidence}</span> : null}
+              </div>
+              <p className="mt-2 text-interface-sm text-foreground-secondary leading-relaxed">{recommendation.text}</p>
             </li>;
           })}
-        </ul> : <p className="rounded-container bg-surface-subtle p-4 text-interface-sm text-foreground-secondary">No AI-generated recommendations are available for this period.</p>}
+        </ul> : <p className="rounded-2xl border border-dashed border-border bg-surface-subtle/30 p-4 text-center text-interface-sm text-foreground-secondary">No AI-generated recommendations are available for this period.</p>}
       </section>
 
-      {hasConfidence ? <details className="rounded-container bg-surface p-4 text-interface-sm">
-        <summary className="cursor-pointer font-semibold">What does AI confidence mean?</summary>
-        <p className="mt-2 text-foreground-secondary">{confidenceExplanation}</p>
+      {hasConfidence ? <details className="rounded-2xl border border-border/50 bg-surface p-4 text-interface-sm">
+        <summary className="cursor-pointer font-semibold text-foreground">What does AI confidence mean?</summary>
+        <p className="mt-2 text-foreground-secondary leading-relaxed">{confidenceExplanation}</p>
       </details> : null}
       <Alert description={insightSet.disclaimer} title="AI guidance notice" tone="info" />
     </div>
@@ -203,9 +216,9 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
   };
 
   return (
-    <Card aria-labelledby={sectionId} as="section" className="min-h-[24rem] space-y-5 border-primary/40" elevation="raised" data-ai-boundary="dashboard-highlights">
+    <Card aria-labelledby={sectionId} as="section" className="min-h-[24rem] space-y-4 border-border/50" elevation="raised" data-ai-boundary="dashboard-highlights">
       <SectionHeader
-        action={<Button icon={<RefreshCw size={18} />} intent="secondary" label="Refresh AI highlights" loading={pending} onClick={() => void refresh()} />}
+        action={<Button icon={<RefreshCw size={14} />} intent="ghost" label="Refresh AI highlights" loading={pending} onClick={() => void refresh()} />}
         description="AI-generated observations and optional guidance are kept separate from recorded financial data."
         metadata={insightSet ? <><span>Reporting period: {insightSet.period.label}</span><span aria-hidden="true"> · </span><span>Generated <DateText format="date-time" value={insightSet.generatedAt} /></span></> : "Choose to generate guidance for the current reporting period."}
         title="AI-generated highlights"
@@ -216,19 +229,19 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
       {sessionChecked && !disclosureAccepted && !insightSet ? <DisclosurePanel disclosure={disclosure} onContinue={acceptDisclosure} /> : null}
       {pending && !insightSet ? <Skeleton label="Generating AI highlights" minimumHeight="14rem" /> : null}
       {error && insightSet ? <Alert
-        action={<Button icon={<RefreshCw size={18} />} intent="secondary" label="Retry AI highlights" onClick={() => void refresh()} />}
+        action={<Button icon={<RefreshCw size={14} />} intent="ghost" label="Retry AI highlights" onClick={() => void refresh()} />}
         description={`${error} Last successful AI highlights are shown below.`}
-        icon={<TriangleAlert size={20} />}
+        icon={<TriangleAlert size={18} />}
         title="Showing stale AI highlights"
         tone="warning"
       /> : null}
       {error && !insightSet && !pending ? <ErrorState
-        action={<Button icon={<RefreshCw size={18} />} label="Retry AI highlights" onClick={() => void refresh()} />}
+        action={<Button icon={<RefreshCw size={14} />} label="Retry AI highlights" onClick={() => void refresh()} />}
         description={error}
         title="AI highlights unavailable"
       /> : null}
       {insightSet ? <InsightContent insightSet={insightSet} /> : null}
-      <LinkButton href={insightsHref} icon={<ArrowUpRight size={18} />} intent="secondary" label="Open detailed insights" />
+      <LinkButton href={insightsHref} icon={<ArrowUpRight size={16} />} intent="secondary" label="Open detailed insights" />
     </Card>
   );
 }

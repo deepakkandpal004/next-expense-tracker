@@ -58,10 +58,10 @@ export function TransactionPagination({
 
   return (
     <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-      <p className="text-xs text-foreground-secondary">
-        Showing <span className="font-medium text-foreground">{startItem}</span> to{" "}
-        <span className="font-medium text-foreground">{endItem}</span> of{" "}
-        <span className="font-medium text-foreground">{totalItems}</span> transactions
+      <p className="text-xs text-on-surface-variant/60">
+        Showing <span className="font-medium text-on-surface">{startItem}</span> to{" "}
+        <span className="font-medium text-on-surface">{endItem}</span> of{" "}
+        <span className="font-medium text-on-surface">{totalItems}</span> transactions
       </p>
 
       <div className="flex items-center gap-1">
@@ -87,7 +87,7 @@ export function TransactionPagination({
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="flex h-8 w-8 items-center justify-center text-xs text-foreground-secondary"
+                  className="flex h-8 w-8 items-center justify-center text-xs text-on-surface-variant/60"
                 >
                   ···
                 </span>
@@ -103,7 +103,7 @@ export function TransactionPagination({
                   "flex h-8 min-w-[32px] items-center justify-center rounded-lg px-2 text-sm font-medium transition-all duration-150",
                   page === currentPage
                     ? "bg-foreground text-background shadow-sm"
-                    : "text-foreground-secondary hover:bg-surface-subtle hover:text-foreground",
+                    : "text-on-surface-variant/60 hover:bg-white/5 hover:text-on-surface",
                 )}
                 type="button"
                 aria-label={`Page ${page}`}
@@ -156,8 +156,8 @@ function PaginationButton({
       className={cn(
         "flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150",
         disabled
-          ? "cursor-not-allowed text-foreground-secondary/30"
-          : "text-foreground-secondary hover:bg-surface-subtle hover:text-foreground",
+          ? "cursor-not-allowed text-on-surface-variant/30"
+          : "text-on-surface-variant/60 hover:bg-white/5 hover:text-on-surface",
       )}
       type="button"
       aria-label={ariaLabel}

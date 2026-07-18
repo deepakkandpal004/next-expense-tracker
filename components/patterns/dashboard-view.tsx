@@ -174,8 +174,8 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
     <div className="grid gap-6">
       <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-display-xl font-bold text-foreground">Dashboard</h1>
-          <p className="mt-1 text-body text-foreground-secondary">
+          <h1 className="text-display-xl font-bold text-primary-fixed drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">Dashboard</h1>
+          <p className="mt-1 text-sm text-on-surface-variant/60">
             {currentDashboard.period.label}
             {currentDashboard.updatedAt ? (
               <>
@@ -316,22 +316,22 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
 
       <section
         aria-labelledby="insights-cta-title"
-        className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-accent/30 bg-accent-surface px-6 py-5"
+        className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/50 bg-surface px-5 py-4"
       >
         <div>
           <h2
-            className="text-label font-semibold text-accent-foreground"
+            className="text-interface-sm font-semibold text-foreground"
             id="insights-cta-title"
           >
             Want a deeper look?
           </h2>
-          <p className="mt-1 text-caption text-foreground-secondary">
+          <p className="mt-0.5 text-interface-xs text-foreground-secondary">
             Ask questions about this reporting period in detailed Insights.
           </p>
         </div>
         <LinkButton
           href={insightsHref}
-          icon={<ArrowUpRight size={18} />}
+          icon={<ArrowUpRight size={16} />}
           label="Open insights"
         />
       </section>

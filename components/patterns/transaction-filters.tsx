@@ -84,8 +84,8 @@ function FilterDropdown({ label, options, value, onChange, icon }: FilterDropdow
         className={cn(
           "inline-flex h-9 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.97]",
           value
-            ? "border-accent/30 bg-accent/5 text-accent"
-            : "border-border bg-surface text-foreground-secondary hover:border-border hover:bg-surface-subtle",
+            ? "border-primary-fixed/30 bg-primary-fixed/5 text-primary-fixed"
+            : "border-white/5 bg-white/[0.02] text-on-surface-variant/60 hover:border-white/5 hover:bg-white/5",
         )}
         type="button"
         aria-expanded={isOpen}
@@ -105,7 +105,7 @@ function FilterDropdown({ label, options, value, onChange, icon }: FilterDropdow
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: MOTION_DURATION.fast, ease: MOTION_EASE.standard }}
-            className="absolute left-0 top-full z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
+            className="absolute left-0 top-full z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl border border-white/5 bg-surface-container shadow-lg"
             role="listbox"
           >
             {options.map((option) => (
@@ -119,7 +119,7 @@ function FilterDropdown({ label, options, value, onChange, icon }: FilterDropdow
                   "flex w-full items-center px-3 py-2 text-left text-sm transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent",
                   option.value === value
                     ? "bg-accent/10 text-accent font-medium"
-                    : "text-foreground hover:bg-surface-subtle",
+                    : "text-on-surface hover:bg-white/5",
                 )}
                 role="option"
                 aria-selected={option.value === value}
@@ -204,19 +204,19 @@ export function TransactionFilters({
         <div className="relative flex-1 min-w-[200px] max-w-md">
           <Search
             size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-secondary"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60"
           />
           <input
             type="text"
             value={localSearch}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search transactions..."
-            className="h-9 w-full rounded-xl border border-border bg-surface pl-9 pr-4 text-sm text-foreground placeholder:text-foreground-secondary/50 transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+            className="h-9 w-full rounded-xl border border-white/5 bg-white/[0.02] pl-9 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant/40 transition-colors focus:border-primary-fixed/50 focus:outline-none focus:ring-2 focus:ring-primary-fixed/20"
           />
           {localSearch && (
             <button
               onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-secondary hover:text-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface"
               type="button"
               aria-label="Clear search"
             >
@@ -249,7 +249,7 @@ export function TransactionFilters({
       </div>
 
       <div className="flex flex-wrap items-center gap-2" aria-live="polite">
-        <span className="text-xs text-foreground-secondary">
+        <span className="text-xs text-on-surface-variant/60">
           {recordCount} transaction{recordCount === 1 ? "" : "s"}
         </span>
 

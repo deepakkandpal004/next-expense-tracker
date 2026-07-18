@@ -81,9 +81,9 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
       onMouseLeave={() => { setIsHovered(false); setShowActions(false); }}
       animate={{ opacity: 1, x: 0 }}
       className={cn(
-        "group relative rounded-xl bg-surface p-4 transition-all duration-200",
-        "hover:shadow-premium hover:-translate-y-1",
-        isHovered && "shadow-premium-lg -translate-y-1",
+        "group relative rounded-xl bg-white/[0.02] p-4 transition-all duration-300",
+        "hover:bg-white/[0.05]",
+        isHovered && "bg-white/[0.05]",
       )}
       initial={{ opacity: 0, x: 16 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1], delay: index * 0.04 }}
@@ -93,7 +93,7 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
         <motion.div
           className={cn(
             "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-200",
-            isIncome ? "bg-kpi-income-surface text-kpi-income" : "bg-kpi-expense-surface text-kpi-expense",
+            isIncome ? "bg-tertiary-container/15 text-tertiary-fixed" : "bg-secondary-container/15 text-secondary-fixed",
           )}
           animate={isHovered ? { scale: 1.08, rotate: 3 } : { scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -104,17 +104,17 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate text-body font-semibold text-foreground">{transaction.description}</p>
+            <p className="truncate text-sm font-semibold text-on-surface">{transaction.description}</p>
             <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               {isIncome && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-kpi-income-surface/50 px-2 py-0.5 text-caption-strong text-kpi-income">
+                <span className="inline-flex items-center gap-1 rounded-full bg-tertiary-container/15 px-2 py-0.5 text-[10px] font-semibold text-tertiary-fixed">
                   Income
                 </span>
               )}
               <span
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption-strong",
-                  isIncome ? "bg-kpi-income-surface/50 text-kpi-income" : "bg-kpi-expense-surface/50 text-kpi-expense",
+                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                  isIncome ? "bg-tertiary-container/15 text-tertiary-fixed" : "bg-secondary-container/15 text-secondary-fixed",
                 )}
               >
                 {getPaymentMethodIcon(transaction.type)}
@@ -123,16 +123,16 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
             </div>
           </div>
 
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-caption text-foreground-secondary">
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant/50">
             <span
-              className="inline-flex items-center gap-1 rounded-full bg-surface-subtle px-2 py-0.5"
+              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-[10px]"
               style={{ borderColor: `color-mix(in srgb, ${cssVar} 30%, transparent)` }}
             >
               <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cssVar }} aria-hidden="true" />
               {definition.label}
             </span>
-            <span className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-foreground-secondary/30" aria-hidden="true" />
+            <span className="flex items-center gap-1 font-geist">
+              <span className="h-1.5 w-1.5 rounded-full bg-on-surface-variant/20" aria-hidden="true" />
               {relativeDate(transaction.occurredOn)}
             </span>
           </div>
@@ -141,8 +141,8 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
         <div className="flex flex-col items-end gap-2 shrink-0">
           <motion.p
             className={cn(
-              "financial-value text-body font-bold tabular-nums transition-colors",
-              isIncome ? "text-kpi-income" : "text-kpi-expense",
+              "financial-value text-sm font-bold tabular-nums transition-colors",
+              isIncome ? "text-tertiary-fixed" : "text-secondary-fixed",
             )}
             aria-label={`${isIncome ? "Income" : "Expense"} ${formattedAmount}`}
             initial={{ opacity: 0, y: -8 }}
@@ -163,14 +163,14 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
               >
                 <button
                   onClick={() => onDelete(transaction.id)}
-                  className="p-2 rounded-lg text-foreground-secondary hover:bg-danger-surface hover:text-danger transition-colors"
+                  className="p-2 rounded-lg text-on-surface-variant/50 hover:bg-danger-container/15 hover:text-danger transition-colors"
                   aria-label={`Delete ${transaction.description}`}
                   {...pressVariants}
                 >
                   <Trash2 size={16} strokeWidth={2.2} />
                 </button>
                 <button
-                  className="p-2 rounded-lg text-foreground-secondary hover:bg-surface-subtle hover:text-foreground transition-colors"
+                  className="p-2 rounded-lg text-on-surface-variant/50 hover:bg-white/5 hover:text-on-surface transition-colors"
                   aria-label="More options"
                   {...pressVariants}
                 >
@@ -201,18 +201,18 @@ export function RecentTransactionsCard({
   return (
     <section
       aria-labelledby="recent-tx-title"
-      className="rounded-2xl bg-surface shadow-premium-sm overflow-hidden"
+      className="glass-vessel overflow-hidden"
     >
-      <header className="flex items-center justify-between border-b border-border px-5 py-4">
+      <header className="flex items-center justify-between border-b border-white/5 px-5 py-4">
         <h2
-          className="text-label font-semibold text-foreground"
+          className="text-sm font-semibold text-on-surface"
           id="recent-tx-title"
         >
           Recent Transactions
         </h2>
         <Link
           aria-label="View all transactions"
-          className="text-caption-strong text-accent transition-colors hover:text-accent/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="text-xs font-medium text-primary-fixed transition-all hover:drop-shadow-[0_0_8px_#00dce5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           href={allRecordsHref}
         >
           View all
@@ -222,18 +222,18 @@ export function RecentTransactionsCard({
 
       {transactions.length === 0 ? (
         <div className="p-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-subtle text-foreground-secondary">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container/10 text-primary-fixed">
             <DollarSign size={28} strokeWidth={1.8} />
           </div>
-          <p className="text-body font-medium text-foreground">
+          <p className="text-sm font-medium text-on-surface">
             No transactions yet
           </p>
-          <p className="mt-1 text-caption text-foreground-secondary">
+          <p className="mt-1 text-xs text-on-surface-variant/50">
             Add your first transaction to see it here
           </p>
           <a
             href={allRecordsHref.replace("/records", "/records?addTransaction=1")}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-label font-semibold text-accent-foreground bg-accent rounded-xl hover:bg-accent/90 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-on-primary-fixed bg-primary-container rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)]"
           >
             <DollarSign size={16} strokeWidth={2.2} />
             Add Transaction
@@ -242,7 +242,7 @@ export function RecentTransactionsCard({
       ) : (
         <ul
           aria-label="Recent transactions"
-          className="divide-y divide-border"
+          className="divide-y divide-white/5"
         >
           <AnimatePresence mode="popLayout">
             <motion.ul

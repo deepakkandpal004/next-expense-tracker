@@ -16,18 +16,18 @@ export function QuickActionsCard({ onAddExpense, onAddIncome, className }: Quick
     <motion.section
       aria-labelledby="quick-actions-title"
       className={cn(
-        "flex items-center gap-3 rounded-2xl bg-surface px-5 py-3 shadow-sm",
+        "flex items-center gap-3 rounded-2xl bg-white/5 px-5 py-3 shadow-sm",
         className,
       )}
       variants={listItemVariants}
     >
-      <h2 className="text-[11px] font-medium text-foreground-secondary uppercase tracking-wider mr-2" id="quick-actions-title">
+      <h2 className="text-[11px] font-medium text-on-surface-variant/60 uppercase tracking-wider mr-2" id="quick-actions-title">
         Quick Actions
       </h2>
 
       <button
         aria-label="Add expense"
-        className="group flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2 text-[13px] font-medium text-foreground transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        className="group flex items-center gap-2 rounded-xl border border-white/5 bg-transparent px-4 py-2 text-[13px] font-medium text-on-surface transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         onClick={onAddExpense}
         type="button"
       >
@@ -39,7 +39,7 @@ export function QuickActionsCard({ onAddExpense, onAddIncome, className }: Quick
 
       <button
         aria-label="Add income"
-        className="group flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2 text-[13px] font-medium text-foreground transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        className="group flex items-center gap-2 rounded-xl border border-white/5 bg-transparent px-4 py-2 text-[13px] font-medium text-on-surface transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         onClick={onAddIncome}
         type="button"
       >

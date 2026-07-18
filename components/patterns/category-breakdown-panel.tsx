@@ -107,7 +107,7 @@ function CategoryRow({
   return (
     <motion.div
       animate={{ opacity: 1, x: 0 }}
-      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle"
+      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle/50"
       initial={{ opacity: 0, x: 8 }}
       transition={{ duration: 0.25, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
     >
@@ -180,7 +180,7 @@ export function CategoryBreakdownPanel({
   return (
     <section
       aria-labelledby="category-breakdown-title"
-      className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface"
+      className="relative overflow-hidden glass-vessel"
     >
       {/* Header */}
       <div className="relative px-5 pt-4 pb-3">
@@ -235,7 +235,7 @@ export function CategoryBreakdownPanel({
         </div>
         {hasMore ? (
           <button
-            className="mt-2 w-full rounded-lg py-2 text-center text-xs font-medium text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-foreground"
+            className="mt-2 w-full rounded-lg py-2 text-center text-xs font-medium text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle/50 hover:text-foreground"
             onClick={() => setViewAll((prev) => !prev)}
             type="button"
           >
