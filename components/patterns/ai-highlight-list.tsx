@@ -75,12 +75,12 @@ function InsightContent({ insightSet }: { insightSet: AiInsightSet }) {
 
   return (
     <div className="grid gap-5">
-      <section aria-labelledby="recorded-facts-title" className="rounded-container border border-border bg-surface-subtle p-4">
+      <section aria-labelledby="recorded-facts-title" className="rounded-container bg-surface-subtle p-4">
         <h3 className="text-interface-md font-semibold text-foreground" id="recorded-facts-title">Recorded data facts</h3>
         <p className="mt-1 text-interface-sm text-foreground-secondary">Observed from recorded transactions in this reporting period.</p>
         <dl className="mt-3 grid gap-2 text-interface-sm">
           {insightSet.facts.map((fact) => (
-            <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-border pt-2 first:border-0 first:pt-0" key={`${fact.label}-${fact.value}`}>
+            <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 pt-2 first:border-0 first:pt-0" key={`${fact.label}-${fact.value}`}>
               <dt className="text-foreground-secondary">{fact.label}</dt>
               <dd className="financial-value font-semibold text-foreground">{fact.value}</dd>
             </div>
@@ -100,7 +100,7 @@ function InsightContent({ insightSet }: { insightSet: AiInsightSet }) {
               {confidence ? <p className="mt-2 text-interface-xs font-semibold">Confidence: {confidence}</p> : null}
             </article>
           );
-        }) : <p className="rounded-container border border-border p-4 text-interface-sm text-foreground-secondary">No AI-generated interpretations are available for this period.</p>}
+        }) : <p className="rounded-container bg-surface-subtle p-4 text-interface-sm text-foreground-secondary">No AI-generated interpretations are available for this period.</p>}
       </section>
 
       <section aria-labelledby="ai-recommendations-title" className="grid gap-3">
@@ -114,10 +114,10 @@ function InsightContent({ insightSet }: { insightSet: AiInsightSet }) {
               {confidence ? <p className="mt-2 text-interface-xs font-semibold">Confidence: {confidence}</p> : null}
             </li>;
           })}
-        </ul> : <p className="rounded-container border border-border p-4 text-interface-sm text-foreground-secondary">No AI-generated recommendations are available for this period.</p>}
+        </ul> : <p className="rounded-container bg-surface-subtle p-4 text-interface-sm text-foreground-secondary">No AI-generated recommendations are available for this period.</p>}
       </section>
 
-      {hasConfidence ? <details className="rounded-container border border-border bg-surface p-4 text-interface-sm">
+      {hasConfidence ? <details className="rounded-container bg-surface p-4 text-interface-sm">
         <summary className="cursor-pointer font-semibold">What does AI confidence mean?</summary>
         <p className="mt-2 text-foreground-secondary">{confidenceExplanation}</p>
       </details> : null}

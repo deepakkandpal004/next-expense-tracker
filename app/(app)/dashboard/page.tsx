@@ -30,5 +30,5 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const dashboard = await getDashboardData(user.id, period);
   const disclosure = getAiInsightsDisclosure();
 
-  return <DashboardView dashboard={dashboard} disclosure={disclosure} period={periodInput} />;
+  return <DashboardView dashboard={dashboard} disclosure={disclosure} period={periodInput} user={{ name: user.name }} />;
 }

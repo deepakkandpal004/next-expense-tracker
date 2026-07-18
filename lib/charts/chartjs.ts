@@ -17,6 +17,10 @@ export const CHART_SEMANTIC_COLOR_VARIABLES = Object.freeze({
   "category-healthcare": "--color-category-healthcare",
   "category-income": "--color-category-income",
   "category-other": "--color-category-other",
+  "kpi-balance": "--color-kpi-balance",
+  "kpi-income": "--color-kpi-income",
+  "kpi-expense": "--color-kpi-expense",
+  "kpi-savings": "--color-kpi-savings",
 });
 
 export type ChartSemanticColor = keyof typeof CHART_SEMANTIC_COLOR_VARIABLES;

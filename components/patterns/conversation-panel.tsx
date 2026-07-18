@@ -72,7 +72,7 @@ function AnswerCard({ answer }: { answer: AiConversationAnswer }) {
         {answer.stale ? <p className="mt-2 text-interface-xs font-semibold">This answer could not be refreshed and may be outdated.</p> : null}
       </div>
       {answer.facts.length > 0 ? (
-        <section aria-labelledby="answer-facts-title" className="rounded-container border border-border bg-surface-subtle p-4">
+        <section aria-labelledby="answer-facts-title" className="rounded-container bg-surface-subtle p-4">
           <h3 className="text-interface-sm font-semibold text-foreground" id="answer-facts-title">Recorded data facts</h3>
           <dl className="mt-2 grid gap-2 text-interface-sm">
             {answer.facts.map((fact) => (

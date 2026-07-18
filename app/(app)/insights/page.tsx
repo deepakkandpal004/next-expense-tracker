@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
-import { getAiAnswerDisclosure } from '@/lib/domain/ai';
+import { redirect } from 'next/navigation';
+import { getAuthUser } from '@/lib/auth';
+import { getAiAnswerDisclosure, getAiInsightsDisclosure } from '@/lib/domain/ai';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
+import { AiHighlightList } from '@/components/patterns/ai-highlight-list';
 import { ConversationPanel } from '@/components/patterns/conversation-panel';
 
 export const metadata: Metadata = { title: 'Insights – Expense AI' };
@@ -19,9 +22,18 @@ function toSearchParams(query: Record<string, string | string[] | undefined>): U
 }
 
 export default async function InsightsPage({ searchParams }: InsightsPageProps) {
+  const user = await getAuthUser();
+  if (!user) redirect('/sign-in');
+
   const query = await searchParams;
   const { input: periodInput } = resolveValidReportingPeriod(toSearchParams(query));
-  const disclosure = getAiAnswerDisclosure();
+  const answerDisclosure = getAiAnswerDisclosure();
+  const insightsDisclosure = getAiInsightsDisclosure();
 
-  return <ConversationPanel disclosure={disclosure} period={periodInput} />;
+  return (
+    <>
+      <AiHighlightList disclosure={insightsDisclosure} period={periodInput} />
+      <ConversationPanel disclosure={answerDisclosure} period={periodInput} />
+    </>
+  );
 }

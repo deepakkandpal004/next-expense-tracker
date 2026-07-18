@@ -3,17 +3,18 @@
 import { motion } from "motion/react";
 import { ArrowUpRight, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
+import { createTransaction } from "@/app/actions/addExpenseRecord";
 import { getDashboardSnapshot } from "@/app/actions/getDashboardSnapshot";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import { AiHighlightList } from "@/components/patterns/ai-highlight-list";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
-import { KpiCard } from "@/components/patterns/kpi-card";
-import { MonthlySnapshot } from "@/components/patterns/monthly-snapshot";
+import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
 import { QuickActionsCard } from "@/components/patterns/quick-actions-card";
 import { RecentTransactionsCard } from "@/components/patterns/recent-transactions-card";
 import { SpendingOverviewPanel } from "@/components/patterns/spending-overview-panel";
+import { AIFinancialCoach, generateAICoachInsight } from "@/components/patterns/ai-financial-coach";
+import { MonthlySnapshot } from "@/components/patterns/monthly-snapshot";
 import {
   Alert,
   Button,
@@ -23,13 +24,103 @@ import {
 } from "@/components/ui";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
-import { listContainerVariants } from "@/lib/ui/motion";
+import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import type { AiDataUseDisclosure, ReportingPeriod, TransactionType } from "@/lib/domain/types";
+import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
+
+export interface DashboardUser {
+  name: string | null;
+}
 
 export interface DashboardViewProps {
   dashboard: DashboardDTO;
   disclosure: AiDataUseDisclosure;
   period: ReportingPeriod;
+  user?: DashboardUser;
+}
+
+function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parameters<typeof HeroKpiCard>[0]["aiInsight"]> | undefined {
+  const { insights, snapshot, kpis, categoryBreakdown } = dashboard;
+  const savingsRate = snapshot.savingsRate * 100;
+  const expenseTrend = insights.spending.trend;
+
+  if (expenseTrend && expenseTrend.direction === "up" && expenseTrend.changePercent > 0.2) {
+    return {
+      title: "Spending Spike Detected",
+      description: `Your expenses increased ${(expenseTrend.changePercent * 100).toFixed(0)}% vs last period. Review your top categories to identify the cause.`,
+      type: "warning",
+      actionLabel: "Analyze Categories",
+      actionHref: "/insights?focus=categories",
+    };
+  }
+
+  if (savingsRate >= 25) {
+    return {
+      title: "Exceptional Savings Discipline",
+      description: `You're saving ${savingsRate.toFixed(0)}% of your income — well above the 20% benchmark. Consider investing the surplus for long-term growth.`,
+      type: "celebration",
+      actionLabel: "Explore Investments",
+      actionHref: "/goals",
+    };
+  }
+
+  if (savingsRate > 0 && savingsRate < 10) {
+    return {
+      title: "Savings Rate Below Target",
+      description: `You're saving only ${savingsRate.toFixed(0)}% of income. The 50/30/20 rule suggests 20% for savings. Small adjustments can make a big difference.`,
+      type: "info",
+      actionLabel: "Set Savings Goal",
+      actionHref: "/goals",
+    };
+  }
+
+  if (kpis.budget.status === "exceeded") {
+    return {
+      title: "Budget Exceeded",
+      description: `You're over budget by ${formatCurrency({ minorValue: kpis.budget.excessMinor, currency: dashboard.currency })}. Consider adjusting spending or increasing your budget limit.`,
+      type: "warning",
+      actionLabel: "Review Budget",
+      actionHref: "/budgets",
+    };
+  }
+
+  if (kpis.budget.status === "approaching") {
+    const used = (kpis.budget.budgetMinor - kpis.budget.remainingMinor) / kpis.budget.budgetMinor;
+    return {
+      title: "Approaching Budget Limit",
+      description: `You've used ${formatPercentage(used)} of your monthly budget. ${formatCurrency({ minorValue: kpis.budget.remainingMinor, currency: dashboard.currency })} remaining.`,
+      type: "info",
+    };
+  }
+
+  if (categoryBreakdown.length > 0) {
+    const topCategory = categoryBreakdown[0];
+    if (topCategory.percentage > 0.4) {
+      return {
+        title: `High ${topCategory.label} Concentration`,
+        description: `${topCategory.label} accounts for ${formatPercentage(topCategory.percentage)} of your spending. Diversifying categories can improve financial resilience.`,
+        type: "info",
+        actionLabel: "Set Category Budget",
+        actionHref: "/budgets",
+      };
+    }
+  }
+
+  if (snapshot.transactionCount === 0) {
+    return {
+      title: "Start Tracking to Unlock Insights",
+      description: "Add your first transaction to see personalized AI insights and build your financial health score.",
+      type: "info",
+      actionLabel: "Add Transaction",
+      actionHref: "/records?addTransaction=1",
+    };
+  }
+
+  return {
+    title: "Financial Health Looks Good",
+    description: "Your spending patterns are within healthy ranges. Keep tracking consistently to maintain this momentum.",
+    type: "positive",
+  };
 }
 
 export function DashboardView({ dashboard, disclosure, period }: DashboardViewProps) {
@@ -68,21 +159,23 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
   };
 
   const submitTransaction = async (submission: TransactionSubmission) => {
-    const result = await createTransaction(submission as CreateTransactionRequest);
+    const result = await createTransaction({ requestId: submission.requestId, command: submission.command });
     if (result.status === "success") {
       await refreshDashboard(`${result.message} Dashboard refreshed.`);
     }
     return result;
   };
 
-  return (
-    <div className="grid gap-8">
+  const aiInsight = generateDashboardAIInsight(currentDashboard);
 
-      {/* ── 1. Header: period label + last-updated + refresh ── */}
+  const coachInsight = generateAICoachInsight(currentDashboard);
+
+  return (
+    <div className="grid gap-6">
       <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-display-sm font-bold text-foreground">Dashboard</h1>
-          <p className="mt-1 text-interface-sm text-foreground-secondary">
+          <h1 className="text-display-xl font-bold text-foreground">Dashboard</h1>
+          <p className="mt-1 text-body text-foreground-secondary">
             {currentDashboard.period.label}
             {currentDashboard.updatedAt ? (
               <>
@@ -92,7 +185,7 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
           </p>
         </div>
         <Button
-          icon={<RefreshCw size={16} />}
+          icon={<RefreshCw size={14} />}
           intent="secondary"
           label="Refresh"
           loading={refreshing}
@@ -100,7 +193,6 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         />
       </header>
 
-      {/* Hidden add-transaction dialog (opened from Quick Actions) */}
       <AddNewRecord
         defaultType={addTransactionPreset}
         hideTrigger
@@ -109,10 +201,8 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         submitTransaction={submitTransaction}
       />
 
-      {/* Accessibility live region */}
       <StatusRegion message={status} visible={Boolean(status)} />
 
-      {/* Refresh error banner */}
       {refreshError ? (
         <Alert
           action={
@@ -129,64 +219,68 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         />
       ) : null}
 
-      {/* ── 2. KPI summary row + Quick Actions ── */}
       <motion.section
         animate="visible"
         aria-busy={refreshing || undefined}
-        aria-label="Key metrics"
-        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
+        aria-label="Financial overview"
+        className="grid gap-4"
         initial="hidden"
         variants={listContainerVariants}
       >
-        <KpiCard
+        <motion.div variants={listItemVariants}>
+          <HeroKpiCard
+            currency={currentDashboard.currency}
+            balance={currentDashboard.insights.balance}
+            income={currentDashboard.insights.income}
+            expense={currentDashboard.insights.spending}
+            savings={currentDashboard.insights.savings}
+            savingsRate={currentDashboard.snapshot.savingsRate * 100}
+            snapshot={{
+              daysInPeriod: currentDashboard.snapshot.daysInPeriod,
+            }}
+            aiInsight={aiInsight ? {
+              ...aiInsight,
+              secondaryActionLabel: "View Full Report",
+              secondaryActionHref: insightsHref,
+            } : undefined}
+          />
+        </motion.div>
+
+        <motion.div variants={listItemVariants}>
+          <QuickActionsCard
+            onAddExpense={() => {
+              setAddTransactionPreset("expense");
+              setAddTransactionOpen(true);
+            }}
+            onAddIncome={() => {
+              setAddTransactionPreset("income");
+              setAddTransactionOpen(true);
+            }}
+          />
+        </motion.div>
+      </motion.section>
+
+      <motion.section
+        aria-busy={refreshing || undefined}
+        aria-label="AI Financial Coach"
+        variants={listContainerVariants}
+      >
+        <AIFinancialCoach
+          insight={coachInsight}
           currency={currentDashboard.currency}
-          insight={currentDashboard.insights.balance}
-          label="Total Balance"
-          role="balance"
-        />
-        <KpiCard
-          currency={currentDashboard.currency}
-          insight={currentDashboard.insights.income}
-          label="Total Income"
-          role="income"
-        />
-        <KpiCard
-          currency={currentDashboard.currency}
-          insight={currentDashboard.insights.spending}
-          label="Total Expenses"
-          role="expense"
-        />
-        <KpiCard
-          currency={currentDashboard.currency}
-          insight={currentDashboard.insights.savings}
-          label="Total Savings"
-          role="savings"
-        />
-        <QuickActionsCard
-          className="sm:col-span-2 xl:col-span-1"
-          onAddExpense={() => {
-            setAddTransactionPreset("expense");
-            setAddTransactionOpen(true);
-          }}
-          onAddIncome={() => {
-            setAddTransactionPreset("income");
-            setAddTransactionOpen(true);
-          }}
         />
       </motion.section>
 
-      {/* ── 4 & 5. Main two-column grid ── */}
       <div
         aria-busy={refreshing || undefined}
         aria-label="Dashboard reporting data"
-        className="grid gap-6 lg:grid-cols-12"
+        className="grid gap-5 lg:grid-cols-12"
       >
-        {/* Left column: chart → recent transactions */}
-        <div className="grid gap-6 lg:col-span-7">
+        <div className="grid gap-5 lg:col-span-7">
           <SpendingOverviewPanel
             currency={currentDashboard.currency}
-            incomeInsight={currentDashboard.insights.income}
             period={currentDashboard.period.label}
+            incomeInsight={currentDashboard.insights.income}
             spendingInsight={currentDashboard.insights.spending}
             trendModel={currentDashboard.trend}
           />
@@ -197,8 +291,7 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
           />
         </div>
 
-        {/* Right column: budget (goal/status) → category breakdown (detail) */}
-        <div className="grid gap-6 lg:col-span-5">
+        <div className="grid gap-5 lg:col-span-5">
           <BudgetOverviewCard
             budget={currentDashboard.kpis.budget}
             categoryBreakdown={currentDashboard.categoryBreakdown}
@@ -214,28 +307,25 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         </div>
       </div>
 
-      {/* ── 6. Monthly Snapshot row ── */}
       <MonthlySnapshot
         currency={currentDashboard.currency}
         snapshot={currentDashboard.snapshot}
       />
 
-      {/* ── 7. AI highlights section ── */}
       <AiHighlightList disclosure={disclosure} period={period} />
 
-      {/* ── 8. Insights deep-dive CTA ── */}
       <section
         aria-labelledby="insights-cta-title"
-        className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-accent/30 bg-accent-surface px-6 py-5"
+        className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-accent/30 bg-accent-surface px-6 py-5"
       >
         <div>
           <h2
-            className="text-interface-md font-semibold text-accent-foreground"
+            className="text-label font-semibold text-accent-foreground"
             id="insights-cta-title"
           >
             Want a deeper look?
           </h2>
-          <p className="mt-1 text-interface-sm text-foreground-secondary">
+          <p className="mt-1 text-caption text-foreground-secondary">
             Ask questions about this reporting period in detailed Insights.
           </p>
         </div>

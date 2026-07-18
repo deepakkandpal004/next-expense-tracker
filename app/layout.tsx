@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Sora, Inter } from 'next/font/google';
+import { Sora, Inter, Geist } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
@@ -11,6 +11,9 @@ import {
   isAppearancePreference,
   isContentDensity,
 } from '@/lib/preferences/preferences';
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const sora = Sora({
   variable: '--font-sora',
@@ -58,7 +61,7 @@ export default async function RootLayout({
       lang='en'
       data-appearance-preference={initialAppearance}
       data-density={initialDensity}
-      suppressHydrationWarning
+      suppressHydrationWarning className={cn("font-sans", geist.variable)}
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.light} />
