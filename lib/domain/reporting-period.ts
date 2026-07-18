@@ -10,6 +10,8 @@ export const APP_PERIOD_DESTINATIONS = Object.freeze({
   dashboard: "/dashboard",
   records: "/records",
   insights: "/insights",
+  budgets: "/budgets",
+  goals: "/goals",
 });
 
 export type AppPeriodDestination = keyof typeof APP_PERIOD_DESTINATIONS;

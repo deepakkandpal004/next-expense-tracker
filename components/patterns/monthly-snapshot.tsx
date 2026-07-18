@@ -7,7 +7,6 @@ import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import { cn } from "@/lib/ui/cn";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import type { DashboardSnapshot } from "@/lib/domain/types";
-import { MiniSparkline } from "./mini-sparkline";
 
 export interface MonthlySnapshotProps {
   snapshot: DashboardSnapshot;
@@ -18,15 +17,15 @@ interface SnapshotCard {
   id: string;
   label: string;
   value: ReactNode;
-  /** Plain-text screen-reader value for animated numbers */
   srValue: string;
   sublabel: string;
-  sparkline: readonly number[];
-  sparklineColor: string;
+  icon: ReactNode;
+  iconBg: string;
+  iconColor: string;
 }
 
 export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
-  const { averageDailyExpenseMinor, highestExpense, transactionCount, savingsRate, sparklines } =
+  const { averageDailyExpenseMinor, highestExpense, transactionCount, savingsRate } =
     snapshot;
 
   const avgDailyFormatted = formatCurrency({ minorValue: averageDailyExpenseMinor, currency });
@@ -48,8 +47,14 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
       ),
       srValue: avgDailyFormatted,
       sublabel: `Over ${snapshot.daysInPeriod} day${snapshot.daysInPeriod === 1 ? "" : "s"}`,
-      sparkline: sparklines.dailyExpense,
-      sparklineColor: "var(--color-kpi-expense)",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </svg>
+      ),
+      iconBg: "bg-kpi-expense-surface",
+      iconColor: "text-kpi-expense",
     },
     {
       id: "highest-expense",
@@ -62,8 +67,13 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
             month: "short",
           })}`
         : "No expenses recorded",
-      sparkline: sparklines.dailyExpense,
-      sparklineColor: "var(--color-warning)",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      ),
+      iconBg: "bg-warning-surface",
+      iconColor: "text-warning",
     },
     {
       id: "total-transactions",
@@ -77,8 +87,15 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
       ),
       srValue: transactionCount.toString(),
       sublabel: "This month",
-      sparkline: sparklines.dailyTransactionCount,
-      sparklineColor: "var(--color-kpi-balance)",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21h8" />
+          <path d="M12 17v4" />
+        </svg>
+      ),
+      iconBg: "bg-kpi-balance-surface",
+      iconColor: "text-kpi-balance",
     },
     {
       id: "savings-rate",
@@ -92,15 +109,23 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
       ),
       srValue: savingsRateFormatted,
       sublabel: savingsRate > 0 ? `↑ ${(savingsRate * 6.5).toFixed(1)}% this month` : "No savings recorded",
-      sparkline: sparklines.dailyNet,
-      sparklineColor: "var(--color-kpi-savings)",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16" />
+          <path d="M1 21h22" />
+          <path d="M13 17v5" />
+          <path d="M19 17v5" />
+        </svg>
+      ),
+      iconBg: "bg-kpi-savings-surface",
+      iconColor: "text-kpi-savings",
     },
   ];
 
   return (
-    <section aria-labelledby="monthly-snapshot-title" className="grid gap-6">
+    <section aria-labelledby="monthly-snapshot-title" className="grid gap-4">
       <h2
-        className="text-interface-md font-semibold text-foreground"
+        className="text-label font-semibold text-foreground"
         id="monthly-snapshot-title"
       >
         Monthly Snapshot
@@ -114,35 +139,37 @@ export function MonthlySnapshot({ snapshot, currency }: MonthlySnapshotProps) {
       >
         {cards.map((card) => (
           <motion.article
-            className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-sm"
+            className={cn(
+              "relative overflow-hidden rounded-2xl bg-surface p-4 shadow-premium-sm transition-all duration-300 hover:shadow-premium hover:-translate-y-1",
+            )}
             key={card.id}
             variants={listItemVariants}
           >
-            <p className="text-interface-xs font-medium text-foreground-secondary">{card.label}</p>
+            <div className="flex items-center gap-3">
+              <span
+                className={cn(
+                  "icon-premium-md flex-shrink-0",
+                  card.iconBg,
+                  card.iconColor,
+                )}
+                aria-hidden="true"
+              >
+                {card.icon}
+              </span>
+              <p className="text-caption-strong text-foreground-secondary">{card.label}</p>
+            </div>
 
             <p
               aria-label={`${card.label}: ${card.srValue}`}
               className={cn(
-                "financial-value mt-2 text-display-sm font-bold text-foreground",
+                "financial-value mt-2 text-display-3xl font-bold text-foreground",
                 card.id === "savings-rate" && "tabular-nums",
               )}
             >
               {card.value}
             </p>
 
-            <p className="mt-1 text-interface-xs text-foreground-secondary">{card.sublabel}</p>
-
-            {card.sparkline.length >= 2 ? (
-              <div className="mt-auto pt-3">
-                <MiniSparkline
-                  color={card.sparklineColor}
-                  data={card.id === "total-transactions"
-                    ? card.sparkline
-                    : card.sparkline.map((v) => v / 100)}
-                  height={40}
-                />
-              </div>
-            ) : null}
+            <p className="mt-1 text-caption text-foreground-secondary">{card.sublabel}</p>
           </motion.article>
         ))}
       </motion.div>

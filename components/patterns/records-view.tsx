@@ -1,64 +1,31 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Download, RefreshCw, Trash2, X } from "lucide-react";
+import { Download, RefreshCw } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
 import { deleteTransactionRecord } from "@/app/actions/deleteRecord";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import {
   Alert,
-  Badge,
   Button,
-  Card,
-  ConfirmDestructiveAction,
-  CurrencyText,
-  DataTable,
-  DateText,
   Dialog,
-  Field,
-  Select,
   StatusRegion,
 } from "@/components/ui";
-import { CATEGORY_REGISTRY, EXPENSE_CATEGORY_IDS } from "@/lib/domain/categories";
 import {
   clearRecordFilters,
   createExportScope,
   selectRecords,
   serializeCsvExport,
-  type ActiveRecordFilter,
 } from "@/lib/domain/record-selection";
 import { withReportingPeriodSearchParams } from "@/lib/domain/reporting-period";
 import type { ReportingPeriod, ResolvedPeriod, SortDirection, SortKey, Transaction, TransactionQuery, TransactionType } from "@/lib/domain/types";
+import { TransactionTable } from "./transaction-table";
+import { TransactionFilters } from "./transaction-filters";
+import { TransactionPagination } from "./transaction-pagination";
+import { TransactionEmptyState } from "./transaction-states";
 
-export interface RecordsViewProps {
-  records: readonly Transaction[];
-  period: ReportingPeriod;
-  resolvedPeriod: ResolvedPeriod;
-  currency: string;
-  initialAddTransaction: boolean;
-}
-
-const categoryOptions = [
-  { value: "", label: "All categories" },
-  { value: "Income", label: "Income" },
-  ...EXPENSE_CATEGORY_IDS.map((id) => ({ value: id, label: CATEGORY_REGISTRY[id].label })),
-];
-
-const typeOptions = [
-  { value: "", label: "All types" },
-  { value: "income", label: "Income" },
-  { value: "expense", label: "Expense" },
-];
-
-const sortOptions = [
-  { value: "date-desc", label: "Date (newest first)" },
-  { value: "date-asc", label: "Date (oldest first)" },
-  { value: "amount-desc", label: "Amount (highest first)" },
-  { value: "amount-asc", label: "Amount (lowest first)" },
-];
+const ITEMS_PER_PAGE = 15;
 
 function parseSort(value: string | null): { key: SortKey; direction: SortDirection } {
   if (value === "date-asc") return { key: "date", direction: "asc" };
@@ -71,10 +38,12 @@ function sortValue(sort: { key: SortKey; direction: SortDirection }): string {
   return `${sort.key}-${sort.direction}`;
 }
 
-function filterLabel(filter: ActiveRecordFilter): string {
-  if (filter.kind === "search") return `Search: ${filter.value}`;
-  if (filter.kind === "type") return filter.value === "income" ? "Type: Income" : "Type: Expense";
-  return `Category: ${CATEGORY_REGISTRY[filter.value as keyof typeof CATEGORY_REGISTRY]?.label ?? filter.value}`;
+export interface RecordsViewProps {
+  records: readonly Transaction[];
+  period: ReportingPeriod;
+  resolvedPeriod: ResolvedPeriod;
+  currency: string;
+  initialAddTransaction: boolean;
 }
 
 export function RecordsView({ records, period, resolvedPeriod, currency, initialAddTransaction }: RecordsViewProps) {
@@ -89,6 +58,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
   const [addTransactionOpen, setAddTransactionOpen] = useState(initialAddTransaction);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const query: TransactionQuery = useMemo(() => ({
     period,
@@ -99,6 +69,12 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
   }), [period, searchParams]);
 
   const selection = useMemo(() => selectRecords(items, query), [items, query]);
+
+  const totalPages = Math.ceil(selection.records.length / ITEMS_PER_PAGE);
+  const paginatedRecords = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return selection.records.slice(start, start + ITEMS_PER_PAGE);
+  }, [selection.records, currentPage]);
 
   const updateParams = useCallback((patch: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -114,7 +90,35 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
     const params = withReportingPeriodSearchParams(new URLSearchParams(), period) ?? new URLSearchParams();
     params.set("sort", sortValue(cleared.sort));
     router.push(`${pathname}?${params.toString()}`);
+    setCurrentPage(1);
   };
+
+  const handleSearchChange = useCallback((value: string) => {
+    updateParams({ search: value || null });
+    setCurrentPage(1);
+  }, [updateParams]);
+
+  const handleTypeChange = useCallback((value: string) => {
+    updateParams({ type: value || null });
+    setCurrentPage(1);
+  }, [updateParams]);
+
+  const handleCategoryChange = useCallback((value: string) => {
+    updateParams({ category: value || null });
+    setCurrentPage(1);
+  }, [updateParams]);
+
+  const handleSortChange = useCallback((value: string) => {
+    updateParams({ sort: value });
+    setCurrentPage(1);
+  }, [updateParams]);
+
+  const handleRemoveFilter = useCallback((filter: { kind: string; value: string }) => {
+    if (filter.kind === "search") updateParams({ search: null });
+    else if (filter.kind === "type") updateParams({ type: null });
+    else if (filter.kind === "category") updateParams({ category: null });
+    setCurrentPage(1);
+  }, [updateParams]);
 
   const submitTransaction = async (submission: TransactionSubmission) => {
     const result = await createTransaction(submission as CreateTransactionRequest);
@@ -131,6 +135,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
         createdAt: new Date().toISOString(),
       }, ...current]);
       setStatus(result.message);
+      setCurrentPage(1);
     }
     return result;
   };
@@ -150,6 +155,9 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
       if (result.status === "success") {
         setItems((current) => current.filter((item) => item.id !== record.id));
         setStatus(result.message);
+        if (paginatedRecords.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
       } else {
         setDeleteFailure({ message: result.message, record, requestId });
       }
@@ -189,85 +197,44 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
     }
   };
 
-  const deleteAction = (row: Transaction) => (
-    <ConfirmDestructiveAction
-      consequence="This transaction will be permanently removed from your records."
-      confirmLabel="Delete transaction"
-      onConfirm={() => void requestDelete(row)}
-      processing={deletingId === row.id}
-      record={{
-        amount: <CurrencyText currency={row.currency} minorValue={row.amountMinor} />,
-        date: <DateText value={row.occurredOn} />,
-        description: row.description,
-      }}
-      trigger={(
-        <Button
-          aria-label={`Delete transaction: ${row.description}`}
-          icon={<Trash2 size={16} />}
-          intent="danger"
-          label="Delete transaction"
-          loading={deletingId === row.id}
-        />
-      )}
-    />
-  );
+  const handleDeleteFromTable = (row: Transaction) => {
+    void requestDelete(row);
+  };
 
   return (
-    <div className="grid gap-8">
-      <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="grid gap-6">
+      <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-display-md font-semibold text-foreground">Records</h1>
-          <p className="mt-1 text-interface-sm text-foreground-secondary">Reporting period: {resolvedPeriod.label}</p>
+          <h1 className="text-display-xl font-bold text-foreground">Transactions</h1>
+          <p className="mt-1 text-body text-foreground-secondary">{resolvedPeriod.label}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <Button icon={<Download size={18} />} intent="secondary" label="Export CSV" onClick={() => setExportOpen(true)} />
+          <Button icon={<Download size={16} />} intent="secondary" label="Export" onClick={() => setExportOpen(true)} />
           <AddNewRecord initialOpen={addTransactionOpen} onOpenChange={closeAddTransaction} submitTransaction={submitTransaction} />
         </div>
       </header>
 
       <StatusRegion message={status} visible={Boolean(status)} />
 
-      <Card as="section" aria-label="Filter and sort records" elevation="raised">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Field
-            id="records-search"
-            label="Search"
-            onChange={(event) => updateParams({ search: event.target.value })}
-            placeholder="Search descriptions"
-            value={query.search}
-          />
-          <Select
-            id="records-type"
-            label="Type"
-            onChange={(event) => updateParams({ type: event.target.value || null })}
-            options={typeOptions}
-            value={query.types[0] ?? ""}
-          />
-          <Select
-            id="records-category"
-            label="Category"
-            onChange={(event) => updateParams({ category: event.target.value || null })}
-            options={categoryOptions}
-            value={query.categories[0] ?? ""}
-          />
-          <Select
-            id="records-sort"
-            label="Sort"
-            onChange={(event) => updateParams({ sort: event.target.value })}
-            options={sortOptions}
-            value={sortValue(query.sort)}
-          />
-        </div>
-        <div aria-live="polite" className="mt-4 flex flex-wrap items-center gap-2 text-interface-sm text-foreground-secondary">
-          <span>{selection.records.length} record{selection.records.length === 1 ? "" : "s"} shown</span>
-          {selection.activeFilters.map((filter, index) => (
-            <Badge key={`${filter.kind}-${index}`} tone="info">{filterLabel(filter)}</Badge>
-          ))}
-          {selection.activeFilterCount > 0 ? (
-            <Button icon={<X size={16} />} intent="ghost" label="Clear filters" onClick={clearFilters} />
-          ) : null}
-        </div>
-      </Card>
+      <section
+        aria-label="Filter and sort records"
+        className="rounded-2xl border border-border bg-surface p-4 shadow-premium-sm"
+      >
+        <TransactionFilters
+          search={query.search}
+          type={query.types[0] ?? ""}
+          category={query.categories[0] ?? ""}
+          sort={sortValue(query.sort)}
+          recordCount={selection.records.length}
+          activeFilters={selection.activeFilters}
+          onSearchChange={handleSearchChange}
+          onTypeChange={handleTypeChange}
+          onCategoryChange={handleCategoryChange}
+          onSortChange={handleSortChange}
+          onClearFilters={clearFilters}
+          onRemoveFilter={handleRemoveFilter}
+        />
+      </section>
 
       {deleteFailure ? (
         <Alert
@@ -289,61 +256,26 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
       ) : null}
 
       {selection.records.length === 0 ? (
-        <Card as="section" className="p-8 text-center" elevation="raised">
-          <p className="text-interface-md font-semibold text-foreground">
-            {selection.activeFilterCount > 0 ? "No records match the current filters." : "No records for this reporting period yet."}
-          </p>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">
-            {selection.activeFilterCount > 0 ? "Clear filters or choose another reporting period." : "Add your first transaction to see it here."}
-          </p>
-          {selection.activeFilterCount > 0 ? (
-            <div className="mt-4"><Button icon={<X size={16} />} intent="secondary" label="Clear filters" onClick={clearFilters} /></div>
-          ) : null}
-        </Card>
+        <TransactionEmptyState
+          hasFilters={selection.activeFilterCount > 0}
+          onClearFilters={clearFilters}
+          onAddTransaction={() => setAddTransactionOpen(true)}
+        />
       ) : (
-        <div>
-          <DataTable
-            caption={`Records for ${resolvedPeriod.label}`}
-            className="hidden md:block"
-            columns={[
-              { id: "description", header: "Description", rowHeader: true, render: (row: Transaction) => row.description },
-              { id: "category", header: "Category", render: (row: Transaction) => CATEGORY_REGISTRY[row.categoryId as keyof typeof CATEGORY_REGISTRY]?.label ?? row.categoryId },
-              { id: "type", header: "Type", render: (row: Transaction) => row.type === "income" ? "Income" : "Expense" },
-              { id: "date", header: "Date", render: (row: Transaction) => <DateText value={row.occurredOn} /> },
-              { id: "amount", header: "Amount", align: "end", render: (row: Transaction) => <CurrencyText currency={row.currency} minorValue={row.type === "expense" ? -row.amountMinor : row.amountMinor} /> },
-              { id: "actions", header: "Actions", align: "end", render: deleteAction },
-            ]}
-            rowKey={(row) => row.id}
-            rows={selection.records}
+        <div className="space-y-4">
+          <TransactionTable
+            rows={paginatedRecords}
+            onDelete={handleDeleteFromTable}
+            deletingId={deletingId}
           />
 
-          <motion.ul
-            animate="visible"
-            aria-label={`Records for ${resolvedPeriod.label}`}
-            className="grid gap-3 md:hidden"
-            data-record-view="cards"
-            initial="hidden"
-            variants={listContainerVariants}
-          >
-            {selection.records.map((row) => (
-              <motion.li key={row.id} layout variants={listItemVariants}>
-                <Card as="article" className="grid gap-4" elevation="raised">
-                  <h2 className="break-words text-interface-md font-semibold text-foreground">{row.description}</h2>
-                  <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 text-interface-sm">
-                    <dt className="text-foreground-secondary">Category</dt>
-                    <dd className="break-words text-right text-foreground">{CATEGORY_REGISTRY[row.categoryId as keyof typeof CATEGORY_REGISTRY]?.label ?? row.categoryId}</dd>
-                    <dt className="text-foreground-secondary">Type</dt>
-                    <dd className="text-right text-foreground">{row.type === "income" ? "Income" : "Expense"}</dd>
-                    <dt className="text-foreground-secondary">Date</dt>
-                    <dd className="text-right text-foreground"><DateText value={row.occurredOn} /></dd>
-                    <dt className="text-foreground-secondary">Amount</dt>
-                    <dd className="financial-value text-right font-semibold text-foreground"><CurrencyText currency={row.currency} minorValue={row.type === "expense" ? -row.amountMinor : row.amountMinor} /></dd>
-                  </dl>
-                  <div className="flex justify-end">{deleteAction(row)}</div>
-                </Card>
-              </motion.li>
-            ))}
-          </motion.ul>
+          <TransactionPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={selection.records.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
 

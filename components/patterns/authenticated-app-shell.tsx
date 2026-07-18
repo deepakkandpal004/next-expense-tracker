@@ -26,18 +26,22 @@ interface AuthenticatedAppShellProps {
 function currentDestinationId(pathname: string): SidebarDestinationId {
   if (pathname.startsWith("/records")) return "transactions";
   if (pathname.startsWith("/insights")) return "analytics";
+  if (pathname.startsWith("/budgets")) return "budgets";
+  if (pathname.startsWith("/goals")) return "goals";
   return "dashboard";
 }
 
-const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "budgets" | "goals" | "categories" | "recurring" | "reports" | "settings">, AppPeriodDestination> = {
+const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "categories" | "recurring" | "reports" | "settings">, AppPeriodDestination> = {
   dashboard: "dashboard",
   transactions: "records",
   analytics: "insights",
+  budgets: "budgets",
+  goals: "goals",
 };
 
 /**
- * Route-owned signed-in chrome. Left sidebar is permanent on desktop and served through
- * a bottom-anchored drawer on mobile. URL period parameters remain authoritative;
+ * Route-owned signed-in chrome. Sidebar is an icon rail on desktop, hidden on mobile
+ * (hamburger opens a Sheet overlay). URL period parameters remain authoritative;
  * sessionStorage only mirrors a valid period when the URL has no period state.
  */
 export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellProps) {
@@ -50,6 +54,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   const [signingOut, setSigningOut] = useState(false);
   const [accountError, setAccountError] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const urlPeriod = useMemo(
     () => parseReportingPeriod(new URLSearchParams(periodSearch)),
@@ -83,27 +88,36 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
       if (!response.ok) throw new Error("Unable to sign out");
       router.replace("/sign-in");
     } catch {
-      setAccountError("We couldn’t sign you out. Please try again.");
+      setAccountError("We couldn't sign you out. Please try again.");
       setSigningOut(false);
     }
   };
 
   return (
-    <div className="flex min-h-[100dvh] bg-canvas text-foreground">
-      <div className="sticky top-0 hidden h-[100dvh] w-64 shrink-0 lg:flex">
+    <div className="flex h-[100dvh] overflow-hidden bg-canvas text-foreground">
+      {/* Desktop sidebar — icon rail, expandable on hover/click */}
+      <div
+        className="hidden md:flex shrink-0 transition-all duration-200 ease-in-out"
+        onMouseEnter={() => setSidebarCollapsed(false)}
+        onMouseLeave={() => setSidebarCollapsed(true)}
+      >
         <AppSidebar
           activeDestinationId={activeDestinationId}
           hrefFor={hrefFor}
           onSignOut={signOut}
           signingOut={signingOut}
           user={user}
+          collapsed={sidebarCollapsed}
         />
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* Main content area */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
         <AppHeader
           accountError={accountError}
           onMobileMenuOpen={() => setMobileNavOpen(true)}
+          onSignOut={signOut}
+          signingOut={signingOut}
           user={user}
         />
 
@@ -116,8 +130,9 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
         </main>
       </div>
 
+      {/* Mobile sidebar — Sheet overlay */}
       <Sheet
-        className="max-w-72 border-0 bg-transparent p-0 shadow-none"
+        className="w-[260px] border-0 bg-transparent p-0 shadow-none"
         closeLabel="Close navigation"
         hideTitle
         onOpenChange={setMobileNavOpen}
@@ -132,6 +147,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           onSignOut={signOut}
           signingOut={signingOut}
           user={user}
+          collapsed={false}
         />
       </Sheet>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BarController,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
@@ -12,10 +13,11 @@ import {
   PointElement,
   Tooltip,
   type ChartData,
+  type ChartDataset,
   type ChartOptions,
 } from "chart.js";
 import { AnimatePresence, motion } from "motion/react";
-import { BarChart2, LineChart, PartyPopper, TrendingDown } from "lucide-react";
+import { BarChart2, LineChart, TrendingDown } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Chart as ChartCanvas } from "react-chartjs-2";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -25,6 +27,7 @@ import type { ChartModel } from "@/lib/domain/types";
 import type { KpiInsight } from "@/lib/domain/types";
 
 ChartJS.register(
+  BarController,
   BarElement,
   CategoryScale,
   Filler,
@@ -42,35 +45,13 @@ export interface SpendingOverviewPanelProps {
   trendModel: ChartModel;
   spendingInsight: KpiInsight;
   incomeInsight: KpiInsight;
-  currency: string;
   period: string;
+  currency: string;
 }
 
-function SuccessBanner({ spendingInsight }: { spendingInsight: KpiInsight }) {
-  const trend = spendingInsight.trend;
-  if (!trend || trend.direction === "up") return null;
-
-  const percentDown = Math.abs(trend.changePercent * 100).toFixed(0);
-  const isSig = Math.abs(trend.changePercent) >= 0.05;
-
-  const Icon = isSig ? PartyPopper : TrendingDown;
-  const message = isSig
-    ? `Great job! 🎉 You spent ${percentDown}% less this month compared to last month.`
-    : `Spending is down ${percentDown}% vs last month. Keep it up!`;
-
-  return (
-    <motion.div
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-start gap-3 rounded-xl border border-trend-up-surface bg-trend-up-surface px-4 py-3"
-      exit={{ opacity: 0, y: -4 }}
-      initial={{ opacity: 0, y: 4 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <Icon aria-hidden="true" className="mt-0.5 shrink-0 text-trend-up-foreground" size={18} />
-      <p className="text-interface-sm font-medium text-trend-up-foreground">{message}</p>
-    </motion.div>
-  );
-}
+/* ────────────────────────────────────────────────────────────
+   DATA BUILDERS
+   ──────────────────────────────────────────────────────────── */
 
 function buildLineData(model: ChartModel): ChartData<"line"> {
   const labels = model.rows.map((row) => row.label);
@@ -84,30 +65,54 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
         label: "Income",
         data: incomeData,
         borderColor: "var(--color-kpi-income)",
-        backgroundColor: "transparent",
+        backgroundColor: (ctx) => {
+          const chart = ctx.chart;
+          const { ctx: canvasCtx, chartArea } = chart;
+          if (!chartArea) return "rgba(34, 197, 94, 0.08)";
+          const gradient = canvasCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0, "rgba(34, 197, 94, 0.15)");
+          gradient.addColorStop(0.5, "rgba(34, 197, 94, 0.05)");
+          gradient.addColorStop(1, "rgba(34, 197, 94, 0)");
+          return gradient;
+        },
         pointBackgroundColor: "var(--color-kpi-income)",
         pointBorderColor: "var(--color-surface)",
         pointBorderWidth: 2,
-        pointRadius: 3,
+        pointRadius: 0,
         pointHoverRadius: 6,
-        borderWidth: 2,
-        tension: 0.45,
-        fill: false,
-      },
+        pointHoverBorderWidth: 3,
+        pointHoverBorderColor: "var(--color-surface)",
+        borderWidth: 2.5,
+        tension: 0.4,
+        fill: true,
+        semanticToken: "kpi-income",
+      } as ChartDataset<"line"> & { semanticToken: string },
       {
         label: "Spending",
         data: spendingData,
         borderColor: "var(--color-kpi-expense)",
-        backgroundColor: "rgba(249,115,22,0.07)",
+        backgroundColor: (ctx) => {
+          const chart = ctx.chart;
+          const { ctx: canvasCtx, chartArea } = chart;
+          if (!chartArea) return "rgba(249, 115, 22, 0.06)";
+          const gradient = canvasCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0, "rgba(249, 115, 22, 0.12)");
+          gradient.addColorStop(0.5, "rgba(249, 115, 22, 0.04)");
+          gradient.addColorStop(1, "rgba(249, 115, 22, 0)");
+          return gradient;
+        },
         pointBackgroundColor: "var(--color-kpi-expense)",
         pointBorderColor: "var(--color-surface)",
         pointBorderWidth: 2,
-        pointRadius: 3,
+        pointRadius: 0,
         pointHoverRadius: 6,
-        borderWidth: 2,
-        tension: 0.45,
+        pointHoverBorderWidth: 3,
+        pointHoverBorderColor: "var(--color-surface)",
+        borderWidth: 2.5,
+        tension: 0.4,
         fill: true,
-      },
+        semanticToken: "kpi-expense",
+      } as ChartDataset<"line"> & { semanticToken: string },
     ],
   };
 }
@@ -119,42 +124,214 @@ function buildBarData(model: ChartModel): ChartData<"bar"> {
   return {
     labels,
     datasets: [
-      { label: "Income", data: incomeData, backgroundColor: "var(--color-kpi-income)", borderRadius: 4, borderWidth: 0 },
-      { label: "Spending", data: spendingData, backgroundColor: "var(--color-kpi-expense)", borderRadius: 4, borderWidth: 0 },
+      {
+        label: "Income",
+        data: incomeData,
+        backgroundColor: "var(--color-kpi-income)",
+        hoverBackgroundColor: "var(--color-kpi-income)",
+        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+        borderWidth: 0,
+        maxBarThickness: 32,
+        borderSkipped: false,
+        semanticToken: "kpi-income",
+      } as ChartDataset<"bar"> & { semanticToken: string },
+      {
+        label: "Spending",
+        data: spendingData,
+        backgroundColor: "var(--color-kpi-expense)",
+        hoverBackgroundColor: "var(--color-kpi-expense)",
+        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+        borderWidth: 0,
+        maxBarThickness: 32,
+        borderSkipped: false,
+        semanticToken: "kpi-expense",
+      } as ChartDataset<"bar"> & { semanticToken: string },
     ],
   };
 }
 
-function buildOptions(): ChartOptions {
+/* ────────────────────────────────────────────────────────────
+   CHART OPTIONS (Stripe-inspired)
+   ──────────────────────────────────────────────────────────── */
+
+function buildLineOptions(): ChartOptions {
   return {
-    animation: false,
+    animation: { duration: 800, easing: "easeOutQuart" },
     responsive: true,
     maintainAspectRatio: false,
     interaction: { mode: "index", intersect: false },
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "var(--color-surface)",
-        titleColor: "var(--color-text)",
-        bodyColor: "var(--color-text-muted)",
-        borderColor: "var(--color-border)",
+        enabled: true,
+        backgroundColor: "rgba(15, 23, 42, 0.92)",
+        titleColor: "#f8fafc",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
-        padding: 12,
-        cornerRadius: 8,
+        padding: { top: 10, bottom: 10, left: 14, right: 14 },
+        cornerRadius: 10,
+        boxPadding: 4,
+        caretSize: 0,
+        displayColors: true,
+        usePointStyle: true,
+        pointStyle: "circle",
         callbacks: {
+          title: (items) => items[0]?.label ?? "",
           label: (ctx) => {
             const value = typeof ctx.raw === "number" ? ctx.raw : 0;
-            return ` ${ctx.dataset.label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+            return ` ${ctx.dataset.label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
           },
         },
       },
     },
     scales: {
-      x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
-      y: { beginAtZero: true, grid: { color: "var(--color-border)" }, ticks: { font: { size: 11 } } },
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          maxTicksLimit: 7,
+          font: { size: 11, weight: 500 },
+          color: "var(--color-text-muted)",
+          padding: 8,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        border: { display: false },
+        grid: {
+          color: "var(--color-border)",
+          lineWidth: 0.5,
+        },
+        ticks: {
+          font: { size: 11 },
+          color: "var(--color-text-muted)",
+          padding: 12,
+          maxTicksLimit: 6,
+          callback: (value) => {
+            const num = typeof value === "number" ? value : 0;
+            if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
+            if (num >= 1000) return `₹${(num / 1000).toFixed(0)}K`;
+            return `₹${num}`;
+          },
+        },
+      },
     },
   } as ChartOptions;
 }
+
+function buildBarOptions(): ChartOptions {
+  return {
+    animation: { duration: 800, easing: "easeOutQuart" },
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        enabled: true,
+        backgroundColor: "rgba(15, 23, 42, 0.92)",
+        titleColor: "#f8fafc",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(255, 255, 255, 0.08)",
+        borderWidth: 1,
+        padding: { top: 10, bottom: 10, left: 14, right: 14 },
+        cornerRadius: 10,
+        boxPadding: 4,
+        caretSize: 0,
+        displayColors: true,
+        usePointStyle: true,
+        pointStyle: "rectRounded",
+        callbacks: {
+          title: (items) => items[0]?.label ?? "",
+          label: (ctx) => {
+            const value = typeof ctx.raw === "number" ? ctx.raw : 0;
+            return ` ${ctx.dataset.label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          maxTicksLimit: 7,
+          font: { size: 11, weight: 500 },
+          color: "var(--color-text-muted)",
+          padding: 8,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        border: { display: false },
+        grid: {
+          color: "var(--color-border)",
+          lineWidth: 0.5,
+        },
+        ticks: {
+          font: { size: 11 },
+          color: "var(--color-text-muted)",
+          padding: 12,
+          maxTicksLimit: 6,
+          callback: (value) => {
+            const num = typeof value === "number" ? value : 0;
+            if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
+            if (num >= 1000) return `₹${(num / 1000).toFixed(0)}K`;
+            return `₹${num}`;
+          },
+        },
+      },
+    },
+  } as ChartOptions;
+}
+
+/* ────────────────────────────────────────────────────────────
+   INTERACTIVE LEGEND
+   ──────────────────────────────────────────────────────────── */
+
+function ChartLegend({
+  series,
+  hiddenSeries,
+  onToggle,
+}: {
+  series: { label: string; color: string; key: string }[];
+  hiddenSeries: Set<string>;
+  onToggle: (key: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-4">
+      {series.map((s) => {
+        const hidden = hiddenSeries.has(s.key);
+        return (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => onToggle(s.key)}
+            className={cn(
+              "flex items-center gap-1.5 text-xs font-medium transition-all duration-150",
+              hidden ? "text-foreground-secondary/50" : "text-foreground-secondary hover:text-foreground",
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={cn(
+                "inline-block h-2 w-2.5 rounded-sm transition-opacity duration-150",
+                hidden && "opacity-40",
+              )}
+              style={{ backgroundColor: s.color }}
+            />
+            {s.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
+   MAIN COMPONENT
+   ──────────────────────────────────────────────────────────── */
 
 export function SpendingOverviewPanel({
   trendModel,
@@ -164,19 +341,40 @@ export function SpendingOverviewPanel({
   const { resolvedAppearance } = useTheme();
   const chartRef = useRef<MutableChartLike | null>(null);
   const [vizType, setVizType] = useState<ChartVisualization>("line");
+  const [hiddenSeries, setHiddenSeries] = useState<Set<string>>(new Set());
   const isReady = trendModel.state === "ready";
 
-  const lineData = useMemo(
-    () => (isReady ? buildLineData(trendModel) : null),
-    [isReady, trendModel],
-  );
-  const barData = useMemo(
-    () => (isReady ? buildBarData(trendModel) : null),
-    [isReady, trendModel],
-  );
+  const lineData = useMemo(() => (isReady ? buildLineData(trendModel) : null), [isReady, trendModel]);
+  const barData = useMemo(() => (isReady ? buildBarData(trendModel) : null), [isReady, trendModel]);
+  const lineOptions = useMemo(() => buildLineOptions(), []);
+  const barOptions = useMemo(() => buildBarOptions(), []);
 
-  const lineOptions = useMemo(() => buildOptions(), []);
-  const barOptions = useMemo(() => buildOptions(), []);
+  // Toggle series visibility
+  const toggleSeries = (key: string) => {
+    setHiddenSeries((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  // Apply hidden series to chart data
+  const filteredLineData = useMemo(() => {
+    if (!lineData) return null;
+    return {
+      ...lineData,
+      datasets: lineData.datasets.filter((ds) => !hiddenSeries.has(ds.label!)),
+    };
+  }, [lineData, hiddenSeries]);
+
+  const filteredBarData = useMemo(() => {
+    if (!barData) return null;
+    return {
+      ...barData,
+      datasets: barData.datasets.filter((ds) => !hiddenSeries.has(ds.label!)),
+    };
+  }, [barData, hiddenSeries]);
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -188,102 +386,124 @@ export function SpendingOverviewPanel({
     }));
   }, [resolvedAppearance, vizType]);
 
+  const spendingTrend = spendingInsight.trend;
+  const showSuccessBanner = spendingTrend && spendingTrend.direction === "down" && spendingTrend.changePercent < -0.05;
+
+  const legendSeries = [
+    { label: "Income", color: "var(--color-kpi-income)", key: "Income" },
+    { label: "Spending", color: "var(--color-kpi-expense)", key: "Spending" },
+  ];
+
   return (
     <section
       aria-labelledby="spending-overview-title"
-      className="flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm"
+      className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      {/* Header */}
+      <div className="relative flex flex-wrap items-start justify-between gap-3 px-5 pt-4 pb-3">
         <div>
-          <h2 className="text-interface-md font-semibold text-foreground" id="spending-overview-title">
-            Spending Overview
+          <h2 className="text-sm font-semibold text-foreground" id="spending-overview-title">
+            Income & Spending
           </h2>
-          <p className="mt-0.5 text-interface-xs text-foreground-secondary">{period}</p>
+          <p className="mt-0.5 text-xs text-foreground-secondary">{period}</p>
         </div>
         <div
           aria-label="Chart type"
-          className="flex overflow-hidden rounded-lg border border-border"
+          className="flex overflow-hidden rounded-lg border border-border/60"
           role="group"
         >
           {(["line", "bar"] as ChartVisualization[]).map((type) => (
             <button
               aria-pressed={vizType === type}
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 px-3 text-interface-xs font-semibold transition-colors duration-100",
+                "inline-flex min-h-[36px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
                 vizType === type
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-surface text-foreground-secondary hover:bg-surface-subtle",
+                  ? "bg-foreground text-background"
+                  : "bg-transparent text-foreground-secondary hover:bg-surface-subtle",
               )}
               key={type}
               onClick={() => setVizType(type)}
               type="button"
             >
-              {type === "line" ? <LineChart aria-hidden="true" size={14} /> : <BarChart2 aria-hidden="true" size={14} />}
-              <span>{type === "line" ? "Line" : "Bar"}</span>
+              {type === "line" ? <LineChart aria-hidden="true" size={13} /> : <BarChart2 aria-hidden="true" size={13} />}
+              <span>{type === "line" ? "Area" : "Bar"}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-4 text-interface-xs text-foreground-secondary">
-        <span className="flex items-center gap-1.5">
-          <span aria-hidden="true" className="inline-block h-2 w-4 rounded-sm bg-kpi-income" />
-          Income
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span aria-hidden="true" className="inline-block h-2 w-4 rounded-sm bg-kpi-expense" />
-          Expense
-        </span>
+      {/* Legend */}
+      <div className="relative px-5 pb-3">
+        <ChartLegend
+          series={legendSeries}
+          hiddenSeries={hiddenSeries}
+          onToggle={toggleSeries}
+        />
       </div>
 
-      <div className="mt-4 min-h-[18rem] flex-1">
-        {isReady && lineData && barData ? (
-          <AnimatePresence mode="wait">
-            <motion.div
-              animate={{ opacity: 1 }}
-              className="h-72"
-              exit={{ opacity: 0 }}
-              initial={{ opacity: 0 }}
-              key={vizType}
-              transition={{ duration: 0.18 }}
-            >
-              {vizType === "line" ? (
-                <ChartCanvas
-                  aria-label={`${trendModel.title} line chart`}
-                  data={lineData}
-                  options={lineOptions}
-                  ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
-                  role="img"
-                  tabIndex={-1}
-                  type="line"
-                />
-              ) : (
-                <ChartCanvas
-                  aria-label={`${trendModel.title} bar chart`}
-                  data={barData}
-                  options={barOptions}
-                  ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
-                  role="img"
-                  tabIndex={-1}
-                  type="bar"
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
-        ) : (
-          <div className="flex h-72 items-center justify-center">
-            <p className="text-interface-sm text-foreground-secondary">
-              {trendModel.state === "error"
-                ? (trendModel.errorMessage ?? "Chart unavailable.")
-                : "No transactions recorded for this period yet."}
+      {/* Chart */}
+      <div className="relative px-5 pb-5">
+        <div className="min-h-[20rem]">
+          {isReady && filteredLineData && filteredBarData ? (
+            <AnimatePresence mode="wait">
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
+                className="h-80"
+                exit={{ opacity: 0, y: 4 }}
+                initial={{ opacity: 0, y: 4 }}
+                key={vizType}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {vizType === "line" ? (
+                  <ChartCanvas
+                    aria-label={`${trendModel.title} area chart`}
+                    data={filteredLineData}
+                    options={lineOptions}
+                    ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
+                    role="img"
+                    tabIndex={-1}
+                    type="line"
+                  />
+                ) : (
+                  <ChartCanvas
+                    aria-label={`${trendModel.title} bar chart`}
+                    data={filteredBarData}
+                    options={barOptions}
+                    ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
+                    role="img"
+                    tabIndex={-1}
+                    type="bar"
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <div className="flex h-80 items-center justify-center">
+              <p className="text-sm text-foreground-secondary">
+                {trendModel.state === "error"
+                  ? (trendModel.errorMessage ?? "Chart unavailable.")
+                  : "No transactions recorded for this period yet."}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Success banner */}
+        {showSuccessBanner && (
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-3 flex items-start gap-2.5 rounded-xl border border-kpi-income/20 bg-kpi-income-surface/50 px-3.5 py-2.5"
+            exit={{ opacity: 0, y: -4 }}
+            initial={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <TrendingDown aria-hidden="true" className="mt-0.5 shrink-0 text-kpi-income" size={15} />
+            <p className="text-xs font-medium text-kpi-income-foreground">
+              Spending down {Math.abs(spendingTrend!.changePercent * 100).toFixed(0)}% vs last period. Keep it up.
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
-
-      <AnimatePresence>
-        <SuccessBanner spendingInsight={spendingInsight} />
-      </AnimatePresence>
     </section>
   );
 }

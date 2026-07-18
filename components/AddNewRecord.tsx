@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { suggestCategoryResult } from "@/app/actions/suggestCategory";
 import { Button, Alert, Dialog, Field, Select, StatusRegion } from "@/components/ui";
 import { AI_DISCLOSURE_VERSION } from "@/lib/domain/ai";
@@ -96,6 +96,17 @@ export default function AddNewRecord({
   const [status, setStatus] = useState<{ message: string; politeness: "polite" | "assertive" } | null>(null);
   const requestIdRef = useRef<string | null>(null);
   const retrySubmissionRef = useRef<TransactionSubmission | null>(null);
+
+  useEffect(() => {
+    if (open && defaultType !== undefined) {
+      setDraft({ ...createEmptyDraft(), type: defaultType, category: defaultType === "income" ? "Income" : "" });
+      setFieldErrors({});
+      setSubmissionFailure(null);
+      requestIdRef.current = null;
+      retrySubmissionRef.current = null;
+      setStatus(null);
+    }
+  }, [open, defaultType]);
 
   const focusField = (field: TransactionCommandField) => {
     requestAnimationFrame(() => document.getElementById(`transaction-${field}`)?.focus());
@@ -345,13 +356,13 @@ export default function AddNewRecord({
               ) : null}
             </div>
           ) : (
-            <div aria-label="Category" className="grid gap-1 rounded-container border border-border bg-surface-subtle p-4">
+            <div aria-label="Category" className="grid gap-1 rounded-container bg-surface-subtle p-4">
               <p className="text-interface-sm font-medium text-foreground">Category</p>
               <p className="text-interface-sm text-foreground-secondary">Income is assigned automatically.</p>
             </div>
           )}
           {submissionFailure ? <Alert action={<Button disabled={!submissionFailure.retryable || pending} label="Retry transaction" loading={pending} onClick={() => void retry()} />} actionRequired description={submissionFailure.message} title="Transaction could not be added" tone="danger" /> : null}
-          <div className="flex flex-wrap justify-end gap-3 border-t border-border pt-5">
+          <div className="flex flex-wrap justify-end gap-3 pt-5">
             <Button disabled={pending} intent="secondary" label="Cancel" onClick={() => setOpen(false)} />
             <Button label="Add transaction" loading={pending} type="submit" />
           </div>

@@ -206,7 +206,7 @@ export function Dialog({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl border border-border bg-surface p-6 shadow-overlay",
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl bg-surface p-6 shadow-overlay",
               className,
             )}
             role="dialog"
@@ -271,7 +271,7 @@ export function Sheet({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto border-border bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay",
+              "fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay",
               sideClassName,
               className,
             )}
@@ -348,7 +348,7 @@ export function AlertDialog({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container border border-border bg-surface p-6 shadow-overlay",
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container bg-surface p-6 shadow-overlay",
               className,
             )}
             role="alertdialog"
@@ -437,7 +437,7 @@ export function ConfirmDestructiveAction({
       title={title}
       trigger={trigger}
     >
-      <dl className="grid gap-3 rounded-container border border-border bg-surface-subtle p-4 text-interface-sm">
+      <dl className="grid gap-3 rounded-container bg-surface-subtle p-4 text-interface-sm">
         <div className="grid gap-1">
           <dt className="font-medium text-foreground-secondary">Description</dt>
           <dd className="break-words text-foreground">{record.description}</dd>
@@ -512,7 +512,7 @@ export function DropdownMenu({
       {isOpen ? (
         <div
           aria-label={label}
-          className="absolute right-0 top-full z-50 mt-2 min-w-56 origin-top-right rounded-container border border-border bg-surface p-1 shadow-overlay"
+          className="absolute right-0 top-full z-50 mt-2 min-w-56 origin-top-right rounded-container bg-surface p-1 shadow-overlay"
           role="menu"
         >
           {items.map((item) => (

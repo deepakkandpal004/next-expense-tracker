@@ -6,15 +6,15 @@ import { formatCurrency, formatDate, formatDateTime, formatExactTime, type Curre
 import type { CurrencyCode, ISODate, ISODateTime, MinorUnitAmount } from "@/lib/domain/types";
 
 const badgeVariants = cva(
-  "inline-flex min-h-6 max-w-full items-center gap-1 rounded-circular border px-2 py-0.5 text-interface-xs font-semibold",
+  "inline-flex min-h-6 max-w-full items-center gap-1 rounded-circular px-2 py-0.5 text-interface-xs font-semibold",
   {
     variants: {
       tone: {
-        neutral: "border-border bg-surface-subtle text-foreground",
-        info: "border-info-border bg-info-surface text-info-foreground",
-        success: "border-success-border bg-success-surface text-success-foreground",
-        warning: "border-warning-border bg-warning-surface text-warning-foreground",
-        danger: "border-danger-border bg-danger-surface text-danger-foreground",
+        neutral: "bg-surface-subtle text-foreground",
+        info: "bg-info-surface text-info-foreground",
+        success: "bg-success-surface text-success-foreground",
+        warning: "bg-warning-surface text-warning-foreground",
+        danger: "bg-danger-surface text-danger-foreground",
       },
     },
     defaultVariants: { tone: "neutral" },
@@ -38,7 +38,7 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 export function Card({ as = "div", elevation = "flat", className, ...props }: CardProps) {
   return createElement(as, {
     className: cn(
-      "min-w-0 rounded-2xl border border-border bg-surface p-4 text-foreground",
+      "min-w-0 rounded-2xl bg-surface p-4 text-foreground",
       elevation === "raised" && "shadow-sm",
       className,
     ),
@@ -67,7 +67,7 @@ export function DataTable<TRow>({ caption, columns, rows, rowKey, emptyMessage =
   enforceSentenceCase(caption, "Table caption");
   columns.forEach((column) => enforceSentenceCase(column.header, "Column heading"));
   return (
-    <div aria-label={caption} className={cn("custom-scrollbar max-w-full overflow-x-auto rounded-2xl border border-border", className)} role="region" tabIndex={0}>
+    <div aria-label={caption} className={cn("custom-scrollbar max-w-full overflow-x-auto rounded-2xl", className)} role="region" tabIndex={0}>
       <table className="w-full min-w-max border-collapse text-left text-interface-sm">
         <caption className="p-3 text-left font-semibold text-foreground">{caption}</caption>
         <thead className="bg-surface-subtle text-foreground">

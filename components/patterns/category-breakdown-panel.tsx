@@ -14,8 +14,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Chart as ChartCanvas } from "react-chartjs-2";
 import { useTheme } from "@/contexts/ThemeContext";
 import { applyChartTheme, createChartTheme, type MutableChartLike } from "@/lib/charts/chartjs";
-import { formatCurrency } from "@/lib/formatters/locale";
 import { cn } from "@/lib/ui/cn";
+import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import type { CategoryBreakdownRow } from "@/lib/domain/types";
 
 ChartJS.register(ArcElement, DoughnutController, Legend, Tooltip);
@@ -27,78 +27,129 @@ export interface CategoryBreakdownPanelProps {
   period: string;
 }
 
+/* ────────────────────────────────────────────────────────────
+   DOUGHNUT DATA BUILDER
+   ──────────────────────────────────────────────────────────── */
+
 function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
   return {
     labels: rows.map((row) => row.label),
     datasets: [{
       data: rows.map((row) => row.amountMinor / 100),
       backgroundColor: rows.map((row) => `var(--${row.semanticToken})`),
-      borderColor: "transparent",
-      hoverOffset: 6,
-      borderWidth: 0,
+      borderColor: "var(--color-surface)",
+      borderWidth: 3,
+      hoverOffset: 8,
+      spacing: 2,
     }],
   };
 }
 
+/* ────────────────────────────────────────────────────────────
+   DOUGHNUT OPTIONS (Stripe-inspired)
+   ──────────────────────────────────────────────────────────── */
+
 const DOUGHNUT_OPTIONS: ChartOptions<"doughnut"> = {
-  animation: false,
+  animation: {
+    animateRotate: true,
+    animateScale: true,
+    duration: 1000,
+    easing: "easeOutQuart",
+  },
   responsive: true,
   maintainAspectRatio: false,
   cutout: "72%",
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: "var(--color-surface)",
-      titleColor: "var(--color-text)",
-      bodyColor: "var(--color-text-muted)",
-      borderColor: "var(--color-border)",
+      enabled: true,
+      backgroundColor: "rgba(15, 23, 42, 0.92)",
+      titleColor: "#f8fafc",
+      bodyColor: "#cbd5e1",
+      borderColor: "rgba(255, 255, 255, 0.08)",
       borderWidth: 1,
-      padding: 12,
-      cornerRadius: 8,
+      padding: { top: 10, bottom: 10, left: 14, right: 14 },
+      cornerRadius: 10,
+      boxPadding: 4,
+      caretSize: 0,
+      displayColors: true,
+      usePointStyle: true,
       callbacks: {
         label: (ctx) => {
           const value = typeof ctx.raw === "number" ? ctx.raw : 0;
-          return ` ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+          const label = ctx.label ?? "";
+          const total = ctx.dataset.data.reduce((a, b) => (typeof a === "number" ? a : 0) + (typeof b === "number" ? b : 0), 0);
+          const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0";
+          return ` ${label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })} (${pct}%)`;
         },
       },
     },
   },
 };
 
-interface CategoryRowProps {
+/* ────────────────────────────────────────────────────────────
+   CATEGORY ROW
+   ──────────────────────────────────────────────────────────── */
+
+function CategoryRow({
+  row,
+  currency,
+  index,
+}: {
   row: CategoryBreakdownRow;
   currency: string;
   index: number;
-}
-
-function CategoryRow({ row, currency, index }: CategoryRowProps) {
-  const percentDisplay = `${(row.percentage * 100).toFixed(1)}%`;
+}) {
+  const percentDisplay = formatPercentage(row.percentage);
   const formatted = formatCurrency({ minorValue: row.amountMinor, currency });
   const cssVar = `var(--${row.semanticToken})`;
+
   return (
     <motion.div
       animate={{ opacity: 1, x: 0 }}
-      className="flex min-w-0 items-center gap-2 py-1"
+      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle"
       initial={{ opacity: 0, x: 8 }}
       transition={{ duration: 0.25, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
     >
+      {/* Color dot */}
       <span
         aria-hidden="true"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-        style={{ backgroundColor: `color-mix(in srgb, ${cssVar} 18%, transparent)` }}
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-transform duration-150 group-hover:scale-110"
+        style={{ backgroundColor: `color-mix(in srgb, ${cssVar} 15%, transparent)` }}
       >
         <span
           aria-hidden="true"
-          className="h-2.5 w-2.5 rounded-sm"
+          className="h-2 w-2 rounded-full"
           style={{ backgroundColor: cssVar }}
         />
       </span>
-      <span className="min-w-0 flex-1 truncate text-interface-xs text-foreground">{row.label}</span>
-      <span className="shrink-0 text-interface-xs font-semibold text-foreground">{formatted}</span>
-      <span className="w-10 shrink-0 text-right text-interface-xs text-foreground-secondary">{percentDisplay}</span>
+
+      {/* Label */}
+      <span className="min-w-0 flex-1 truncate text-xs font-medium text-foreground">{row.label}</span>
+
+      {/* Amount */}
+      <span className="shrink-0 text-xs font-semibold text-foreground tabular-nums">{formatted}</span>
+
+      {/* Percentage bar */}
+      <div className="h-1 w-14 shrink-0 overflow-hidden rounded-full bg-surface-subtle">
+        <motion.div
+          className="h-full rounded-full"
+          style={{ backgroundColor: cssVar }}
+          initial={{ width: "0%" }}
+          animate={{ width: `${row.percentage * 100}%` }}
+          transition={{ duration: 0.6, delay: index * 0.05 + 0.3, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </div>
+
+      {/* Percentage */}
+      <span className="w-10 shrink-0 text-right text-[10px] tabular-nums text-foreground-secondary">{percentDisplay}</span>
     </motion.div>
   );
 }
+
+/* ────────────────────────────────────────────────────────────
+   MAIN COMPONENT
+   ──────────────────────────────────────────────────────────── */
 
 export function CategoryBreakdownPanel({
   breakdown,
@@ -129,27 +180,20 @@ export function CategoryBreakdownPanel({
   return (
     <section
       aria-labelledby="category-breakdown-title"
-      className="flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm"
+      className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-interface-md font-semibold text-foreground" id="category-breakdown-title">
-            Expense by Category
-          </h2>
-          <p className="mt-0.5 text-interface-xs text-foreground-secondary">{period}</p>
-        </div>
-        <button
-          aria-label="View full category report"
-          className="text-interface-xs font-semibold text-accent transition-colors hover:text-accent/70"
-          type="button"
-        >
-          This month ▾
-        </button>
+      {/* Header */}
+      <div className="relative px-5 pt-4 pb-3">
+        <h2 className="text-sm font-semibold text-foreground" id="category-breakdown-title">
+          Spending by Category
+        </h2>
+        <p className="mt-0.5 text-xs text-foreground-secondary">{period}</p>
       </div>
 
+      {/* Doughnut chart */}
       {data ? (
-        <div className="mt-4 flex flex-col items-center">
-          <div className="relative h-48 w-48">
+        <div className="relative px-5 pb-4">
+          <div className="relative mx-auto" style={{ height: 200, width: 200 }}>
             <ChartCanvas
               aria-label={`Spending by category doughnut chart for ${period}`}
               data={data}
@@ -159,28 +203,39 @@ export function CategoryBreakdownPanel({
               tabIndex={-1}
               type="doughnut"
             />
+            {/* Center overlay */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
             >
-              <p className="financial-value text-display-sm font-bold text-foreground">{totalFormatted}</p>
-              <p className="text-interface-xs text-foreground-secondary">Total</p>
+              <p className="text-lg font-bold text-foreground tabular-nums leading-none">{totalFormatted}</p>
+              <p className="text-[10px] text-foreground-secondary mt-1">Total spent</p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="mt-4 flex h-48 items-center justify-center">
-          <p className="text-interface-sm text-foreground-secondary">No expense data for this period yet.</p>
+        <div className="px-5 pb-5">
+          <div className="flex h-48 items-center justify-center">
+            <p className="text-sm text-foreground-secondary">No expense data for this period yet.</p>
+          </div>
         </div>
       )}
 
-      <div className={cn("mt-4 grid gap-0.5", !breakdown.length && "hidden")}>
-        {visibleRows.map((row, index) => (
-          <CategoryRow currency={currency} index={index} key={row.categoryId} row={row} />
-        ))}
+      {/* Category list */}
+      <div className={cn("px-3 pb-3", !breakdown.length && "hidden")}>
+        <div className="space-y-0.5">
+          {visibleRows.map((row, index) => (
+            <CategoryRow
+              currency={currency}
+              index={index}
+              key={row.categoryId}
+              row={row}
+            />
+          ))}
+        </div>
         {hasMore ? (
           <button
-            className="mt-1 w-full rounded-lg border border-border py-2 text-center text-interface-xs font-semibold text-foreground-secondary transition-colors hover:bg-surface-subtle"
+            className="mt-2 w-full rounded-lg py-2 text-center text-xs font-medium text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-foreground"
             onClick={() => setViewAll((prev) => !prev)}
             type="button"
           >
