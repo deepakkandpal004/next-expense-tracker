@@ -96,10 +96,10 @@ function ConfidenceRing({ score }: { score: number }) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[11px] font-bold tabular-nums text-foreground">{score}</span>
+          <span className="text-[11px] font-bold tabular-nums text-on-surface">{score}</span>
         </div>
       </div>
-      <span className="text-[10px] font-medium text-foreground-secondary">Confidence</span>
+      <span className="text-[10px] font-medium text-on-surface-variant/60">Confidence</span>
     </div>
   );
 }
@@ -129,10 +129,10 @@ function MonthlyStat({
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="text-[9px] font-medium text-foreground-secondary uppercase tracking-wider leading-none">
+        <p className="text-[9px] font-medium text-on-surface-variant/60 uppercase tracking-wider leading-none">
           {label}
         </p>
-        <p className="text-xs font-semibold text-foreground tabular-nums leading-none mt-0.5">
+        <p className="text-xs font-semibold text-on-surface tabular-nums leading-none mt-0.5">
           {value}
         </p>
       </div>
@@ -154,10 +154,10 @@ function RecommendationChip({ text, index }: { text: string; index: number }) {
     >
       <Lightbulb
         size={12}
-        className="mt-0.5 shrink-0 text-accent"
+        className="mt-0.5 shrink-0 text-primary-fixed"
         strokeWidth={2.5}
       />
-      <span className="text-xs text-foreground-secondary leading-relaxed">{text}</span>
+      <span className="text-xs text-on-surface-variant/60 leading-relaxed">{text}</span>
     </motion.div>
   );
 }
@@ -217,7 +217,7 @@ export function AIFinancialCoach({
   return (
     <motion.article
       className={cn(
-        "relative overflow-hidden rounded-2xl border bg-surface",
+        "relative overflow-hidden glass-vessel",
         config.border,
         className,
       )}
@@ -249,13 +249,13 @@ export function AIFinancialCoach({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-surface shadow-[0_0_20px_rgb(139_92_246/0.2)]">
-              <Sparkles size={18} className="text-accent" strokeWidth={2} />
+              <Sparkles size={18} className="text-primary-fixed" strokeWidth={2} />
             </span>
             <div>
-              <p className="text-xs font-semibold text-foreground-secondary uppercase tracking-wider">
+              <p className="text-xs font-semibold text-on-surface-variant/60 uppercase tracking-wider">
                 AI Financial Coach
               </p>
-              <p className="text-[10px] text-foreground-secondary/60">
+              <p className="text-[10px] text-on-surface-variant/40">
                 Personalized insight for this period
               </p>
             </div>
@@ -269,11 +269,11 @@ export function AIFinancialCoach({
             <span className={cn("flex-shrink-0", config.iconColor)} aria-hidden="true">
               {config.icon}
             </span>
-            <h3 className="text-base font-semibold text-foreground leading-snug">
+            <h3 className="text-base font-semibold text-on-surface leading-snug">
               {insight.title}
             </h3>
           </div>
-          <p className="text-sm text-foreground-secondary leading-relaxed pl-[30px]">
+          <p className="text-sm text-on-surface-variant/60 leading-relaxed pl-[30px]">
             {insight.description}
           </p>
         </div>
@@ -287,13 +287,13 @@ export function AIFinancialCoach({
             transition={{ duration: 0.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-surface">
-              <Calendar size={14} className="text-accent" />
+              <Calendar size={14} className="text-primary-fixed" />
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-medium text-foreground-secondary uppercase tracking-wider">
+              <p className="text-[10px] font-medium text-on-surface-variant/60 uppercase tracking-wider">
                 {insight.prediction.label}
               </p>
-              <p className="text-sm font-semibold text-foreground tabular-nums">
+              <p className="text-sm font-semibold text-on-surface tabular-nums">
                 {insight.prediction.value}
               </p>
             </div>
@@ -304,7 +304,7 @@ export function AIFinancialCoach({
                   ? "bg-kpi-expense-surface text-kpi-expense-foreground"
                   : insight.prediction.trend === "down"
                     ? "bg-kpi-income-surface text-kpi-income-foreground"
-                    : "bg-surface-subtle text-foreground-secondary",
+                    : "bg-white/5 text-on-surface-variant/60",
               )}
             >
               {trendIcon[insight.prediction.trend]}
@@ -344,7 +344,7 @@ export function AIFinancialCoach({
         {/* ── Recommendations ── */}
         {insight.recommendations.length > 0 && (
           <div className="mb-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-foreground-secondary mb-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant/60 mb-2">
               Recommendations
             </p>
             <div className="space-y-1.5">
@@ -357,7 +357,7 @@ export function AIFinancialCoach({
 
         {/* ── CTA Footer ── */}
         {(insight.primaryAction || insight.secondaryAction) && (
-          <div className="flex items-center gap-3 pt-2 border-t border-border/30">
+          <div className="flex items-center gap-3 pt-2 border-t border-white/10">
             {insight.primaryAction && (
               <a
                 href={insight.primaryAction.href}

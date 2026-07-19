@@ -41,18 +41,22 @@ function rememberDisclosure(version: string) {
 
 function DisclosurePanel({ disclosure, onContinue }: { disclosure: AiDataUseDisclosure; onContinue: () => void }) {
   return (
-    <section aria-labelledby="insights-disclosure-title" className="rounded-container border border-info-border bg-info-surface p-4">
-      <div className="flex gap-3">
-        <Database aria-hidden="true" className="mt-0.5 shrink-0" size={20} />
-        <div className="min-w-0">
-          <h3 className="text-interface-md font-semibold" id="insights-disclosure-title">AI data-use disclosure</h3>
-          <p className="mt-1 text-interface-sm">{disclosure.purpose}</p>
-          <p className="mt-3 text-interface-sm font-semibold">Fields sent for generation</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-interface-sm">
-            {disclosure.fields.map((field) => <li key={field}>{field}</li>)}
-          </ul>
-          <p className="mt-3 text-interface-sm">{disclosure.providerRetention.statement}</p>
-          <Button className="mt-4" icon={<Bot size={18} />} intent="secondary" label="Continue and ask a question" onClick={onContinue} />
+    <section aria-labelledby="insights-disclosure-title" className="rounded-2xl border border-border/60 bg-surface-subtle/50 p-5">
+      <div className="flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Database aria-hidden="true" size={18} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-interface-sm font-semibold text-foreground" id="insights-disclosure-title">AI data-use disclosure</h3>
+          <p className="mt-1 text-interface-xs text-foreground-secondary leading-relaxed">{disclosure.purpose}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-interface-xs font-medium text-foreground-secondary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              {disclosure.fields.length} data fields
+            </span>
+            <span className="text-interface-xs text-foreground-secondary/70">{disclosure.providerRetention.statement}</span>
+          </div>
+          <Button className="mt-4" icon={<Bot size={16} />} intent="primary" label="Continue and ask a question" onClick={onContinue} />
         </div>
       </div>
     </section>
@@ -66,17 +70,17 @@ function AnswerCard({ answer }: { answer: AiConversationAnswer }) {
         <p className="text-interface-xs font-semibold uppercase tracking-wide text-foreground-secondary">Your question</p>
         <p className="mt-1 font-semibold text-foreground">{answer.question}</p>
       </div>
-      <div className="rounded-container border border-info-border bg-info-surface p-4">
-        <p className="text-interface-xs font-semibold uppercase tracking-wide">AI-generated answer</p>
-        <p className="mt-2 text-interface-sm">{answer.answer}</p>
-        {answer.stale ? <p className="mt-2 text-interface-xs font-semibold">This answer could not be refreshed and may be outdated.</p> : null}
+      <div className="rounded-2xl border border-border/50 bg-surface p-4">
+        <p className="text-interface-xs font-semibold uppercase tracking-wide text-primary">AI-generated answer</p>
+        <p className="mt-2 text-interface-sm text-foreground-secondary leading-relaxed">{answer.answer}</p>
+        {answer.stale ? <p className="mt-2 text-interface-xs font-semibold text-warning-foreground">This answer could not be refreshed and may be outdated.</p> : null}
       </div>
       {answer.facts.length > 0 ? (
-        <section aria-labelledby="answer-facts-title" className="rounded-container bg-surface-subtle p-4">
+        <section aria-labelledby="answer-facts-title" className="rounded-2xl border border-border/50 bg-surface p-4">
           <h3 className="text-interface-sm font-semibold text-foreground" id="answer-facts-title">Recorded data facts</h3>
-          <dl className="mt-2 grid gap-2 text-interface-sm">
+          <dl className="mt-2 grid gap-1.5 text-interface-sm">
             {answer.facts.map((fact) => (
-              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1" key={`${fact.label}-${fact.value}`}>
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg px-3 py-2 hover:bg-surface-subtle/50" key={`${fact.label}-${fact.value}`}>
                 <dt className="text-foreground-secondary">{fact.label}</dt>
                 <dd className="financial-value font-semibold text-foreground">{fact.value}</dd>
               </div>
@@ -146,7 +150,7 @@ export function ConversationPanel({ period, disclosure: initialDisclosure, loadA
   };
 
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-6">
       <header>
         <h1 className="text-display-md font-semibold text-foreground">Insights</h1>
         <p className="mt-1 text-interface-sm text-foreground-secondary">Reporting period: {period.kind === "custom" ? `${period.start} – ${period.end}` : period.kind.replace("-", " ")}</p>
@@ -170,13 +174,13 @@ export function ConversationPanel({ period, disclosure: initialDisclosure, loadA
               value={pendingQuestion ?? question}
             />
           </div>
-          <Button icon={<Send size={18} />} label="Ask" loading={Boolean(pendingQuestion)} type="submit" />
+          <Button icon={<Send size={16} />} label="Ask" loading={Boolean(pendingQuestion)} type="submit" />
         </form>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {SUGGESTED_QUESTIONS.map((suggestion) => (
             <Button
               disabled={Boolean(pendingQuestion)}
-              icon={<MessageCircle size={16} />}
+              icon={<MessageCircle size={14} />}
               intent="ghost"
               key={suggestion}
               label={`Ask: ${suggestion}`}
@@ -190,7 +194,7 @@ export function ConversationPanel({ period, disclosure: initialDisclosure, loadA
 
       {error ? (
         <Alert
-          action={<Button icon={<RefreshCw size={18} />} label="Retry question" onClick={retry} />}
+          action={<Button icon={<RefreshCw size={14} />} label="Retry question" onClick={retry} />}
           description={error}
           title="Answer could not be generated"
           tone="danger"

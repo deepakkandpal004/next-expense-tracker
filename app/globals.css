@@ -79,14 +79,14 @@
   --color-trend-down-foreground: #b91c1c;
   --color-trend-down-surface: #fee2e2;
 
-  /* Sidebar palette — intentionally stays dark in every appearance. */
-  --color-sidebar-bg: #16173a;
-  --color-sidebar-bg-end: #2a1e5c;
-  --color-sidebar-foreground: #e2e8f0;
-  --color-sidebar-foreground-muted: #94a3b8;
+  /* Sidebar palette — deep midnight for Atmospheric Flux. */
+  --color-sidebar-bg: #0c0c1f;
+  --color-sidebar-bg-end: #111125;
+  --color-sidebar-foreground: #e2e0fb;
+  --color-sidebar-foreground-muted: #b9caca;
   --color-sidebar-item-hover: rgb(255 255 255 / 0.06);
-  --color-sidebar-item-active-bg: rgb(139 92 246 / 0.18);
-  --color-sidebar-item-active-foreground: #ffffff;
+  --color-sidebar-item-active-bg: rgb(0 220 229 / 0.15);
+  --color-sidebar-item-active-foreground: #63f7ff;
   --color-sidebar-border: rgb(255 255 255 / 0.08);
 
   /* 8px foundation with documented 4px half-steps. */
@@ -143,147 +143,152 @@
 .dark,
 [data-theme='dark'] {
   color-scheme: dark;
-  --color-bg: #0b132b;
-  --color-surface: #111c36;
-  --color-surface-subtle: #172442;
-  --color-surface-raised: #172442;
-  --color-text: #f8fafc;
-  --color-text-muted: #cbd5e1;
-  --color-text-inverse: #0b132b;
-  --color-border: #52617a;
-  --color-border-strong: #94a3b8;
-  --color-focus: #67e8f9;
-  --color-primary: #5eead4;
-  --color-on-primary: #0b132b;
-  --color-info: #7dd3fc;
-  --color-info-foreground: #bae6fd;
-  --color-info-surface: #0c4a6e;
-  --color-info-border: #38bdf8;
-  --color-success: #86efac;
-  --color-success-foreground: #bbf7d0;
-  --color-success-surface: #14532d;
-  --color-success-border: #4ade80;
+  /* Atmospheric Flux palette */
+  --color-bg: #111125;
+  --color-surface: #1e1e31;
+  --color-surface-subtle: #1a1a2d;
+  --color-surface-raised: #28283c;
+  --color-text: #e2e0fb;
+  --color-text-muted: #b9caca;
+  --color-text-inverse: #002021;
+  --color-border: #3a494a;
+  --color-border-strong: #849495;
+  --color-focus: #00dce5;
+  --color-primary: #00dce5;
+  --color-on-primary: #003739;
+  --color-info: #63f7ff;
+  --color-info-foreground: #006c71;
+  --color-info-surface: rgb(0 245 255 / 0.12);
+  --color-info-border: #00f5ff;
+  --color-success: #3bff17;
+  --color-success-foreground: #022100;
+  --color-success-surface: rgb(59 255 23 / 0.12);
+  --color-success-border: #79ff5b;
   --color-warning: #fde047;
   --color-warning-foreground: #fef08a;
-  --color-warning-surface: #713f12;
+  --color-warning-surface: rgb(253 224 71 / 0.12);
   --color-warning-border: #facc15;
-  --color-danger: #fca5a5;
-  --color-danger-foreground: #fecaca;
-  --color-danger-surface: #7f1d1d;
+  --color-danger: #ffb4ab;
+  --color-danger-foreground: #690005;
+  --color-danger-surface: rgb(255 180 171 / 0.12);
   --color-danger-border: #f87171;
-  --color-category-food: #5eead4;
-  --color-category-transportation: #7dd3fc;
+  --color-category-food: #00f5ff;
+  --color-category-transportation: #63f7ff;
   --color-category-shopping: #fde047;
-  --color-category-entertainment: #f9a8d4;
+  --color-category-entertainment: #fface8;
   --color-category-bills: #c4b5fd;
-  --color-category-healthcare: #fca5a5;
-  --color-category-income: #86efac;
-  --color-category-other: #cbd5e1;
+  --color-category-healthcare: #ffb4ab;
+  --color-category-income: #3bff17;
+  --color-category-other: #b9caca;
 
-  --color-accent: #a78bfa;
-  --color-accent-foreground: #0b132b;
-  --color-accent-surface: rgb(167 139 250 / 0.15);
-  --color-accent-border: #a78bfa;
+  /* Accent: Magenta Pulse */
+  --color-accent: #ff24e4;
+  --color-accent-foreground: #ffffff;
+  --color-accent-surface: rgb(255 36 228 / 0.15);
+  --color-accent-border: #fface8;
 
-  --color-kpi-balance: #5eead4;
-  --color-kpi-balance-surface: rgb(94 234 212 / 0.15);
-  --color-kpi-balance-foreground: #99f6e4;
+  /* KPI: Electric Cyan, Magenta, Lime */
+  --color-kpi-balance: #00dce5;
+  --color-kpi-balance-surface: rgb(0 220 229 / 0.15);
+  --color-kpi-balance-foreground: #63f7ff;
 
-  --color-kpi-income: #86efac;
-  --color-kpi-income-surface: rgb(134 239 172 / 0.15);
-  --color-kpi-income-foreground: #bbf7d0;
+  --color-kpi-income: #3bff17;
+  --color-kpi-income-surface: rgb(59 255 23 / 0.15);
+  --color-kpi-income-foreground: #79ff5b;
 
-  --color-kpi-expense: #fdba74;
-  --color-kpi-expense-surface: rgb(253 186 116 / 0.15);
-  --color-kpi-expense-foreground: #fed7aa;
+  --color-kpi-expense: #fface8;
+  --color-kpi-expense-surface: rgb(255 172 232 / 0.15);
+  --color-kpi-expense-foreground: #ffd7f0;
 
-  --color-kpi-savings: #c4b5fd;
-  --color-kpi-savings-surface: rgb(196 181 253 / 0.15);
-  --color-kpi-savings-foreground: #ddd6fe;
+  --color-kpi-savings: #ff24e4;
+  --color-kpi-savings-surface: rgb(255 36 228 / 0.15);
+  --color-kpi-savings-foreground: #fface8;
 
-  --color-trend-up: #86efac;
-  --color-trend-up-foreground: #bbf7d0;
-  --color-trend-up-surface: rgb(134 239 172 / 0.15);
+  /* Trends */
+  --color-trend-up: #3bff17;
+  --color-trend-up-foreground: #79ff5b;
+  --color-trend-up-surface: rgb(59 255 23 / 0.15);
 
-  --color-trend-down: #fca5a5;
-  --color-trend-down-foreground: #fecaca;
-  --color-trend-down-surface: rgb(252 165 165 / 0.15);
+  --color-trend-down: #ffb4ab;
+  --color-trend-down-foreground: #ffdad6;
+  --color-trend-down-surface: rgb(255 180 171 / 0.15);
 
-  --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.28), 0 8px 24px rgb(0 0 0 / 0.24);
-  --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.48);
+  /* Deeper elevation for glassmorphism */
+  --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+  --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.6);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.dark):not([data-theme]) {
     color-scheme: dark;
-    --color-bg: #0b132b;
-    --color-surface: #111c36;
-    --color-surface-subtle: #172442;
-    --color-surface-raised: #172442;
-    --color-text: #f8fafc;
-    --color-text-muted: #cbd5e1;
-    --color-text-inverse: #0b132b;
-    --color-border: #52617a;
-    --color-border-strong: #94a3b8;
-    --color-focus: #67e8f9;
-    --color-primary: #5eead4;
-    --color-on-primary: #0b132b;
-    --color-info: #7dd3fc;
-    --color-info-foreground: #bae6fd;
-    --color-info-surface: #0c4a6e;
-    --color-info-border: #38bdf8;
-    --color-success: #86efac;
-    --color-success-foreground: #bbf7d0;
-    --color-success-surface: #14532d;
-    --color-success-border: #4ade80;
+    --color-bg: #111125;
+    --color-surface: #1e1e31;
+    --color-surface-subtle: #1a1a2d;
+    --color-surface-raised: #28283c;
+    --color-text: #e2e0fb;
+    --color-text-muted: #b9caca;
+    --color-text-inverse: #002021;
+    --color-border: #3a494a;
+    --color-border-strong: #849495;
+    --color-focus: #00dce5;
+    --color-primary: #00dce5;
+    --color-on-primary: #003739;
+    --color-info: #63f7ff;
+    --color-info-foreground: #006c71;
+    --color-info-surface: rgb(0 245 255 / 0.12);
+    --color-info-border: #00f5ff;
+    --color-success: #3bff17;
+    --color-success-foreground: #022100;
+    --color-success-surface: rgb(59 255 23 / 0.12);
+    --color-success-border: #79ff5b;
     --color-warning: #fde047;
     --color-warning-foreground: #fef08a;
-    --color-warning-surface: #713f12;
+    --color-warning-surface: rgb(253 224 71 / 0.12);
     --color-warning-border: #facc15;
-    --color-danger: #fca5a5;
-    --color-danger-foreground: #fecaca;
-    --color-danger-surface: #7f1d1d;
+    --color-danger: #ffb4ab;
+    --color-danger-foreground: #690005;
+    --color-danger-surface: rgb(255 180 171 / 0.12);
     --color-danger-border: #f87171;
-    --color-category-food: #5eead4;
-    --color-category-transportation: #7dd3fc;
+    --color-category-food: #00f5ff;
+    --color-category-transportation: #63f7ff;
     --color-category-shopping: #fde047;
-    --color-category-entertainment: #f9a8d4;
+    --color-category-entertainment: #fface8;
     --color-category-bills: #c4b5fd;
-    --color-category-healthcare: #fca5a5;
-    --color-category-income: #86efac;
-    --color-category-other: #cbd5e1;
+    --color-category-healthcare: #ffb4ab;
+    --color-category-income: #3bff17;
+    --color-category-other: #b9caca;
 
-    --color-accent: #a78bfa;
-    --color-accent-foreground: #0b132b;
-    --color-accent-surface: rgb(167 139 250 / 0.15);
-    --color-accent-border: #a78bfa;
+    --color-accent: #ff24e4;
+    --color-accent-foreground: #ffffff;
+    --color-accent-surface: rgb(255 36 228 / 0.15);
+    --color-accent-border: #fface8;
 
-    --color-kpi-balance: #5eead4;
-    --color-kpi-balance-surface: rgb(94 234 212 / 0.15);
-    --color-kpi-balance-foreground: #99f6e4;
+    --color-kpi-balance: #00dce5;
+    --color-kpi-balance-surface: rgb(0 220 229 / 0.15);
+    --color-kpi-balance-foreground: #63f7ff;
 
-    --color-kpi-income: #86efac;
-    --color-kpi-income-surface: rgb(134 239 172 / 0.15);
-    --color-kpi-income-foreground: #bbf7d0;
+    --color-kpi-income: #3bff17;
+    --color-kpi-income-surface: rgb(59 255 23 / 0.15);
+    --color-kpi-income-foreground: #79ff5b;
 
-    --color-kpi-expense: #fdba74;
-    --color-kpi-expense-surface: rgb(253 186 116 / 0.15);
-    --color-kpi-expense-foreground: #fed7aa;
+    --color-kpi-expense: #fface8;
+    --color-kpi-expense-surface: rgb(255 172 232 / 0.15);
+    --color-kpi-expense-foreground: #ffd7f0;
 
-    --color-kpi-savings: #c4b5fd;
-    --color-kpi-savings-surface: rgb(196 181 253 / 0.15);
-    --color-kpi-savings-foreground: #ddd6fe;
+    --color-kpi-savings: #ff24e4;
+    --color-kpi-savings-surface: rgb(255 36 228 / 0.15);
+    --color-kpi-savings-foreground: #fface8;
 
-    --color-trend-up: #86efac;
-    --color-trend-up-foreground: #bbf7d0;
-    --color-trend-up-surface: rgb(134 239 172 / 0.15);
+    --color-trend-up: #3bff17;
+    --color-trend-up-foreground: #79ff5b;
+    --color-trend-up-surface: rgb(59 255 23 / 0.15);
 
-    --color-trend-down: #fca5a5;
-    --color-trend-down-foreground: #fecaca;
-    --color-trend-down-surface: rgb(252 165 165 / 0.15);
+    --color-trend-down: #ffb4ab;
+    --color-trend-down-foreground: #ffdad6;
+    --color-trend-down-surface: rgb(255 180 171 / 0.15);
 
-    --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.28), 0 8px 24px rgb(0 0 0 / 0.24);
-    --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.48);
+    --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+    --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.6);
   }
 }
 
@@ -306,7 +311,7 @@ body {
   overflow-x: clip;
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: var(--font-inter), Arial, sans-serif;
+  font-family: var(--font-plus-jakarta), Arial, sans-serif;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   text-rendering: optimizeLegibility;
@@ -325,14 +330,18 @@ label,
 nav,
 .font-heading,
 .font-sans {
-  font-family: var(--font-inter), Arial, sans-serif;
+  font-family: var(--font-plus-jakarta), Arial, sans-serif;
 }
 
 h1,
 .font-display,
 .font-sora,
 .product-mark {
-  font-family: var(--font-sora), var(--font-inter), Arial, sans-serif;
+  font-family: var(--font-plus-jakarta), Arial, sans-serif;
+}
+
+.font-geist {
+  font-family: var(--font-geist), monospace;
 }
 
 h1,
@@ -490,8 +499,10 @@ p {
 
 .dark .surface-glass,
 [data-theme='dark'] .surface-glass {
-  background: rgba(17, 28, 54, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 49, 0.6);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--elevation-raised);
 }
 
@@ -555,21 +566,24 @@ p {
 
 .dark .glass-card-lift,
 [data-theme='dark'] .glass-card-lift {
-  background: rgba(17, 28, 54, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 1px 2px rgb(0 0 0 / 0.2),
-    0 4px 12px rgb(0 0 0 / 0.15),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  background: rgba(30, 30, 49, 0.55);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 4px 12px rgb(0 0 0 / 0.2),
+    inset 0 1px 0 rgb(255 255 255 / 0.03);
 }
 
 .dark .glass-card-lift:hover,
 [data-theme='dark'] .glass-card-lift:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 4px 8px rgb(0 0 0 / 0.25),
-    0 12px 32px rgb(0 0 0 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.08);
+  border-color: rgba(0, 220, 229, 0.15);
+  box-shadow:
+    0 4px 8px rgb(0 0 0 / 0.35),
+    0 12px 32px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 0 20px rgba(0, 220, 229, 0.08);
 }
 
 /* Premium AI card with gradient border and glass effect */
@@ -980,7 +994,7 @@ p {
    ──────────────────────────────────────────────────────────── */
 
 .text-display-hero {
-  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;
   line-height: 1.1;
@@ -988,7 +1002,7 @@ p {
 }
 
 .text-display-xl {
-  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
   font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.15;
@@ -996,7 +1010,7 @@ p {
 }
 
 .text-display-lg {
-  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
   line-height: 1.2;
@@ -1004,14 +1018,14 @@ p {
 }
 
 .text-display-md {
-  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 600;
   line-height: 1.25;
 }
 
 .text-display-sm {
-  font-family: var(--font-sora), var(--font-inter), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
   font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 600;
   line-height: 1.3;
@@ -1610,8 +1624,10 @@ p {
 
 .dark .card-premium-glass,
 [data-theme='dark'] .card-premium-glass {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(17, 28, 54, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(30, 30, 49, 0.6);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   box-shadow: var(--elevation-raised);
 }
 
@@ -2045,4 +2061,182 @@ p {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ────────────────────────────────────────────────────────────
+   THE PULSE — ATMOSPHERIC BACKGROUND
+   ──────────────────────────────────────────────────────────── */
+
+.pulse-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pulse-atmosphere::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: rgba(0, 220, 229, 0.04);
+  filter: blur(120px);
+  animation: pulse-glow-bg 8s ease-in-out infinite;
+}
+
+.pulse-atmosphere::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: rgba(255, 36, 228, 0.04);
+  filter: blur(120px);
+  animation: pulse-glow-bg 8s ease-in-out infinite 2s;
+}
+
+@keyframes pulse-glow-bg {
+  0%, 100% { opacity: 0.6; filter: blur(120px); }
+  50% { opacity: 1; filter: blur(140px); }
+}
+
+/* ─── Glass vessel card ─── */
+.glass-vessel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-vessel:hover {
+  border-color: rgba(0, 220, 229, 0.15);
+  box-shadow: 0 0 30px rgba(0, 220, 229, 0.06);
+}
+
+/* ─── Pulse logo glow ─── */
+.pulse-logo {
+  font-family: var(--font-plus-jakarta), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #63f7ff;
+  text-shadow:
+    0 0 10px rgba(0, 220, 229, 0.4),
+    0 0 30px rgba(0, 220, 229, 0.2);
+  transition: text-shadow 0.5s ease;
+}
+
+.pulse-logo:hover {
+  text-shadow:
+    0 0 15px rgba(0, 220, 229, 0.6),
+    0 0 40px rgba(0, 220, 229, 0.3),
+    0 0 60px rgba(0, 220, 229, 0.1);
+}
+
+/* ─── Energy liquid fill animation ─── */
+.energy-liquid {
+  transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.energy-liquid::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 70%
+  );
+  animation: flow-shimmer 8s linear infinite;
+}
+
+@keyframes flow-shimmer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ─── Agitated state ─── */
+.agitated {
+  animation: agitate 0.2s ease-in-out infinite alternate;
+}
+
+@keyframes agitate {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(1px, -1px) scale(1.02); }
+}
+
+/* ─── Floating animation ─── */
+@keyframes pulse-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float-pulse {
+  animation: pulse-float 6s ease-in-out infinite;
+}
+
+/* ─── Cursor glow follow ─── */
+.cursor-glow {
+  position: fixed;
+  width: 256px;
+  height: 256px;
+  border-radius: 50%;
+  background: rgba(0, 220, 229, 0.08);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+  transition: transform 0.1s ease-out;
+}
+
+/* ─── Nav link hover glow ─── */
+.nav-glow {
+  transition: all 0.5s ease;
+}
+
+.nav-glow:hover {
+  color: #63f7ff;
+  text-shadow: 0 0 8px #00dce5;
+}
+
+/* ─── Active nav indicator ─── */
+.nav-active {
+  color: #63f7ff;
+  font-weight: 700;
+  border-bottom: 2px solid #63f7ff;
+  text-shadow: 0 0 8px #00dce5;
+}
+
+/* ─── FAB pulse ─── */
+.fab-pulse {
+  box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.fab-pulse:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 40px rgba(0, 245, 255, 0.7);
+}
+
+.fab-pulse:active {
+  transform: scale(0.95);
+}
+
+/* ─── Selection styling for Pulse theme ─── */
+.dark ::selection,
+[data-theme='dark'] ::selection {
+  background: rgba(0, 220, 229, 0.3);
+  color: #e2e0fb;
 }

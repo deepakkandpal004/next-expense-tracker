@@ -362,7 +362,7 @@ export function SkeletonLoader({ className = "", count = 1 }: SkeletonLoaderProp
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className={`animate-pulse rounded-lg bg-surface-subtle ${className}`}
+          className={`animate-shimmer rounded-lg bg-surface-subtle ${className}`}
           style={{ animationDelay: `${i * 100}ms` }}
         />
       ))}

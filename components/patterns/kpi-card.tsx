@@ -118,8 +118,8 @@ export function KpiCard({ role, label, currency, insight, className }: KpiCardPr
   return (
     <motion.article
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-border/60 bg-surface p-4 transition-all duration-200",
-        "hover:border-border-strong hover:shadow-raised",
+        "group relative overflow-hidden glass-vessel p-4 transition-all duration-200",
+        "hover:border-white/10",
         config.borderHover,
         className,
       )}
@@ -149,13 +149,13 @@ export function KpiCard({ role, label, currency, insight, className }: KpiCardPr
             >
               <span className={config.foreground}>{config.icon}</span>
             </span>
-            <span className="text-xs font-medium text-foreground-secondary">{label}</span>
+            <span className="text-xs font-medium text-on-surface-variant/60 font-geist">{label}</span>
           </div>
           <TrendPill trend={insight.trend} invertPolarity={invertPolarity} />
         </div>
 
         {/* Value */}
-        <p className="font-sora text-2xl font-bold text-foreground tabular-nums leading-none mb-3">
+        <p className="font-plus-jakarta text-2xl font-bold text-on-surface tabular-nums leading-none mb-3">
           <AnimatedNumber
             fallback={formattedValue}
             format={(current) =>

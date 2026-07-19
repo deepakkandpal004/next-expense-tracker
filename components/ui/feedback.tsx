@@ -72,12 +72,12 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 export function Skeleton({ label, minimumHeight = "8rem", lines = 3, className, style, ...props }: SkeletonProps) {
   enforceSentenceCase(label, "Skeleton label");
   return (
-    <div aria-busy="true" aria-label={label} aria-live="polite" className={cn("w-full overflow-hidden rounded-2xl border border-border bg-surface p-4", className)} data-feedback-state="loading" role="status" style={{ minHeight: minimumHeight, ...style }} {...props}>
+    <div aria-busy="true" aria-label={label} aria-live="polite" className={cn("w-full overflow-hidden rounded-2xl border border-border/50 bg-surface p-5", className)} data-feedback-state="loading" role="status" style={{ minHeight: minimumHeight, ...style }} {...props}>
       <span className="sr-only">{label}</span>
       <div aria-hidden="true" className="grid gap-3">
         {Array.from({ length: Math.max(1, lines) }, (_, index) => (
           <span
-            className={cn("block h-4 rounded-lg animate-shimmer motion-reduce:animate-none motion-reduce:bg-surface-subtle", index === lines - 1 && "w-2/3")}
+            className={cn("block h-3.5 rounded-lg animate-shimmer motion-reduce:animate-none motion-reduce:bg-surface-subtle", index === lines - 1 && "w-2/3")}
             key={index}
           />
         ))}

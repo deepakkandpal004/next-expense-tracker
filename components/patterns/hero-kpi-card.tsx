@@ -60,7 +60,7 @@ function TrendPill({
 }) {
   if (!trend) {
     return (
-      <span className="inline-flex items-center gap-0.5 rounded-full bg-surface-subtle px-2 py-0.5 text-[10px] text-foreground-secondary">
+      <span className="inline-flex items-center gap-0.5 rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-on-surface-variant/50 font-geist">
         <Minus size={10} strokeWidth={2.5} />
         0%
       </span>
@@ -78,12 +78,12 @@ function TrendPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums",
+        "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-medium tabular-nums font-geist",
         isFlat
-          ? "bg-surface-subtle text-foreground-secondary"
+          ? "bg-white/5 text-on-surface-variant/50"
           : isFavourable
-            ? "bg-kpi-income-surface text-kpi-income"
-            : "bg-kpi-expense-surface text-kpi-expense",
+            ? "bg-tertiary-container/15 text-tertiary-fixed"
+            : "bg-secondary-container/15 text-secondary-fixed",
       )}
     >
       <Icon size={10} strokeWidth={2.5} />
@@ -114,7 +114,7 @@ function MetricCard({
   accentForeground: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border/40 bg-surface-subtle/50 px-3 py-2.5">
+    <div className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5 backdrop-blur-sm">
       <span
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
         style={{ background: accentSurface, color: accentForeground }}
@@ -123,11 +123,11 @@ function MetricCard({
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-medium text-foreground-secondary uppercase tracking-wider leading-none mb-1">
+        <p className="text-[10px] font-medium text-on-surface-variant/50 uppercase tracking-wider leading-none mb-1 font-geist">
           {label}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-foreground tabular-nums leading-none">
+          <span className="text-sm font-semibold text-on-surface tabular-nums leading-none">
             {value}
           </span>
           <TrendPill trend={trend} invertPolarity={invertPolarity} />
@@ -150,10 +150,10 @@ function AIInsightCard({ insight }: { insight: NonNullable<HeroKpiCardProps["aiI
   };
 
   const colorMap = {
-    positive: { bg: "bg-kpi-income-surface", text: "text-kpi-income" },
-    warning: { bg: "bg-warning-surface", text: "text-warning" },
-    info: { bg: "bg-info-surface", text: "text-info" },
-    celebration: { bg: "bg-kpi-savings-surface", text: "text-kpi-savings" },
+    positive: { bg: "bg-tertiary-container/15", text: "text-tertiary-fixed" },
+    warning: { bg: "bg-secondary-container/15", text: "text-secondary-fixed" },
+    info: { bg: "bg-primary-container/15", text: "text-primary-fixed" },
+    celebration: { bg: "bg-secondary-container/15", text: "text-secondary-fixed" },
   };
 
   const Icon = iconMap[insight.type];
@@ -164,7 +164,7 @@ function AIInsightCard({ insight }: { insight: NonNullable<HeroKpiCardProps["aiI
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-      className="flex items-start gap-3 rounded-xl border border-border/40 bg-surface-subtle/50 px-3.5 py-3"
+      className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3.5 py-3 backdrop-blur-sm"
     >
       <span
         className={cn(
@@ -178,10 +178,10 @@ function AIInsightCard({ insight }: { insight: NonNullable<HeroKpiCardProps["aiI
       </span>
 
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-foreground leading-snug">
+        <p className="text-xs font-semibold text-on-surface leading-snug">
           {insight.title}
         </p>
-        <p className="text-[11px] text-foreground-secondary mt-0.5 leading-relaxed line-clamp-2">
+        <p className="text-[11px] text-on-surface-variant/60 mt-0.5 leading-relaxed line-clamp-2">
           {insight.description}
         </p>
 
@@ -190,7 +190,7 @@ function AIInsightCard({ insight }: { insight: NonNullable<HeroKpiCardProps["aiI
             {insight.actionLabel && insight.actionHref && (
               <a
                 href={insight.actionHref}
-                className="btn-premium inline-flex items-center gap-1 text-[11px]"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary-fixed bg-primary-container/15 px-3 py-1.5 rounded-full hover:bg-primary-container/25 transition-all"
               >
                 {insight.actionLabel}
                 <ArrowUp size={10} strokeWidth={2.5} />
@@ -199,7 +199,7 @@ function AIInsightCard({ insight }: { insight: NonNullable<HeroKpiCardProps["aiI
             {insight.secondaryActionLabel && insight.secondaryActionHref && (
               <a
                 href={insight.secondaryActionHref}
-                className="btn-ghost-premium inline-flex items-center gap-1 text-[11px]"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-on-surface-variant/60 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5 transition-all"
               >
                 {insight.secondaryActionLabel}
                 <BookOpen size={10} strokeWidth={2} />
@@ -233,7 +233,7 @@ export function HeroKpiCard({
 
   return (
     <motion.section
-      className="relative overflow-hidden rounded-2xl bg-surface shadow-premium-lg"
+      className="relative overflow-hidden glass-vessel rounded-2xl"
       variants={listItemVariants}
       initial="hidden"
       animate="visible"
@@ -241,7 +241,7 @@ export function HeroKpiCard({
     >
       {/* Subtle background glow */}
       <div
-        className="absolute -top-20 -left-20 w-60 h-60 rounded-full blur-[100px] opacity-[0.03] pointer-events-none"
+        className="absolute -top-20 -left-20 w-60 h-60 rounded-full blur-[100px] opacity-[0.08] pointer-events-none"
         aria-hidden="true"
         style={{ background: "var(--color-primary)" }}
       />
@@ -251,11 +251,11 @@ export function HeroKpiCard({
         {/* ── Balance ── */}
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-xs font-medium text-foreground-secondary uppercase tracking-wider">
+            <p className="text-xs font-medium text-on-surface-variant uppercase tracking-wider font-geist">
               Available Balance
             </p>
             {streak >= 3 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-kpi-savings-surface px-2 py-0.5 text-[10px] font-semibold text-kpi-savings">
+              <span className="inline-flex items-center gap-1 rounded-full bg-secondary-container/15 px-2 py-0.5 text-[10px] font-semibold text-secondary-fixed font-geist">
                 <Flame size={10} strokeWidth={2.5} />
                 {streak}d streak
               </span>
@@ -266,18 +266,18 @@ export function HeroKpiCard({
             <AnimatedNumber
               value={minorToMajor(balance.currentMinor)}
               format={(v) => (
-                <span className="font-sora text-[36px] sm:text-[42px] font-bold text-foreground tabular-nums leading-none tracking-tight">
+                <span className="font-plus-jakarta text-[36px] sm:text-[42px] font-bold text-primary-fixed tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">
                   ₹{v.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                 </span>
               )}
               duration={1}
-              className="font-sora text-[36px] sm:text-[42px] font-bold text-foreground tabular-nums leading-none tracking-tight"
+              className="font-plus-jakarta text-[36px] sm:text-[42px] font-bold text-primary-fixed tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]"
             />
             <TrendPill trend={balance.trend} invertPolarity={false} />
           </div>
 
           {savingsRate > 0 && (
-            <p className="text-xs text-foreground-secondary mt-1.5">
+            <p className="text-xs text-on-surface-variant/60 mt-1.5 font-geist">
               {formatPercentage(savingsRate / 100)} savings rate
             </p>
           )}
@@ -291,8 +291,8 @@ export function HeroKpiCard({
             value={formatCurrency({ minorValue: income.currentMinor, currency })}
             trend={income.trend}
             invertPolarity={false}
-            accentSurface="var(--color-kpi-income-surface)"
-            accentForeground="var(--color-kpi-income-foreground)"
+            accentSurface="rgb(59 255 23 / 0.15)"
+            accentForeground="#79ff5b"
           />
           <MetricCard
             icon={<TrendingDown size={14} strokeWidth={2.2} />}
@@ -300,8 +300,8 @@ export function HeroKpiCard({
             value={formatCurrency({ minorValue: expense.currentMinor, currency })}
             trend={expense.trend}
             invertPolarity
-            accentSurface="var(--color-kpi-expense-surface)"
-            accentForeground="var(--color-kpi-expense-foreground)"
+            accentSurface="rgb(255 172 232 / 0.15)"
+            accentForeground="#fface8"
           />
           <MetricCard
             icon={<PiggyBank size={14} strokeWidth={2.2} />}
@@ -309,8 +309,8 @@ export function HeroKpiCard({
             value={formatCurrency({ minorValue: savings.currentMinor, currency })}
             trend={savings.trend}
             invertPolarity={false}
-            accentSurface="var(--color-kpi-savings-surface)"
-            accentForeground="var(--color-kpi-savings-foreground)"
+            accentSurface="rgb(0 220 229 / 0.15)"
+            accentForeground="#63f7ff"
           />
         </div>
 

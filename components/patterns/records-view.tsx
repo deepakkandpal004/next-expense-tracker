@@ -205,8 +205,8 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
     <div className="grid gap-6">
       <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-display-xl font-bold text-foreground">Transactions</h1>
-          <p className="mt-1 text-body text-foreground-secondary">{resolvedPeriod.label}</p>
+          <h1 className="text-display-xl font-bold text-on-surface">Transactions</h1>
+          <p className="mt-1 text-body text-on-surface-variant/60">{resolvedPeriod.label}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button icon={<Download size={16} />} intent="secondary" label="Export" onClick={() => setExportOpen(true)} />
@@ -218,7 +218,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
 
       <section
         aria-label="Filter and sort records"
-        className="rounded-2xl border border-border bg-surface p-4 shadow-premium-sm"
+        className="glass-vessel p-4"
       >
         <TransactionFilters
           search={query.search}
@@ -287,13 +287,13 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
         title="Export records"
       >
         <div className="grid gap-4">
-          <dl className="grid gap-2 rounded-container border border-border bg-surface-subtle p-4 text-interface-sm">
-            <div className="flex justify-between gap-4"><dt className="text-foreground-secondary">Reporting period</dt><dd>{exportScope.summary.period.label}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-foreground-secondary">Active filters</dt><dd>{exportScope.summary.activeFilters.length || "None"}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-foreground-secondary">Format</dt><dd>{exportScope.summary.format.toUpperCase()}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-foreground-secondary">Records</dt><dd>{exportScope.summary.recordCount}</dd></div>
-            <div className="grid gap-1 border-t border-border pt-2">
-              <dt className="text-foreground-secondary">Included columns</dt>
+          <dl className="grid gap-2 rounded-container border border-white/5 bg-white/5 p-4 text-interface-sm">
+            <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Reporting period</dt><dd>{exportScope.summary.period.label}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Active filters</dt><dd>{exportScope.summary.activeFilters.length || "None"}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Format</dt><dd>{exportScope.summary.format.toUpperCase()}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Records</dt><dd>{exportScope.summary.recordCount}</dd></div>
+            <div className="grid gap-1 border-t border-white/5 pt-2">
+              <dt className="text-on-surface-variant/60">Included columns</dt>
               <dd>{exportScope.summary.columns.join(", ")}</dd>
             </div>
           </dl>

@@ -54,7 +54,11 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   const [signingOut, setSigningOut] = useState(false);
   const [accountError, setAccountError] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
+  const handleNewRecord = () => {
+    const href = appPeriodHref("records", period);
+    router.push(`${href}?addTransaction=1`);
+  };
 
   const urlPeriod = useMemo(
     () => parseReportingPeriod(new URLSearchParams(periodSearch)),
@@ -94,25 +98,24 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   };
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden bg-canvas text-foreground">
-      {/* Desktop sidebar — icon rail, expandable on hover/click */}
-      <div
-        className="hidden md:flex shrink-0 transition-all duration-200 ease-in-out"
-        onMouseEnter={() => setSidebarCollapsed(false)}
-        onMouseLeave={() => setSidebarCollapsed(true)}
-      >
+    <div className="flex h-[100dvh] overflow-hidden bg-background text-foreground relative">
+      {/* Atmospheric Background */}
+      <div className="pulse-atmosphere" aria-hidden="true" />
+
+      {/* Desktop sidebar */}
+      <div className="hidden md:flex shrink-0 relative z-10">
         <AppSidebar
           activeDestinationId={activeDestinationId}
           hrefFor={hrefFor}
+          onNewRecord={handleNewRecord}
           onSignOut={signOut}
           signingOut={signingOut}
           user={user}
-          collapsed={sidebarCollapsed}
         />
       </div>
 
       {/* Main content area */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto relative z-10">
         <AppHeader
           accountError={accountError}
           onMobileMenuOpen={() => setMobileNavOpen(true)}
@@ -144,10 +147,10 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           activeDestinationId={activeDestinationId}
           hrefFor={hrefFor}
           onNavigate={() => setMobileNavOpen(false)}
+          onNewRecord={() => { setMobileNavOpen(false); handleNewRecord(); }}
           onSignOut={signOut}
           signingOut={signingOut}
           user={user}
-          collapsed={false}
         />
       </Sheet>
     </div>

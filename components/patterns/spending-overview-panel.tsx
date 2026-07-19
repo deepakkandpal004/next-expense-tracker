@@ -304,7 +304,7 @@ function ChartLegend({
       {series.map((s) => {
         const hidden = hiddenSeries.has(s.key);
         return (
-          <button
+            <button
             key={s.key}
             type="button"
             onClick={() => onToggle(s.key)}
@@ -397,7 +397,7 @@ export function SpendingOverviewPanel({
   return (
     <section
       aria-labelledby="spending-overview-title"
-      className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface"
+      className="relative overflow-hidden glass-vessel"
     >
       {/* Header */}
       <div className="relative flex flex-wrap items-start justify-between gap-3 px-5 pt-4 pb-3">
@@ -409,7 +409,7 @@ export function SpendingOverviewPanel({
         </div>
         <div
           aria-label="Chart type"
-          className="flex overflow-hidden rounded-lg border border-border/60"
+            className="flex overflow-hidden rounded-lg border border-border/50"
           role="group"
         >
           {(["line", "bar"] as ChartVisualization[]).map((type) => (
@@ -418,7 +418,7 @@ export function SpendingOverviewPanel({
               className={cn(
                 "inline-flex min-h-[36px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
                 vizType === type
-                  ? "bg-foreground text-background"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-transparent text-foreground-secondary hover:bg-surface-subtle",
               )}
               key={type}

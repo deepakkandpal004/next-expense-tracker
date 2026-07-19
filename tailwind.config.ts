@@ -10,8 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'],
-        sora: ['var(--font-sora)', 'sans-serif'],
+        sans: ['var(--font-plus-jakarta)', 'sans-serif'],
+        sora: ['var(--font-plus-jakarta)', 'sans-serif'],
+        geist: ['var(--font-geist)', 'monospace'],
+        'plus-jakarta': ['var(--font-plus-jakarta)', 'sans-serif'],
       },
       colors: {
         // shadcn/ui semantic aliases
@@ -132,12 +134,12 @@ const config: Config = {
           'accent-foreground': 'var(--sidebar-accent-foreground)',
           border: 'var(--sidebar-border)',
           ring: 'var(--sidebar-ring)',
-          bg: 'var(--color-sidebar-bg)',
-          'bg-end': 'var(--color-sidebar-bg-end)',
-          'foreground-muted': 'var(--color-sidebar-foreground-muted)',
-          'item-hover': 'var(--color-sidebar-item-hover)',
-          'item-active-bg': 'var(--color-sidebar-item-active-bg)',
-          'item-active-foreground': 'var(--color-sidebar-item-active-foreground)',
+          bg: '#0c0c1f',
+          'bg-end': '#1a1a2d',
+          'foreground-muted': '#b9caca',
+          'item-hover': 'rgb(255 255 255 / 0.06)',
+          'item-active-bg': 'rgb(0 220 229 / 0.15)',
+          'item-active-foreground': '#63f7ff',
         },
         // Compatibility aliases while route components migrate to semantic roles.
         theme: {

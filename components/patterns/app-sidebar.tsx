@@ -13,6 +13,7 @@ import {
   Settings,
   Target,
   Wallet,
+  Plus,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
@@ -42,8 +43,8 @@ interface AppSidebarProps {
   hrefFor: (destination: Exclude<SidebarDestinationId, NavPlaceholderId>) => string;
   onSignOut: () => void;
   signingOut: boolean;
-  /** Optional. Called after a nav item is chosen; the mobile sheet uses it to close. */
   onNavigate?: () => void;
+  onNewRecord?: () => void;
   collapsed?: boolean;
 }
 
@@ -60,7 +61,6 @@ interface NavItem {
   label: string;
   icon: ReactNode;
   status: "available" | "coming-soon";
-  badge?: string;
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
@@ -75,42 +75,31 @@ const NAV_ITEMS: readonly NavItem[] = [
   { id: "settings", label: "Settings", icon: <Settings size={18} strokeWidth={2} />, status: "coming-soon" },
 ];
 
-function LogoMark() {
-  return (
-    <span
-      aria-hidden="true"
-      className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"
-    >
-      <Wallet size={16} strokeWidth={2.2} />
-    </span>
-  );
-}
-
 function NavRow({
   item,
   isActive,
   hrefFor,
   onNavigate,
-  collapsed,
+  expanded,
 }: {
   item: NavItem;
   isActive: boolean;
   hrefFor: AppSidebarProps["hrefFor"];
   onNavigate?: () => void;
-  collapsed?: boolean;
+  expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition-colors duration-150",
-    collapsed ? "min-h-[36px] justify-center" : "min-h-[36px]",
+    "group relative flex items-center gap-3 rounded-full py-3 transition-all duration-300",
+    expanded ? "px-5" : "justify-center px-0",
     isActive
-      ? "bg-sidebar-item-active-bg text-sidebar-item-active-foreground"
-      : "text-sidebar-foreground-muted hover:bg-sidebar-item-hover hover:text-white",
-    item.status === "coming-soon" && "cursor-not-allowed opacity-45 hover:bg-transparent hover:text-sidebar-foreground-muted",
+      ? "text-primary-fixed bg-primary/10 shadow-[0_0_20px_rgba(0,245,255,0.15)]"
+      : "text-on-surface-variant/50 hover:bg-white/5 hover:text-primary-fixed",
+    item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-on-surface-variant/50",
   );
 
   const iconClass = cn(
-    "shrink-0 transition-colors duration-150",
-    isActive ? "text-white" : "text-sidebar-foreground-muted group-hover:text-white",
+    "shrink-0 transition-colors duration-300",
+    isActive ? "text-primary-fixed" : "text-on-surface-variant/50 group-hover:text-primary-fixed",
   );
 
   const content = (
@@ -118,46 +107,16 @@ function NavRow({
       <span aria-hidden="true" className={iconClass}>
         {item.icon}
       </span>
-      {!collapsed && (
-        <>
-          <span className="min-w-0 flex-1 truncate">{item.label}</span>
-          {item.badge ? (
-            <span className="rounded-md border border-sidebar-border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sidebar-foreground-muted">
-              {item.badge}
-            </span>
-          ) : null}
-        </>
-      )}
+      <span
+        className={cn(
+          "min-w-0 flex-1 truncate font-medium text-sm whitespace-nowrap transition-all duration-300",
+          expanded ? "opacity-100 ml-1" : "opacity-0 w-0 overflow-hidden",
+        )}
+      >
+        {item.label}
+      </span>
     </>
   );
-
-  if (collapsed) {
-    if (item.status === "coming-soon") {
-      return (
-        <button
-          type="button"
-          aria-disabled="true"
-          className={baseClass}
-          disabled
-          title={`${item.label} — coming soon`}
-        >
-          {content}
-        </button>
-      );
-    }
-
-    return (
-      <Link
-        aria-current={isActive ? "page" : undefined}
-        className={baseClass}
-        href={hrefFor(item.id as NavAvailableId)}
-        onClick={onNavigate}
-        title={item.label}
-      >
-        {content}
-      </Link>
-    );
-  }
 
   if (item.status === "coming-soon") {
     return (
@@ -179,17 +138,18 @@ function NavRow({
       className={baseClass}
       href={hrefFor(item.id as NavAvailableId)}
       onClick={onNavigate}
+      title={!expanded ? item.label : undefined}
     >
       {content}
     </Link>
   );
 }
 
-function UserFooter({ user, onSignOut, signingOut, collapsed }: {
+function UserFooter({ user, onSignOut, signingOut, expanded }: {
   user: SidebarUser;
   onSignOut: () => void;
   signingOut: boolean;
-  collapsed?: boolean;
+  expanded: boolean;
 }) {
   const displayName = user.name?.trim() || user.email;
   const initial = ((user.name?.trim()[0] ?? user.email[0]) || "?").toUpperCase();
@@ -199,52 +159,44 @@ function UserFooter({ user, onSignOut, signingOut, collapsed }: {
     <img
       alt=""
       src={user.imageUrl}
-      className="h-8 w-8 shrink-0 rounded-full border border-white/10 object-cover"
+      className="h-8 w-8 shrink-0 rounded-full border border-primary-fixed/20 object-cover"
     />
   ) : (
     <div
       aria-hidden="true"
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-item-hover text-xs font-semibold text-white"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary-fixed"
     >
       {initial}
     </div>
   );
 
-  if (collapsed) {
-    return (
-      <div className="border-t border-sidebar-border p-2">
-        <button
-          type="button"
-          onClick={onSignOut}
-          disabled={signingOut}
-          aria-label={`Sign out ${displayName}`}
-          title={displayName}
-          className="flex items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-sidebar-item-hover disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {avatar}
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="border-t border-sidebar-border p-2.5">
+    <div className="border-t border-white/5 p-3">
       <button
         type="button"
         onClick={onSignOut}
         disabled={signingOut}
         aria-label={`Sign out ${displayName}`}
-        className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-sidebar-item-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className={cn(
+          "group flex w-full items-center gap-2.5 rounded-full transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60",
+          expanded ? "px-3 py-2" : "justify-center px-0 py-2",
+        )}
       >
         {avatar}
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-white">{displayName}</p>
-          <p className="truncate text-xs text-sidebar-foreground-muted">{user.email}</p>
+        <div className={cn(
+          "min-w-0 flex-1 transition-all duration-300",
+          expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
+        )}>
+          <p className="truncate text-sm font-medium text-on-surface">{displayName}</p>
+          <p className="truncate text-[10px] text-on-surface-variant/40 font-geist">{user.email}</p>
         </div>
         <LogOut
           aria-hidden="true"
           size={14}
-          className="shrink-0 text-sidebar-foreground-muted transition-colors group-hover:text-white"
+          className={cn(
+            "shrink-0 text-on-surface-variant/40 transition-all duration-300 group-hover:text-primary-fixed",
+            expanded ? "opacity-100" : "opacity-0 w-0",
+          )}
         />
       </button>
     </div>
@@ -258,30 +210,39 @@ export function AppSidebar({
   onSignOut,
   signingOut,
   onNavigate,
+  onNewRecord,
   collapsed = false,
 }: AppSidebarProps) {
+  const expanded = !collapsed;
+
   return (
     <aside
       aria-label="Application navigation"
       className={cn(
-        "flex h-full flex-col bg-sidebar-bg text-sidebar-foreground transition-all duration-200 ease-in-out",
-        collapsed ? "w-[60px]" : "w-[220px]",
+        "flex h-full flex-col transition-all duration-300 ease-in-out overflow-hidden",
+        "bg-surface-container-lowest/40 backdrop-blur-3xl border-r border-white/5",
+        expanded ? "w-[220px]" : "w-[60px]",
       )}
     >
       {/* Logo */}
       <div className={cn(
-        "flex items-center border-b border-sidebar-border",
-        collapsed ? "justify-center p-3" : "gap-2.5 px-4 py-3",
+        "flex items-center border-b border-white/5 shrink-0",
+        expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5",
       )}>
-        <LogoMark />
-        {!collapsed && (
-          <span className="text-sm font-bold text-white tracking-tight">Expense AI</span>
-        )}
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-container text-on-primary-fixed shadow-[0_0_15px_rgba(0,245,255,0.3)]">
+          <Wallet size={16} strokeWidth={2.2} />
+        </div>
+        <span className={cn(
+          "pulse-logo text-base whitespace-nowrap transition-all duration-300",
+          expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
+        )}>
+          Expense AI
+        </span>
       </div>
 
       {/* Navigation */}
-      <nav aria-label="Primary" className="flex-1 overflow-y-auto px-2 py-2">
-        <ul className="grid gap-0.5">
+      <nav aria-label="Primary" className="flex-1 overflow-y-auto px-2 py-4">
+        <ul className="flex flex-col gap-1">
           <AnimatePresence initial={false}>
             {NAV_ITEMS.map((item) => (
               <motion.li
@@ -295,7 +256,7 @@ export function AppSidebar({
                   isActive={item.status === "available" && item.id === activeDestinationId}
                   hrefFor={hrefFor}
                   onNavigate={onNavigate}
-                  collapsed={collapsed}
+                  expanded={expanded}
                 />
               </motion.li>
             ))}
@@ -303,8 +264,27 @@ export function AppSidebar({
         </ul>
       </nav>
 
+      {/* New Record FAB */}
+      <div className={cn("px-3 pb-3 shrink-0", expanded ? "px-3" : "px-2")}>
+        <button
+          onClick={onNewRecord}
+          className={cn(
+            "w-full bg-primary-container text-on-primary-fixed font-bold rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,245,255,0.4)] hover:scale-105 active:scale-95",
+            expanded ? "py-3 px-4" : "py-3 px-0",
+          )}
+        >
+          <Plus size={18} strokeWidth={2.5} className="shrink-0" />
+          <span className={cn(
+            "text-sm whitespace-nowrap transition-all duration-300",
+            expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
+          )}>
+            New Record
+          </span>
+        </button>
+      </div>
+
       {/* User footer */}
-      <UserFooter user={user} onSignOut={onSignOut} signingOut={signingOut} collapsed={collapsed} />
+      <UserFooter user={user} onSignOut={onSignOut} signingOut={signingOut} expanded={expanded} />
     </aside>
   );
 }

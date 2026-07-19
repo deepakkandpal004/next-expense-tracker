@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Sora, Inter, Geist } from 'next/font/google';
+import { Plus_Jakarta_Sans, Geist } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
@@ -13,31 +13,25 @@ import {
 } from '@/lib/preferences/preferences';
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist' });
 
-const sora = Sora({
-  variable: '--font-sora',
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: '--font-plus-jakarta',
   subsets: ['latin'],
-  weight: ['600', '700'],
-  display: 'swap',
-});
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Expense AI - Smart Financial Management',
+  title: 'The Pulse - Financial Flow',
   description:
-    'AI-powered expense tracking app with intelligent insights, smart categorization, and personalized financial recommendations',
+    'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
-    icon: {
-      url: '/favicon.png',
-      type: 'image/png',
-    },
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    apple: { url: '/icon.png', type: 'image/png' },
   },
 };
 
@@ -61,7 +55,7 @@ export default async function RootLayout({
       lang='en'
       data-appearance-preference={initialAppearance}
       data-density={initialDensity}
-      suppressHydrationWarning className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning className={cn("dark", geist.variable)}
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.light} />
@@ -70,7 +64,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}
         />
       </head>
-      <body className={`${sora.variable} ${inter.variable} antialiased`}>
+      <body className={`${plusJakarta.variable} ${geist.variable} antialiased`}>
         <a
           className='sr-only fixed left-4 top-4 z-50 rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground focus:not-sr-only focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
           href='#main-content'
