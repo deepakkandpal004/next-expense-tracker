@@ -10,6 +10,7 @@ export const APP_PERIOD_DESTINATIONS = Object.freeze({
   dashboard: "/dashboard",
   records: "/records",
   insights: "/insights",
+  "ai-insights": "/ai-insights",
   budgets: "/budgets",
   goals: "/goals",
 });
