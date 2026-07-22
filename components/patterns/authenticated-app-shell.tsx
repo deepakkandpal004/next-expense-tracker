@@ -25,7 +25,8 @@ interface AuthenticatedAppShellProps {
 
 function currentDestinationId(pathname: string): SidebarDestinationId {
   if (pathname.startsWith("/records")) return "transactions";
-  if (pathname.startsWith("/insights")) return "analytics";
+  if (pathname.startsWith("/ai-insights")) return "ai-insights";
+  if (pathname.startsWith("/insights")) return "ai-insights";
   if (pathname.startsWith("/budgets")) return "budgets";
   if (pathname.startsWith("/goals")) return "goals";
   return "dashboard";
@@ -34,7 +35,7 @@ function currentDestinationId(pathname: string): SidebarDestinationId {
 const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "categories" | "recurring" | "reports" | "settings">, AppPeriodDestination> = {
   dashboard: "dashboard",
   transactions: "records",
-  analytics: "insights",
+  "ai-insights": "ai-insights",
   budgets: "budgets",
   goals: "goals",
 };

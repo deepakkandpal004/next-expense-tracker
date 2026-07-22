@@ -6,7 +6,7 @@ import {
   FileBarChart,
   LayoutDashboard,
   Layers,
-  LineChart,
+  Sparkles,
   ListChecks,
   LogOut,
   Repeat,
@@ -22,7 +22,7 @@ import { menuSurfaceVariants } from "@/lib/ui/motion";
 export type SidebarDestinationId =
   | "dashboard"
   | "transactions"
-  | "analytics"
+  | "ai-insights"
   | "budgets"
   | "goals"
   | "categories"
@@ -66,7 +66,7 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} strokeWidth={2} />, status: "available" },
   { id: "transactions", label: "Transactions", icon: <ListChecks size={18} strokeWidth={2} />, status: "available" },
-  { id: "analytics", label: "Analytics", icon: <LineChart size={18} strokeWidth={2} />, status: "available" },
+  { id: "ai-insights", label: "AI Insights", icon: <Sparkles size={18} strokeWidth={2} />, status: "available" },
   { id: "budgets", label: "Budgets", icon: <Wallet size={18} strokeWidth={2} />, status: "available" },
   { id: "goals", label: "Goals", icon: <Target size={18} strokeWidth={2} />, status: "available" },
   { id: "categories", label: "Categories", icon: <Layers size={18} strokeWidth={2} />, status: "coming-soon" },

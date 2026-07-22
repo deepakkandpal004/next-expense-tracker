@@ -72,13 +72,41 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 export function Skeleton({ label, minimumHeight = "8rem", lines = 3, className, style, ...props }: SkeletonProps) {
   enforceSentenceCase(label, "Skeleton label");
   return (
-    <div aria-busy="true" aria-label={label} aria-live="polite" className={cn("w-full overflow-hidden rounded-2xl border border-border/50 bg-surface p-5", className)} data-feedback-state="loading" role="status" style={{ minHeight: minimumHeight, ...style }} {...props}>
+    <div
+      aria-busy="true"
+      aria-label={label}
+      aria-live="polite"
+      className={cn(
+        "w-full overflow-hidden rounded-2xl border border-border/30 bg-surface p-5",
+        className,
+      )}
+      data-feedback-state="loading"
+      role="status"
+      style={{ minHeight: minimumHeight, ...style }}
+      {...props}
+    >
       <span className="sr-only">{label}</span>
-      <div aria-hidden="true" className="grid gap-3">
+      <div aria-hidden="true" className="space-y-3">
+        {/* Header shimmer */}
+        <div className="flex items-center gap-3">
+          <span className="block h-8 w-8 shrink-0 rounded-lg bg-surface-subtle animate-shimmer" />
+          <div className="flex-1 space-y-2">
+            <span className="block h-3.5 w-1/3 rounded-lg bg-surface-subtle animate-shimmer" />
+            <span className="block h-3 w-1/4 rounded-lg bg-surface-subtle/60 animate-shimmer" />
+          </div>
+        </div>
+        {/* Content lines */}
         {Array.from({ length: Math.max(1, lines) }, (_, index) => (
           <span
-            className={cn("block h-3.5 rounded-lg animate-shimmer motion-reduce:animate-none motion-reduce:bg-surface-subtle", index === lines - 1 && "w-2/3")}
+            className={cn(
+              "block h-3 rounded-lg bg-surface-subtle animate-shimmer motion-reduce:animate-none",
+              index === 0 && "w-full",
+              index === 1 && "w-5/6",
+              index === 2 && "w-4/6",
+              index > 2 && "w-3/5",
+            )}
             key={index}
+            style={{ animationDelay: `${index * 80}ms` }}
           />
         ))}
       </div>
