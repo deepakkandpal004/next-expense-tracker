@@ -155,7 +155,7 @@ export function KpiCard({ role, label, currency, insight, className }: KpiCardPr
         </div>
 
         {/* Value */}
-        <p className="font-plus-jakarta text-2xl font-bold text-on-surface tabular-nums leading-none mb-3">
+        <p className="font-geist text-2xl font-bold text-[#F5F7FA] tabular-nums leading-none mb-3">
           <AnimatedNumber
             fallback={formattedValue}
             format={(current) =>

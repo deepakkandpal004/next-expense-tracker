@@ -48,6 +48,14 @@ const config: Config = {
           5: 'var(--chart-5)',
         },
         // Project-specific semantic tokens
+        'bg-base': 'var(--bg-base)',
+        'bg-surface': 'var(--bg-surface)',
+        'bg-surface-2': 'var(--bg-surface-2)',
+        'border-subtle': 'var(--border-subtle)',
+        'border-hover': 'var(--border-hover)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
         canvas: 'var(--color-bg)',
         surface: {
           DEFAULT: 'var(--color-surface)',
@@ -63,6 +71,7 @@ const config: Config = {
         primary: {
           DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',
+          muted: 'var(--primary-muted)',
         },
         info: {
           DEFAULT: 'var(--color-info)',
@@ -71,19 +80,19 @@ const config: Config = {
           border: 'var(--color-info-border)',
         },
         success: {
-          DEFAULT: 'var(--color-success)',
+          DEFAULT: 'var(--success)',
           foreground: 'var(--color-success-foreground)',
           surface: 'var(--color-success-surface)',
           border: 'var(--color-success-border)',
         },
         warning: {
-          DEFAULT: 'var(--color-warning)',
+          DEFAULT: 'var(--warning)',
           foreground: 'var(--color-warning-foreground)',
           surface: 'var(--color-warning-surface)',
           border: 'var(--color-warning-border)',
         },
         danger: {
-          DEFAULT: 'var(--color-danger)',
+          DEFAULT: 'var(--danger)',
           foreground: 'var(--color-danger-foreground)',
           surface: 'var(--color-danger-surface)',
           border: 'var(--color-danger-border)',

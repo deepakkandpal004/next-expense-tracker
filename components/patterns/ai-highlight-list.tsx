@@ -155,7 +155,7 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
   const [status, setStatus] = useState<string | undefined>(undefined);
   const requestedKey = useRef<string | undefined>(undefined);
   const sectionId = useRef(`ai-highlights-${Math.random().toString(36).slice(2)}`).current;
-  const insightsHref = appPeriodHref("insights", period) ?? "/insights";
+  const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
 
   useEffect(() => {
     setDisclosure(initialDisclosure);

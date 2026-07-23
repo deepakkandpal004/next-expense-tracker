@@ -20,17 +20,23 @@ export function PasswordField({ id, label, value, onChange, autoComplete, error,
 export function AuthenticationForm({ title, description, formRef, onSubmit, children, error, errorAction, success, submitLabel, pendingLabel, pending, footer }: { title: string; description: string; formRef: RefObject<HTMLFormElement | null>; onSubmit: (event: FormEvent<HTMLFormElement>) => void; children: ReactNode; error?: string | null; errorAction?: ReactNode; success?: string | null; submitLabel: string; pendingLabel: string; pending: boolean; footer?: ReactNode }) {
   return (
     <article className="w-full">
-      <header>
-        <h1 className="text-display-sm font-bold text-foreground">{title}</h1>
-        <p className="mt-2 text-interface-sm text-foreground-secondary">{description}</p>
+      <header className="text-center">
+        <h1 className="text-2xl font-bold text-foreground">{title}</h1>
+        <p className="mt-2 text-sm text-foreground-secondary">{description}</p>
       </header>
-      <form className="mt-6 grid gap-4" noValidate onSubmit={onSubmit} ref={formRef}>
+      <form className="mt-8 grid gap-5" noValidate onSubmit={onSubmit} ref={formRef}>
         {error ? <Alert action={errorAction} actionRequired title="We could not complete that request" tone="danger" description={error} /> : null}
         {success ? <Alert title="Request received" tone="success" description={success} /> : null}
         {children}
-        <Button label={submitLabel} loading={pending} type="submit" width="full" />
+        <Button 
+          label={submitLabel} 
+          loading={pending} 
+          type="submit" 
+          width="full"
+          className="mt-2"
+        />
       </form>
-      {footer ? <footer className="mt-6 border-t border-border pt-4 text-interface-sm text-foreground-secondary">{footer}</footer> : null}
+      {footer ? <footer className="mt-6 border-t border-border/50 pt-4 text-center text-sm text-foreground-secondary">{footer}</footer> : null}
       <StatusRegion busy={pending} message={pending ? pendingLabel : undefined} />
     </article>
   );
@@ -38,7 +44,19 @@ export function AuthenticationForm({ title, description, formRef, onSubmit, chil
 
 
 export function AuthTaskLinks() {
-  return <nav aria-label='Account tasks' className='flex flex-wrap gap-x-4 gap-y-2'><Link className='text-primary underline underline-offset-4' href='/sign-in'>Sign in</Link><Link className='text-primary underline underline-offset-4' href='/sign-up'>Create account</Link><Link className='text-primary underline underline-offset-4' href='/forgot-password'>Reset password</Link></nav>;
+  return (
+    <nav aria-label="Account tasks" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+      <Link className="text-primary hover:text-primary/80 transition-colors font-medium" href="/sign-in">
+        Sign in
+      </Link>
+      <Link className="text-primary hover:text-primary/80 transition-colors font-medium" href="/sign-up">
+        Create account
+      </Link>
+      <Link className="text-primary hover:text-primary/80 transition-colors font-medium" href="/forgot-password">
+        Reset password
+      </Link>
+    </nav>
+  );
 }
 
 

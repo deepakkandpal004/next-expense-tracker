@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up', '/forgot-password'] as const;
-const APP_ROUTES = ['/dashboard', '/records', '/insights'] as const;
+const APP_ROUTES = ['/dashboard', '/records', '/ai-insights', '/budgets', '/goals'] as const;
 
 function matchesRouteBoundary(pathname: string, routes: readonly string[]) {
   return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
@@ -20,18 +20,13 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthenticated = hasSessionHint(request);
 
+  // Redirect unauthenticated users to sign-in for protected routes
   if (matchesRouteBoundary(pathname, APP_ROUTES) && !isAuthenticated) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
+  // Redirect authenticated users away from auth pages to dashboard
   if (matchesRouteBoundary(pathname, AUTH_ROUTES) && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  // Keep existing authenticated bookmarks out of the public shell. This is a
-  // navigation hint only; app layouts, server actions, and queries still
-  // verify the session and authorize every request.
-  if (pathname === '/' && isAuthenticated) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -40,10 +35,11 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/',
     '/dashboard/:path*',
     '/records/:path*',
-    '/insights/:path*',
+    '/ai-insights/:path*',
+    '/budgets/:path*',
+    '/goals/:path*',
     '/sign-in/:path*',
     '/sign-up/:path*',
     '/forgot-password/:path*',

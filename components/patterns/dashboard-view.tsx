@@ -6,7 +6,6 @@ import { useState } from "react";
 import { createTransaction } from "@/app/actions/addExpenseRecord";
 import { getDashboardSnapshot } from "@/app/actions/getDashboardSnapshot";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
-import { AiHighlightList } from "@/components/patterns/ai-highlight-list";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
 import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
@@ -25,7 +24,7 @@ import {
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
-import type { AiDataUseDisclosure, ReportingPeriod, TransactionType } from "@/lib/domain/types";
+import type { ReportingPeriod, TransactionType } from "@/lib/domain/types";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 
 export interface DashboardUser {
@@ -34,7 +33,6 @@ export interface DashboardUser {
 
 export interface DashboardViewProps {
   dashboard: DashboardDTO;
-  disclosure: AiDataUseDisclosure;
   period: ReportingPeriod;
   user?: DashboardUser;
 }
@@ -50,7 +48,7 @@ function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parame
       description: `Your expenses increased ${(expenseTrend.changePercent * 100).toFixed(0)}% vs last period. Review your top categories to identify the cause.`,
       type: "warning",
       actionLabel: "Analyze Categories",
-      actionHref: "/insights?focus=categories",
+      actionHref: "/ai-insights?focus=categories",
     };
   }
 
@@ -123,7 +121,7 @@ function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parame
   };
 }
 
-export function DashboardView({ dashboard, disclosure, period }: DashboardViewProps) {
+export function DashboardView({ dashboard, period }: DashboardViewProps) {
   const [status, setStatus] = useState<string | undefined>();
   const [refreshedDashboard, setRefreshedDashboard] = useState<DashboardDTO | undefined>();
   const [refreshing, setRefreshing] = useState(false);
@@ -135,7 +133,7 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
     ? `${refreshedDashboard.period.kind}:${refreshedDashboard.period.start}:${refreshedDashboard.period.end}`
     : undefined;
   const currentDashboard = refreshedKey === dashboardKey ? refreshedDashboard! : dashboard;
-  const insightsHref = appPeriodHref("insights", period) ?? "/insights";
+  const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
 
   const refreshDashboard = async (successMessage = "Dashboard refreshed.") => {
     setRefreshing(true);
@@ -312,8 +310,6 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
         snapshot={currentDashboard.snapshot}
       />
 
-      <AiHighlightList disclosure={disclosure} period={period} />
-
       <section
         aria-labelledby="insights-cta-title"
         className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/50 bg-surface px-5 py-4"
@@ -323,16 +319,16 @@ export function DashboardView({ dashboard, disclosure, period }: DashboardViewPr
             className="text-interface-sm font-semibold text-foreground"
             id="insights-cta-title"
           >
-            Want a deeper look?
+            Want AI-powered insights?
           </h2>
           <p className="mt-0.5 text-interface-xs text-foreground-secondary">
-            Ask questions about this reporting period in detailed Insights.
+            Get personalized financial insights powered by AI.
           </p>
         </div>
         <LinkButton
           href={insightsHref}
           icon={<ArrowUpRight size={16} />}
-          label="Open insights"
+          label="Open AI insights"
         />
       </section>
     </div>

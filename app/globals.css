@@ -2,220 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
+:root,
+.dark,
+[data-theme='dark'] {
+  color-scheme: dark;
 
-  /* Semantic color roles: light appearance. */
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-surface-subtle: #f1f5f9;
-  --color-surface-raised: #ffffff;
-  --color-text: #0f172a;
-  --color-text-muted: #475569;
-  --color-text-inverse: #ffffff;
-  --color-border: #cbd5e1;
-  --color-border-strong: #64748b;
-  --color-focus: #0e7490;
-  --color-primary: #0f766e;
-  --color-on-primary: #ffffff;
+  /* Expense AI Core Tokens */
+  --bg-base: #0A0B0D;
+  --bg-surface: #111318;
+  --bg-surface-2: #16181F;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
 
-  /* State foreground/surface/border pairs are AA-safe in rendered contexts. */
-  --color-info: #0369a1;
-  --color-info-foreground: #075985;
-  --color-info-surface: #e0f2fe;
-  --color-info-border: #0284c7;
-  --color-success: #15803d;
-  --color-success-foreground: #166534;
-  --color-success-surface: #dcfce7;
-  --color-success-border: #16a34a;
-  --color-warning: #a16207;
-  --color-warning-foreground: #854d0e;
-  --color-warning-surface: #fef9c3;
-  --color-warning-border: #ca8a04;
-  --color-danger: #b91c1c;
-  --color-danger-foreground: #991b1b;
-  --color-danger-surface: #fee2e2;
-  --color-danger-border: #dc2626;
+  --primary: #00DCE5;
+  --primary-muted: rgba(0, 220, 229, 0.12);
 
-  /* Category roles are shared by charts, legends, filters, and records. */
-  --color-category-food: #0f766e;
-  --color-category-transportation: #0369a1;
-  --color-category-shopping: #a16207;
-  --color-category-entertainment: #9d174d;
-  --color-category-bills: #6d28d9;
-  --color-category-healthcare: #b91c1c;
-  --color-category-income: #15803d;
-  --color-category-other: #475569;
+  --text-primary: #F5F7FA;
+  --text-secondary: #9AA3AF;
+  --text-tertiary: #5B6472;
 
-  /* Accent (purple) — active navigation, premium CTAs, key highlights. */
-  --color-accent: #7c3aed;
-  --color-accent-foreground: #ffffff;
-  --color-accent-surface: #ede9fe;
-  --color-accent-border: #a78bfa;
+  --success: #22C55E;
+  --danger: #F04438;
+  --warning: #F5A623;
 
-  /* KPI role palette — one distinct hue per card. */
-  --color-kpi-balance: #14b8a6;
-  --color-kpi-balance-surface: #ccfbf1;
-  --color-kpi-balance-foreground: #0f766e;
+  /* Shared Semantic Mappings */
+  --color-bg: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-surface-subtle: var(--bg-surface-2);
+  --color-surface-raised: var(--bg-surface-2);
+  --color-text: var(--text-primary);
+  --color-text-muted: var(--text-secondary);
+  --color-text-inverse: #0A0B0D;
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-hover);
+  --color-focus: var(--primary);
+  --color-primary: var(--primary);
+  --color-on-primary: #0A0B0D;
 
-  --color-kpi-income: #22c55e;
-  --color-kpi-income-surface: #dcfce7;
-  --color-kpi-income-foreground: #15803d;
+  --color-info: #00DCE5;
+  --color-info-foreground: #00DCE5;
+  --color-info-surface: rgba(0, 220, 229, 0.12);
+  --color-info-border: rgba(0, 220, 229, 0.24);
 
-  --color-kpi-expense: #f97316;
-  --color-kpi-expense-surface: #ffedd5;
-  --color-kpi-expense-foreground: #c2410c;
+  --color-success: var(--success);
+  --color-success-foreground: #22C55E;
+  --color-success-surface: rgba(34, 197, 94, 0.12);
+  --color-success-border: rgba(34, 197, 94, 0.24);
 
-  --color-kpi-savings: #8b5cf6;
-  --color-kpi-savings-surface: #ede9fe;
-  --color-kpi-savings-foreground: #6d28d9;
+  --color-warning: var(--warning);
+  --color-warning-foreground: #F5A623;
+  --color-warning-surface: rgba(245, 166, 35, 0.12);
+  --color-warning-border: rgba(245, 166, 35, 0.24);
 
-  /* Trend directionals — context-agnostic up/down. Not tied to KPI role. */
-  --color-trend-up: #22c55e;
-  --color-trend-up-foreground: #15803d;
-  --color-trend-up-surface: #dcfce7;
+  --color-danger: var(--danger);
+  --color-danger-foreground: #F04438;
+  --color-danger-surface: rgba(240, 68, 56, 0.12);
+  --color-danger-border: rgba(240, 68, 56, 0.24);
 
-  --color-trend-down: #ef4444;
-  --color-trend-down-foreground: #b91c1c;
-  --color-trend-down-surface: #fee2e2;
+  /* Category Roles */
+  --color-category-food: #00DCE5;
+  --color-category-transportation: #3B82F6;
+  --color-category-shopping: #F5A623;
+  --color-category-entertainment: #EC4899;
+  --color-category-bills: #8B5CF6;
+  --color-category-healthcare: #F04438;
+  --color-category-income: #22C55E;
+  --color-category-other: #9AA3AF;
 
-  /* Sidebar palette — deep midnight for Atmospheric Flux. */
-  --color-sidebar-bg: #0c0c1f;
-  --color-sidebar-bg-end: #111125;
-  --color-sidebar-foreground: #e2e0fb;
-  --color-sidebar-foreground-muted: #b9caca;
-  --color-sidebar-item-hover: rgb(255 255 255 / 0.06);
-  --color-sidebar-item-active-bg: rgb(0 220 229 / 0.15);
-  --color-sidebar-item-active-foreground: #63f7ff;
-  --color-sidebar-border: rgb(255 255 255 / 0.08);
+  --color-accent: #00DCE5;
+  --color-accent-foreground: #0A0B0D;
+  --color-accent-surface: rgba(0, 220, 229, 0.12);
+  --color-accent-border: rgba(0, 220, 229, 0.24);
 
-  /* 8px foundation with documented 4px half-steps. */
+  /* KPI Palettes */
+  --color-kpi-balance: #00DCE5;
+  --color-kpi-balance-surface: rgba(0, 220, 229, 0.12);
+  --color-kpi-balance-foreground: #00DCE5;
+
+  --color-kpi-income: #22C55E;
+  --color-kpi-income-surface: rgba(34, 197, 94, 0.12);
+  --color-kpi-income-foreground: #22C55E;
+
+  --color-kpi-expense: #F04438;
+  --color-kpi-expense-surface: rgba(240, 68, 56, 0.12);
+  --color-kpi-expense-foreground: #F04438;
+
+  --color-kpi-savings: #00DCE5;
+  --color-kpi-savings-surface: rgba(0, 220, 229, 0.12);
+  --color-kpi-savings-foreground: #00DCE5;
+
+  /* Trend directionals */
+  --color-trend-up: #22C55E;
+  --color-trend-up-foreground: #22C55E;
+  --color-trend-up-surface: rgba(34, 197, 94, 0.12);
+
+  --color-trend-down: #F04438;
+  --color-trend-down-foreground: #F04438;
+  --color-trend-down-surface: rgba(240, 68, 56, 0.12);
+
+  /* Sidebar palette */
+  --color-sidebar-bg: #0A0B0D;
+  --color-sidebar-bg-end: #111318;
+  --color-sidebar-foreground: #F5F7FA;
+  --color-sidebar-foreground-muted: #9AA3AF;
+  --color-sidebar-item-hover: rgba(255, 255, 255, 0.06);
+  --color-sidebar-item-active-bg: rgba(0, 220, 229, 0.12);
+  --color-sidebar-item-active-foreground: #00DCE5;
+  --color-sidebar-border: rgba(255, 255, 255, 0.08);
+
+  /* 4px Base Spacing Unit Scale */
   --space-0: 0;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem;  /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem;    /* 16px */
+  --space-6: 1.5rem;  /* 24px */
+  --space-8: 2rem;    /* 32px */
+  --space-12: 3rem;   /* 48px */
   --space-16: 4rem;
 
   --radius-square: 0;
-  --radius-control: 0.5rem;
-  --radius-container: 0.75rem;
+  --radius-control: 8px;
+  --radius-container: 16px;
+  --radius-modal: 24px;
   --radius-circular: 9999px;
 
   --elevation-flat: none;
-  --elevation-raised: 0 1px 2px rgb(15 23 42 / 0.08), 0 8px 24px rgb(15 23 42 / 0.08);
-  --elevation-overlay: 0 16px 48px rgb(15 23 42 / 0.2);
+  --elevation-raised: 0 4px 24px rgba(0, 0, 0, 0.24);
+  --elevation-overlay: 0 16px 48px rgba(0, 0, 0, 0.5);
 
-  /* Constrained interface type scale. */
   --font-size-label: 0.875rem;
   --line-height-label: 1.25rem;
   --font-size-body: 1rem;
-  --line-height-body: 1.5rem;
+  --line-height-body: 1.4rem;
   --font-size-lead: 1.125rem;
-  --line-height-lead: 1.75rem;
+  --line-height-lead: 1.5rem;
   --font-size-heading-sm: 1.5rem;
   --line-height-heading-sm: 2rem;
   --font-size-heading-md: 2rem;
   --line-height-heading-md: 2.5rem;
-  --font-size-heading-lg: 3rem;
-  --line-height-heading-lg: 3.5rem;
+  --font-size-heading-lg: 2.5rem;
+  --line-height-heading-lg: 3rem;
 
   --content-frame-max: 90rem;
   --content-gutter: clamp(1rem, 3vw, 3rem);
   --shell-block-size: 5rem;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
 
   --motion-duration-fast: 120ms;
   --motion-duration-standard: 180ms;
   --motion-duration-slow: 300ms;
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* Backward-compatible names for currently mounted routes. */
-}
-
-.dark,
-[data-theme='dark'] {
-  color-scheme: dark;
-  /* Atmospheric Flux palette */
-  --color-bg: #111125;
-  --color-surface: #1e1e31;
-  --color-surface-subtle: #1a1a2d;
-  --color-surface-raised: #28283c;
-  --color-text: #e2e0fb;
-  --color-text-muted: #b9caca;
-  --color-text-inverse: #002021;
-  --color-border: #3a494a;
-  --color-border-strong: #849495;
-  --color-focus: #00dce5;
-  --color-primary: #00dce5;
-  --color-on-primary: #003739;
-  --color-info: #63f7ff;
-  --color-info-foreground: #006c71;
-  --color-info-surface: rgb(0 245 255 / 0.12);
-  --color-info-border: #00f5ff;
-  --color-success: #3bff17;
-  --color-success-foreground: #022100;
-  --color-success-surface: rgb(59 255 23 / 0.12);
-  --color-success-border: #79ff5b;
-  --color-warning: #fde047;
-  --color-warning-foreground: #fef08a;
-  --color-warning-surface: rgb(253 224 71 / 0.12);
-  --color-warning-border: #facc15;
-  --color-danger: #ffb4ab;
-  --color-danger-foreground: #690005;
-  --color-danger-surface: rgb(255 180 171 / 0.12);
-  --color-danger-border: #f87171;
-  --color-category-food: #00f5ff;
-  --color-category-transportation: #63f7ff;
-  --color-category-shopping: #fde047;
-  --color-category-entertainment: #fface8;
-  --color-category-bills: #c4b5fd;
-  --color-category-healthcare: #ffb4ab;
-  --color-category-income: #3bff17;
-  --color-category-other: #b9caca;
-
-  /* Accent: Magenta Pulse */
-  --color-accent: #ff24e4;
-  --color-accent-foreground: #ffffff;
-  --color-accent-surface: rgb(255 36 228 / 0.15);
-  --color-accent-border: #fface8;
-
-  /* KPI: Electric Cyan, Magenta, Lime */
-  --color-kpi-balance: #00dce5;
-  --color-kpi-balance-surface: rgb(0 220 229 / 0.15);
-  --color-kpi-balance-foreground: #63f7ff;
-
-  --color-kpi-income: #3bff17;
-  --color-kpi-income-surface: rgb(59 255 23 / 0.15);
-  --color-kpi-income-foreground: #79ff5b;
-
-  --color-kpi-expense: #fface8;
-  --color-kpi-expense-surface: rgb(255 172 232 / 0.15);
-  --color-kpi-expense-foreground: #ffd7f0;
-
-  --color-kpi-savings: #ff24e4;
-  --color-kpi-savings-surface: rgb(255 36 228 / 0.15);
-  --color-kpi-savings-foreground: #fface8;
-
-  /* Trends */
-  --color-trend-up: #3bff17;
-  --color-trend-up-foreground: #79ff5b;
-  --color-trend-up-surface: rgb(59 255 23 / 0.15);
-
-  --color-trend-down: #ffb4ab;
-  --color-trend-down-foreground: #ffdad6;
-  --color-trend-down-surface: rgb(255 180 171 / 0.15);
-
-  /* Deeper elevation for glassmorphism */
-  --elevation-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
-  --elevation-overlay: 0 16px 48px rgb(0 0 0 / 0.6);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -402,12 +339,26 @@ p {
   scroll-margin-top: calc(var(--shell-block-size) + var(--safe-top) + var(--space-4));
 }
 
-.surface,
-.glass-card {
+.surface {
   color: var(--color-text);
   background: var(--color-surface);
   border-color: var(--color-border);
   box-shadow: var(--elevation-raised);
+}
+
+.glass-card {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.24);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--border-hover);
 }
 
 .surface-raised {

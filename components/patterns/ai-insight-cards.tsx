@@ -216,7 +216,7 @@ export function generateAIInsights(data: {
       iconColor: "text-warning",
       metric: { label: "vs Last Period", value: `+${expenseChangePercent.toFixed(0)}%`, trend: "down" },
       badge: "Attention Needed",
-      action: { label: "View Categories", href: "/insights?focus=categories" },
+      action: { label: "View Categories", href: "/ai-insights?focus=categories" },
     });
   } else if (expenseChangePercent < -10) {
     insights.push({
