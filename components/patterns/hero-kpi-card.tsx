@@ -266,12 +266,12 @@ export function HeroKpiCard({
             <AnimatedNumber
               value={minorToMajor(balance.currentMinor)}
               format={(v) => (
-                <span className="font-plus-jakarta text-[36px] sm:text-[42px] font-bold text-primary-fixed tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">
+                <span className="font-geist text-[36px] sm:text-[42px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">
                   ₹{v.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                 </span>
               )}
               duration={1}
-              className="font-plus-jakarta text-[36px] sm:text-[42px] font-bold text-primary-fixed tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]"
+              className="font-geist text-[36px] sm:text-[42px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]"
             />
             <TrendPill trend={balance.trend} invertPolarity={false} />
           </div>

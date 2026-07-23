@@ -23,15 +23,15 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'The Pulse - Financial Flow',
+  title: 'Expense AI - Smart Financial Tracker',
   description:
     'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.png', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: { url: '/icon.png', type: 'image/png' },
+    apple: { url: '/icon.svg', type: 'image/svg+xml' },
   },
 };
 

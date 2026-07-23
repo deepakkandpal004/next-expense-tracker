@@ -181,20 +181,20 @@ export function TransactionTable({
                       {categoryDef?.label ?? row.categoryId}
                     </Badge>
                   </td>
-                  <td className="hidden px-4 py-3 text-sm text-on-surface-variant/60 sm:table-cell">
+                  <td className="hidden px-4 py-3 text-sm text-[#9AA3AF] font-geist sm:table-cell">
                     <DateText value={row.occurredOn} />
                   </td>
                   <td className="px-4 py-3 text-right">
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1 text-sm font-bold tabular-nums financial-value",
-                        isIncome ? "text-kpi-income" : "text-kpi-expense",
+                        "inline-flex items-center gap-1 text-sm font-bold tabular-nums font-geist",
+                        isIncome ? "text-[#22C55E]" : "text-[#F04438]",
                       )}
                     >
                       {isIncome ? (
-                        <span className="text-xs font-medium text-kpi-income/70">+</span>
+                        <span className="text-xs font-medium opacity-80">+</span>
                       ) : (
-                        <span className="text-xs font-medium text-kpi-expense/70">−</span>
+                        <span className="text-xs font-medium opacity-80">−</span>
                       )}
                       <CurrencyText
                         currency={row.currency}

@@ -411,7 +411,7 @@ export function generateAICoachInsight(dashboard: DashboardDTO): AICoachInsight 
       "Set category budgets to cap discretionary spending",
       "Consider pausing non-essential subscriptions this month",
     ];
-    primaryAction = { label: "Analyze Categories", href: "/insights?focus=categories" };
+    primaryAction = { label: "Analyze Categories", href: "/ai-insights?focus=categories" };
     secondaryAction = { label: "Set Budget", href: "/budgets" };
   } else if (savingsRate >= 25) {
     title = "Exceptional Savings Discipline";
@@ -424,7 +424,7 @@ export function generateAICoachInsight(dashboard: DashboardDTO): AICoachInsight 
       "Explore tax-saving investment options",
     ];
     primaryAction = { label: "Set Savings Goal", href: "/goals" };
-    secondaryAction = { label: "View Trends", href: "/insights" };
+    secondaryAction = { label: "View Trends", href: "/ai-insights" };
   } else if (savingsRate > 0 && savingsRate < 10) {
     title = "Savings Rate Below Target";
     description = `You're saving only ${savingsRate.toFixed(0)}% of income. The 50/30/20 rule suggests 20% for savings. Small adjustments can make a big difference.`;
@@ -436,7 +436,7 @@ export function generateAICoachInsight(dashboard: DashboardDTO): AICoachInsight 
       "Review recurring expenses for cancellation opportunities",
     ];
     primaryAction = { label: "Set Savings Goal", href: "/goals" };
-    secondaryAction = { label: "Review Spending", href: "/insights" };
+    secondaryAction = { label: "Review Spending", href: "/ai-insights" };
   } else if (kpis.budget.status === "exceeded") {
     title = "Budget Exceeded";
     description = `You're over budget by ${formatCurrency({ minorValue: kpis.budget.excessMinor, currency })}. This month needs attention to get back on track.`;
@@ -448,7 +448,7 @@ export function generateAICoachInsight(dashboard: DashboardDTO): AICoachInsight 
       "Consider increasing your budget if it was set too low",
     ];
     primaryAction = { label: "Adjust Budget", href: "/budgets" };
-    secondaryAction = { label: "View Breakdown", href: "/insights?focus=categories" };
+    secondaryAction = { label: "View Breakdown", href: "/ai-insights?focus=categories" };
   } else if (kpis.budget.status === "approaching") {
     const used = (kpis.budget.budgetMinor - kpis.budget.remainingMinor) / kpis.budget.budgetMinor;
     title = "Approaching Budget Limit";
@@ -495,7 +495,7 @@ export function generateAICoachInsight(dashboard: DashboardDTO): AICoachInsight 
       "Set new savings goals to keep improving",
     ];
     primaryAction = { label: "View Dashboard", href: "/dashboard" };
-    secondaryAction = { label: "Ask AI a Question", href: "/insights" };
+    secondaryAction = { label: "Ask AI a Question", href: "/ai-insights" };
   }
 
   // Build prediction

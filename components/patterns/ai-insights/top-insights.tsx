@@ -107,7 +107,7 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
       aria-labelledby="top-ai-insights-title"
       className={cn("", className)}
     >
-      <div className="mb-2">
+      <div className="mb-3">
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10">
             <span className="text-primary text-[10px]">✦</span>
@@ -121,7 +121,12 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
         </p>
       </div>
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3"
+        className={cn(
+          "grid gap-3",
+          insights.length === 1 && "grid-cols-1",
+          insights.length === 2 && "grid-cols-1 sm:grid-cols-2",
+          insights.length >= 3 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+        )}
         initial="hidden"
         animate="visible"
         variants={{

@@ -248,18 +248,18 @@ function ThemeState({
 
 export function ThemeProvider({
   children,
-  initialAppearance = 'system',
+  initialAppearance = 'dark',
   initialDensity = 'comfortable',
 }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       attribute={['class', 'data-theme']}
-      defaultTheme={initialAppearance}
+      defaultTheme="dark"
       enableColorScheme
-      enableSystem
+      enableSystem={false}
       disableTransitionOnChange
       storageKey={APPEARANCE_STORAGE_KEY}
-      themes={['light', 'dark']}
+      themes={['dark']}
     >
       <ThemeState
         initialAppearance={initialAppearance}

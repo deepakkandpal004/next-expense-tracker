@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
 import { getDashboardData } from '@/lib/data/dashboard';
-import { getAiInsightsDisclosure } from '@/lib/domain/ai';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
 import { DashboardView } from '@/components/patterns/dashboard-view';
 
@@ -28,7 +27,6 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
   const dashboard = await getDashboardData(user.id, period);
-  const disclosure = getAiInsightsDisclosure();
 
-  return <DashboardView dashboard={dashboard} disclosure={disclosure} period={periodInput} user={{ name: user.name }} />;
+  return <DashboardView dashboard={dashboard} period={periodInput} user={{ name: user.name }} />;
 }

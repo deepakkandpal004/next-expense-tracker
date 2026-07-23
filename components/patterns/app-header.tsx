@@ -1,11 +1,12 @@
 "use client";
 
-import { Bell, LogOut, Menu, Monitor, Moon, Search, Settings, Sun, User, Wallet } from "lucide-react";
+import { Bell, Home, LayoutDashboard, LogOut, Menu, Search, User, Lock } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
 import { DropdownMenu } from "@/components/ui";
 import type { SafeUser } from "./authenticated-app-shell";
+import { ChangePasswordModal } from "./change-password-modal";
 
 interface AppHeaderProps {
   user: SafeUser;
@@ -27,41 +28,6 @@ function useCommandKShortcut(callback: () => void) {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [callback]);
-}
-
-function AppearanceToggle() {
-  const { appearance, resolvedAppearance, setAppearance } = useTheme();
-
-  const cycle = () => {
-    setAppearance(
-      appearance === "light" ? "dark" : appearance === "dark" ? "system" : "light",
-    );
-  };
-
-  const icon = appearance === "system"
-    ? <Monitor aria-hidden="true" size={16} strokeWidth={2} />
-    : resolvedAppearance === "dark"
-      ? <Moon aria-hidden="true" size={16} strokeWidth={2} />
-      : <Sun aria-hidden="true" size={16} strokeWidth={2} />;
-
-  const preferenceLabel = appearance === "system"
-    ? "system preference"
-    : appearance === "dark"
-      ? "dark"
-      : "light";
-  const label = `Change appearance (currently ${preferenceLabel})`;
-
-  return (
-    <button
-      aria-label={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
-      onClick={cycle}
-      title={label}
-      type="button"
-    >
-      {icon}
-    </button>
-  );
 }
 
 function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
@@ -86,52 +52,63 @@ function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
 
 function UserAvatar({ user, onSignOut, signingOut }: { user: SafeUser; onSignOut: () => void; signingOut: boolean }) {
   const initial = ((user.name?.trim()[0] ?? user.email[0]) || "?").toUpperCase();
+  const displayName = user.name || user.email.split("@")[0];
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   return (
-    <DropdownMenu
-      align="end"
-      label="User menu"
-      trigger={
-        <button
-          aria-label="Open user menu"
-          className="group relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary-fixed/30 p-0.5 transition-all duration-500 hover:border-primary-fixed/60 hover:shadow-[0_0_15px_rgba(0,220,229,0.3)]"
-          type="button"
-        >
-          {user.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              alt=""
-              src={user.imageUrl}
-              className="h-full w-full object-cover rounded-full"
-            />
-          ) : (
-            <span className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary-fixed">{initial}</span>
-          )}
-        </button>
-      }
-      items={[
-        {
-          id: "user-info",
-          label: "My account",
-          disabled: true,
-          icon: <User size={16} />,
-        },
-        {
-          id: "settings",
-          label: "Settings",
-          icon: <Settings size={16} />,
-          onSelect: () => {},
-        },
-        {
-          id: "sign-out",
-          label: signingOut ? "Signing out..." : "Sign out",
-          icon: <LogOut size={16} />,
-          destructive: true,
-          disabled: signingOut,
-          onSelect: onSignOut,
-        },
-      ]}
-    />
+    <>
+      <DropdownMenu
+        align="end"
+        label="User menu"
+        trigger={
+          <button
+            aria-label="Open user menu"
+            className="group relative inline-flex items-center gap-2 rounded-full border border-white/10 py-1 pl-1 pr-3 transition-all duration-300 hover:border-primary-fixed/40 hover:bg-surface-subtle/50"
+            type="button"
+          >
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-accent">
+              {user.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt=""
+                  src={user.imageUrl}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-sm font-bold text-white">{initial}</span>
+              )}
+            </span>
+            <span className="hidden text-sm font-medium text-on-surface sm:block">{displayName}</span>
+          </button>
+        }
+        items={[
+          {
+            id: "user-info",
+            label: displayName,
+            disabled: true,
+            icon: <User size={16} />,
+          },
+          {
+            id: "change-password",
+            label: "Change password",
+            icon: <Lock size={16} />,
+            onSelect: () => setChangePasswordOpen(true),
+          },
+          {
+            id: "sign-out",
+            label: signingOut ? "Signing out..." : "Sign out",
+            icon: <LogOut size={16} />,
+            destructive: true,
+            disabled: signingOut,
+            onSelect: onSignOut,
+          },
+        ]}
+      />
+      <ChangePasswordModal
+        open={changePasswordOpen}
+        onClose={() => setChangePasswordOpen(false)}
+      />
+    </>
   );
 }
 
@@ -221,20 +198,39 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
           <Menu aria-hidden="true" size={18} />
         </button>
 
-        <div className="hidden min-w-0 shrink-0 md:flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container text-on-primary-fixed shadow-[0_0_20px_rgba(0,245,255,0.3)]">
-            <Wallet size={16} strokeWidth={2.2} />
+        <Link
+          href="/"
+          className="hidden min-w-0 shrink-0 md:flex items-center gap-2.5 transition-all duration-300 hover:opacity-80"
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden bg-primary-container shadow-[0_0_20px_rgba(0,245,255,0.3)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
           </div>
           <span className="pulse-logo text-xl">Expense AI</span>
-        </div>
+        </Link>
 
         <div className="flex flex-1 justify-center md:justify-start">
           <SearchInput inputRef={searchRef} onSubmit={submitSearch} />
         </div>
 
-        <div className="flex shrink-0 items-center gap-0.5">
+        <div className="flex shrink-0 items-center gap-1">
+          <Link
+            href="/"
+            aria-label="Go to home page"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
+          >
+            <Home size={16} strokeWidth={2} />
+            <span className="hidden sm:inline text-xs font-medium">Home</span>
+          </Link>
+          <Link
+            href="/dashboard"
+            aria-label="Go to dashboard"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
+          >
+            <LayoutDashboard size={16} strokeWidth={2} />
+            <span className="hidden sm:inline text-xs font-medium">Dashboard</span>
+          </Link>
           <NotificationBell />
-          <AppearanceToggle />
           <div className="hidden sm:block">
             <UserAvatar user={user} onSignOut={onSignOut} signingOut={signingOut} />
           </div>

@@ -92,14 +92,14 @@ function NavRow({
     "group relative flex items-center gap-3 rounded-full py-3 transition-all duration-300",
     expanded ? "px-5" : "justify-center px-0",
     isActive
-      ? "text-primary-fixed bg-primary/10 shadow-[0_0_20px_rgba(0,245,255,0.15)]"
-      : "text-on-surface-variant/50 hover:bg-white/5 hover:text-primary-fixed",
-    item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-on-surface-variant/50",
+      ? "text-[#00DCE5] bg-[rgba(0,220,229,0.12)] border border-[rgba(0,220,229,0.25)] shadow-[0_0_20px_rgba(0,220,229,0.15)] font-semibold"
+      : "text-[#9AA3AF] hover:bg-white/5 hover:text-[#F5F7FA]",
+    item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-[#5B6472]",
   );
 
   const iconClass = cn(
     "shrink-0 transition-colors duration-300",
-    isActive ? "text-primary-fixed" : "text-on-surface-variant/50 group-hover:text-primary-fixed",
+    isActive ? "text-[#00DCE5]" : "text-[#9AA3AF] group-hover:text-[#F5F7FA]",
   );
 
   const content = (
@@ -229,8 +229,9 @@ export function AppSidebar({
         "flex items-center border-b border-white/5 shrink-0",
         expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5",
       )}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-container text-on-primary-fixed shadow-[0_0_15px_rgba(0,245,255,0.3)]">
-          <Wallet size={16} strokeWidth={2.2} />
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-primary-container shadow-[0_0_15px_rgba(0,245,255,0.3)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
         </div>
         <span className={cn(
           "pulse-logo text-base whitespace-nowrap transition-all duration-300",

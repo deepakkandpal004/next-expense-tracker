@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Sparkles } from "lucide-react";
 import { GreetingBanner } from "./ai-insights/greeting-banner";
 import { SummaryKpiRow } from "./ai-insights/summary-kpi-row";
 import { TopInsights } from "./ai-insights/top-insights";
@@ -12,14 +12,77 @@ import { DataSources } from "./ai-insights/data-sources";
 import { RecentActivity } from "./ai-insights/recent-activity";
 import { QuickActions } from "./ai-insights/quick-actions";
 import { Button, ErrorState, LinkButton, StatusRegion } from "@/components/ui";
+import { cn } from "@/lib/utils";
 import { AiInsightsSkeleton } from "@/components/ui/skeletons";
 import { getAiFinancialInsights, type AiFinancialInsightsData } from "@/app/actions/getAiFinancialInsights";
 import type { ReportingPeriod } from "@/lib/domain/types";
+import type { AIInsight } from "@/lib/ai";
 
 interface AiInsightsViewProps {
   initialData: AiFinancialInsightsData | null;
   period: ReportingPeriod;
   error?: string;
+}
+
+function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
+  if (insights.length === 0) return null;
+
+  return (
+    <section className="rounded-2xl glass-card p-5 space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(0,220,229,0.12)] text-[#00DCE5]">
+          <Sparkles size={16} />
+        </div>
+        <h3 className="text-base font-semibold text-[#F5F7FA]">AI Insights Timeline</h3>
+      </div>
+
+      <div className="space-y-3">
+        {insights.map((insight) => {
+          const isUnusual =
+            insight.type === "warning" ||
+            insight.title.toLowerCase().includes("unusual") ||
+            insight.title.toLowerCase().includes("alert") ||
+            insight.title.toLowerCase().includes("spike");
+
+          return (
+            <div
+              key={insight.id}
+              className={cn(
+                "rounded-xl border p-4 backdrop-blur-md transition-all",
+                isUnusual
+                  ? "border-[rgba(240,68,56,0.3)] bg-[rgba(240,68,56,0.08)]"
+                  : "border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] hover:border-[rgba(0,220,229,0.3)]"
+              )}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <h4 className={cn("text-sm font-semibold", isUnusual ? "text-[#F04438]" : "text-[#F5F7FA]")}>
+                  {insight.title}
+                </h4>
+                {insight.confidence !== undefined && (
+                  <span className="shrink-0 rounded-full bg-[rgba(0,220,229,0.12)] px-2 py-0.5 text-xs font-semibold text-[#00DCE5] font-geist">
+                    {Math.round(insight.confidence * 100)}% match
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-xs text-[#9AA3AF] leading-relaxed">
+                {insight.message}
+              </p>
+              {insight.action && (
+                <div className="mt-3">
+                  <a
+                    href={insight.action.startsWith("/") ? insight.action : "/budgets"}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#00DCE5] hover:underline underline-offset-4"
+                  >
+                    <span>{insight.action.startsWith("/") ? "View Action" : insight.action}</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
 
 export function AiInsightsView({ initialData, period, error: initialError }: AiInsightsViewProps) {
@@ -123,6 +186,8 @@ export function AiInsightsView({ initialData, period, error: initialError }: AiI
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div className="lg:col-span-7 space-y-4">
               <TopInsights insights={data.insights} />
+
+              <AiGeneratedInsights insights={data.aiInsights} />
 
               <AnalysisSummary
                 transactions={data.analysisSummary.transactions}

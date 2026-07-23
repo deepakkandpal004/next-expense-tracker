@@ -5,6 +5,8 @@ import { getDashboardData } from '@/lib/data/dashboard';
 import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
 import type { ActionResult, ReportingPeriod } from '@/lib/domain/types';
 import { formatCurrency } from '@/lib/formatters/locale';
+import { generateExpenseInsights, type AIInsight } from '@/lib/ai';
+import type { AiProviderPayload } from '@/lib/domain/ai';
 
 export interface AiInsightCard {
   id: string;
@@ -26,6 +28,7 @@ export interface AiFinancialInsightsData {
     financialHealth: { score: number; changePoints: number };
   };
   insights: AiInsightCard[];
+  aiInsights: AIInsight[];
   analysisSummary: {
     transactions: number;
     daysAnalyzed: number;
@@ -119,6 +122,7 @@ export async function getAiFinancialInsights(
 
     const insights: AiInsightCard[] = [];
 
+    // Spending trend insight
     if (spendingChangePercent > 10) {
       insights.push({
         id: 'spending-increased',
@@ -139,8 +143,19 @@ export async function getAiFinancialInsights(
         actionLabel: 'View details',
         actionHref: '/records',
       });
+    } else {
+      insights.push({
+        id: 'spending-stable',
+        type: 'positive',
+        title: 'Spending is stable',
+        description: `Your spending is consistent with last period. ${topCategory ? `Top category: ${topCategory.label}.` : ''} Keep tracking to maintain good habits.`,
+        metric: `${spendingChangePercent}%`,
+        actionLabel: 'View records',
+        actionHref: '/records',
+      });
     }
 
+    // Savings insight
     if (savingsRate < 0.15 && dashboard.insights.income.currentMinor > 0) {
       insights.push({
         id: 'savings-opportunity',
@@ -151,8 +166,29 @@ export async function getAiFinancialInsights(
         actionLabel: 'View details',
         actionHref: '/goals',
       });
+    } else if (savingsRate >= 25) {
+      insights.push({
+        id: 'savings-excellent',
+        type: 'positive',
+        title: 'Excellent savings rate',
+        description: `You're saving ${Math.round(savingsRate * 100)}% of your income — well above the 20% benchmark. Consider investing surplus for long-term growth.`,
+        metric: `${Math.round(savingsRate * 100)}%`,
+        actionLabel: 'Set goals',
+        actionHref: '/goals',
+      });
+    } else {
+      insights.push({
+        id: 'savings-on-track',
+        type: 'positive',
+        title: 'Savings on track',
+        description: `Your savings rate is ${Math.round(savingsRate * 100)}%. ${savingsRate >= 20 ? 'Great job meeting the recommended target!' : 'Try to increase towards the 20% target.'}`,
+        metric: `${Math.round(savingsRate * 100)}%`,
+        actionLabel: 'View goals',
+        actionHref: '/goals',
+      });
     }
 
+    // Category insight
     if (topCategory && topCategory.percentage > 0.3) {
       insights.push({
         id: 'unusual-category',
@@ -160,19 +196,27 @@ export async function getAiFinancialInsights(
         title: `High ${topCategory.label} spending`,
         description: `Your ${topCategory.label.toLowerCase()} spending accounts for ${Math.round(topCategory.percentage * 100)}% of total expenses. Consider setting a budget for this category.`,
         metric: formatCurrency({ minorValue: topCategory.amountMinor, currency: dashboard.currency }),
-        actionLabel: 'View details',
+        actionLabel: 'Set budget',
         actionHref: '/budgets',
       });
-    }
-
-    if (insights.length === 0) {
+    } else if (topCategory) {
       insights.push({
-        id: 'all-good',
+        id: 'top-category',
+        type: 'spending-trend',
+        title: `Top category: ${topCategory.label}`,
+        description: `${topCategory.label} is your highest spending category at ${Math.round(topCategory.percentage * 100)}% of total expenses. ${topCategory.percentage > 0.2 ? 'Consider monitoring this category.' : 'This is well distributed.'}`,
+        metric: formatCurrency({ minorValue: topCategory.amountMinor, currency: dashboard.currency }),
+        actionLabel: 'View budgets',
+        actionHref: '/budgets',
+      });
+    } else {
+      insights.push({
+        id: 'start-tracking',
         type: 'positive',
-        title: 'All looks good',
-        description: 'Your spending patterns are within normal ranges. No immediate actions needed — keep up the good habits!',
-        actionLabel: 'View details',
-        actionHref: '/dashboard',
+        title: 'Start tracking categories',
+        description: 'Add more transactions to see category breakdowns and get insights on where your money goes.',
+        actionLabel: 'Add transaction',
+        actionHref: '/records?addTransaction=1',
       });
     }
 
@@ -198,6 +242,31 @@ export async function getAiFinancialInsights(
         type: 'budget' as const,
       }] : []),
     ];
+
+    // Generate AI insights using OpenAI
+    let aiInsights: AIInsight[] = [];
+    try {
+      const providerPayload: AiProviderPayload = {
+        period: {
+          start: normalized.period.start,
+          end: normalized.period.end,
+          label: normalized.period.label,
+        },
+        currency: dashboard.currency,
+        transactionCount: dashboard.snapshot.transactionCount,
+        incomeMinor: dashboard.insights.income.currentMinor,
+        spendingMinor: dashboard.insights.spending.currentMinor,
+        balanceMinor: dashboard.insights.balance.currentMinor,
+        categorySpending: dashboard.categoryBreakdown.map(cat => ({
+          categoryId: cat.label,
+          amountMinor: cat.amountMinor,
+        })),
+      };
+      aiInsights = await generateExpenseInsights(providerPayload);
+    } catch (aiError) {
+      console.error('OpenAI insights generation failed, using fallback:', aiError);
+      // Continue with empty AI insights - the rule-based insights will still be shown
+    }
 
     const result: AiFinancialInsightsData = {
       greeting: getGreeting(),
@@ -226,6 +295,7 @@ export async function getAiFinancialInsights(
         },
       },
       insights: insights.slice(0, 3),
+      aiInsights,
       analysisSummary: {
         transactions: dashboard.snapshot.transactionCount,
         daysAnalyzed: daysInPeriod,

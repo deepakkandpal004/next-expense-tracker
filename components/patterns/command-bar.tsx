@@ -95,7 +95,7 @@ export function CommandBar({
         category: "navigation",
         keywords: ["spending", "report", "expense", "breakdown", "analysis"],
         handler: () => {
-          const href = appPeriodHref("insights", period) ?? "/insights";
+          const href = appPeriodHref("ai-insights", period) ?? "/ai-insights";
           onNavigate(href);
           onClose();
         },

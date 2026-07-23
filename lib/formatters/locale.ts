@@ -27,18 +27,6 @@ export interface CurrencyFormatOptions extends LocaleOptions {
   currencyDisplay?: "symbol" | "narrowSymbol" | "code" | "name";
 }
 
-function runtimeBrowserLocales(): readonly string[] {
-  if (typeof navigator === "undefined") {
-    return [];
-  }
-
-  if (navigator.languages.length > 0) {
-    return navigator.languages;
-  }
-
-  return navigator.language ? [navigator.language] : [];
-}
-
 function firstSupportedLocale(candidates: readonly string[]): string | undefined {
   for (const candidate of candidates) {
     try {
@@ -54,17 +42,33 @@ function firstSupportedLocale(candidates: readonly string[]): string | undefined
   return undefined;
 }
 
+/**
+ * Always returns the application fallback locale so that server-side rendering
+ * and client-side hydration produce identical formatted output — eliminating
+ * React error #418 (text content hydration mismatch).
+ *
+ * Browser-locale detection via `navigator.languages` is intentionally omitted
+ * because it returns different values on the server (undefined) and the client
+ * (user's browser locale), which causes date/currency text to differ between
+ * SSR and CSR and triggers a hydration error.
+ */
+function runtimeBrowserLocales(): readonly string[] {
+  return [APPLICATION_LOCALE_FALLBACK];
+}
+
 export function resolveFormattingLocale(
   selectedLocale?: string | null,
-  browserLocales: readonly string[] = runtimeBrowserLocales(),
+  browserLocales?: readonly string[],
 ): string {
   const selected = selectedLocale
     ? firstSupportedLocale([selectedLocale])
     : undefined;
 
+  const locales = browserLocales ?? runtimeBrowserLocales();
+
   return (
     selected ??
-    firstSupportedLocale(browserLocales) ??
+    firstSupportedLocale(locales) ??
     APPLICATION_LOCALE_FALLBACK
   );
 }

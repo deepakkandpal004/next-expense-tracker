@@ -20,6 +20,7 @@ import {
 import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/ui/cn";
 import { CurrencyText } from "@/components/ui";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatters/locale";
 
 /* ────────────────────────────────────────────────────────────
@@ -994,18 +995,13 @@ export function SavingsGoalsPage() {
           ))}
         </div>
       ) : goals.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-surface-subtle/50 py-16">
-          <Target size={40} className="text-foreground-secondary/40" />
-          <p className="mt-3 text-sm font-medium text-foreground-secondary">No goals yet</p>
-          <p className="mt-1 text-xs text-foreground-secondary/70">Create your first savings goal to get started</p>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="mt-4 flex items-center gap-2 rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Plus size={16} />
-            New Goal
-          </button>
-        </div>
+        <EmptyState
+          title="Set your first goal"
+          description="Define a target amount and deadline to start tracking your savings progress effortlessly."
+          actionLabel="Set Goal"
+          onAction={() => setShowAddModal(true)}
+          icon={<Target className="w-6 h-6" />}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {goals.map((goal, index) => (

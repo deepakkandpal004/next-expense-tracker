@@ -483,7 +483,7 @@ export function DropdownMenu({
   onOpenChange,
 }: DropdownMenuProps) {
   enforceSentenceCase(label, "Menu label");
-  items.forEach((item) => enforceSentenceCase(item.label, "Menu item label"));
+  items.filter((item) => !item.disabled).forEach((item) => enforceSentenceCase(item.label, "Menu item label"));
   const { isOpen, handleChange } = useOverlayOpenState(open, defaultOpen);
   const containerRef = useRef<HTMLDivElement>(null);
   const close = useCallback(() => handleChange(false, onOpenChange), [handleChange, onOpenChange]);
