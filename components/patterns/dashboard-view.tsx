@@ -8,6 +8,7 @@ import { getDashboardSnapshot } from "@/app/actions/getDashboardSnapshot";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
+import { ForecastCard } from "@/components/patterns/forecast-card";
 import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
 import { QuickActionsCard } from "@/components/patterns/quick-actions-card";
 import { RecentTransactionsCard } from "@/components/patterns/recent-transactions-card";
@@ -268,6 +269,11 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
           currency={currentDashboard.currency}
         />
       </motion.section>
+
+      <ForecastCard
+        period={currentDashboard.period}
+        currency={currentDashboard.currency}
+      />
 
       <div
         aria-busy={refreshing || undefined}

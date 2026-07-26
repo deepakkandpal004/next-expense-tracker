@@ -135,7 +135,7 @@ export function ReceiptScanner({ onTransactionCreated }: ReceiptScannerProps) {
                         <X className="size-4" />
                       </button>
                     </div>
-                    <Button icon={scanning ? <Loader2 className="size-4 animate-spin" /> : <Receipt className="size-4" />} label={scanning ? "Analyzing..." : "Scan this receipt"} width="full" onClick={handleScan} disabled={scanning} />
+                    <Button icon={scanning ? <Loader2 className="size-4 animate-spin" /> : <Receipt className="size-4" />} label="Scan receipt" width="full" loading={scanning} onClick={handleScan} disabled={scanning} />
                   </div>
                 )}
 
@@ -180,7 +180,7 @@ export function ReceiptScanner({ onTransactionCreated }: ReceiptScannerProps) {
                       </div>
                     )}
 
-                    <Button icon={creating ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />} label={creating ? "Adding..." : "Add as expense"} width="full" onClick={handleCreateTransaction} disabled={creating} />
+                    <Button icon={creating ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />} label="Add expense" width="full" loading={creating} onClick={handleCreateTransaction} disabled={creating} />
                   </div>
                 )}
 
