@@ -3,9 +3,7 @@
 import { motion } from "motion/react";
 import { ArrowUpRight, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { createTransaction } from "@/app/actions/addExpenseRecord";
 import { getDashboardSnapshot } from "@/app/actions/getDashboardSnapshot";
-import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
 import { ForecastCard } from "@/components/patterns/forecast-card";
@@ -25,7 +23,7 @@ import {
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
-import type { ReportingPeriod, TransactionType } from "@/lib/domain/types";
+import type { ReportingPeriod } from "@/lib/domain/types";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 
 export interface DashboardUser {
@@ -127,8 +125,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
   const [refreshedDashboard, setRefreshedDashboard] = useState<DashboardDTO | undefined>();
   const [refreshing, setRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState<string | undefined>();
-  const [addTransactionOpen, setAddTransactionOpen] = useState(false);
-  const [addTransactionPreset, setAddTransactionPreset] = useState<TransactionType>("expense");
   const dashboardKey = `${dashboard.period.kind}:${dashboard.period.start}:${dashboard.period.end}`;
   const refreshedKey = refreshedDashboard
     ? `${refreshedDashboard.period.kind}:${refreshedDashboard.period.start}:${refreshedDashboard.period.end}`
@@ -157,14 +153,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
     }
   };
 
-  const submitTransaction = async (submission: TransactionSubmission) => {
-    const result = await createTransaction({ requestId: submission.requestId, command: submission.command });
-    if (result.status === "success") {
-      await refreshDashboard(`${result.message} Dashboard refreshed.`);
-    }
-    return result;
-  };
-
   const aiInsight = generateDashboardAIInsight(currentDashboard);
 
   const coachInsight = generateAICoachInsight(currentDashboard);
@@ -191,14 +179,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
           onClick={() => void refreshDashboard()}
         />
       </header>
-
-      <AddNewRecord
-        defaultType={addTransactionPreset}
-        hideTrigger
-        onOpenChange={setAddTransactionOpen}
-        open={addTransactionOpen}
-        submitTransaction={submitTransaction}
-      />
 
       <StatusRegion message={status} visible={Boolean(status)} />
 
@@ -248,12 +228,10 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
         <motion.div variants={listItemVariants}>
           <QuickActionsCard
             onAddExpense={() => {
-              setAddTransactionPreset("expense");
-              setAddTransactionOpen(true);
+              window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }));
             }}
             onAddIncome={() => {
-              setAddTransactionPreset("income");
-              setAddTransactionOpen(true);
+              window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "income" } }));
             }}
           />
         </motion.div>

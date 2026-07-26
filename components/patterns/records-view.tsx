@@ -3,10 +3,8 @@
 import { Download, RefreshCw, Upload, CheckCircle2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
 import { deleteTransactionRecord } from "@/app/actions/deleteRecord";
 import { getForecastSnapshot } from "@/app/actions/getForecastSnapshot";
-import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import {
   Alert,
   Button,
@@ -43,11 +41,9 @@ export interface RecordsViewProps {
   records: readonly Transaction[];
   period: ReportingPeriod;
   resolvedPeriod: ResolvedPeriod;
-  currency: string;
-  initialAddTransaction: boolean;
 }
 
-export function RecordsView({ records, period, resolvedPeriod, currency, initialAddTransaction }: RecordsViewProps) {
+export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -62,7 +58,6 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
   const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
-  const [addTransactionOpen, setAddTransactionOpen] = useState(initialAddTransaction);
   const [currentPage, setCurrentPage] = useState(1);
   const [anomalyIds, setAnomalyIds] = useState<ReadonlySet<string> | undefined>();
 
@@ -136,33 +131,6 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
     setCurrentPage(1);
   }, [updateParams]);
 
-  const submitTransaction = async (submission: TransactionSubmission) => {
-    const result = await createTransaction(submission as CreateTransactionRequest);
-    if (result.status === "success" && result.data.transaction) {
-      const created = result.data.transaction;
-      setItems((current) => [{
-        id: created.id,
-        description: created.text,
-        amountMinor: Math.round(created.amount * 100),
-        currency,
-        type: created.type,
-        categoryId: created.category,
-        occurredOn: created.date,
-        createdAt: new Date().toISOString(),
-      }, ...current]);
-      setStatus(result.message);
-      setCurrentPage(1);
-    }
-    return result;
-  };
-
-  const closeAddTransaction = (open: boolean) => {
-    setAddTransactionOpen(open);
-    if (!open && searchParams.get("addTransaction")) {
-      updateParams({ addTransaction: null });
-    }
-  };
-
   const requestDelete = async (record: Transaction, requestId = `${record.id}-delete-${Date.now()}`) => {
     setDeletingId(record.id);
     setDeleteFailure(undefined);
@@ -227,7 +195,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
         <div className="flex flex-wrap items-center gap-3">
           <Button icon={<Upload size={16} />} intent="secondary" label="Import" onClick={() => setImportOpen(true)} />
           <Button icon={<Download size={16} />} intent="secondary" label="Export" onClick={() => setExportOpen(true)} />
-          <AddNewRecord initialOpen={addTransactionOpen} onOpenChange={closeAddTransaction} submitTransaction={submitTransaction} />
+          <Button label="Add" onClick={() => window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }))} />
         </div>
       </header>
 
@@ -276,7 +244,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
         <TransactionEmptyState
           hasFilters={selection.activeFilterCount > 0}
           onClearFilters={clearFilters}
-          onAddTransaction={() => setAddTransactionOpen(true)}
+          onAddTransaction={() => window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }))}
         />
       ) : (
         <div className="space-y-4">
