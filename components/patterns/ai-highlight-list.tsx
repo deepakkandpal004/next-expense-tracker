@@ -216,7 +216,7 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
   };
 
   return (
-    <Card aria-labelledby={sectionId} as="section" className="min-h-[24rem] space-y-4 border-border/50" elevation="raised" data-ai-boundary="dashboard-highlights">
+    <Card aria-labelledby={sectionId} className="min-h-[24rem] space-y-4 border-border/50" data-ai-boundary="dashboard-highlights">
       <SectionHeader
         action={<Button icon={<RefreshCw size={14} />} intent="ghost" label="Refresh AI highlights" loading={pending} onClick={() => void refresh()} />}
         description="AI-generated observations and optional guidance are kept separate from recorded financial data."

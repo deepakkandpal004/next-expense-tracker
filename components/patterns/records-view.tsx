@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, RefreshCw } from "lucide-react";
+import { Download, RefreshCw, Upload, CheckCircle2 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
@@ -55,6 +55,10 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
   const [exportOpen, setExportOpen] = useState(false);
   const [exportPending, setExportPending] = useState(false);
   const [exportError, setExportError] = useState<string | undefined>();
+  const [importOpen, setImportOpen] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importPending, setImportPending] = useState(false);
+  const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
   const [addTransactionOpen, setAddTransactionOpen] = useState(initialAddTransaction);
@@ -209,6 +213,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
           <p className="mt-1 text-body text-on-surface-variant/60">{resolvedPeriod.label}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <Button icon={<Upload size={16} />} intent="secondary" label="Import" onClick={() => setImportOpen(true)} />
           <Button icon={<Download size={16} />} intent="secondary" label="Export" onClick={() => setExportOpen(true)} />
           <AddNewRecord initialOpen={addTransactionOpen} onOpenChange={closeAddTransaction} submitTransaction={submitTransaction} />
         </div>
@@ -303,6 +308,58 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
         <div className="mt-6 flex flex-wrap justify-end gap-3">
           <Button disabled={exportPending} intent="secondary" label="Cancel" onClick={() => setExportOpen(false)} />
           <Button disabled={!exportScope.summary.canCreate} label="Download CSV" loading={exportPending} onClick={() => void runExport()} />
+        </div>
+      </Dialog>
+
+      <Dialog
+        closeLabel="Close import"
+        description="Upload a CSV file to import transactions."
+        onOpenChange={(open) => { setImportOpen(open); if (!open) { setImportFile(null); setImportResult(null); } }}
+        open={importOpen}
+        title="Import transactions"
+      >
+        <div className="grid gap-4">
+          {!importResult ? (
+            <>
+              <div
+                className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/20 p-8 text-center hover:border-primary/50 transition-colors"
+                onClick={() => document.getElementById("csv-input")?.click()}
+              >
+                <Upload className="mb-2 size-8 text-muted-foreground" />
+                <p className="text-sm font-medium">{importFile ? importFile.name : "Click to select a CSV file"}</p>
+                <p className="text-xs text-muted-foreground mt-1">Format: Date, Description, Amount, Type, Category</p>
+                <input id="csv-input" type="file" accept=".csv" className="hidden" onChange={(e) => setImportFile(e.target.files?.[0] ?? null)} />
+              </div>
+              {importFile && (
+                <dl className="grid gap-1 rounded-container border border-white/5 bg-white/5 p-3 text-interface-sm">
+                  <div className="flex justify-between"><dt className="text-on-surface-variant/60">File</dt><dd>{importFile.name}</dd></div>
+                  <div className="flex justify-between"><dt className="text-on-surface-variant/60">Size</dt><dd>{(importFile.size / 1024).toFixed(1)} KB</dd></div>
+                </dl>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-2 py-4">
+              <CheckCircle2 className="size-10 text-success" />
+              <p className="text-sm font-medium text-on-surface">Import complete</p>
+              <p className="text-xs text-muted-foreground">{importResult.imported} imported, {importResult.skipped} skipped</p>
+            </div>
+          )}
+        </div>
+        <div className="mt-6 flex flex-wrap justify-end gap-3">
+          <Button disabled={importPending || !!importResult} intent="secondary" label="Cancel" onClick={() => setImportOpen(false)} />
+          <Button disabled={!importFile || importPending || !!importResult} label="Import CSV" loading={importPending} onClick={async () => {
+            if (!importFile) return;
+            setImportPending(true);
+            const fd = new FormData();
+            fd.set("file", importFile);
+            const { importTransactionsFromCsv } = await import("@/app/actions/importTransactions");
+            const res = await importTransactionsFromCsv(fd);
+            if (res.status === "success") {
+              setImportResult({ imported: res.data.imported, skipped: res.data.skipped });
+              setStatus(`Imported ${res.data.imported} transactions.`);
+            }
+            setImportPending(false);
+          }} />
         </div>
       </Dialog>
     </div>

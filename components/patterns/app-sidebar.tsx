@@ -70,7 +70,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { id: "budgets", label: "Budgets", icon: <Wallet size={18} strokeWidth={2} />, status: "available" },
   { id: "goals", label: "Goals", icon: <Target size={18} strokeWidth={2} />, status: "available" },
   { id: "categories", label: "Categories", icon: <Layers size={18} strokeWidth={2} />, status: "coming-soon" },
-  { id: "recurring", label: "Recurring", icon: <Repeat size={18} strokeWidth={2} />, status: "coming-soon" },
+  { id: "recurring", label: "Recurring", icon: <Repeat size={18} strokeWidth={2} />, status: "available" },
   { id: "reports", label: "Reports", icon: <FileBarChart size={18} strokeWidth={2} />, status: "coming-soon" },
   { id: "settings", label: "Settings", icon: <Settings size={18} strokeWidth={2} />, status: "coming-soon" },
 ];

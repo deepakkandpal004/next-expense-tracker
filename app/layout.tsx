@@ -59,6 +59,11 @@ export default async function RootLayout({
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.light} />
+        <link rel='manifest' href='/manifest.json' />
+        <meta name='application-name' content='Expense AI' />
+        <meta name='apple-mobile-web-app-capable' content='yes' />
+        <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
+        <meta name='apple-mobile-web-app-title' content='Expense AI' />
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}

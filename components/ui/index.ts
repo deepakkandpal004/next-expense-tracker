@@ -15,6 +15,7 @@ export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
 export { Progress } from "./progress";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";
 export { Input } from "./input";
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction } from "./card";
 export { Separator } from "./separator";
 export { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 export { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "./chart";
