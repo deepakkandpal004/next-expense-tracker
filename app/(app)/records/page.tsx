@@ -29,12 +29,9 @@ export default async function RecordsPage({ searchParams }: RecordsPageProps) {
   const searchParamsObject = toSearchParams(query);
   const { input: periodInput, period } = resolveValidReportingPeriod(searchParamsObject);
   const records = await getRecordsForPeriod(user.id, period, DEFAULT_CURRENCY);
-  const addTransaction = searchParamsObject.get('addTransaction') === '1';
 
   return (
     <RecordsView
-      currency={DEFAULT_CURRENCY}
-      initialAddTransaction={addTransaction}
       period={periodInput}
       records={records}
       resolvedPeriod={period}

@@ -1,15 +1,11 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react";
+import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
+import { createTransaction, type CreateTransactionResult } from "@/app/actions/addExpenseRecord";
 import { Sheet } from "@/components/ui";
-import {
-  appPeriodHref,
-  parseReportingPeriod,
-  resolveReportingPeriodState,
-  writeReportingPeriodSession,
-} from "@/lib/domain/reporting-period";
-import type { ReportingPeriod } from "@/lib/domain/types";
+import type { TransactionType } from "@/lib/domain/types";
 import { AppHeader } from "./app-header";
 import { AppSidebar, type SidebarDestinationId, type SidebarUser } from "./app-sidebar";
 
@@ -45,43 +41,37 @@ const NAV_ROUTE: Record<SidebarDestinationId, string> = {
   settings: "/settings",
 };
 
-/**
- * Route-owned signed-in chrome. Sidebar is an icon rail on desktop, hidden on mobile
- * (hamburger opens a Sheet overlay). URL period parameters remain authoritative;
- * sessionStorage only mirrors a valid period when the URL has no period state.
- */
 export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const periodSearch = searchParams.toString();
 
-  const [sessionPeriod, setSessionPeriod] = useState<ReportingPeriod>({ kind: "current-month" });
   const [signingOut, setSigningOut] = useState(false);
   const [accountError, setAccountError] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [addTransactionOpen, setAddTransactionOpen] = useState(false);
+  const [addTransactionPreset, setAddTransactionPreset] = useState<TransactionType>("expense");
 
-  const handleNewRecord = () => {
-    const href = appPeriodHref("records", period);
-    router.push(`${href}?addTransaction=1`);
+  const handleNewRecord = (type?: TransactionType) => {
+    setAddTransactionPreset(type ?? "expense");
+    setAddTransactionOpen(true);
   };
 
-  const urlPeriod = useMemo(
-    () => parseReportingPeriod(new URLSearchParams(periodSearch)),
-    [periodSearch],
-  );
-  const hasPeriodInUrl = searchParams.get("period") !== null;
-  const period = hasPeriodInUrl && urlPeriod.valid ? urlPeriod.input : sessionPeriod;
-
   useEffect(() => {
-    const nextPeriod = resolveReportingPeriodState(
-      new URLSearchParams(periodSearch),
-      window.sessionStorage,
-    );
-    if (!nextPeriod.valid) return;
-    setSessionPeriod(nextPeriod.input);
-    writeReportingPeriodSession(window.sessionStorage, nextPeriod.input);
-  }, [periodSearch]);
+    const handler = (e: Event) => {
+      const customEvent = e as CustomEvent<{ type?: TransactionType }>;
+      handleNewRecord(customEvent.detail?.type);
+    };
+    window.addEventListener("open-add-transaction", handler);
+    return () => window.removeEventListener("open-add-transaction", handler);
+  }, []);
+
+  const submitTransaction = async (submission: TransactionSubmission): Promise<CreateTransactionResult> => {
+    const result = await createTransaction(submission);
+    if (result.status === "success") {
+      router.refresh();
+    }
+    return result;
+  };
 
   const activeDestinationId = currentDestinationId(pathname);
 
@@ -158,6 +148,15 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           user={user}
         />
       </Sheet>
+
+      {/* Global add transaction dialog */}
+      <AddNewRecord
+        defaultType={addTransactionPreset}
+        hideTrigger
+        onOpenChange={setAddTransactionOpen}
+        open={addTransactionOpen}
+        submitTransaction={submitTransaction}
+      />
     </div>
   );
 }

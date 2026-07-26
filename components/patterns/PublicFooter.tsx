@@ -1,34 +1,106 @@
 import Link from 'next/link';
-import { PUBLIC_DISCLOSURE_NAVIGATION, PUBLIC_NAVIGATION, SUPPORT_EMAIL, SUPPORT_HOURS, SUPPORT_PHONE, SUPPORT_PHONE_LABEL } from './public-navigation';
-
-const linkClassName = 'block rounded-control py-1 text-interface-sm text-foreground-secondary underline-offset-4 hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+import { PUBLIC_DISCLOSURE_NAVIGATION, PUBLIC_NAVIGATION, SUPPORT_EMAIL, SUPPORT_PHONE_LABEL } from './public-navigation';
 
 export function PublicFooter() {
   return (
-    <footer className='border-t border-border bg-surface-subtle py-12 pb-[calc(3rem+env(safe-area-inset-bottom))]'>
-      <div className='content-frame grid gap-8 sm:grid-cols-2 lg:grid-cols-4'>
-        <section aria-labelledby='footer-product'>
-          <h2 className='product-mark text-display-sm font-semibold text-foreground' id='footer-product'>Expense AI</h2>
-          <p className='mt-3 max-w-xs text-interface-sm text-foreground-secondary'>Expense tracking with recorded financial data and optional AI-assisted insights.</p>
-        </section>
-        <nav aria-labelledby='footer-navigation'>
-          <h2 className='text-interface-sm font-semibold text-foreground' id='footer-navigation'>Explore</h2>
-          <ul className='mt-3 space-y-1'>{PUBLIC_NAVIGATION.map((item) => <li key={item.id}><Link className={linkClassName} href={item.href}>{item.label}</Link></li>)}</ul>
-        </nav>
-        <section aria-labelledby='footer-support'>
-          <h2 className='text-interface-sm font-semibold text-foreground' id='footer-support'>Contact support</h2>
-          <address className='mt-3 space-y-2 not-italic'>
-            <a className={linkClassName} href={`mailto:${SUPPORT_EMAIL}`}>Email support: {SUPPORT_EMAIL}</a>
-            <a className={linkClassName} href={`tel:${SUPPORT_PHONE}`}>Call support: {SUPPORT_PHONE_LABEL}</a>
-            <p className='text-interface-sm text-foreground-secondary'>Support hours: {SUPPORT_HOURS}</p>
-          </address>
-        </section>
-        <nav aria-labelledby='footer-disclosures'>
-          <h2 className='text-interface-sm font-semibold text-foreground' id='footer-disclosures'>Disclosures</h2>
-          <ul className='mt-3 space-y-1'>{PUBLIC_DISCLOSURE_NAVIGATION.map((item) => <li key={item.id}><Link className={linkClassName} href={item.href}>{item.label}</Link></li>)}</ul>
-        </nav>
+    <footer className="relative border-t border-white/[0.06] bg-[#0B0F14]">
+      {/* Subtle gradient glow at top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00DCE5]/20 to-transparent" />
+
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="group inline-flex items-center gap-2.5">
+              <span className="grid size-8 place-items-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
+                <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
+              </span>
+              <span className="text-lg font-bold text-white">Expense AI</span>
+            </Link>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#9AA3AF]">
+              Smart expense tracking with AI-powered insights to help you understand and manage your finances.
+            </p>
+          </div>
+
+          {/* Explore */}
+          <nav aria-label="Footer navigation">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#9AA3AF]/60">
+              Product
+            </h3>
+            <ul className="mt-4 space-y-3">
+              {PUBLIC_NAVIGATION.filter(item => !['sign-in', 'get-started'].includes(item.id)).map((item) => (
+                <li key={item.id}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-[#9AA3AF] transition-colors duration-200 hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#9AA3AF]/60">
+              Support
+            </h3>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <a
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                  className="text-sm text-[#9AA3AF] transition-colors duration-200 hover:text-white"
+                >
+                  {SUPPORT_EMAIL}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:+919123495043`}
+                  className="text-sm text-[#9AA3AF] transition-colors duration-200 hover:text-white"
+                >
+                  {SUPPORT_PHONE_LABEL}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#9AA3AF]/60">
+              Legal
+            </h3>
+            <ul className="mt-4 space-y-3">
+              {PUBLIC_DISCLOSURE_NAVIGATION.map((item) => (
+                <li key={item.id}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-[#9AA3AF] transition-colors duration-200 hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
+          <p className="text-xs text-[#9AA3AF]/50">
+            &copy; {new Date().getFullYear()} Expense AI. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="text-xs text-[#9AA3AF]/50 transition-colors duration-200 hover:text-[#9AA3AF]">
+              Privacy
+            </Link>
+            <Link href="/ai-transparency" className="text-xs text-[#9AA3AF]/50 transition-colors duration-200 hover:text-[#9AA3AF]">
+              AI transparency
+            </Link>
+          </div>
+        </div>
       </div>
-      <div className='content-frame mt-8 border-t border-border pt-6 text-interface-sm text-foreground-secondary'>© {new Date().getFullYear()} Expense AI. All rights reserved.</div>
     </footer>
   );
 }

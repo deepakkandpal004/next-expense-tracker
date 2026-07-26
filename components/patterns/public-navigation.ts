@@ -10,8 +10,6 @@ export const PUBLIC_NAVIGATION: readonly PublicNavigationItem[] = [
   { id: 'features', label: 'Features', href: '/features' },
   { id: 'about', label: 'About', href: '/about' },
   { id: 'contact', label: 'Contact', href: '/contact' },
-  { id: 'sign-in', label: 'Sign in', href: '/sign-in' },
-  { id: 'get-started', label: 'Get started', href: '/sign-up' },
 ] as const;
 
 export const PUBLIC_DISCLOSURE_NAVIGATION: readonly PublicNavigationItem[] = [

@@ -49,6 +49,137 @@ function AnimateInView({
 }
 
 /* ────────────────────────────────────────────────────────────
+   ANIMATED SVG SHAPES
+   ──────────────────────────────────────────────────────────── */
+
+function FloatingShapes() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* Cyan glow orb - top center */}
+      <motion.div
+        animate={{ y: [0, -20, 0], scale: [1, 1.05, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute left-1/2 top-[-10%] -translate-x-1/2"
+      >
+        <div className="h-[500px] w-[500px] rounded-full bg-[#00DCE5]/[0.07] blur-[100px]" />
+      </motion.div>
+
+      {/* Purple glow orb - bottom left */}
+      <motion.div
+        animate={{ y: [0, 15, 0], x: [0, 10, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute bottom-[-5%] left-[-5%]"
+      >
+        <div className="h-[400px] w-[400px] rounded-full bg-[#A855F7]/[0.06] blur-[80px]" />
+      </motion.div>
+
+      {/* Floating geometric shapes */}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1200 800">
+        {/* Rotating hexagon */}
+        <motion.g
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "200px 150px" }}
+        >
+          <motion.polygon
+            points="200,110 230,130 230,170 200,190 170,170 170,130"
+            fill="none"
+            stroke="rgba(0,220,229,0.12)"
+            strokeWidth="1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.12, 0.25, 0.12] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.g>
+
+        {/* Floating diamond */}
+        <motion.g
+          animate={{ y: [0, -30, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          <rect
+            x="950"
+            y="120"
+            width="40"
+            height="40"
+            rx="4"
+            fill="none"
+            stroke="rgba(168,85,247,0.15)"
+            strokeWidth="1"
+            transform="rotate(45 970 140)"
+          />
+        </motion.g>
+
+        {/* Pulsing circle */}
+        <motion.circle
+          cx="150"
+          cy="600"
+          r="25"
+          fill="none"
+          stroke="rgba(0,220,229,0.1)"
+          strokeWidth="1"
+          animate={{ r: [25, 35, 25], opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+
+        {/* Floating cross */}
+        <motion.g
+          animate={{ y: [0, 20, 0], rotate: [0, -15, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        >
+          <line x1="1050" y1="500" x2="1050" y2="540" stroke="rgba(0,220,229,0.12)" strokeWidth="1" />
+          <line x1="1030" y1="520" x2="1070" y2="520" stroke="rgba(0,220,229,0.12)" strokeWidth="1" />
+        </motion.g>
+
+        {/* Small dots constellation */}
+        {[
+          { cx: 300, cy: 200, delay: 0 },
+          { cx: 320, cy: 220, delay: 0.5 },
+          { cx: 280, cy: 240, delay: 1 },
+          { cx: 340, cy: 180, delay: 1.5 },
+          { cx: 260, cy: 210, delay: 2 },
+        ].map((dot, i) => (
+          <motion.circle
+            key={i}
+            cx={dot.cx}
+            cy={dot.cy}
+            r="2"
+            fill="rgba(0,220,229,0.25)"
+            animate={{ opacity: [0.25, 0.6, 0.25], scale: [1, 1.3, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: dot.delay }}
+          />
+        ))}
+
+        {/* Connecting lines between dots */}
+        <motion.line
+          x1="300" y1="200" x2="320" y2="220"
+          stroke="rgba(0,220,229,0.08)"
+          strokeWidth="0.5"
+          animate={{ opacity: [0.08, 0.15, 0.08] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.line
+          x1="320" y1="220" x2="280" y2="240"
+          stroke="rgba(0,220,229,0.08)"
+          strokeWidth="0.5"
+          animate={{ opacity: [0.08, 0.15, 0.08] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+      </svg>
+
+      {/* Grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
    HERO SECTION
    ──────────────────────────────────────────────────────────── */
 
@@ -58,62 +189,48 @@ function HeroSection() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 60]);
+  const opacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.4], [0, 80]);
+  const scale = useTransform(scrollYProgress, [0, 0.4], [1, 0.95]);
 
   return (
     <section
       ref={ref}
-      className="relative min-h-[90vh] overflow-hidden border-b border-border/50"
+      className="relative"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas to-surface-subtle" />
-
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(var(--color-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px)`,
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* Glow orbs */}
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
-        <div className="h-[600px] w-[600px] rounded-full bg-accent/10 blur-[120px]" />
-      </div>
-      <div className="absolute bottom-0 left-0">
-        <div className="h-[400px] w-[400px] rounded-full bg-kpi-income/10 blur-[100px]" />
+      {/* Background layer - clipped */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <FloatingShapes />
       </div>
 
       <motion.div
-        style={{ opacity, y }}
-        className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8"
+        style={{ opacity, y, scale }}
+        className="relative z-10 mx-auto max-w-6xl px-4 pt-32 pb-24 sm:px-6 sm:pt-40 sm:pb-32 lg:px-8"
       >
         <div className="text-center">
           {/* Badge */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 text-xs font-semibold text-accent">
-              <Sparkles size={14} />
-              AI-Powered Financial Insights
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5] shadow-[0_0_20px_rgba(0,220,229,0.1)]">
+              <Sparkles size={14} className="animate-pulse" />
+              AI-Powered Expense Tracking
             </span>
           </motion.div>
 
           {/* Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-8 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl"
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-10 text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
           >
-            Money clarity,
+            Track smarter.
             <br />
-            <span className="bg-gradient-to-r from-accent via-kpi-income to-kpi-savings bg-clip-text text-transparent">
-              powered by AI
+            <span className="bg-gradient-to-r from-[#00DCE5] via-[#A855F7] to-[#22C55E] bg-clip-text text-transparent">
+              Spend wiser.
             </span>
           </motion.h1>
 
@@ -121,45 +238,47 @@ function HeroSection() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className="mx-auto mt-6 max-w-2xl text-lg text-foreground-secondary sm:text-xl"
+            transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto mt-7 max-w-2xl text-lg text-[#9AA3AF] sm:text-xl"
           >
-            Track expenses, understand spending patterns, and get intelligent
-            recommendations — all in one beautiful workspace.
+            AI auto-categorizes your expenses, forecasts your spending, and
+            catches anomalies — so you always know where your money goes.
           </motion.p>
 
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
             <Link
               href="/sign-up"
-              className="group flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+              className="group relative flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-7 py-3.5 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
             >
               Get started free
               <ArrowRight
                 size={16}
-                className="transition-transform group-hover:translate-x-0.5"
+                className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
             <Link
               href="/features"
-              className="flex items-center gap-2 rounded-xl border border-border px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-subtle active:scale-[0.98]"
+              className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] active:scale-[0.97]"
             >
-              <Play size={16} />
+              <span className="flex size-6 items-center justify-center rounded-full bg-white/10 transition-all duration-300 group-hover:bg-white/15">
+                <Play size={12} className="ml-0.5" />
+              </span>
               See how it works
             </Link>
           </motion.div>
 
           {/* Social proof */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7 }}
-            className="mt-12 flex items-center justify-center gap-6 text-sm text-foreground-secondary"
+            className="mt-14 flex items-center justify-center gap-6 text-sm text-[#9AA3AF]"
           >
             <div className="flex items-center gap-1.5">
               <div className="flex">
@@ -167,169 +286,269 @@ function HeroSection() {
                   <Star
                     key={i}
                     size={14}
-                    className="fill-warning text-warning"
+                    className="fill-[#FBBF24] text-[#FBBF24]"
                   />
                 ))}
               </div>
               <span>4.9/5 rating</span>
             </div>
-            <div className="h-4 w-px bg-border" />
+            <div className="h-4 w-px bg-white/10" />
             <span>2,400+ users</span>
-            <div className="h-4 w-px bg-border" />
+            <div className="h-4 w-px bg-white/10" />
             <span>No credit card required</span>
           </motion.div>
         </div>
+      </motion.div>
 
-        {/* Hero image/dashboard preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.6 }}
-          className="mt-16 sm:mt-20"
-        >
-          <div className="relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-2xl">
-            <div className="flex items-center gap-2 border-b border-border/60 bg-surface-subtle/50 px-4 py-3">
-              <div className="h-3 w-3 rounded-full bg-danger/60" />
-              <div className="h-3 w-3 rounded-full bg-warning/60" />
-              <div className="h-3 w-3 rounded-full bg-success/60" />
-              <span className="ml-4 text-xs text-foreground-secondary">
+      {/* Hero dashboard preview — outside parallax so it stays visible */}
+      <motion.div
+        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28"
+      >
+        <div className="relative">
+          {/* Glow behind the card */}
+          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-b from-[#00DCE5]/[0.08] via-[#A855F7]/[0.04] to-transparent blur-2xl" />
+
+          {/* Browser frame */}
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F14]/80 shadow-[0_0_60px_rgba(0,220,229,0.08)] backdrop-blur-xl">
+            {/* Title bar */}
+            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-[#FF5F57]" />
+                <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
+                <div className="h-3 w-3 rounded-full bg-[#28CA41]" />
+              </div>
+              <span className="ml-4 text-xs text-[#9AA3AF]/60">
                 Expense AI Dashboard
               </span>
             </div>
+
+            {/* Dashboard content */}
             <div className="grid gap-4 p-6 sm:grid-cols-3">
               {[
                 {
                   icon: Wallet,
                   label: "Balance",
                   value: "₹1,24,500",
-                  color: "text-accent",
+                  change: "+12.5%",
+                  color: "#00DCE5",
+                  bgColor: "rgba(0,220,229,0.08)",
                 },
                 {
                   icon: TrendingUp,
                   label: "Income",
                   value: "₹85,000",
-                  color: "text-kpi-income",
+                  change: "+8.2%",
+                  color: "#22C55E",
+                  bgColor: "rgba(34,197,94,0.08)",
                 },
                 {
                   icon: CreditCard,
                   label: "Expenses",
                   value: "₹42,300",
-                  color: "text-kpi-expense",
+                  change: "-3.1%",
+                  color: "#F04438",
+                  bgColor: "rgba(240,68,56,0.08)",
                 },
-              ].map((stat) => (
-                <div
+              ].map((stat, i) => (
+                <motion.div
                   key={stat.label}
-                  className="rounded-xl border border-border/40 bg-surface-subtle/30 p-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.9 + i * 0.1 }}
+                  className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <stat.icon size={16} className={stat.color} />
-                    <span className="text-xs text-foreground-secondary">
-                      {stat.label}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className="flex size-8 items-center justify-center rounded-lg transition-all duration-300 group-hover:scale-110"
+                        style={{ backgroundColor: stat.bgColor }}
+                      >
+                        <stat.icon size={16} style={{ color: stat.color }} />
+                      </div>
+                      <span className="text-xs font-medium text-[#9AA3AF]">
+                        {stat.label}
+                      </span>
+                    </div>
+                    <span
+                      className="text-xs font-semibold"
+                      style={{ color: stat.color }}
+                    >
+                      {stat.change}
                     </span>
                   </div>
-                  <p className="mt-2 text-2xl font-bold tabular-nums">
+                  <p className="mt-3 text-2xl font-bold tabular-nums text-white">
                     {stat.value}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </div>
+
+            {/* Mini chart area */}
+            <div className="border-t border-white/[0.06] px-6 py-4">
+              <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                <span>Monthly Spending</span>
+                <span className="text-[#00DCE5]">+15% this month</span>
+              </div>
+              <div className="mt-3 flex items-end gap-1.5 h-16">
+                {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85, 50, 95].map((h, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ height: 0 }}
+                    animate={{ height: `${h}%` }}
+                    transition={{ duration: 0.5, delay: 1.1 + i * 0.05 }}
+                    className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60 transition-all duration-300 hover:from-[#00DCE5]/30 hover:to-[#00DCE5]/80"
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );
 }
 
 /* ────────────────────────────────────────────────────────────
-   FEATURES SECTION
+   FEATURES SECTION — Bento Grid
    ──────────────────────────────────────────────────────────── */
 
 const features = [
   {
     icon: BarChart3,
     title: "Smart Analytics",
-    description:
-      "Beautiful charts and insights that help you understand where your money goes.",
-    color: "text-accent",
-    bg: "bg-accent/10",
+    description: "Beautiful charts and insights that help you understand where your money goes.",
+    color: "#00DCE5",
+    bgColor: "rgba(0,220,229,0.08)",
+    span: "lg:col-span-2 lg:row-span-2",
+    featured: true,
   },
   {
     icon: Brain,
     title: "AI Categorization",
-    description:
-      "Automatically categorize transactions with AI-powered suggestions.",
-    color: "text-kpi-savings",
-    bg: "bg-kpi-savings-surface",
+    description: "Automatically categorize transactions with AI-powered suggestions.",
+    color: "#A855F7",
+    bgColor: "rgba(168,85,247,0.08)",
+    span: "lg:col-span-1",
+    featured: false,
   },
   {
     icon: Target,
     title: "Budget Tracking",
-    description:
-      "Set budgets and track progress with real-time alerts and forecasts.",
-    color: "text-kpi-income",
-    bg: "bg-kpi-income-surface",
+    description: "Set budgets and track progress with real-time alerts.",
+    color: "#22C55E",
+    bgColor: "rgba(34,197,94,0.08)",
+    span: "lg:col-span-1",
+    featured: false,
   },
   {
     icon: Shield,
     title: "Bank-Grade Security",
-    description:
-      "Your data is encrypted and secure. We never sell your information.",
-    color: "text-info",
-    bg: "bg-info-surface",
+    description: "Your data is encrypted and secure. We never sell your information.",
+    color: "#3B82F6",
+    bgColor: "rgba(59,130,246,0.08)",
+    span: "lg:col-span-1",
+    featured: false,
   },
   {
     icon: Zap,
     title: "Instant Sync",
-    description:
-      "Real-time updates across all your devices. Always up to date.",
-    color: "text-warning",
-    bg: "bg-warning-surface",
+    description: "Real-time updates across all your devices. Always up to date.",
+    color: "#FBBF24",
+    bgColor: "rgba(251,191,36,0.08)",
+    span: "lg:col-span-1",
+    featured: false,
   },
   {
     icon: Globe,
     title: "Multi-Currency",
-    description:
-      "Track expenses in multiple currencies with automatic conversion.",
-    color: "text-kpi-expense",
-    bg: "bg-danger-surface",
+    description: "Track expenses in multiple currencies with automatic conversion.",
+    color: "#F04438",
+    bgColor: "rgba(240,68,56,0.08)",
+    span: "lg:col-span-2",
+    featured: false,
   },
 ];
 
 function FeaturesSection() {
   return (
-    <section className="border-b border-border/50 bg-surface py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[120px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <AnimateInView className="text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider text-accent">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
             Features
           </span>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Everything you need to master your finances
+          <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            Everything you need
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground-secondary">
-            Powerful tools designed to give you clarity and control over your
-            money.
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-[#9AA3AF]">
+            Powerful tools designed to give you clarity and control over your money.
           </p>
         </AnimateInView>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Bento Grid */}
+        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)]">
           {features.map((feature, index) => (
-            <AnimateInView key={feature.title} delay={index * 0.1}>
+            <AnimateInView
+              key={feature.title}
+              delay={index * 0.08}
+              className={feature.span}
+            >
               <motion.div
-                whileHover={{ y: -4 }}
-                className="group rounded-2xl border border-border/60 bg-surface p-6 transition-shadow hover:shadow-lg"
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(0,220,229,0.06)]"
               >
+                {/* Hover glow */}
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${feature.bg}`}
-                >
-                  <feature.icon size={24} className={feature.color} />
+                  className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ backgroundColor: feature.bgColor }}
+                />
+
+                <div className="relative z-10 flex h-full flex-col">
+                  {/* Icon */}
+                  <div
+                    className="flex size-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110"
+                    style={{ backgroundColor: feature.bgColor }}
+                  >
+                    <feature.icon size={24} style={{ color: feature.color }} />
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="mt-5 text-lg font-semibold text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#9AA3AF]">
+                    {feature.description}
+                  </p>
+
+                  {/* Featured card extra content */}
+                  {feature.featured && (
+                    <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                      <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                        <span>This month</span>
+                        <span className="text-[#00DCE5]">+24% savings</span>
+                      </div>
+                      <div className="mt-3 flex items-end gap-1 h-12">
+                        {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
+                          <div
+                            key={i}
+                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60"
+                            style={{ height: `${h}%` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h3 className="mt-4 text-lg font-semibold text-foreground">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-sm text-foreground-secondary">
-                  {feature.description}
-                </p>
               </motion.div>
             </AnimateInView>
           ))}
