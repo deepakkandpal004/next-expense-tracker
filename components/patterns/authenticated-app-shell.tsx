@@ -28,15 +28,17 @@ function currentDestinationId(pathname: string): SidebarDestinationId {
   if (pathname.startsWith("/ai-insights")) return "ai-insights";
   if (pathname.startsWith("/budgets")) return "budgets";
   if (pathname.startsWith("/goals")) return "goals";
+  if (pathname.startsWith("/recurring")) return "recurring";
   return "dashboard";
 }
 
-const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "categories" | "recurring" | "reports" | "settings">, AppPeriodDestination> = {
+const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "categories" | "reports" | "settings">, AppPeriodDestination> = {
   dashboard: "dashboard",
   transactions: "records",
   "ai-insights": "ai-insights",
   budgets: "budgets",
   goals: "goals",
+  recurring: "recurring",
 };
 
 /**

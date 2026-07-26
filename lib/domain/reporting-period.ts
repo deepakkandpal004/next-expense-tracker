@@ -13,6 +13,7 @@ export const APP_PERIOD_DESTINATIONS = Object.freeze({
   "ai-insights": "/ai-insights",
   budgets: "/budgets",
   goals: "/goals",
+  recurring: "/recurring",
 });
 
 export type AppPeriodDestination = keyof typeof APP_PERIOD_DESTINATIONS;

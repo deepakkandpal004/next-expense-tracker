@@ -65,7 +65,7 @@ function DisclosurePanel({ disclosure, onContinue }: { disclosure: AiDataUseDisc
 
 function AnswerCard({ answer }: { answer: AiConversationAnswer }) {
   return (
-    <Card as="article" className="grid gap-4" elevation="raised">
+    <Card className="grid gap-4">
       <div>
         <p className="text-interface-xs font-semibold uppercase tracking-wide text-foreground-secondary">Your question</p>
         <p className="mt-1 font-semibold text-foreground">{answer.question}</p>
@@ -158,7 +158,7 @@ export function ConversationPanel({ period, disclosure: initialDisclosure, loadA
 
       {!disclosureAccepted ? <DisclosurePanel disclosure={disclosure} onContinue={acceptDisclosure} /> : null}
 
-      <Card as="section" aria-labelledby="ask-question-title" elevation="raised">
+      <Card aria-labelledby="ask-question-title">
         <SectionHeader description="Ask a question about your recorded transactions for this reporting period." title="Ask a question" headingLevel={2} />
         <form
           className="mt-4 flex flex-wrap items-end gap-3"
