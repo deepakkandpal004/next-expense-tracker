@@ -200,7 +200,7 @@ export function RecurringView() {
 
               <div className="flex justify-end gap-2">
                 <Button intent="ghost" label="Cancel" onClick={() => { setShowForm(false); resetForm(); }} />
-                <Button label={submitting ? "Creating..." : "Create"} type="submit" disabled={submitting} />
+                <Button label="Create" type="submit" loading={submitting} />
               </div>
             </form>
           </motion.div>

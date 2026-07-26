@@ -4,12 +4,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Sheet } from "@/components/ui";
 import {
-  APP_PERIOD_DESTINATIONS,
   appPeriodHref,
   parseReportingPeriod,
   resolveReportingPeriodState,
   writeReportingPeriodSession,
-  type AppPeriodDestination,
 } from "@/lib/domain/reporting-period";
 import type { ReportingPeriod } from "@/lib/domain/types";
 import { AppHeader } from "./app-header";
@@ -29,16 +27,22 @@ function currentDestinationId(pathname: string): SidebarDestinationId {
   if (pathname.startsWith("/budgets")) return "budgets";
   if (pathname.startsWith("/goals")) return "goals";
   if (pathname.startsWith("/recurring")) return "recurring";
+  if (pathname.startsWith("/categories")) return "categories";
+  if (pathname.startsWith("/reports")) return "reports";
+  if (pathname.startsWith("/settings")) return "settings";
   return "dashboard";
 }
 
-const NAV_TO_ROUTE: Record<Exclude<SidebarDestinationId, "categories" | "reports" | "settings">, AppPeriodDestination> = {
-  dashboard: "dashboard",
-  transactions: "records",
-  "ai-insights": "ai-insights",
-  budgets: "budgets",
-  goals: "goals",
-  recurring: "recurring",
+const NAV_ROUTE: Record<SidebarDestinationId, string> = {
+  dashboard: "/dashboard",
+  transactions: "/records",
+  "ai-insights": "/ai-insights",
+  budgets: "/budgets",
+  goals: "/goals",
+  categories: "/categories",
+  recurring: "/recurring",
+  reports: "/reports",
+  settings: "/settings",
 };
 
 /**
@@ -81,9 +85,8 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
 
   const activeDestinationId = currentDestinationId(pathname);
 
-  const hrefFor = (destination: keyof typeof NAV_TO_ROUTE): string => {
-    const route = NAV_TO_ROUTE[destination];
-    return appPeriodHref(route, period) ?? APP_PERIOD_DESTINATIONS[route];
+  const hrefFor = (destination: keyof typeof NAV_ROUTE): string => {
+    return NAV_ROUTE[destination];
   };
 
   const signOut = async () => {
