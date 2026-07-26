@@ -11,6 +11,7 @@ import {
   CircleDollarSign,
   Shapes,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/ui/cn";
@@ -73,12 +74,14 @@ export interface TransactionTableProps {
   rows: readonly TransactionTableRow[];
   onDelete?: (row: TransactionTableRow) => void;
   deletingId?: string | null;
+  anomalyIds?: ReadonlySet<string>;
 }
 
 export function TransactionTable({
   rows,
   onDelete,
   deletingId,
+  anomalyIds,
 }: TransactionTableProps) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
@@ -153,6 +156,12 @@ export function TransactionTable({
                           <span className="truncate text-sm font-semibold text-on-surface">
                             {row.description}
                           </span>
+                          {anomalyIds?.has(row.id) && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-[#F04438]/20 bg-[#F04438]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#F04438]">
+                              <AlertTriangle size={10} />
+                              Unusual
+                            </span>
+                          )}
                           <div
                             className="hidden h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white sm:flex"
                             style={{ backgroundColor: getMerchantColor(row.description) }}

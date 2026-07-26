@@ -1,10 +1,11 @@
 "use client";
 
 import { Download, RefreshCw, Upload, CheckCircle2 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createTransaction, type CreateTransactionRequest } from "@/app/actions/addExpenseRecord";
 import { deleteTransactionRecord } from "@/app/actions/deleteRecord";
+import { getForecastSnapshot } from "@/app/actions/getForecastSnapshot";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import {
   Alert,
@@ -63,6 +64,17 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
   const [addTransactionOpen, setAddTransactionOpen] = useState(initialAddTransaction);
   const [currentPage, setCurrentPage] = useState(1);
+  const [anomalyIds, setAnomalyIds] = useState<ReadonlySet<string> | undefined>();
+
+  useEffect(() => {
+    getForecastSnapshot(resolvedPeriod).then(r => {
+      if (r.status === "success" && r.data.anomalies.length > 0) {
+        setAnomalyIds(new Set(r.data.anomalies.map(a => a.transactionId)));
+      } else {
+        setAnomalyIds(undefined);
+      }
+    });
+  }, [resolvedPeriod]);
 
   const query: TransactionQuery = useMemo(() => ({
     period,
@@ -272,6 +284,7 @@ export function RecordsView({ records, period, resolvedPeriod, currency, initial
             rows={paginatedRecords}
             onDelete={handleDeleteFromTable}
             deletingId={deletingId}
+            anomalyIds={anomalyIds}
           />
 
           <TransactionPagination
