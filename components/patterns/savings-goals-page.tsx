@@ -280,10 +280,12 @@ function MilestoneTimeline({
   milestones,
   currentAmount,
   color,
+  currency = "INR",
 }: {
   milestones: Milestone[];
   currentAmount: number;
   color: string;
+  currency?: string;
 }) {
   return (
     <div className="space-y-3">
@@ -335,7 +337,7 @@ function MilestoneTimeline({
                       {milestone.label}
                     </span>
                     <span className="text-xs text-foreground-secondary tabular-nums">
-                      <CurrencyText currency="INR" minorValue={milestone.amount} />
+                      <CurrencyText currency={currency} minorValue={milestone.amount} />
                     </span>
                   </div>
                   {milestone.completedAt && (
@@ -361,10 +363,12 @@ function GoalCard({
   goal,
   index,
   onSelect,
+  currency = "INR",
 }: {
   goal: SavingsGoal;
   index: number;
   onSelect: (goal: SavingsGoal) => void;
+  currency?: string;
 }) {
   const progress = calculateProgress(goal.currentAmount, goal.targetAmount);
   const isCompleted = progress >= 1;
@@ -437,8 +441,8 @@ function GoalCard({
           <h3 className="text-lg font-semibold text-foreground">{goal.name}</h3>
           <div className="mt-1 flex items-center gap-2 text-sm text-foreground-secondary">
             <span>
-              <CurrencyText currency="INR" minorValue={goal.currentAmount} /> of{" "}
-              <CurrencyText currency="INR" minorValue={goal.targetAmount} />
+              <CurrencyText currency={currency} minorValue={goal.currentAmount} /> of{" "}
+              <CurrencyText currency={currency} minorValue={goal.targetAmount} />
             </span>
           </div>
 
@@ -472,7 +476,7 @@ function GoalCard({
             <div className="flex items-center gap-1">
               <TrendingUp size={12} />
               <span>
-                <CurrencyText currency="INR" minorValue={goal.monthlyContribution} />/mo
+                <CurrencyText currency={currency} minorValue={goal.monthlyContribution} />/mo
               </span>
             </div>
           </div>
@@ -496,10 +500,12 @@ function GoalDetailModal({
   goal,
   onClose,
   onCelebrate,
+  currency = "INR",
 }: {
   goal: SavingsGoal;
   onClose: () => void;
   onCelebrate: () => void;
+  currency?: string;
 }) {
   const progress = calculateProgress(goal.currentAmount, goal.targetAmount);
   const isCompleted = progress >= 1;
@@ -544,7 +550,7 @@ function GoalDetailModal({
               <div>
                 <h2 className="text-xl font-bold text-white">{goal.name}</h2>
                 <p className="text-sm text-white/80">
-                  {isCompleted ? "Goal reached!" : `Target: ${formatCurrency({ minorValue: goal.targetAmount, currency: "INR" })}`}
+                  {isCompleted ? "Goal reached!" : `Target: ${formatCurrency({ minorValue: goal.targetAmount, currency: currency })}`}
                 </p>
               </div>
             </div>
@@ -574,7 +580,7 @@ function GoalDetailModal({
             <div className="rounded-xl bg-surface-subtle p-4">
               <p className="text-xs text-foreground-secondary">Saved</p>
               <p className="mt-1 text-lg font-bold text-foreground">
-                <CurrencyText currency="INR" minorValue={goal.currentAmount} />
+                <CurrencyText currency={currency} minorValue={goal.currentAmount} />
               </p>
             </div>
             <div className="rounded-xl bg-surface-subtle p-4">
@@ -585,7 +591,7 @@ function GoalDetailModal({
                 "mt-1 text-lg font-bold",
                 isCompleted ? "text-success" : "text-foreground",
               )}>
-                <CurrencyText currency="INR" minorValue={isCompleted ? goal.targetAmount : remaining} />
+                <CurrencyText currency={currency} minorValue={isCompleted ? goal.targetAmount : remaining} />
               </p>
             </div>
           </div>
@@ -596,6 +602,7 @@ function GoalDetailModal({
               milestones={goal.milestones}
               currentAmount={goal.currentAmount}
               color={goal.color}
+              currency={currency}
             />
           </div>
 
@@ -633,18 +640,18 @@ function GoalDetailModal({
    GOAL STATS
    ──────────────────────────────────────────────────────────── */
 
-function GoalStats({ stats }: { stats: GoalStats }) {
+function GoalStats({ stats, currency = "INR" }: { stats: GoalStats; currency?: string }) {
   const statItems = [
     {
       label: "Total Saved",
-      value: formatCurrency({ minorValue: stats.totalSaved, currency: "INR" }),
+      value: formatCurrency({ minorValue: stats.totalSaved, currency: currency }),
       icon: DollarSign,
       color: "text-kpi-savings",
       bg: "bg-kpi-savings-surface",
     },
     {
       label: "Monthly Savings",
-      value: formatCurrency({ minorValue: stats.monthlyRate, currency: "INR" }),
+      value: formatCurrency({ minorValue: stats.monthlyRate, currency: currency }),
       icon: TrendingUp,
       color: "text-accent",
       bg: "bg-accent/10",
@@ -929,7 +936,7 @@ function AddGoalModal({
    MAIN COMPONENT
    ──────────────────────────────────────────────────────────── */
 
-export function SavingsGoalsPage() {
+export function SavingsGoalsPage({ currency }: { currency?: string }) {
   const [selectedGoal, setSelectedGoal] = useState<SavingsGoal | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -986,7 +993,7 @@ export function SavingsGoalsPage() {
         </button>
       </header>
 
-      <GoalStats stats={stats} />
+      <GoalStats stats={stats} currency={currency} />
 
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -1010,6 +1017,7 @@ export function SavingsGoalsPage() {
               goal={goal}
               index={index}
               onSelect={setSelectedGoal}
+              currency={currency}
             />
           ))}
         </div>
@@ -1021,6 +1029,7 @@ export function SavingsGoalsPage() {
             goal={selectedGoal}
             onClose={() => setSelectedGoal(null)}
             onCelebrate={handleCelebrate}
+            currency={currency}
           />
         )}
       </AnimatePresence>

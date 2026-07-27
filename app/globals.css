@@ -298,6 +298,13 @@ p {
   font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 
+/* Touch-friendly interactive elements */
+@media (pointer: coarse) {
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+}
+
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
@@ -1620,41 +1627,6 @@ p {
   height: 100%;
   background: linear-gradient(180deg, transparent, var(--color-border), transparent);
   border: none;
-}
-
-/* ────────────────────────────────────────────────────────────
-   REDUCED MOTION
-   ──────────────────────────────────────────────────────────── */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ────────────────────────────────────────────────────────────
-   HIGH CONTRAST
-   ──────────────────────────────────────────────────────────── */
-
-@media (prefers-contrast: more) {
-  .surface-glass,
-  .surface-glass-strong,
-  .card-premium-glass {
-    backdrop-filter: none;
-    background: var(--color-surface);
-    border: 2px solid var(--color-border-strong);
-  }
-
-  .gradient-border,
-  .gradient-border-warm,
-  .gradient-border-danger {
-    border: 2px solid var(--color-border-strong);
-    background: var(--color-surface);
-  }
 }
 
 .custom-scrollbar {

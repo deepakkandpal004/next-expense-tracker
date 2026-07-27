@@ -228,15 +228,15 @@ export function RecentTransactionsCard({
           <p className="text-sm font-medium text-on-surface">
             No transactions yet
           </p>
-          <p className="mt-1 text-xs text-on-surface-variant/50">
-            Add your first transaction to see it here
+          <p className="mt-1 text-xs text-on-surface-variant/50 max-w-[240px] mx-auto">
+            Start by adding your first expense or income to track your financial activity
           </p>
           <a
             href={allRecordsHref.replace("/records", "/records?addTransaction=1")}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-on-primary-fixed bg-primary-container rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)]"
+            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-on-primary-fixed bg-primary-container rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)]"
           >
             <DollarSign size={16} strokeWidth={2.2} />
-            Add Transaction
+            Add Your First Transaction
           </a>
         </div>
       ) : (

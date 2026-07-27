@@ -93,6 +93,52 @@ function TrendPill({
 }
 
 /* ────────────────────────────────────────────────────────────
+   SPARKLINE
+   ──────────────────────────────────────────────────────────── */
+
+function Sparkline({ data, color }: { data: readonly number[]; color: string }) {
+  if (data.length < 2) return null;
+
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const height = 28;
+  const width = 64;
+  const padding = 2;
+
+  const points = data.map((value, index) => {
+    const x = padding + (index / (data.length - 1)) * (width - padding * 2);
+    const y = height - padding - ((value - min) / range) * (height - padding * 2);
+    return `${x},${y}`;
+  }).join(" ");
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id={`sparkline-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
    METRIC CARD (Compact)
    ──────────────────────────────────────────────────────────── */
 
@@ -101,6 +147,7 @@ function MetricCard({
   label,
   value,
   trend,
+  sparkline,
   invertPolarity,
   accentSurface,
   accentForeground,
@@ -109,6 +156,7 @@ function MetricCard({
   label: string;
   value: string;
   trend: KpiTrend | null;
+  sparkline?: readonly number[];
   invertPolarity: boolean;
   accentSurface: string;
   accentForeground: string;
@@ -133,6 +181,11 @@ function MetricCard({
           <TrendPill trend={trend} invertPolarity={invertPolarity} />
         </div>
       </div>
+      {sparkline && sparkline.length >= 2 && (
+        <div className="shrink-0 opacity-60">
+          <Sparkline data={sparkline} color={accentForeground} />
+        </div>
+      )}
     </div>
   );
 }
@@ -250,8 +303,8 @@ export function HeroKpiCard({
 
         {/* ── Balance ── */}
         <div className="mb-5">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-xs font-medium text-on-surface-variant uppercase tracking-wider font-geist">
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-[11px] font-medium text-on-surface-variant uppercase tracking-wider font-geist">
               Available Balance
             </p>
             {streak >= 3 && (
@@ -262,25 +315,38 @@ export function HeroKpiCard({
             )}
           </div>
 
-          <div className="flex items-baseline gap-3">
-            <AnimatedNumber
-              value={minorToMajor(balance.currentMinor)}
-              format={(v) => (
-                <span className="font-geist text-[36px] sm:text-[42px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">
-                  ₹{v.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
-                </span>
-              )}
-              duration={1}
-              className="font-geist text-[36px] sm:text-[42px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]"
+          <div className="relative">
+            {/* Subtle glow behind number */}
+            <div
+              className="absolute -inset-4 rounded-2xl blur-[40px] opacity-[0.12] pointer-events-none"
+              aria-hidden="true"
+              style={{ background: "linear-gradient(135deg, #00DCE5, #22C55E)" }}
             />
-            <TrendPill trend={balance.trend} invertPolarity={false} />
+            <div className="relative flex items-baseline gap-1">
+              <span className="text-2xl sm:text-3xl font-bold text-on-surface-variant/40 font-geist tabular-nums leading-none">
+                ₹
+              </span>
+              <AnimatedNumber
+                value={minorToMajor(balance.currentMinor)}
+                format={(v) => (
+                  <span className="font-geist text-[44px] sm:text-[56px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_20px_rgba(0,220,229,0.4)]">
+                    {v.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+                  </span>
+                )}
+                duration={1}
+                className="font-geist text-[44px] sm:text-[56px] font-bold text-[#00DCE5] tabular-nums leading-none tracking-tight drop-shadow-[0_0_20px_rgba(0,220,229,0.4)]"
+              />
+            </div>
           </div>
 
-          {savingsRate > 0 && (
-            <p className="text-xs text-on-surface-variant/60 mt-1.5 font-geist">
-              {formatPercentage(savingsRate / 100)} savings rate
-            </p>
-          )}
+          <div className="flex items-center gap-3 mt-2">
+            <TrendPill trend={balance.trend} invertPolarity={false} />
+            {savingsRate > 0 && (
+              <p className="text-xs text-on-surface-variant/60 font-geist">
+                {formatPercentage(savingsRate / 100)} savings rate
+              </p>
+            )}
+          </div>
         </div>
 
         {/* ── Key Metrics ── */}
@@ -290,6 +356,7 @@ export function HeroKpiCard({
             label="Income"
             value={formatCurrency({ minorValue: income.currentMinor, currency })}
             trend={income.trend}
+            sparkline={income.sparkline}
             invertPolarity={false}
             accentSurface="rgb(59 255 23 / 0.15)"
             accentForeground="#79ff5b"
@@ -299,6 +366,7 @@ export function HeroKpiCard({
             label="Expenses"
             value={formatCurrency({ minorValue: expense.currentMinor, currency })}
             trend={expense.trend}
+            sparkline={expense.sparkline}
             invertPolarity
             accentSurface="rgb(255 172 232 / 0.15)"
             accentForeground="#fface8"
@@ -308,6 +376,7 @@ export function HeroKpiCard({
             label="Savings"
             value={formatCurrency({ minorValue: savings.currentMinor, currency })}
             trend={savings.trend}
+            sparkline={savings.sparkline}
             invertPolarity={false}
             accentSurface="rgb(0 220 229 / 0.15)"
             accentForeground="#63f7ff"

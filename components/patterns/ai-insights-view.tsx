@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { GreetingBanner } from "./ai-insights/greeting-banner";
 import { SummaryKpiRow } from "./ai-insights/summary-kpi-row";
 import { TopInsights } from "./ai-insights/top-insights";
@@ -11,7 +11,7 @@ import { ConfidencePanel } from "./ai-insights/confidence-panel";
 import { DataSources } from "./ai-insights/data-sources";
 import { RecentActivity } from "./ai-insights/recent-activity";
 import { QuickActions } from "./ai-insights/quick-actions";
-import { Button, ErrorState, LinkButton, StatusRegion } from "@/components/ui";
+import { ErrorState, LinkButton } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { AiInsightsSkeleton } from "@/components/ui/skeletons";
 import { getAiFinancialInsights, type AiFinancialInsightsData } from "@/app/actions/getAiFinancialInsights";
@@ -89,25 +89,20 @@ export function AiInsightsView({ initialData, period, error: initialError }: AiI
   const [data, setData] = useState<AiFinancialInsightsData | null>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(initialError);
-  const [status, setStatus] = useState<string | undefined>();
 
   const refresh = useCallback(async () => {
     if (loading) return;
     setLoading(true);
     setError(undefined);
-    setStatus("Generating new insights...");
     try {
       const result = await getAiFinancialInsights(period);
       if (result.status === "success") {
         setData(result.data);
-        setStatus("Insights refreshed successfully.");
       } else {
         setError(result.message);
-        setStatus(undefined);
       }
     } catch {
       setError("Failed to generate insights. Please try again.");
-      setStatus(undefined);
     } finally {
       setLoading(false);
     }
@@ -141,29 +136,12 @@ export function AiInsightsView({ initialData, period, error: initialError }: AiI
             Smart analysis of your spending habits and financial health.
           </p>
         </div>
-        <Button
-          icon={<RefreshCw size={14} />}
-          intent="secondary"
-          label="Refresh insights"
-          loading={loading}
-          onClick={() => void refresh()}
-        />
       </header>
-
-      <StatusRegion message={status} visible={Boolean(status)} />
 
       {error && !data ? (
         <ErrorState
           title="Insights unavailable"
           description={error}
-          action={
-            <Button
-              icon={<RefreshCw size={14} />}
-              label="Retry"
-              loading={loading}
-              onClick={() => void refresh()}
-            />
-          }
         />
       ) : null}
 

@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { comparePassword, createSession } from '@/lib/auth';
+import { rateLimitLogin } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
+  const limit = rateLimitLogin(request);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: 'Too many login attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) } },
+    );
+  }
+
   try {
     const { email, password } = await request.json();
 

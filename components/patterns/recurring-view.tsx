@@ -31,7 +31,7 @@ const FREQUENCY_LABELS: Record<string, string> = {
   yearly: "Yearly",
 };
 
-export function RecurringView() {
+export function RecurringView({ currency = "INR" }: { currency?: string }) {
   const [records, setRecords] = useState<RecurringRecordDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -258,7 +258,7 @@ export function RecurringView() {
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       <span className={`text-sm font-semibold ${getAmountColor(record.type)}`}>
-                        {formatCurrency({ minorValue: Math.round(record.amount * 100), currency: "INR" })}
+                        {formatCurrency({ minorValue: Math.round(record.amount * 100), currency })}
                       </span>
                       <button
                         type="button"

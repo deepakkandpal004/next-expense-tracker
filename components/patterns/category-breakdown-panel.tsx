@@ -31,13 +31,14 @@ export interface CategoryBreakdownPanelProps {
    ──────────────────────────────────────────────────────────── */
 
 function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
-  const styles = window.getComputedStyle(document.documentElement);
+  const defaultColors = ["#00DCE5", "#A855F7", "#22C55E", "#FBBF24", "#F04438", "#3B82F6", "#EC4899", "#F97316"];
+  const styles = typeof window !== "undefined" ? window.getComputedStyle(document.documentElement) : null;
   return {
     labels: rows.map((row) => row.label),
     datasets: [{
       data: rows.map((row) => row.amountMinor / 100),
-      backgroundColor: rows.map((row) => styles.getPropertyValue(`--color-${row.semanticToken}`).trim() || "#888"),
-      borderColor: styles.getPropertyValue("--color-surface").trim() || "#080C10",
+      backgroundColor: rows.map((row, i) => styles?.getPropertyValue(`--color-${row.semanticToken}`).trim() || defaultColors[i % defaultColors.length]),
+      borderColor: styles?.getPropertyValue("--color-surface").trim() || "#080C10",
       borderWidth: 3,
       hoverOffset: 8,
       spacing: 2,
@@ -164,6 +165,8 @@ export function CategoryBreakdownPanel({
   const hasMore = breakdown.length > 5;
   const totalFormatted = formatCurrency({ minorValue: totalSpendingMinor, currency });
 
+  // resolvedAppearance triggers rebuild when theme changes so CSS variables resolve to correct colors
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown, resolvedAppearance]);
 
   return (
@@ -203,8 +206,17 @@ export function CategoryBreakdownPanel({
         </div>
       ) : (
         <div className="px-5 pb-5">
-          <div className="flex h-48 items-center justify-center">
-            <p className="text-sm text-foreground-secondary">No expense data for this period yet.</p>
+          <div className="flex h-48 flex-col items-center justify-center text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-on-surface-variant/40">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path d="M9 12a3 3 0 106 0 3 3 0 00-6 0z" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-on-surface">No expense data yet</p>
+            <p className="mt-1 text-xs text-on-surface-variant/50 max-w-[200px]">
+              Add expenses to see your spending breakdown by category
+            </p>
           </div>
         </div>
       )}

@@ -31,6 +31,7 @@ export default function SignUpPage() {
     const emailError = getEmailError(email);
     if (emailError) next.email = emailError;
     if (!password) next.password = 'Enter a password.';
+    else if (password.length < 8) next.password = 'Password must be at least 8 characters.';
     if (!confirmation) next.confirmation = 'Confirm your password.';
     else if (password !== confirmation) next.confirmation = 'Passwords must match.';
     setErrors(next);

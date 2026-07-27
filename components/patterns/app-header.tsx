@@ -35,15 +35,15 @@ function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
   return (
     <button
       aria-label={label}
-      className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
+      className="relative inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
       title={label}
       type="button"
     >
-      <Bell aria-hidden="true" size={16} strokeWidth={2} />
+      <Bell aria-hidden="true" size={18} strokeWidth={2} />
       {unreadCount > 0 ? (
         <span
           aria-hidden="true"
-          className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-secondary-container shadow-[0_0_6px_#ff24e4]"
+          className="absolute right-2 top-2 h-2 w-2 rounded-full bg-secondary-container shadow-[0_0_6px_#ff24e4]"
         />
       ) : null}
     </button>
@@ -191,11 +191,11 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
       <div className="flex items-center gap-3 px-4 py-3 sm:px-6 md:gap-4 lg:px-8">
         <button
           aria-label="Open navigation"
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed md:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed md:hidden"
           onClick={onMobileMenuOpen}
           type="button"
         >
-          <Menu aria-hidden="true" size={18} />
+          <Menu aria-hidden="true" size={20} />
         </button>
 
         <Link
@@ -217,17 +217,17 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
           <Link
             href="/"
             aria-label="Go to home page"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
           >
-            <Home size={16} strokeWidth={2} />
+            <Home size={18} strokeWidth={2} />
             <span className="hidden sm:inline text-xs font-medium">Home</span>
           </Link>
           <Link
             href="/dashboard"
             aria-label="Go to dashboard"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
           >
-            <LayoutDashboard size={16} strokeWidth={2} />
+            <LayoutDashboard size={18} strokeWidth={2} />
             <span className="hidden sm:inline text-xs font-medium">Dashboard</span>
           </Link>
           <NotificationBell />

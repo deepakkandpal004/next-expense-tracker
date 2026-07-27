@@ -85,7 +85,7 @@ function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex items-center gap-3 rounded-full py-3 transition-all duration-300",
+    "group relative flex items-center gap-3 rounded-xl py-3 transition-all duration-300",
     expanded ? "px-5" : "justify-center px-0",
     isActive
       ? "text-[#00DCE5] bg-[rgba(0,220,229,0.12)] border border-[rgba(0,220,229,0.25)] shadow-[0_0_20px_rgba(0,220,229,0.15)] font-semibold"
@@ -266,8 +266,8 @@ export function AppSidebar({
         <button
           onClick={onNewRecord}
           className={cn(
-            "w-full bg-primary-container text-on-primary-fixed font-bold rounded-full flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,245,255,0.4)] hover:scale-105 active:scale-95",
-            expanded ? "py-3 px-4" : "py-3 px-0",
+            "w-full bg-primary-container text-on-primary-fixed font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,245,255,0.4)] hover:scale-105 active:scale-95",
+            expanded ? "py-3.5 px-4" : "py-3.5 px-0",
           )}
         >
           <Plus size={18} strokeWidth={2.5} className="shrink-0" />

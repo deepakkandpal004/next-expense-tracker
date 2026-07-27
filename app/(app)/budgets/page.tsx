@@ -3,21 +3,13 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/data/dashboard";
 import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
+import { toSearchParams } from "@/lib/domain/search-params";
 import { BudgetPage } from "@/components/patterns/budget-page";
 
 export const metadata: Metadata = { title: "Budget – Expense AI" };
 
 interface BudgetPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function toSearchParams(query: Record<string, string | string[] | undefined>): URLSearchParams {
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(query)) {
-    if (typeof value === "string") params.set(key, value);
-    else if (Array.isArray(value) && value.length > 0) params.set(key, value[0]);
-  }
-  return params;
 }
 
 export default async function BudgetRoute({ searchParams }: BudgetPageProps) {

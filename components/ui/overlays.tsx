@@ -48,7 +48,6 @@ function ModalHeading({
   headingRef: RefObject<HTMLHeadingElement | null>;
   hidden?: boolean;
 }) {
-  enforceSentenceCase(title, "Modal title");
   if (hidden) {
     return (
       <>

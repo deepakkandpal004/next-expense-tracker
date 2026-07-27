@@ -9,5 +9,5 @@ export default async function GoalsRoute() {
   const user = await getAuthUser();
   if (!user) redirect("/sign-in");
 
-  return <SavingsGoalsPage />;
+  return <SavingsGoalsPage currency={user.currency} />;
 }

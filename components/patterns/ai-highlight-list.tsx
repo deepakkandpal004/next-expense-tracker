@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowUpRight, Bot, Database, RefreshCw, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, Bot, Database, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getAIInsightsResult, type AiInsightsData, type AiInsightsRequest } from "@/app/actions/getAIInsights";
-import { Alert, Button, Card, DateText, ErrorState, LinkButton, SectionHeader, Skeleton, StatusRegion } from "@/components/ui";
+import { Alert, Button, Card, DateText, ErrorState, LinkButton, SectionHeader, Skeleton } from "@/components/ui";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
 import type { ActionResult, AiDataUseDisclosure, AiInsightSet, ReportingPeriod } from "@/lib/domain/types";
 import { formatPercentage } from "@/lib/formatters/locale";
@@ -152,7 +152,6 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
   const [sessionChecked, setSessionChecked] = useState(Boolean(initialInsightSet));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [status, setStatus] = useState<string | undefined>(undefined);
   const requestedKey = useRef<string | undefined>(undefined);
   const sectionId = useRef(`ai-highlights-${Math.random().toString(36).slice(2)}`).current;
   const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
@@ -161,7 +160,6 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
     setDisclosure(initialDisclosure);
     setInsightSet(initialInsightSet);
     setError(undefined);
-    setStatus(undefined);
     requestedKey.current = undefined;
     const accepted = Boolean(initialInsightSet) || hasReviewedDisclosure(initialDisclosure.version);
     setDisclosureAccepted(accepted);
@@ -173,7 +171,6 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
     const previousInsightSet = insightSet;
     setPending(true);
     setError(undefined);
-    setStatus(undefined);
     try {
       const result = await loadInsights({
         period,
@@ -193,7 +190,6 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
         return;
       }
       setInsightSet(result.data.insightSet);
-      setStatus(previousInsightSet ? "AI highlights refreshed." : "AI highlights generated.");
     } catch {
       if (previousInsightSet) setInsightSet({ ...previousInsightSet, stale: true });
       setError("AI highlights could not be refreshed. Please try again.");
@@ -218,25 +214,21 @@ export function AiHighlightList({ period, disclosure: initialDisclosure, initial
   return (
     <Card aria-labelledby={sectionId} className="min-h-[24rem] space-y-4 border-border/50" data-ai-boundary="dashboard-highlights">
       <SectionHeader
-        action={<Button icon={<RefreshCw size={14} />} intent="ghost" label="Refresh AI highlights" loading={pending} onClick={() => void refresh()} />}
         description="AI-generated observations and optional guidance are kept separate from recorded financial data."
         metadata={insightSet ? <><span>Reporting period: {insightSet.period.label}</span><span aria-hidden="true"> · </span><span>Generated <DateText format="date-time" value={insightSet.generatedAt} /></span></> : "Choose to generate guidance for the current reporting period."}
         title="AI-generated highlights"
       />
-      <StatusRegion busy={pending} message={pending ? "AI highlights are refreshing." : status} visible={Boolean(pending || status)} />
 
       {!sessionChecked ? <Skeleton label="Preparing AI highlights" minimumHeight="14rem" /> : null}
       {sessionChecked && !disclosureAccepted && !insightSet ? <DisclosurePanel disclosure={disclosure} onContinue={acceptDisclosure} /> : null}
       {pending && !insightSet ? <Skeleton label="Generating AI highlights" minimumHeight="14rem" /> : null}
       {error && insightSet ? <Alert
-        action={<Button icon={<RefreshCw size={14} />} intent="ghost" label="Retry AI highlights" onClick={() => void refresh()} />}
         description={`${error} Last successful AI highlights are shown below.`}
         icon={<TriangleAlert size={18} />}
         title="Showing stale AI highlights"
         tone="warning"
       /> : null}
       {error && !insightSet && !pending ? <ErrorState
-        action={<Button icon={<RefreshCw size={14} />} label="Retry AI highlights" onClick={() => void refresh()} />}
         description={error}
         title="AI highlights unavailable"
       /> : null}

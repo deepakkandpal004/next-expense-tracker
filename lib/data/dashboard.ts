@@ -73,9 +73,6 @@ export function toDashboardTransactionDTO(
   };
 }
 
-/** @deprecated Use toDashboardTransactionDTO for dashboard persistence adaptation. */
-export const toDomainTransaction = toDashboardTransactionDTO;
-
 function copyPeriod(period: ResolvedPeriod): ResolvedPeriod {
   return { kind: period.kind, start: period.start, end: period.end, label: period.label };
 }

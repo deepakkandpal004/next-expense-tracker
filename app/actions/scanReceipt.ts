@@ -1,18 +1,8 @@
 'use server';
 
-import OpenAI from 'openai';
 import { getAuthUser } from '@/lib/auth';
+import { executeAiProviderRequest } from '@/lib/ai';
 import type { ActionResult } from '@/lib/domain/types';
-
-const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || 'provider-not-configured',
-  defaultHeaders: {
-    'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    'X-Title': 'Expense AI',
-  },
-  dangerouslyAllowBrowser: false,
-});
 
 export interface ScannedReceipt {
   items: Array<{
@@ -52,12 +42,19 @@ export async function scanReceipt(
     const base64 = buffer.toString('base64');
     const dataUri = `data:${file.type};base64,${base64}`;
 
-    const response = await openai.chat.completions.create({
-      model: 'openai/gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: `You analyze receipt images and return structured JSON. Respond ONLY with valid JSON in this exact format:
+    const content = await executeAiProviderRequest(async (signal) => {
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({
+        baseURL: 'https://openrouter.ai/api/v1',
+        apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || 'provider-not-configured',
+        dangerouslyAllowBrowser: false,
+      });
+      const response = await openai.chat.completions.create({
+        model: 'openai/gpt-4o',
+        messages: [
+          {
+            role: 'system',
+            content: `You analyze receipt images and return structured JSON. Respond ONLY with valid JSON in this exact format:
 {
   "merchant": "Store name",
   "date": "YYYY-MM-DD",
@@ -69,20 +66,21 @@ export async function scanReceipt(
 }
 
 Choose the single best category for the overall purchase. For individual items, pick the most appropriate category. If uncertain, use "Other".`,
-        },
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: 'Extract the transaction details from this receipt image.' },
-            { type: 'image_url', image_url: { url: dataUri, detail: 'high' } },
-          ],
-        },
-      ],
-      temperature: 0.1,
-      max_tokens: 1000,
+          },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Extract the transaction details from this receipt image.' },
+              { type: 'image_url', image_url: { url: dataUri, detail: 'high' } },
+            ],
+          },
+        ],
+        temperature: 0.1,
+        max_tokens: 1000,
+      }, { signal });
+      return response.choices[0]?.message?.content ?? null;
     });
 
-    const content = response.choices[0]?.message?.content;
     if (!content) {
       return { status: 'error', message: 'AI could not analyze the receipt. Please try again.', retryable: true };
     }

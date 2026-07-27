@@ -497,11 +497,22 @@ export function SpendingOverviewPanel({
               </motion.div>
             </AnimatePresence>
           ) : (
-            <div className="flex h-80 items-center justify-center">
-              <p className="text-sm text-foreground-secondary">
+            <div className="flex h-80 flex-col items-center justify-center text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-on-surface-variant/40">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3v18h18" />
+                  <path d="M7 16l4-8 4 4 4-6" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-on-surface">
                 {trendModel.state === "error"
                   ? (trendModel.errorMessage ?? "Chart unavailable.")
-                  : "No transactions recorded for this period yet."}
+                  : "No transactions recorded yet"}
+              </p>
+              <p className="mt-1 text-xs text-on-surface-variant/50 max-w-[220px]">
+                {trendModel.state === "error"
+                  ? "Please try again later"
+                  : "Your spending chart will appear here once you add transactions"}
               </p>
             </div>
           )}
