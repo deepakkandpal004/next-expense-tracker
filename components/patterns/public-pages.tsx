@@ -24,7 +24,7 @@ import {
   FileText,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Card, LinkButton, SectionHeader } from '@/components/ui';
+import { LinkButton, SectionHeader } from '@/components/ui';
 
 /* ────────────────────────────────────────────────────────────
    ANIMATION WRAPPER
@@ -980,44 +980,270 @@ export function ContactPageContent() {
 
 export function PrivacyPageContent() {
   return (
-    <main className={pageClass}>
-      <PageIntro eyebrow="Privacy" title="Privacy information for Expense AI.">
-        <p>Expense AI stores account and transaction information needed to provide the authenticated product experience. The app keeps records scoped to the signed-in user.</p>
-      </PageIntro>
-      <section className="mt-12 grid gap-4">
-        <Card>
-          <h2 className="font-semibold">Your records</h2>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">Transaction records are used to present your dashboard, records, charts, and exports for the selected reporting period.</p>
-        </Card>
-        <Card>
-          <h2 className="font-semibold">Optional AI requests</h2>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">The AI transparency page identifies the approved period-scoped fields used when an optional AI request is made.</p>
-        </Card>
+    <main className="min-h-screen">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-white/5">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+        </div>
+        <div className="content-frame relative py-16 sm:py-24 lg:py-32">
+          <div className="max-w-2xl mx-auto text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#00DCE5] uppercase tracking-wider">
+              Privacy
+            </span>
+            <h1 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-bold text-white tracking-tight leading-[1.1]">
+              Your data stays yours.
+            </h1>
+            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+              We collect only what&apos;s needed to power your expense tracking. Nothing more.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Principles */}
+      <section className="content-frame py-16 sm:py-20">
+        <div className="max-w-2xl mx-auto space-y-10">
+          <PrivacyItem
+            icon={<ShieldIcon />}
+            title="Minimal collection"
+            description="We store only your account credentials and transaction records required to run the app."
+          />
+          <PrivacyItem
+            icon={<LockIcon />}
+            title="Encrypted at rest"
+            description="All data is encrypted in our database. Authentication is handled by a trusted third-party provider."
+          />
+          <PrivacyItem
+            icon={<EyeOffIcon />}
+            title="No third-party sharing"
+            description="Your financial data is never shared, sold, or used for advertising."
+          />
+          <PrivacyItem
+            icon={<TrashIcon />}
+            title="Delete anytime"
+            description="Remove your account and all data is permanently deleted. No hidden retention."
+          />
+        </div>
+      </section>
+
+      {/* What we store */}
+      <section className="content-frame border-t border-white/5 py-16 sm:py-20">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold text-white mb-8 text-center">What we store</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <DataCard label="Account" items={["Email address", "Display name", "Password hash"]} />
+            <DataCard label="Transactions" items={["Amount & currency", "Category & date", "Description"]} />
+            <DataCard label="Preferences" items={["Theme setting", "Currency preference", "Budget limits"]} />
+            <DataCard label="AI requests" items={["Aggregated totals only", "No raw descriptions", "Period-scoped"]} />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer note */}
+      <section className="content-frame border-t border-white/5 py-12 sm:py-16">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-sm text-[#9AA3AF]">
+            Questions? Contact us at{' '}
+            <span className="text-[#00DCE5]">privacy@expenseai.app</span>
+          </p>
+        </div>
       </section>
     </main>
   );
 }
 
+function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#00DCE5] border border-white/[0.06]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-white">{title}</h3>
+        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function DataCard({ label, items }: { label: string; items: string[] }) {
+  return (
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
+      <p className="text-[11px] font-semibold text-[#00DCE5] uppercase tracking-wider mb-3">{label}</p>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item} className="flex items-center gap-2 text-sm text-[#9AA3AF]">
+            <span className="h-1 w-1 rounded-full bg-[#9AA3AF]/40" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0110 0v4" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18" />
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    </svg>
+  );
+}
+
 export function AiTransparencyPageContent() {
   return (
-    <main className={pageClass}>
-      <PageIntro eyebrow="AI transparency" title="How optional AI assistance uses recorded data.">
-        <p>AI-generated interpretations and recommendations are informational only and are not professional financial advice.</p>
-      </PageIntro>
-      <section className="mt-12 grid gap-4">
-        <Card>
-          <h2 className="font-semibold">Purpose</h2>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">Optional AI requests generate category suggestions and spending interpretations for the reporting period you select.</p>
-        </Card>
-        <Card>
-          <h2 className="font-semibold">Disclosed fields</h2>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">Requests use reporting-period dates and label, currency, recorded transaction count, income, spending, balance, and category spending totals. Raw descriptions, IDs, and timestamps are excluded.</p>
-        </Card>
-        <Card>
-          <h2 className="font-semibold">Provider retention</h2>
-          <p className="mt-2 text-interface-sm text-foreground-secondary">Provider retention behavior has not been verified by the product owner.</p>
-        </Card>
+    <main className="min-h-screen">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-white/5">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
+        </div>
+        <div className="content-frame relative py-16 sm:py-24 lg:py-32">
+          <div className="max-w-2xl mx-auto text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#A855F7]/20 bg-[#A855F7]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#A855F7] uppercase tracking-wider">
+              AI Transparency
+            </span>
+            <h1 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-bold text-white tracking-tight leading-[1.1]">
+              How AI uses your data.
+            </h1>
+            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+              AI features are optional. When enabled, we send only aggregated totals — never raw descriptions or IDs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Key points */}
+      <section className="content-frame py-16 sm:py-20">
+        <div className="max-w-2xl mx-auto space-y-10">
+          <AiItem
+            icon={<BrainIcon />}
+            title="What AI does"
+            description="Generates category suggestions and spending interpretations for the reporting period you select."
+          />
+          <AiItem
+            icon={<FilterIcon />}
+            title="What we send"
+            description="Period dates, currency, transaction count, income, spending, balance, and category totals."
+          />
+          <AiItem
+            icon={<ShieldIcon />}
+            title="What we never send"
+            description="Raw transaction descriptions, account IDs, timestamps, or any personally identifiable information."
+          />
+        </div>
+      </section>
+
+      {/* Disclosure table */}
+      <section className="content-frame border-t border-white/5 py-16 sm:py-20">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold text-white mb-8 text-center">Data disclosure</h2>
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+            <div className="grid grid-cols-2 border-b border-white/[0.06] bg-white/[0.02]">
+              <div className="px-5 py-3 text-[11px] font-semibold text-[#9AA3AF] uppercase tracking-wider">Field</div>
+              <div className="px-5 py-3 text-[11px] font-semibold text-[#9AA3AF] uppercase tracking-wider">Status</div>
+            </div>
+            <DisclosureRow field="Period dates" included />
+            <DisclosureRow field="Currency" included />
+            <DisclosureRow field="Transaction count" included />
+            <DisclosureRow field="Income & spending totals" included />
+            <DisclosureRow field="Category breakdown" included />
+            <DisclosureRow field="Transaction descriptions" included={false} />
+            <DisclosureRow field="Account IDs" included={false} />
+            <DisclosureRow field="Timestamps" included={false} />
+          </div>
+        </div>
+      </section>
+
+      {/* Disclaimer */}
+      <section className="content-frame border-t border-white/5 py-12 sm:py-16">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-sm text-[#9AA3AF] leading-relaxed">
+            AI-generated insights are informational only and are not professional financial advice. Provider retention behavior has not been verified.
+          </p>
+        </div>
       </section>
     </main>
+  );
+}
+
+function AiItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#A855F7] border border-white/[0.06]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-white">{title}</h3>
+        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function DisclosureRow({ field, included }: { field: string; included: boolean }) {
+  return (
+    <div className="grid grid-cols-2 border-b border-white/[0.06] last:border-b-0">
+      <div className="px-5 py-3.5 text-sm text-white">{field}</div>
+      <div className="px-5 py-3.5">
+        {included ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#22C55E]/10 px-2.5 py-1 text-[11px] font-medium text-[#22C55E]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+            Included
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F04438]/10 px-2.5 py-1 text-[11px] font-medium text-[#F04438]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#F04438]" />
+            Excluded
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BrainIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9.5 2A5.5 5.5 0 004 7.5c0 1.58.67 3 1.74 4.01L4 14l3-1c.78.82 1.87 1.34 3.07 1.37A5.5 5.5 0 0018 9.5 5.5 5.5 0 0012.5 4c-.52 0-1.02.08-1.5.23" />
+      <path d="M12 2v20" />
+    </svg>
+  );
+}
+
+function FilterIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
   );
 }

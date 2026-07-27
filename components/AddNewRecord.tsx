@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { suggestCategoryResult } from "@/app/actions/suggestCategory";
-import { Button, Alert, Dialog, Field, Select, StatusRegion } from "@/components/ui";
+import { Button, Dialog, Field, Select, StatusRegion } from "@/components/ui";
 import { AI_DISCLOSURE_VERSION } from "@/lib/domain/ai";
 import { CATEGORY_REGISTRY, EXPENSE_CATEGORY_IDS, type ExpenseCategoryId } from "@/lib/domain/categories";
 import {
@@ -23,18 +23,12 @@ export interface TransactionSubmission {
 }
 
 export interface AddNewRecordProps {
-  /** Persistence is deliberately supplied by task 8.2 rather than owned by this form. */
   submitTransaction?: (submission: TransactionSubmission) => Promise<TransactionSubmissionResult>;
   requestCategorySuggestion?: typeof suggestCategoryResult;
-  /** Opens the dialog on mount, e.g. when a route signal like ?addTransaction=1 is present. */
   initialOpen?: boolean;
-  /** Fully-controlled open state. When set, overrides internal state and `initialOpen`. */
   open?: boolean;
-  /** Notified whenever the dialog opens or closes so callers can clear route signals. */
   onOpenChange?: (open: boolean) => void;
-  /** Pre-selects a transaction type when opened. Useful for entrypoints like Quick Actions. */
   defaultType?: TransactionType;
-  /** Hides the built-in trigger button. Callers can then open the dialog via `open`. */
   hideTrigger?: boolean;
 }
 
@@ -150,7 +144,6 @@ export default function AddNewRecord({
       setDraft(createEmptyDraft());
       setFieldErrors({});
       setSubmissionFailure(null);
-      setStatus({ message: result.message, politeness: "polite" });
       setOpen(false);
       return;
     }
@@ -162,25 +155,20 @@ export default function AddNewRecord({
       const firstInvalidField = (["type", "description", "date", "amount", "category"] as const)
         .find((field) => errors[field] !== undefined);
       if (firstInvalidField) focusField(firstInvalidField);
-      setStatus({ message: result.message, politeness: "assertive" });
       return;
     }
 
     setSubmissionFailure({ message: result.message, retryable: result.retryable });
-    setStatus({ message: result.message, politeness: "assertive" });
   };
 
   const submit = async (submission: TransactionSubmission) => {
     if (!submitTransaction || pending) return;
     setPending(true);
     setSubmissionFailure(null);
-    setStatus({ message: "Adding transaction...", politeness: "polite" });
     try {
       applyResult(await submitTransaction(submission));
     } catch {
-      const message = "Transaction could not be added. Retry the transaction.";
-      setSubmissionFailure({ message, retryable: true });
-      setStatus({ message, politeness: "assertive" });
+      setSubmissionFailure({ message: "Transaction could not be added. Retry.", retryable: true });
     } finally {
       setPending(false);
     }
@@ -201,7 +189,6 @@ export default function AddNewRecord({
       setFieldErrors(validation.fieldErrors);
       setSubmissionFailure(null);
       focusField(validation.firstInvalidField);
-      setStatus({ message: "Correct the highlighted transaction fields.", politeness: "assertive" });
       return;
     }
 
@@ -214,7 +201,7 @@ export default function AddNewRecord({
     retrySubmissionRef.current = submission;
 
     if (!submitTransaction) {
-      setStatus({ message: "Transaction details are valid and ready to save.", politeness: "polite" });
+      setOpen(false);
       return;
     }
     await submit(submission);
@@ -228,7 +215,6 @@ export default function AddNewRecord({
     if (aiPending || pending || draft.type !== "expense") return;
 
     setAiPending(true);
-    setStatus({ message: "AI-generated category suggestion is being prepared.", politeness: "polite" });
     try {
       const result = await requestCategorySuggestion({
         description: draft.description,
@@ -243,7 +229,6 @@ export default function AddNewRecord({
             category: ["The AI suggestion is not a supported expense category. Choose a category manually."],
           }));
           focusField("category");
-          setStatus({ message: "AI-generated category suggestion needs a manual category selection.", politeness: "assertive" });
           return;
         }
 
@@ -257,7 +242,6 @@ export default function AddNewRecord({
           categoryConfirmed: false,
         }));
         clearFieldError("category");
-        setStatus({ message: "AI-generated category suggestion is ready for your confirmation or replacement.", politeness: "polite" });
         return;
       }
 
@@ -266,9 +250,8 @@ export default function AddNewRecord({
         if (descriptionError) setFieldErrors((current) => ({ ...current, description: descriptionError }));
         focusField("description");
       }
-      setStatus({ message: result.message, politeness: "assertive" });
     } catch {
-      setStatus({ message: "AI-generated category suggestion could not be requested. You can choose a category manually.", politeness: "assertive" });
+      // AI suggestion failed silently
     } finally {
       setAiPending(false);
     }
@@ -279,94 +262,192 @@ export default function AddNewRecord({
   return (
     <>
       <Dialog
-        closeLabel="Close Add transaction"
-        description="Enter one income or expense transaction. Required fields are marked with an asterisk."
+        closeLabel="Close"
         onOpenChange={setOpen}
         open={open}
         title="Add transaction"
         trigger={hideTrigger ? undefined : <Button label="Add transaction" />}
         className="sm:max-w-xl"
+        hideTitle
       >
-        <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); void validateAndSubmit(); }}>
-          <Select
-            disabled={pending}
-            error={fieldErrors.type?.[0]}
-            id="transaction-type"
-            label="Type"
-            onChange={(event) => changeType(event.target.value as TransactionType)}
-            options={[{ value: "expense", label: "Expense" }, { value: "income", label: "Income" }]}
-            required
-            value={draft.type}
-          />
-          <Field
-            disabled={pending}
-            error={fieldErrors.description?.[0]}
-            id="transaction-description"
-            label="Description"
-            onChange={(event) => { updateDraft({ description: event.target.value }); clearFieldError("description"); }}
-            required
-            value={draft.description}
-          />
-          <div className="grid gap-2">
-            <Button disabled={draft.type !== "expense" || pending} label="Get AI category suggestion" loading={aiPending} onClick={() => void requestSuggestion()} type="button" />
-            <p className="text-interface-xs text-foreground-secondary">AI-generated suggestions use the transaction description you enter and always require confirmation or replacement.</p>
+        <div className="grid gap-5">
+          {/* Header */}
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Add transaction</h2>
+            <p className="mt-1 text-sm text-foreground-secondary">Record an income or expense entry.</p>
           </div>
-          <Field
-            disabled={pending}
-            error={fieldErrors.date?.[0]}
-            id="transaction-date"
-            label="Date"
-            onChange={(event) => { updateDraft({ date: event.target.value }); clearFieldError("date"); }}
-            required
-            type="date"
-            value={draft.date}
-          />
-          <Field
-            disabled={pending}
-            error={fieldErrors.amount?.[0]}
-            id="transaction-amount"
-            label="Amount"
-            min="0.01"
-            onChange={(event) => { updateDraft({ amount: event.target.value }); clearFieldError("amount"); }}
-            required
-            step="0.01"
-            type="number"
-            value={draft.amount}
-          />
-          {draft.type === "expense" ? (
-            <div className="grid gap-3">
-              <Select
+
+          {/* Type toggle */}
+          <div className="flex rounded-xl bg-surface-subtle p-1">
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => changeType("expense")}
+              className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
+                draft.type === "expense"
+                  ? "bg-[#F04438]/10 text-[#F04438] shadow-sm"
+                  : "text-foreground-secondary hover:text-foreground"
+              }`}
+            >
+              Expense
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => changeType("income")}
+              className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
+                draft.type === "income"
+                  ? "bg-[#22C55E]/10 text-[#22C55E] shadow-sm"
+                  : "text-foreground-secondary hover:text-foreground"
+              }`}
+            >
+              Income
+            </button>
+          </div>
+
+          {/* Form */}
+          <form className="grid gap-4" noValidate onSubmit={(event) => { event.preventDefault(); void validateAndSubmit(); }}>
+            <Field
+              disabled={pending}
+              error={fieldErrors.description?.[0]}
+              id="transaction-description"
+              label="Description"
+              onChange={(event) => { updateDraft({ description: event.target.value }); clearFieldError("description"); }}
+              required
+              value={draft.description}
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field
                 disabled={pending}
-                error={categoryError}
-                id="transaction-category"
-                label="Category"
-                onChange={(event) => changeCategory(event.target.value)}
-                options={categoryOptions}
-                placeholder="Choose a category"
+                error={fieldErrors.amount?.[0]}
+                id="transaction-amount"
+                label="Amount"
+                min="0.01"
+                onChange={(event) => { updateDraft({ amount: event.target.value }); clearFieldError("amount"); }}
                 required
-                value={draft.category}
+                step="0.01"
+                type="number"
+                value={draft.amount}
               />
-              {draft.categorySource === "ai-suggested" ? (
-                <Alert
-                  actionRequired
-                  description={<div className="grid gap-3"><p>Suggested category: <strong>{CATEGORY_REGISTRY[draft.category as ExpenseCategoryId]?.label ?? draft.category}</strong>.</p><label className="flex min-h-11 items-center gap-2"><input checked={draft.categoryConfirmed} disabled={pending} onChange={(event) => { updateDraft({ categoryConfirmed: event.target.checked }); clearFieldError("category"); }} type="checkbox" />Confirm this AI-generated category</label></div>}
-                  title="AI-generated category suggestion"
-                  tone="info"
+              <Field
+                disabled={pending}
+                error={fieldErrors.date?.[0]}
+                id="transaction-date"
+                label="Date"
+                onChange={(event) => { updateDraft({ date: event.target.value }); clearFieldError("date"); }}
+                required
+                type="date"
+                value={draft.date}
+              />
+            </div>
+
+            {draft.type === "expense" ? (
+              <div className="grid gap-3">
+                <Select
+                  disabled={pending}
+                  error={categoryError}
+                  id="transaction-category"
+                  label="Category"
+                  onChange={(event) => changeCategory(event.target.value)}
+                  options={categoryOptions}
+                  placeholder="Choose a category"
+                  required
+                  value={draft.category}
                 />
-              ) : null}
+                {draft.categorySource === "ai-suggested" ? (
+                  <div className="rounded-xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-3">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/10">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">
+                          {CATEGORY_REGISTRY[draft.category as ExpenseCategoryId]?.label ?? draft.category}
+                        </p>
+                        <p className="mt-0.5 text-xs text-foreground-secondary">Suggested by AI</p>
+                      </div>
+                      <label className="flex items-center gap-2">
+                        <input
+                          checked={draft.categoryConfirmed}
+                          disabled={pending}
+                          onChange={(event) => { updateDraft({ categoryConfirmed: event.target.checked }); clearFieldError("category"); }}
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-border accent-[#00DCE5]"
+                        />
+                        <span className="text-xs text-foreground-secondary">Confirm</span>
+                      </label>
+                    </div>
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  disabled={pending || aiPending}
+                  onClick={() => void requestSuggestion()}
+                  className="flex items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground-secondary transition-colors hover:border-[#00DCE5]/30 hover:bg-[#00DCE5]/[0.04] hover:text-[#00DCE5] disabled:opacity-50"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                  </svg>
+                  {aiPending ? "Getting suggestion..." : "Suggest category with AI"}
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-[#22C55E]/20 bg-[#22C55E]/[0.04] p-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E]/10">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Income category</p>
+                    <p className="text-xs text-foreground-secondary">Automatically assigned</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {submissionFailure ? (
+              <div className="rounded-xl border border-[#F04438]/20 bg-[#F04438]/[0.04] p-3">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F04438]/10">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F04438" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">Error</p>
+                    <p className="mt-0.5 text-xs text-foreground-secondary">{submissionFailure.message}</p>
+                  </div>
+                  {submissionFailure.retryable ? (
+                    <button
+                      type="button"
+                      disabled={pending}
+                      onClick={() => void retry()}
+                      className="text-xs font-medium text-[#00DCE5] hover:underline"
+                    >
+                      Retry
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <Button disabled={pending} intent="secondary" label="Cancel" onClick={() => setOpen(false)} type="button" />
+              <Button
+                label={draft.type === "income" ? "Add income" : "Add expense"}
+                loading={pending}
+                type="submit"
+              />
             </div>
-          ) : (
-            <div aria-label="Category" className="grid gap-1 rounded-container bg-surface-subtle p-4">
-              <p className="text-interface-sm font-medium text-foreground">Category</p>
-              <p className="text-interface-sm text-foreground-secondary">Income is assigned automatically.</p>
-            </div>
-          )}
-          {submissionFailure ? <Alert action={<Button disabled={!submissionFailure.retryable || pending} label="Retry transaction" loading={pending} onClick={() => void retry()} />} actionRequired description={submissionFailure.message} title="Transaction could not be added" tone="danger" /> : null}
-          <div className="flex flex-wrap justify-end gap-3 pt-5">
-            <Button disabled={pending} intent="secondary" label="Cancel" onClick={() => setOpen(false)} />
-            <Button label="Add transaction" loading={pending} type="submit" />
-          </div>
-        </form>
+          </form>
+        </div>
       </Dialog>
       <StatusRegion message={status?.message} politeness={status?.politeness} visible={Boolean(status)} />
     </>

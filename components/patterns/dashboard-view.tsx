@@ -1,9 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ArrowUpRight, RefreshCw } from "lucide-react";
-import { useState } from "react";
-import { getDashboardSnapshot } from "@/app/actions/getDashboardSnapshot";
+import { ArrowUpRight } from "lucide-react";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
 import { ForecastCard } from "@/components/patterns/forecast-card";
@@ -14,11 +12,8 @@ import { SpendingOverviewPanel } from "@/components/patterns/spending-overview-p
 import { AIFinancialCoach, generateAICoachInsight } from "@/components/patterns/ai-financial-coach";
 import { MonthlySnapshot } from "@/components/patterns/monthly-snapshot";
 import {
-  Alert,
-  Button,
   DateText,
   LinkButton,
-  StatusRegion,
 } from "@/components/ui";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
@@ -121,37 +116,8 @@ function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parame
 }
 
 export function DashboardView({ dashboard, period }: DashboardViewProps) {
-  const [status, setStatus] = useState<string | undefined>();
-  const [refreshedDashboard, setRefreshedDashboard] = useState<DashboardDTO | undefined>();
-  const [refreshing, setRefreshing] = useState(false);
-  const [refreshError, setRefreshError] = useState<string | undefined>();
-  const dashboardKey = `${dashboard.period.kind}:${dashboard.period.start}:${dashboard.period.end}`;
-  const refreshedKey = refreshedDashboard
-    ? `${refreshedDashboard.period.kind}:${refreshedDashboard.period.start}:${refreshedDashboard.period.end}`
-    : undefined;
-  const currentDashboard = refreshedKey === dashboardKey ? refreshedDashboard! : dashboard;
+  const currentDashboard = dashboard;
   const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
-
-  const refreshDashboard = async (successMessage = "Dashboard refreshed.") => {
-    setRefreshing(true);
-    setRefreshError(undefined);
-    setStatus("Refreshing dashboard.");
-    try {
-      const result = await getDashboardSnapshot(period);
-      if (result.status === "success") {
-        setRefreshedDashboard(result.data.dashboard);
-        setStatus(successMessage);
-      } else {
-        setRefreshError(result.message);
-        setStatus("Dashboard refresh failed. Last successful data is still available.");
-      }
-    } catch {
-      setRefreshError("The dashboard could not be refreshed. Showing the last successful data.");
-      setStatus("Dashboard refresh failed. Last successful data is still available.");
-    } finally {
-      setRefreshing(false);
-    }
-  };
 
   const aiInsight = generateDashboardAIInsight(currentDashboard);
 
@@ -171,36 +137,10 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
             ) : null}
           </p>
         </div>
-        <Button
-          icon={<RefreshCw size={14} />}
-          intent="secondary"
-          label="Refresh"
-          loading={refreshing}
-          onClick={() => void refreshDashboard()}
-        />
       </header>
-
-      <StatusRegion message={status} visible={Boolean(status)} />
-
-      {refreshError ? (
-        <Alert
-          action={
-            <Button
-              icon={<RefreshCw size={18} />}
-              label="Retry dashboard"
-              loading={refreshing}
-              onClick={() => void refreshDashboard()}
-            />
-          }
-          description={refreshError}
-          title="Dashboard refresh failed"
-          tone="danger"
-        />
-      ) : null}
 
       <motion.section
         animate="visible"
-        aria-busy={refreshing || undefined}
         aria-label="Financial overview"
         className="grid gap-4"
         initial="hidden"
@@ -238,7 +178,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
       </motion.section>
 
       <motion.section
-        aria-busy={refreshing || undefined}
         aria-label="AI Financial Coach"
         variants={listContainerVariants}
       >
@@ -254,7 +193,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
       />
 
       <div
-        aria-busy={refreshing || undefined}
         aria-label="Dashboard reporting data"
         className="grid gap-5 lg:grid-cols-12"
       >
@@ -278,7 +216,6 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
             budget={currentDashboard.kpis.budget}
             categoryBreakdown={currentDashboard.categoryBreakdown}
             currency={currentDashboard.currency}
-            onBudgetSaved={() => refreshDashboard("Budget saved. Dashboard refreshed.")}
           />
           <CategoryBreakdownPanel
             breakdown={currentDashboard.categoryBreakdown}

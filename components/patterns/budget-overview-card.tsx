@@ -13,7 +13,7 @@ export interface BudgetOverviewCardProps {
   budget: BudgetMetric;
   categoryBreakdown: readonly CategoryBreakdownRow[];
   currency: string;
-  onBudgetSaved: () => Promise<void>;
+  onBudgetSaved?: () => Promise<void>;
 }
 
 function utilBar(percentage: number): "safe" | "caution" | "danger" {
@@ -161,7 +161,7 @@ function CategoryRow({
    SET BUDGET DIALOG
    ──────────────────────────────────────────────────────────── */
 
-function SetBudgetDialog({ currency, onSaved }: { currency: string; onSaved: () => Promise<void> }) {
+function SetBudgetDialog({ currency, onSaved }: { currency: string; onSaved?: () => Promise<void> }) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [pending, setPending] = useState(false);
@@ -176,7 +176,7 @@ function SetBudgetDialog({ currency, onSaved }: { currency: string; onSaved: () 
       if (result.status === "success") {
         setOpen(false);
         setAmount("");
-        await onSaved();
+        await onSaved?.();
         return;
       }
       setError(result.message);

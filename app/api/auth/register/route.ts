@@ -1,13 +1,31 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { createSession, hashPassword } from '@/lib/auth';
+import { rateLimitRegister } from '@/lib/rate-limit';
+
+const MIN_PASSWORD_LENGTH = 8;
 
 export async function POST(request: Request) {
+  const limit = rateLimitRegister(request);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: 'Too many registration attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) } },
+    );
+  }
+
   try {
     const { email, password, name } = await request.json();
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+    }
+
+    if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+      return NextResponse.json(
+        { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` },
+        { status: 400 },
+      );
     }
 
     // Check if user exists

@@ -6,11 +6,9 @@ import {
   TrendingDown,
   Minus,
   AlertTriangle,
-  RefreshCw,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { getForecastSnapshot, type ForecastSnapshot } from "@/app/actions/getForecastSnapshot";
-import { Button } from "@/components/ui";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters/locale";
 import { listItemVariants } from "@/lib/ui/motion";
@@ -25,7 +23,6 @@ interface ForecastCardProps {
 export function ForecastCard({ period, currency, className }: ForecastCardProps) {
   const [data, setData] = useState<ForecastSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -35,13 +32,6 @@ export function ForecastCard({ period, currency, className }: ForecastCardProps)
   }, [period]);
 
   useEffect(() => { load(); }, [load]);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    const result = await getForecastSnapshot(period);
-    if (result.status === "success") setData(result.data);
-    setRefreshing(false);
-  };
 
   if (loading) {
     return (
@@ -68,10 +58,7 @@ export function ForecastCard({ period, currency, className }: ForecastCardProps)
     <motion.div variants={listItemVariants} className={className}>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Spending Forecast</CardTitle>
-            <Button icon={<RefreshCw className={`size-3 ${refreshing ? "animate-spin" : ""}`} />} intent="ghost" label="Refresh" loading={refreshing} onClick={handleRefresh} />
-          </div>
+          <CardTitle>Spending Forecast</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-end justify-between">

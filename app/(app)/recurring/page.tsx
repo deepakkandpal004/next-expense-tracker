@@ -9,5 +9,5 @@ export default async function RecurringRoute() {
   const user = await getAuthUser();
   if (!user) redirect('/sign-in');
 
-  return <RecurringView />;
+  return <RecurringView currency={user.currency} />;
 }

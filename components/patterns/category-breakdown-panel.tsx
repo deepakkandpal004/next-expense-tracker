@@ -10,10 +10,9 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Chart as ChartCanvas } from "react-chartjs-2";
 import { useTheme } from "@/contexts/ThemeContext";
-import { applyChartTheme, createChartTheme, type MutableChartLike } from "@/lib/charts/chartjs";
 import { cn } from "@/lib/ui/cn";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import type { CategoryBreakdownRow } from "@/lib/domain/types";
@@ -32,12 +31,14 @@ export interface CategoryBreakdownPanelProps {
    ──────────────────────────────────────────────────────────── */
 
 function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
+  const defaultColors = ["#00DCE5", "#A855F7", "#22C55E", "#FBBF24", "#F04438", "#3B82F6", "#EC4899", "#F97316"];
+  const styles = typeof window !== "undefined" ? window.getComputedStyle(document.documentElement) : null;
   return {
     labels: rows.map((row) => row.label),
     datasets: [{
       data: rows.map((row) => row.amountMinor / 100),
-      backgroundColor: rows.map((row) => `var(--${row.semanticToken})`),
-      borderColor: "var(--color-surface)",
+      backgroundColor: rows.map((row, i) => styles?.getPropertyValue(`--color-${row.semanticToken}`).trim() || defaultColors[i % defaultColors.length]),
+      borderColor: styles?.getPropertyValue("--color-surface").trim() || "#080C10",
       borderWidth: 3,
       hoverOffset: 8,
       spacing: 2,
@@ -102,7 +103,7 @@ function CategoryRow({
 }) {
   const percentDisplay = formatPercentage(row.percentage);
   const formatted = formatCurrency({ minorValue: row.amountMinor, currency });
-  const cssVar = `var(--${row.semanticToken})`;
+  const cssVar = `var(--color-${row.semanticToken})`;
 
   return (
     <motion.div
@@ -158,24 +159,15 @@ export function CategoryBreakdownPanel({
   period,
 }: CategoryBreakdownPanelProps) {
   const { resolvedAppearance } = useTheme();
-  const chartRef = useRef<MutableChartLike | null>(null);
   const [viewAll, setViewAll] = useState(false);
 
   const visibleRows = viewAll ? breakdown : breakdown.slice(0, 5);
   const hasMore = breakdown.length > 5;
   const totalFormatted = formatCurrency({ minorValue: totalSpendingMinor, currency });
 
-  const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown]);
-
-  useEffect(() => {
-    if (!chartRef.current) return;
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    applyChartTheme(chartRef.current, createChartTheme({
-      appearance: resolvedAppearance,
-      reducedMotion: reduced,
-      styles: window.getComputedStyle(document.documentElement),
-    }));
-  }, [resolvedAppearance]);
+  // resolvedAppearance triggers rebuild when theme changes so CSS variables resolve to correct colors
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown, resolvedAppearance]);
 
   return (
     <section
@@ -198,7 +190,6 @@ export function CategoryBreakdownPanel({
               aria-label={`Spending by category doughnut chart for ${period}`}
               data={data}
               options={DOUGHNUT_OPTIONS}
-              ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
               role="img"
               tabIndex={-1}
               type="doughnut"
@@ -215,8 +206,17 @@ export function CategoryBreakdownPanel({
         </div>
       ) : (
         <div className="px-5 pb-5">
-          <div className="flex h-48 items-center justify-center">
-            <p className="text-sm text-foreground-secondary">No expense data for this period yet.</p>
+          <div className="flex h-48 flex-col items-center justify-center text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-on-surface-variant/40">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path d="M9 12a3 3 0 106 0 3 3 0 00-6 0z" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-on-surface">No expense data yet</p>
+            <p className="mt-1 text-xs text-on-surface-variant/50 max-w-[200px]">
+              Add expenses to see your spending breakdown by category
+            </p>
           </div>
         </div>
       )}
