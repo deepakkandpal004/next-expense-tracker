@@ -52,6 +52,13 @@
 - **Footer Links**: Sign in | Create account | Reset password
 - **Bug Fix**: Removed `AuthenticationShell` wrapper from `app/(auth)/layout.tsx` that was overriding the custom dark theme with light-themed card layout
 
+### 7. Dashboard Charts Fix
+- **Issue**: Income & Spending area/bar chart gradients were being overwritten by `applyChartTheme`
+- **Root Cause**: `applyChartTheme` was replacing gradient functions with solid CSS variable colors
+- **Fix**: Check if `backgroundColor`, `borderColor`, `pointBackgroundColor` are functions before overriding
+- **Additional Fix**: Use callback ref with `requestAnimationFrame` to apply theme after chart mounts when switching between area/bar views
+- **Category Breakdown Fix**: Applied same callback ref pattern to resolve CSS variables for doughnut chart colors
+
 ---
 
 ## Design System

@@ -359,6 +359,30 @@ export function SpendingOverviewPanel({
     });
   };
 
+  // Apply theme to chart
+  const applyThemeToChart = (chart: MutableChartLike | null) => {
+    if (!chart) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    applyChartTheme(chart, createChartTheme({
+      appearance: resolvedAppearance,
+      reducedMotion: reduced,
+      styles: window.getComputedStyle(document.documentElement),
+    }));
+  };
+
+  // Store chart instance and apply theme
+  const setChartRef = (chart: ChartJS | null | undefined) => {
+    const instance = chart ?? null;
+    chartRef.current = instance as unknown as MutableChartLike | null;
+    if (instance) {
+      requestAnimationFrame(() => {
+        if (chartRef.current) {
+          applyThemeToChart(chartRef.current);
+        }
+      });
+    }
+  };
+
   // Apply hidden series to chart data
   const filteredLineData = useMemo(() => {
     if (!lineData) return null;
@@ -376,15 +400,10 @@ export function SpendingOverviewPanel({
     };
   }, [barData, hiddenSeries]);
 
+  // Apply theme when appearance changes
   useEffect(() => {
-    if (!chartRef.current) return;
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    applyChartTheme(chartRef.current, createChartTheme({
-      appearance: resolvedAppearance,
-      reducedMotion: reduced,
-      styles: window.getComputedStyle(document.documentElement),
-    }));
-  }, [resolvedAppearance, vizType]);
+    applyThemeToChart(chartRef.current);
+  }, [resolvedAppearance]);
 
   const spendingTrend = spendingInsight.trend;
   const showSuccessBanner = spendingTrend && spendingTrend.direction === "down" && spendingTrend.changePercent < -0.05;
@@ -459,7 +478,7 @@ export function SpendingOverviewPanel({
                     aria-label={`${trendModel.title} area chart`}
                     data={filteredLineData}
                     options={lineOptions}
-                    ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
+                    ref={setChartRef}
                     role="img"
                     tabIndex={-1}
                     type="line"
@@ -469,7 +488,7 @@ export function SpendingOverviewPanel({
                     aria-label={`${trendModel.title} bar chart`}
                     data={filteredBarData}
                     options={barOptions}
-                    ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
+                    ref={setChartRef}
                     role="img"
                     tabIndex={-1}
                     type="bar"

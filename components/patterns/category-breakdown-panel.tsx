@@ -10,10 +10,9 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Chart as ChartCanvas } from "react-chartjs-2";
 import { useTheme } from "@/contexts/ThemeContext";
-import { applyChartTheme, createChartTheme, type MutableChartLike } from "@/lib/charts/chartjs";
 import { cn } from "@/lib/ui/cn";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import type { CategoryBreakdownRow } from "@/lib/domain/types";
@@ -32,12 +31,13 @@ export interface CategoryBreakdownPanelProps {
    ──────────────────────────────────────────────────────────── */
 
 function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
+  const styles = window.getComputedStyle(document.documentElement);
   return {
     labels: rows.map((row) => row.label),
     datasets: [{
       data: rows.map((row) => row.amountMinor / 100),
-      backgroundColor: rows.map((row) => `var(--${row.semanticToken})`),
-      borderColor: "var(--color-surface)",
+      backgroundColor: rows.map((row) => styles.getPropertyValue(`--color-${row.semanticToken}`).trim() || "#888"),
+      borderColor: styles.getPropertyValue("--color-surface").trim() || "#080C10",
       borderWidth: 3,
       hoverOffset: 8,
       spacing: 2,
@@ -102,7 +102,7 @@ function CategoryRow({
 }) {
   const percentDisplay = formatPercentage(row.percentage);
   const formatted = formatCurrency({ minorValue: row.amountMinor, currency });
-  const cssVar = `var(--${row.semanticToken})`;
+  const cssVar = `var(--color-${row.semanticToken})`;
 
   return (
     <motion.div
@@ -158,24 +158,13 @@ export function CategoryBreakdownPanel({
   period,
 }: CategoryBreakdownPanelProps) {
   const { resolvedAppearance } = useTheme();
-  const chartRef = useRef<MutableChartLike | null>(null);
   const [viewAll, setViewAll] = useState(false);
 
   const visibleRows = viewAll ? breakdown : breakdown.slice(0, 5);
   const hasMore = breakdown.length > 5;
   const totalFormatted = formatCurrency({ minorValue: totalSpendingMinor, currency });
 
-  const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown]);
-
-  useEffect(() => {
-    if (!chartRef.current) return;
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    applyChartTheme(chartRef.current, createChartTheme({
-      appearance: resolvedAppearance,
-      reducedMotion: reduced,
-      styles: window.getComputedStyle(document.documentElement),
-    }));
-  }, [resolvedAppearance]);
+  const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown, resolvedAppearance]);
 
   return (
     <section
@@ -198,7 +187,6 @@ export function CategoryBreakdownPanel({
               aria-label={`Spending by category doughnut chart for ${period}`}
               data={data}
               options={DOUGHNUT_OPTIONS}
-              ref={(c) => { chartRef.current = c as unknown as MutableChartLike | null; }}
               role="img"
               tabIndex={-1}
               type="doughnut"

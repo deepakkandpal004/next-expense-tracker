@@ -109,9 +109,31 @@ export function applyChartTheme(
     const nextColor = dataPointColors ?? color;
     if (!nextColor) continue;
 
-    dataset.backgroundColor = nextColor;
-    dataset.borderColor = nextColor;
-    dataset.pointBackgroundColor = nextColor;
+    // For line charts, preserve gradient functions
+    // For bar charts, apply the resolved color
+    const currentBg = dataset.backgroundColor;
+    if (typeof currentBg === "function") {
+      // It's a gradient function - keep it as is for line charts
+      // The gradient function will resolve to the correct color
+    } else {
+      // It's a string (CSS variable or color) - apply the resolved theme color
+      dataset.backgroundColor = nextColor;
+    }
+    
+    const currentBorder = dataset.borderColor;
+    if (typeof currentBorder === "function") {
+      // Keep gradient function
+    } else {
+      dataset.borderColor = nextColor;
+    }
+    
+    const currentPointBg = dataset.pointBackgroundColor;
+    if (typeof currentPointBg === "function") {
+      // Keep gradient function
+    } else {
+      dataset.pointBackgroundColor = nextColor;
+    }
+    
     dataset.pointBorderColor = theme.colors.surface;
   }
 
