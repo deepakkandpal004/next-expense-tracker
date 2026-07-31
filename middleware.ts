@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const AUTH_ROUTES = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'] as const;
 const APP_ROUTES = ['/dashboard', '/records', '/ai-insights', '/budgets', '/goals', '/recurring', '/categories', '/reports', '/settings'] as const;
 
 function matchesRouteBoundary(pathname: string, routes: readonly string[]) {
@@ -25,11 +24,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // Redirect authenticated users away from auth pages to dashboard
-  if (matchesRouteBoundary(pathname, AUTH_ROUTES) && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
   return NextResponse.next();
 }
 
@@ -44,9 +38,5 @@ export const config = {
     '/categories/:path*',
     '/reports/:path*',
     '/settings/:path*',
-    '/sign-in/:path*',
-    '/sign-up/:path*',
-    '/forgot-password/:path*',
-    '/reset-password/:path*',
   ],
 };

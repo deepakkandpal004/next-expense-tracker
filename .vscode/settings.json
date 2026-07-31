@@ -1,3 +1,4 @@
 {
-    "typescript.autoClosingTags": false
+    "typescript.autoClosingTags": false,
+    "prisma.pinToPrisma6": false
 }
