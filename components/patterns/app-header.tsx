@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Home, LayoutDashboard, LogOut, Menu, Search, User } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Search, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
@@ -27,26 +27,6 @@ function useCommandKShortcut(callback: () => void) {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [callback]);
-}
-
-function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
-  const label = unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications";
-  return (
-    <button
-      aria-label={label}
-      className="relative inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface-variant/70 transition-all duration-500 hover:text-primary-fixed hover:drop-shadow-[0_0_8px_#00dce5]"
-      title={label}
-      type="button"
-    >
-      <Bell aria-hidden="true" size={18} strokeWidth={2} />
-      {unreadCount > 0 ? (
-        <span
-          aria-hidden="true"
-          className="absolute right-2 top-2 h-2 w-2 rounded-full bg-secondary-container shadow-[0_0_6px_#ff24e4]"
-        />
-      ) : null}
-    </button>
-  );
 }
 
 function UserAvatar({ user, onSignOut, signingOut }: { user: SafeUser; onSignOut: () => void; signingOut: boolean }) {
@@ -142,7 +122,7 @@ function SearchInput({
           onBlur={() => setIsFocused(false)}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={() => setIsFocused(true)}
-          placeholder="Search currents..."
+          placeholder="Search transactions..."
           ref={inputRef}
           type="search"
           value={query}
@@ -190,14 +170,6 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
 
         <div className="flex shrink-0 items-center gap-1">
           <Link
-            href="/"
-            aria-label="Go to home page"
-            className="inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
-          >
-            <Home size={18} strokeWidth={2} />
-            <span className="hidden sm:inline text-xs font-medium">Home</span>
-          </Link>
-          <Link
             href="/dashboard"
             aria-label="Go to dashboard"
             className="inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-on-surface-variant/70 transition-all duration-300 hover:text-primary-fixed hover:bg-surface-subtle/50"
@@ -205,7 +177,6 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
             <LayoutDashboard size={18} strokeWidth={2} />
             <span className="hidden sm:inline text-xs font-medium">Dashboard</span>
           </Link>
-          <NotificationBell />
           <div className="hidden sm:block">
             <UserAvatar user={user} onSignOut={onSignOut} signingOut={signingOut} />
           </div>

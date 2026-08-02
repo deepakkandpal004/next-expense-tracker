@@ -22,8 +22,6 @@ interface AiInsightsViewProps {
 }
 
 function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
-  if (insights.length === 0) return null;
-
   return (
     <section className="rounded-xl border border-border/50 bg-surface p-4 space-y-4">
       <div className="flex items-center gap-2">
@@ -32,6 +30,12 @@ function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
         </span>
         <h2 className="text-sm font-semibold text-foreground">AI Insights Timeline</h2>
       </div>
+
+      {insights.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          No AI insights yet for this period. Click Generate to create them.
+        </p>
+      )}
 
       <div className="space-y-3">
         {insights.map((insight) => {
@@ -105,7 +109,7 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, error: ini
     setError(undefined);
     const requestedPeriod = period;
     try {
-      const result = await getAiFinancialInsights(requestedPeriod);
+      const result = await getAiFinancialInsights(requestedPeriod, { generateAi: true, refreshCache: true });
       // Ignore results for a period the user has already navigated away from.
       if (latestPeriodRef.current !== requestedPeriod) return;
       if (result.status === "success") {

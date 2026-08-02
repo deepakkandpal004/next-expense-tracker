@@ -1,7 +1,9 @@
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
+import { db } from '@/lib/db';
 import { getDashboardData } from '@/lib/data/dashboard';
+import type { Prisma } from '@prisma/client';
 import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
 import type { ActionResult, ReportingPeriod } from '@/lib/domain/types';
 import { formatCurrency } from '@/lib/formatters/locale';
@@ -19,8 +21,6 @@ export interface AiInsightCard {
 }
 
 export interface AiFinancialInsightsData {
-  greeting: string;
-  userName: string;
   summaryMetrics: {
     totalSpending: { value: string; changePercent: number; trend: 'up' | 'down' };
     potentialSavings: { value: string; changePercent: number; trend: 'up' | 'down' };
@@ -29,27 +29,12 @@ export interface AiFinancialInsightsData {
   };
   insights: AiInsightCard[];
   aiInsights: AIInsight[];
-  analysisSummary: {
-    transactions: number;
-    daysAnalyzed: number;
-    merchants: number;
-    categories: number;
-  };
   confidence: {
     score: number;
     label: string;
     transactionCount: number;
     daysAnalyzed: number;
   };
-  dataSources: { label: string; available: boolean }[];
-  recentActivity: { icon: string; label: string; timestamp: string; type: 'ai' | 'import' | 'budget' }[];
-}
-
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
 }
 
 function calculateFinancialHealth(score: {
@@ -77,7 +62,7 @@ function calculateFinancialHealth(score: {
 
 export async function getAiFinancialInsights(
   period: ReportingPeriod,
-  options: { generateAi?: boolean } = {},
+  options: { generateAi?: boolean; refreshCache?: boolean } = {},
 ): Promise<ActionResult<AiFinancialInsightsData, 'period'>> {
   const user = await getAuthUser();
   if (!user) {
@@ -101,7 +86,6 @@ export async function getAiFinancialInsights(
     const savingsRate = dashboard.snapshot.savingsRate;
     const topCategory = dashboard.categoryBreakdown[0];
     const budget = dashboard.kpis.budget;
-    const uniqueMerchants = new Set(dashboard.recentTransactions.map(t => t.description)).size;
 
     const healthScore = calculateFinancialHealth({
       savingsRate,
@@ -223,31 +207,25 @@ export async function getAiFinancialInsights(
 
     const daysInPeriod = dashboard.snapshot.daysInPeriod;
 
-    const recentActivity = [
-      {
-        icon: 'sparkles',
-        label: 'AI insights generated',
-        timestamp: 'Today, ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
-        type: 'ai' as const,
-      },
-      ...(dashboard.snapshot.transactionCount > 0 ? [{
-        icon: 'upload',
-        label: 'Transactions imported',
-        timestamp: 'Today, ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
-        type: 'import' as const,
-      }] : []),
-      ...(budget.status !== 'not-configured' ? [{
-        icon: 'file',
-        label: 'Budget updated',
-        timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        type: 'budget' as const,
-      }] : []),
-    ];
+    // Previously generated insights are cached per user and period, so
+    // returning to the page shows them instantly without another provider
+    // round-trip.
+    const cacheKey = {
+      userId: user.id,
+      periodStart: normalized.period.start,
+      periodEnd: normalized.period.end,
+    };
+    let aiInsights: AIInsight[] = [];
+    const cached = await db.aiInsightCache.findUnique({
+      where: { userId_periodStart_periodEnd: cacheKey },
+    });
+    if (cached && Array.isArray(cached.data)) {
+      aiInsights = cached.data as unknown as AIInsight[];
+    }
 
     // Generate AI insights using OpenAI — only on demand, never during page
     // renders, since the provider call can take seconds and block navigation.
-    let aiInsights: AIInsight[] = [];
-    if (options.generateAi !== false) {
+    if (options.generateAi !== false && (options.refreshCache === true || aiInsights.length === 0)) {
       try {
         const providerPayload: AiProviderPayload = {
           period: {
@@ -265,16 +243,22 @@ export async function getAiFinancialInsights(
             amountMinor: cat.amountMinor,
           })),
         };
-        aiInsights = await generateExpenseInsights(providerPayload);
+        const generated = await generateExpenseInsights(providerPayload);
+        if (generated.length > 0) {
+          aiInsights = generated;
+          await db.aiInsightCache.upsert({
+            where: { userId_periodStart_periodEnd: cacheKey },
+            create: { ...cacheKey, data: aiInsights as unknown as Prisma.InputJsonValue },
+            update: { data: aiInsights as unknown as Prisma.InputJsonValue },
+          });
+        }
       } catch (aiError) {
         console.error('OpenAI insights generation failed, using fallback:', aiError);
-        // Continue with empty AI insights - the rule-based insights will still be shown
+        // Keep any cached insights when regeneration fails.
       }
     }
 
     const result: AiFinancialInsightsData = {
-      greeting: getGreeting(),
-      userName: user.name?.split(' ')[0] || 'there',
       summaryMetrics: {
         totalSpending: {
           value: formatCurrency({ minorValue: dashboard.insights.spending.currentMinor, currency: dashboard.currency }),
@@ -300,26 +284,12 @@ export async function getAiFinancialInsights(
       },
       insights: insights.slice(0, 3),
       aiInsights,
-      analysisSummary: {
-        transactions: dashboard.snapshot.transactionCount,
-        daysAnalyzed: daysInPeriod,
-        merchants: uniqueMerchants,
-        categories: dashboard.categoryBreakdown.length,
-      },
       confidence: {
         score: Math.min(95, 70 + Math.round(dashboard.snapshot.transactionCount / 10)),
         label: dashboard.snapshot.transactionCount > 100 ? 'High confidence' : 'Moderate confidence',
         transactionCount: dashboard.snapshot.transactionCount,
         daysAnalyzed: daysInPeriod,
       },
-      dataSources: [
-        { label: 'Transactions', available: dashboard.snapshot.transactionCount > 0 },
-        { label: 'Categories', available: dashboard.categoryBreakdown.length > 0 },
-        { label: 'Merchant names', available: dashboard.snapshot.transactionCount > 0 },
-        { label: 'Budget & goals', available: budget.status !== 'not-configured' },
-        { label: 'Income information', available: dashboard.insights.income.currentMinor > 0 },
-      ],
-      recentActivity,
     };
 
     return { status: 'success', data: result, message: 'AI insights generated.' };

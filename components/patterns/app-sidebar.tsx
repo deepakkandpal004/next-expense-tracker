@@ -160,8 +160,8 @@ export function AppSidebar({
       )}
     >
       {/* Logo */}
-      <div className={cn(
-        "flex items-center border-b border-white/[0.06] shrink-0",
+      <Link href="/" aria-label="Expense AI home" className={cn(
+        "flex items-center border-b border-white/[0.06] shrink-0 hover:bg-white/[0.03] transition-colors",
         expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5",
       )}>
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
@@ -174,7 +174,7 @@ export function AppSidebar({
         )}>
           Expense AI
         </span>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav aria-label="Primary" className="flex-1 overflow-y-auto px-3 py-4">
