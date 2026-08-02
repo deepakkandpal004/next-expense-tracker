@@ -1005,7 +1005,7 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
         <EmptyState
           title="Set your first goal"
           description="Define a target amount and deadline to start tracking your savings progress effortlessly."
-          actionLabel="Set Goal"
+          actionLabel="Set goal"
           onAction={() => setShowAddModal(true)}
           icon={<Target className="w-6 h-6" />}
         />

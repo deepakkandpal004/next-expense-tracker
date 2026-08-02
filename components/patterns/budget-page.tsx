@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import {
   TrendingUp,
   AlertTriangle,
@@ -15,6 +16,7 @@ import {
 import { useMemo } from "react";
 import { cn } from "@/lib/ui/cn";
 import { CurrencyText } from "@/components/ui";
+import { SetBudgetDialog } from "@/components/patterns/set-budget-dialog";
 import { CATEGORY_REGISTRY } from "@/lib/domain/categories";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import {
@@ -686,7 +688,7 @@ function MonthlyRemaining({
     budget.status === "exceeded" ? -budget.excessMinor : budget.remainingMinor;
 
   const dailyAllowance =
-    forecast.daysRemaining > 0 ? remainingMinor / forecast.daysRemaining : 0;
+    forecast.daysRemaining > 0 ? Math.round(remainingMinor / forecast.daysRemaining) : 0;
 
   const stats = [
     {
@@ -769,6 +771,7 @@ export function BudgetPage({
   currency,
   resolvedPeriod,
 }: BudgetPageProps) {
+  const router = useRouter();
   const hasBudget =
     budget.status === "on-track" ||
     budget.status === "approaching" ||
@@ -792,11 +795,13 @@ export function BudgetPage({
 
   return (
     <div className="grid gap-6">
-      <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-display-xl font-bold text-foreground">Budget</h1>
-          <p className="mt-1 text-body text-foreground-secondary">{resolvedPeriod.label}</p>
-        </div>
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+        <h1 className="text-display-2xl font-bold tracking-tight text-foreground">Budget</h1>
+        <SetBudgetDialog
+          currency={currency}
+          label={hasBudget ? "Update budget" : "Set budget"}
+          onSaved={() => router.refresh()}
+        />
       </header>
 
       <BudgetWarnings budget={budget} forecast={forecast} currency={currency} />

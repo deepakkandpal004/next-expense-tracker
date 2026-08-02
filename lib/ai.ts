@@ -215,6 +215,12 @@ function cleanJsonResponse(response: string): string {
 export async function generateExpenseInsights(
   payload: AiProviderPayload,
 ): Promise<AIInsight[]> {
+  // Without a configured provider key, skip the network round-trip entirely
+  // and fall back to rule-based insights.
+  if (!process.env.OPENROUTER_API_KEY && !process.env.OPENAI_API_KEY) {
+    return [];
+  }
+
   const prompt = `Generate 3-4 concise informational spending interpretations and optional recommendations from this disclosed recorded-data summary. Do not present professional financial advice.
 Return a JSON array with type, title, message, optional action, optional confidence (0 to 1), and optional confidenceExplanation.
 Disclosed period-scoped data:\n${JSON.stringify(payload, null, 2)}\nReturn only valid JSON.`;

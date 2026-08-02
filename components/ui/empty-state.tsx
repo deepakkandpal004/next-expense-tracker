@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Plus } from "lucide-react";
 import { GlassCard } from "./glass-card";
-import { Button } from "./button";
+import { Button } from "./actions";
 import { cn } from "@/lib/utils";
 
 export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -43,13 +43,12 @@ export function EmptyState({
       </p>
       {actionLabel && onAction && (
         <Button
+          label={actionLabel}
+          icon={<Plus className="w-4 h-4" />}
           onClick={onAction}
           type="button"
-          className="bg-[#00DCE5] text-[#0A0B0D] hover:bg-[#00DCE5]/90 font-semibold px-5 rounded-lg flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          {actionLabel}
-        </Button>
+          className="bg-[#00DCE5] text-[#0A0B0D] hover:bg-[#00DCE5]/90 font-semibold px-5 rounded-lg"
+        />
       )}
     </GlassCard>
   );

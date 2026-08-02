@@ -12,7 +12,10 @@ export default async function AuthenticatedAppLayout({
   const user = await getAuthUser();
 
   if (!user) {
-    redirect('/sign-in');
+    // Route through the session-clearing handler so the stale cookie is
+    // removed before /sign-in renders; otherwise middleware bounces the
+    // request back to /dashboard in an infinite redirect loop.
+    redirect('/api/auth/clear-session');
   }
 
   const safeUser: SafeUser = {

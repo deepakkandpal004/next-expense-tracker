@@ -131,7 +131,7 @@ function TransactionRow({ transaction, currency, index, onDelete }: TransactionR
               <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cssVar }} aria-hidden="true" />
               {definition.label}
             </span>
-            <span className="flex items-center gap-1 font-geist">
+            <span className="flex items-center gap-1 font-manrope">
               <span className="h-1.5 w-1.5 rounded-full bg-on-surface-variant/20" aria-hidden="true" />
               {relativeDate(transaction.occurredOn)}
             </span>

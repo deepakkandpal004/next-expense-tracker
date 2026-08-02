@@ -1,12 +1,11 @@
 "use client";
 
-import { Bell, Home, LayoutDashboard, LogOut, Menu, Search, User, Lock } from "lucide-react";
+import { Bell, Home, LayoutDashboard, LogOut, Menu, Search, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { DropdownMenu } from "@/components/ui";
 import type { SafeUser } from "./authenticated-app-shell";
-import { ChangePasswordModal } from "./change-password-modal";
 
 interface AppHeaderProps {
   user: SafeUser;
@@ -53,62 +52,49 @@ function NotificationBell({ unreadCount = 0 }: { unreadCount?: number }) {
 function UserAvatar({ user, onSignOut, signingOut }: { user: SafeUser; onSignOut: () => void; signingOut: boolean }) {
   const initial = ((user.name?.trim()[0] ?? user.email[0]) || "?").toUpperCase();
   const displayName = user.name || user.email.split("@")[0];
-  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   return (
-    <>
-      <DropdownMenu
-        align="end"
-        label="User menu"
-        trigger={
-          <button
-            aria-label="Open user menu"
-            className="group relative inline-flex items-center gap-2 rounded-full border border-white/10 py-1 pl-1 pr-3 transition-all duration-300 hover:border-primary-fixed/40 hover:bg-surface-subtle/50"
-            type="button"
-          >
-            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-accent">
-              {user.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  alt=""
-                  src={user.imageUrl}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span className="text-sm font-bold text-white">{initial}</span>
-              )}
-            </span>
-            <span className="hidden text-sm font-medium text-on-surface sm:block">{displayName}</span>
-          </button>
-        }
-        items={[
-          {
-            id: "user-info",
-            label: displayName,
-            disabled: true,
-            icon: <User size={16} />,
-          },
-          {
-            id: "change-password",
-            label: "Change password",
-            icon: <Lock size={16} />,
-            onSelect: () => setChangePasswordOpen(true),
-          },
-          {
-            id: "sign-out",
-            label: signingOut ? "Signing out..." : "Sign out",
-            icon: <LogOut size={16} />,
-            destructive: true,
-            disabled: signingOut,
-            onSelect: onSignOut,
-          },
-        ]}
-      />
-      <ChangePasswordModal
-        open={changePasswordOpen}
-        onClose={() => setChangePasswordOpen(false)}
-      />
-    </>
+    <DropdownMenu
+      align="end"
+      label="User menu"
+      trigger={
+        <button
+          aria-label="Open user menu"
+          className="group relative inline-flex items-center gap-2 rounded-full border border-white/10 py-1 pl-1 pr-3 transition-all duration-300 hover:border-primary-fixed/40 hover:bg-surface-subtle/50"
+          type="button"
+        >
+          <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-accent">
+            {user.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                alt=""
+                src={user.imageUrl}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span className="text-sm font-bold text-white">{initial}</span>
+            )}
+          </span>
+          <span className="hidden text-sm font-medium text-on-surface sm:block">{displayName}</span>
+        </button>
+      }
+      items={[
+        {
+          id: "user-info",
+          label: displayName,
+          disabled: true,
+          icon: <User size={16} />,
+        },
+        {
+          id: "sign-out",
+          label: signingOut ? "Signing out..." : "Sign out",
+          icon: <LogOut size={16} />,
+          destructive: true,
+          disabled: signingOut,
+          onSelect: onSignOut,
+        },
+      ]}
+    />
   );
 }
 
@@ -163,7 +149,7 @@ function SearchInput({
         />
         <kbd
           aria-hidden="true"
-          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium transition-colors duration-500 sm:flex font-geist ${
+          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium transition-colors duration-500 sm:flex font-manrope ${
             isFocused
               ? "border-primary-fixed/30 bg-primary/10 text-primary-fixed"
               : "border-white/10 bg-surface-container-high text-on-surface-variant/50"
@@ -197,17 +183,6 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
         >
           <Menu aria-hidden="true" size={20} />
         </button>
-
-        <Link
-          href="/"
-          className="hidden min-w-0 shrink-0 md:flex items-center gap-2.5 transition-all duration-300 hover:opacity-80"
-        >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden bg-primary-container shadow-[0_0_20px_rgba(0,245,255,0.3)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
-          </div>
-          <span className="pulse-logo text-xl">Expense AI</span>
-        </Link>
 
         <div className="flex flex-1 justify-center md:justify-start">
           <SearchInput inputRef={searchRef} onSubmit={submitSearch} />

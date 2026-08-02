@@ -8,7 +8,6 @@ import {
   Layers,
   Sparkles,
   ListChecks,
-  LogOut,
   Repeat,
   Settings,
   Target,
@@ -30,19 +29,9 @@ export type SidebarDestinationId =
   | "reports"
   | "settings";
 
-export interface SidebarUser {
-  id: string;
-  email: string;
-  name: string | null;
-  imageUrl: string | null;
-}
-
 interface AppSidebarProps {
-  user: SidebarUser;
   activeDestinationId: SidebarDestinationId;
   hrefFor: (destination: Exclude<SidebarDestinationId, NavPlaceholderId>) => string;
-  onSignOut: () => void;
-  signingOut: boolean;
   onNavigate?: () => void;
   onNewRecord?: () => void;
   collapsed?: boolean;
@@ -71,6 +60,12 @@ const NAV_ITEMS: readonly NavItem[] = [
   { id: "settings", label: "Settings", icon: <Settings size={18} strokeWidth={2} />, status: "available" },
 ];
 
+const NAV_SECTIONS: readonly { title: string; items: SidebarDestinationId[] }[] = [
+  { title: "Overview", items: ["dashboard", "transactions", "ai-insights"] },
+  { title: "Manage", items: ["budgets", "goals", "categories", "recurring"] },
+  { title: "Analytics", items: ["reports", "settings"] },
+];
+
 function NavRow({
   item,
   isActive,
@@ -85,17 +80,19 @@ function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex items-center gap-3 rounded-xl py-3 transition-all duration-300",
-    expanded ? "px-5" : "justify-center px-0",
+    "group relative flex items-center gap-3 rounded-xl py-2.5 transition-all duration-200",
+    expanded ? "px-3" : "justify-center px-0",
     isActive
-      ? "text-[#00DCE5] bg-[rgba(0,220,229,0.12)] border border-[rgba(0,220,229,0.25)] shadow-[0_0_20px_rgba(0,220,229,0.15)] font-semibold"
-      : "text-[#9AA3AF] hover:bg-white/5 hover:text-[#F5F7FA]",
+      ? "text-white bg-[rgba(0,220,229,0.12)] font-medium"
+      : "text-[#8B95A5] hover:bg-white/[0.04] hover:text-[#C5CCD6]",
     item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-[#5B6472]",
   );
 
   const iconClass = cn(
-    "shrink-0 transition-colors duration-300",
-    isActive ? "text-[#00DCE5]" : "text-[#9AA3AF] group-hover:text-[#F5F7FA]",
+    "shrink-0 transition-colors duration-200",
+    isActive
+      ? "text-[#00DCE5]"
+      : "text-[#6B7580] group-hover:text-[#9AA3AF]",
   );
 
   const content = (
@@ -105,12 +102,15 @@ function NavRow({
       </span>
       <span
         className={cn(
-          "min-w-0 flex-1 truncate font-medium text-sm whitespace-nowrap transition-all duration-300",
-          expanded ? "opacity-100 ml-1" : "opacity-0 w-0 overflow-hidden",
+          "min-w-0 flex-1 truncate text-sm whitespace-nowrap transition-all duration-200",
+          expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
         )}
       >
         {item.label}
       </span>
+      {isActive && expanded && (
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#00DCE5] shadow-[0_0_6px_rgba(0,220,229,0.6)]" />
+      )}
     </>
   );
 
@@ -141,70 +141,9 @@ function NavRow({
   );
 }
 
-function UserFooter({ user, onSignOut, signingOut, expanded }: {
-  user: SidebarUser;
-  onSignOut: () => void;
-  signingOut: boolean;
-  expanded: boolean;
-}) {
-  const displayName = user.name?.trim() || user.email;
-  const initial = ((user.name?.trim()[0] ?? user.email[0]) || "?").toUpperCase();
-
-  const avatar = user.imageUrl ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      alt=""
-      src={user.imageUrl}
-      className="h-8 w-8 shrink-0 rounded-full border border-primary-fixed/20 object-cover"
-    />
-  ) : (
-    <div
-      aria-hidden="true"
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary-fixed"
-    >
-      {initial}
-    </div>
-  );
-
-  return (
-    <div className="border-t border-white/5 p-3">
-      <button
-        type="button"
-        onClick={onSignOut}
-        disabled={signingOut}
-        aria-label={`Sign out ${displayName}`}
-        className={cn(
-          "group flex w-full items-center gap-2.5 rounded-full transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60",
-          expanded ? "px-3 py-2" : "justify-center px-0 py-2",
-        )}
-      >
-        {avatar}
-        <div className={cn(
-          "min-w-0 flex-1 transition-all duration-300",
-          expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
-        )}>
-          <p className="truncate text-sm font-medium text-on-surface">{displayName}</p>
-          <p className="truncate text-[10px] text-on-surface-variant/40 font-geist">{user.email}</p>
-        </div>
-        <LogOut
-          aria-hidden="true"
-          size={14}
-          className={cn(
-            "shrink-0 text-on-surface-variant/40 transition-all duration-300 group-hover:text-primary-fixed",
-            expanded ? "opacity-100" : "opacity-0 w-0",
-          )}
-        />
-      </button>
-    </div>
-  );
-}
-
 export function AppSidebar({
-  user,
   activeDestinationId,
   hrefFor,
-  onSignOut,
-  signingOut,
   onNavigate,
   onNewRecord,
   collapsed = false,
@@ -216,16 +155,16 @@ export function AppSidebar({
       aria-label="Application navigation"
       className={cn(
         "flex h-full flex-col transition-all duration-300 ease-in-out overflow-hidden",
-        "bg-surface-container-lowest/40 backdrop-blur-3xl border-r border-white/5",
-        expanded ? "w-[220px]" : "w-[60px]",
+        "bg-[#0D1117] border-r border-white/[0.06]",
+        expanded ? "w-[240px]" : "w-[60px]",
       )}
     >
       {/* Logo */}
       <div className={cn(
-        "flex items-center border-b border-white/5 shrink-0",
+        "flex items-center border-b border-white/[0.06] shrink-0",
         expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5",
       )}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-primary-container shadow-[0_0_15px_rgba(0,245,255,0.3)]">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
         </div>
@@ -238,50 +177,81 @@ export function AppSidebar({
       </div>
 
       {/* Navigation */}
-      <nav aria-label="Primary" className="flex-1 overflow-y-auto px-2 py-4">
-        <ul className="flex flex-col gap-1">
-          <AnimatePresence initial={false}>
-            {NAV_ITEMS.map((item) => (
-              <motion.li
-                key={item.id}
-                initial="hidden"
-                animate="visible"
-                variants={menuSurfaceVariants}
-              >
-                <NavRow
-                  item={item}
-                  isActive={item.status === "available" && item.id === activeDestinationId}
-                  hrefFor={hrefFor}
-                  onNavigate={onNavigate}
-                  expanded={expanded}
-                />
-              </motion.li>
+      <nav aria-label="Primary" className="flex-1 overflow-y-auto px-3 py-4">
+        {expanded ? (
+          <ul className="flex flex-col gap-5">
+            {NAV_SECTIONS.map((section) => (
+              <li key={section.title}>
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#5B6472]">
+                  {section.title}
+                </p>
+                <ul className="flex flex-col gap-0.5">
+                  {section.items.map((id) => {
+                    const item = NAV_ITEMS.find((n) => n.id === id);
+                    if (!item) return null;
+                    return (
+                      <motion.li
+                        key={item.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={menuSurfaceVariants}
+                      >
+                        <NavRow
+                          item={item}
+                          isActive={item.id === activeDestinationId}
+                          hrefFor={hrefFor}
+                          onNavigate={onNavigate}
+                          expanded={expanded}
+                        />
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              </li>
             ))}
-          </AnimatePresence>
-        </ul>
+          </ul>
+        ) : (
+          <ul className="flex flex-col gap-1">
+            <AnimatePresence initial={false}>
+              {NAV_ITEMS.map((item) => (
+                <motion.li
+                  key={item.id}
+                  initial="hidden"
+                  animate="visible"
+                  variants={menuSurfaceVariants}
+                >
+                  <NavRow
+                    item={item}
+                    isActive={item.id === activeDestinationId}
+                    hrefFor={hrefFor}
+                    onNavigate={onNavigate}
+                    expanded={expanded}
+                  />
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </ul>
+        )}
       </nav>
 
       {/* New Record FAB */}
-      <div className={cn("px-3 pb-3 shrink-0", expanded ? "px-3" : "px-2")}>
+      <div className="px-3 pb-3 shrink-0">
         <button
-          onClick={onNewRecord}
+          onClick={() => onNewRecord?.()}
           className={cn(
-            "w-full bg-primary-container text-on-primary-fixed font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,245,255,0.4)] hover:scale-105 active:scale-95",
-            expanded ? "py-3.5 px-4" : "py-3.5 px-0",
+            "w-full bg-[#00DCE5] text-[#0B0F14] font-semibold rounded-xl flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#00DCE5]/90 hover:shadow-[0_0_20px_rgba(0,220,229,0.3)] active:scale-[0.98]",
+            expanded ? "py-3 px-4" : "py-3 px-0",
           )}
         >
           <Plus size={18} strokeWidth={2.5} className="shrink-0" />
           <span className={cn(
-            "text-sm whitespace-nowrap transition-all duration-300",
+            "text-sm whitespace-nowrap transition-all duration-200",
             expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
           )}>
             New Record
           </span>
         </button>
       </div>
-
-      {/* User footer */}
-      <UserFooter user={user} onSignOut={onSignOut} signingOut={signingOut} expanded={expanded} />
     </aside>
   );
 }

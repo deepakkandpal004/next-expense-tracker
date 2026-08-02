@@ -17,7 +17,5 @@ export const PUBLIC_DISCLOSURE_NAVIGATION: readonly PublicNavigationItem[] = [
   { id: 'ai-transparency', label: 'AI transparency', href: '/ai-transparency' },
 ] as const;
 
-export const SUPPORT_EMAIL = 'dkandpal757@gmail.com';
-export const SUPPORT_PHONE = '+919123495043';
-export const SUPPORT_PHONE_LABEL = '+91 91234 95043';
-export const SUPPORT_HOURS = 'Monday–Friday, 9:00 AM–6:00 PM Pacific Standard Time (UTC−08:00)';
+export const SUPPORT_EMAIL = 'deepakkandpal.tech@gmail.com';
+export const SUPPORT_EMAIL_ALT = 'deepakkandpal.work@gmail.com';

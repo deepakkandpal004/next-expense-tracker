@@ -34,7 +34,6 @@ export interface DashboardRecordRow {
 
 export interface DashboardRecordQuery {
   userId: string;
-  period: ResolvedPeriod;
   startsAt: Date;
   endsAt: Date;
 }
@@ -190,24 +189,23 @@ export function createDashboardQueryService(source: DashboardQuerySource) {
     currency = DEFAULT_CURRENCY,
   ): Promise<DashboardDTO> {
     const previousPeriod = previousResolvedPeriod(period);
-    const query: DashboardRecordQuery = {
+
+    // Load current and previous period records in one range query, then split
+    // in memory to halve the number of database round trips per page load.
+    const rangeQuery: DashboardRecordQuery = {
       userId,
-      period,
-      startsAt: boundaryAtStart(period.start),
+      startsAt: boundaryAtStart(previousPeriod.start),
       endsAt: boundaryAtEnd(period.end),
     };
-    const previousQuery: DashboardRecordQuery = {
-      userId,
-      period: previousPeriod,
-      startsAt: boundaryAtStart(previousPeriod.start),
-      endsAt: boundaryAtEnd(previousPeriod.end),
-    };
 
-    const [records, previousRecords, budget] = await Promise.all([
-      source.loadRecords(query),
-      source.loadRecords(previousQuery),
+    const [allRecords, budget] = await Promise.all([
+      source.loadRecords(rangeQuery),
       source.loadBudget(userId, period),
     ]);
+
+    const currentStartMs = boundaryAtStart(period.start).getTime();
+    const records: readonly DashboardRecordRow[] = allRecords.filter((record) => record.date.getTime() >= currentStartMs);
+    const previousRecords: readonly DashboardRecordRow[] = allRecords.filter((record) => record.date.getTime() < currentStartMs);
 
     return toSerializableDashboardDTO(
       aggregateDashboard({

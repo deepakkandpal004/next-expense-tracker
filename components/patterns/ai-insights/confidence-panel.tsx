@@ -73,16 +73,7 @@ export function ConfidencePanel({
         className,
       )}
     >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-foreground">AI Confidence</h3>
-        <button
-          type="button"
-          className="flex h-4 w-4 items-center justify-center rounded-full bg-white/5 text-foreground-secondary hover:bg-white/10 transition-colors"
-          aria-label="What does AI confidence mean?"
-        >
-          <span className="text-[9px]">?</span>
-        </button>
-      </div>
+      <h3 className="text-sm font-semibold text-foreground mb-3">AI Confidence</h3>
 
       <div className="flex flex-col items-center gap-2">
         <ConfidenceRing score={score} />

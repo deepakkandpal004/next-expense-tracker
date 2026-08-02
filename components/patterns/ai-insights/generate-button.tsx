@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Sparkles, Loader2, Shield } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { cn } from "@/lib/ui/cn";
 
 interface GenerateButtonProps {
@@ -38,10 +38,6 @@ export function GenerateButton({ onGenerate, loading = false, className }: Gener
         )}
         {loading ? "Generating..." : "Generate New Insights"}
       </button>
-      <p className="flex items-center gap-1 text-[10px] text-foreground-secondary/60">
-        <Shield size={10} />
-        Your data is secure and never shared with third parties.
-      </p>
     </motion.div>
   );
 }

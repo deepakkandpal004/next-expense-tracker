@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const AUTH_ROUTES = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'] as const;
+const AUTH_ROUTES = ['/sign-in', '/sign-up'] as const;
 const APP_ROUTES = ['/dashboard', '/records', '/ai-insights', '/budgets', '/goals', '/recurring', '/categories', '/reports', '/settings'] as const;
 
 function matchesRouteBoundary(pathname: string, routes: readonly string[]) {
@@ -46,7 +46,5 @@ export const config = {
     '/settings/:path*',
     '/sign-in/:path*',
     '/sign-up/:path*',
-    '/forgot-password/:path*',
-    '/reset-password/:path*',
   ],
 };

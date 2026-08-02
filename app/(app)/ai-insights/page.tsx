@@ -17,14 +17,15 @@ export default async function AiInsightsPage({ searchParams }: AiInsightsPagePro
   if (!user) redirect('/sign-in');
 
   const query = await searchParams;
-  const { input: periodInput } = resolveValidReportingPeriod(toSearchParams(query));
+  const { input: periodInput, period: resolvedPeriod } = resolveValidReportingPeriod(toSearchParams(query));
 
-  const result = await getAiFinancialInsights(periodInput);
+  const result = await getAiFinancialInsights(periodInput, { generateAi: false });
 
   return (
     <AiInsightsView
       initialData={result.status === 'success' ? result.data : null}
       period={periodInput}
+      resolvedPeriod={resolvedPeriod}
       error={result.status !== 'success' ? result.message : undefined}
     />
   );

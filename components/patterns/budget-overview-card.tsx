@@ -1,19 +1,17 @@
 "use client";
 
 import { motion } from "motion/react";
-import { AlertTriangle, CheckCircle2, CreditCard, Plus, Wallet } from "lucide-react";
-import { useState } from "react";
-import { setBudgetResult } from "@/app/actions/setBudget";
-import { Button, Dialog, Field } from "@/components/ui";
+import { AlertTriangle, CheckCircle2, CreditCard, Wallet } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
 import { cn } from "@/lib/ui/cn";
 import type { BudgetMetric, CategoryBreakdownRow } from "@/lib/domain/types";
+import { SetBudgetDialog } from "@/components/patterns/set-budget-dialog";
 
 export interface BudgetOverviewCardProps {
   budget: BudgetMetric;
   categoryBreakdown: readonly CategoryBreakdownRow[];
   currency: string;
-  onBudgetSaved?: () => Promise<void>;
+  onBudgetSaved?: () => void | Promise<void>;
 }
 
 function utilBar(percentage: number): "safe" | "caution" | "danger" {
@@ -158,77 +156,6 @@ function CategoryRow({
 }
 
 /* ────────────────────────────────────────────────────────────
-   SET BUDGET DIALOG
-   ──────────────────────────────────────────────────────────── */
-
-function SetBudgetDialog({ currency, onSaved }: { currency: string; onSaved?: () => Promise<void> }) {
-  const [open, setOpen] = useState(false);
-  const [amount, setAmount] = useState("");
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const today = new Date().toISOString().slice(0, 10);
-
-  const submit = async () => {
-    setPending(true);
-    setError(undefined);
-    try {
-      const result = await setBudgetResult({ amount, effectiveFrom: today, currency });
-      if (result.status === "success") {
-        setOpen(false);
-        setAmount("");
-        await onSaved?.();
-        return;
-      }
-      setError(result.message);
-    } catch {
-      setError("The budget could not be saved. Please retry.");
-    } finally {
-      setPending(false);
-    }
-  };
-
-  return (
-    <Dialog
-      closeLabel="Close set budget"
-      description="Set the monthly budget used to evaluate spending against your target."
-      onOpenChange={setOpen}
-      open={open}
-      title="Set budget"
-      trigger={
-        <Button
-          icon={<Plus size={14} />}
-          intent="secondary"
-          label="Set budget"
-        />
-      }
-    >
-      <form
-        className="grid gap-5"
-        noValidate
-        onSubmit={(e) => { e.preventDefault(); void submit(); }}
-      >
-        <Field
-          disabled={pending}
-          error={error}
-          id="budget-amount-overview"
-          label={`Monthly budget amount (${currency})`}
-          min="0.01"
-          onChange={(e) => setAmount(e.target.value)}
-          required
-          step="0.01"
-          type="number"
-          value={amount}
-        />
-        <div className="flex flex-wrap justify-end gap-3 border-t border-border pt-5">
-          <Button disabled={pending} intent="secondary" label="Cancel" onClick={() => setOpen(false)} />
-          <Button label="Save budget" loading={pending} type="submit" />
-        </div>
-      </form>
-    </Dialog>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────
    MAIN COMPONENT
    ──────────────────────────────────────────────────────────── */
 
@@ -274,11 +201,16 @@ export function BudgetOverviewCard({
       className="relative overflow-hidden glass-vessel"
     >
       {/* Header */}
-      <header className="flex items-center justify-between px-5 pt-5 pb-4">
+      <header className="flex items-center justify-between gap-2 px-5 pt-5 pb-4">
         <h2 className="text-sm font-semibold text-foreground" id="budget-overview-title">
           Budget Overview
         </h2>
-        {hasBudget && <StatusPill status={budget.status} />}
+        <div className="flex items-center gap-2">
+          {hasBudget && <StatusPill status={budget.status} />}
+          {hasBudget && (
+            <SetBudgetDialog currency={currency} label="Update budget" onSaved={onBudgetSaved} />
+          )}
+        </div>
       </header>
 
       {!hasBudget ? (

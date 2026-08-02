@@ -144,6 +144,7 @@ function ThemeState({
     useState<AppearancePreference>(initialAppearance);
   const [density, setDensityState] = useState<ContentDensity>(initialDensity);
   const hasHydratedAppearance = useRef(false);
+  const hasHydratedDensity = useRef(false);
 
   const systemAppearance = isResolvedAppearance(systemTheme)
     ? systemTheme
@@ -169,6 +170,9 @@ function ThemeState({
   }, []);
 
   useEffect(() => {
+    if (hasHydratedDensity.current) return;
+    hasHydratedDensity.current = true;
+
     const rootDensity = document.documentElement.dataset.density;
     const cookieDensity = readPreferenceCookie(
       document.cookie,
@@ -192,7 +196,8 @@ function ThemeState({
     setDensityState(hydratedDensity);
     updateBrowserDensity(hydratedDensity);
     persistPreference(DENSITY_COOKIE_NAME, hydratedDensity, DENSITY_STORAGE_KEY);
-  }, [initialDensity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     updateBrowserAppearance(appearance, resolvedAppearance);

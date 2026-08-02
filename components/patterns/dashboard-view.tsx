@@ -1,22 +1,15 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
-import { ForecastCard } from "@/components/patterns/forecast-card";
 import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
-import { QuickActionsCard } from "@/components/patterns/quick-actions-card";
 import { RecentTransactionsCard } from "@/components/patterns/recent-transactions-card";
 import { SpendingOverviewPanel } from "@/components/patterns/spending-overview-panel";
-import { AIFinancialCoach, generateAICoachInsight } from "@/components/patterns/ai-financial-coach";
-import { MonthlySnapshot } from "@/components/patterns/monthly-snapshot";
-import {
-  DateText,
-  LinkButton,
-} from "@/components/ui";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
+import { MonthSwitcher } from "@/components/patterns/month-switcher";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import type { ReportingPeriod } from "@/lib/domain/types";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
@@ -116,33 +109,23 @@ function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parame
 }
 
 export function DashboardView({ dashboard, period }: DashboardViewProps) {
+  const router = useRouter();
   const currentDashboard = dashboard;
   const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
 
   const aiInsight = generateDashboardAIInsight(currentDashboard);
 
-  const coachInsight = generateAICoachInsight(currentDashboard);
-
   return (
     <div className="grid gap-6">
-      <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-display-xl font-bold text-primary-fixed drop-shadow-[0_0_10px_rgba(0,220,229,0.3)]">Dashboard</h1>
-          <p className="mt-1 text-sm text-on-surface-variant/60">
-            {currentDashboard.period.label}
-            {currentDashboard.updatedAt ? (
-              <>
-                {" · "}Updated <DateText format="date-time" value={currentDashboard.updatedAt} />
-              </>
-            ) : null}
-          </p>
-        </div>
+      <header className="flex min-w-0 items-center justify-between">
+        <h1 className="text-display-2xl font-bold tracking-tight text-primary-fixed">Dashboard</h1>
+        <MonthSwitcher period={currentDashboard.period} />
       </header>
 
       <motion.section
         animate="visible"
         aria-label="Financial overview"
-        className="grid gap-4"
+        className="grid gap-5"
         initial="hidden"
         variants={listContainerVariants}
       >
@@ -165,93 +148,41 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
           />
         </motion.div>
 
-        <motion.div variants={listItemVariants}>
-          <QuickActionsCard
-            onAddExpense={() => {
-              window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }));
-            }}
-            onAddIncome={() => {
-              window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "income" } }));
-            }}
-          />
-        </motion.div>
+        <div
+          aria-label="Dashboard reporting data"
+          className="grid gap-5 lg:grid-cols-12"
+        >
+          <div className="grid gap-5 lg:col-span-7">
+            <SpendingOverviewPanel
+              currency={currentDashboard.currency}
+              period={currentDashboard.period.label}
+              incomeInsight={currentDashboard.insights.income}
+              spendingInsight={currentDashboard.insights.spending}
+              trendModel={currentDashboard.trend}
+            />
+            <RecentTransactionsCard
+              allRecordsHref={appPeriodHref("records", period) ?? "/records"}
+              currency={currentDashboard.currency}
+              transactions={currentDashboard.recentTransactions}
+            />
+          </div>
+
+          <div className="grid gap-5 lg:col-span-5">
+            <BudgetOverviewCard
+              budget={currentDashboard.kpis.budget}
+              categoryBreakdown={currentDashboard.categoryBreakdown}
+              currency={currentDashboard.currency}
+              onBudgetSaved={() => router.refresh()}
+            />
+            <CategoryBreakdownPanel
+              breakdown={currentDashboard.categoryBreakdown}
+              currency={currentDashboard.currency}
+              period={currentDashboard.period.label}
+              totalSpendingMinor={currentDashboard.insights.spending.currentMinor}
+            />
+          </div>
+        </div>
       </motion.section>
-
-      <motion.section
-        aria-label="AI Financial Coach"
-        variants={listContainerVariants}
-      >
-        <AIFinancialCoach
-          insight={coachInsight}
-          currency={currentDashboard.currency}
-        />
-      </motion.section>
-
-      <ForecastCard
-        period={currentDashboard.period}
-        currency={currentDashboard.currency}
-      />
-
-      <div
-        aria-label="Dashboard reporting data"
-        className="grid gap-5 lg:grid-cols-12"
-      >
-        <div className="grid gap-5 lg:col-span-7">
-          <SpendingOverviewPanel
-            currency={currentDashboard.currency}
-            period={currentDashboard.period.label}
-            incomeInsight={currentDashboard.insights.income}
-            spendingInsight={currentDashboard.insights.spending}
-            trendModel={currentDashboard.trend}
-          />
-          <RecentTransactionsCard
-            allRecordsHref={appPeriodHref("records", period) ?? "/records"}
-            currency={currentDashboard.currency}
-            transactions={currentDashboard.recentTransactions}
-          />
-        </div>
-
-        <div className="grid gap-5 lg:col-span-5">
-          <BudgetOverviewCard
-            budget={currentDashboard.kpis.budget}
-            categoryBreakdown={currentDashboard.categoryBreakdown}
-            currency={currentDashboard.currency}
-          />
-          <CategoryBreakdownPanel
-            breakdown={currentDashboard.categoryBreakdown}
-            currency={currentDashboard.currency}
-            period={currentDashboard.period.label}
-            totalSpendingMinor={currentDashboard.insights.spending.currentMinor}
-          />
-        </div>
-      </div>
-
-      <MonthlySnapshot
-        currency={currentDashboard.currency}
-        snapshot={currentDashboard.snapshot}
-      />
-
-      <section
-        aria-labelledby="insights-cta-title"
-        className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/50 bg-surface px-5 py-4"
-      >
-        <div>
-          <h2
-            className="text-interface-sm font-semibold text-foreground"
-            id="insights-cta-title"
-          >
-            Want AI-powered insights?
-          </h2>
-          <p className="mt-0.5 text-interface-xs text-foreground-secondary">
-            Get personalized financial insights powered by AI.
-          </p>
-        </div>
-        <LinkButton
-          href={insightsHref}
-          icon={<ArrowUpRight size={16} />}
-          label="Open AI insights"
-        />
-      </section>
     </div>
   );
 }

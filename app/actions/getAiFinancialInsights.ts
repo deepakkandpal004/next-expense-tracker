@@ -77,6 +77,7 @@ function calculateFinancialHealth(score: {
 
 export async function getAiFinancialInsights(
   period: ReportingPeriod,
+  options: { generateAi?: boolean } = {},
 ): Promise<ActionResult<AiFinancialInsightsData, 'period'>> {
   const user = await getAuthUser();
   if (!user) {
@@ -243,29 +244,32 @@ export async function getAiFinancialInsights(
       }] : []),
     ];
 
-    // Generate AI insights using OpenAI
+    // Generate AI insights using OpenAI — only on demand, never during page
+    // renders, since the provider call can take seconds and block navigation.
     let aiInsights: AIInsight[] = [];
-    try {
-      const providerPayload: AiProviderPayload = {
-        period: {
-          start: normalized.period.start,
-          end: normalized.period.end,
-          label: normalized.period.label,
-        },
-        currency: dashboard.currency,
-        transactionCount: dashboard.snapshot.transactionCount,
-        incomeMinor: dashboard.insights.income.currentMinor,
-        spendingMinor: dashboard.insights.spending.currentMinor,
-        balanceMinor: dashboard.insights.balance.currentMinor,
-        categorySpending: dashboard.categoryBreakdown.map(cat => ({
-          categoryId: cat.label,
-          amountMinor: cat.amountMinor,
-        })),
-      };
-      aiInsights = await generateExpenseInsights(providerPayload);
-    } catch (aiError) {
-      console.error('OpenAI insights generation failed, using fallback:', aiError);
-      // Continue with empty AI insights - the rule-based insights will still be shown
+    if (options.generateAi !== false) {
+      try {
+        const providerPayload: AiProviderPayload = {
+          period: {
+            start: normalized.period.start,
+            end: normalized.period.end,
+            label: normalized.period.label,
+          },
+          currency: dashboard.currency,
+          transactionCount: dashboard.snapshot.transactionCount,
+          incomeMinor: dashboard.insights.income.currentMinor,
+          spendingMinor: dashboard.insights.spending.currentMinor,
+          balanceMinor: dashboard.insights.balance.currentMinor,
+          categorySpending: dashboard.categoryBreakdown.map(cat => ({
+            categoryId: cat.label,
+            amountMinor: cat.amountMinor,
+          })),
+        };
+        aiInsights = await generateExpenseInsights(providerPayload);
+      } catch (aiError) {
+        console.error('OpenAI insights generation failed, using fallback:', aiError);
+        // Continue with empty AI insights - the rule-based insights will still be shown
+      }
     }
 
     const result: AiFinancialInsightsData = {

@@ -10,10 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-plus-jakarta)', 'sans-serif'],
-        sora: ['var(--font-plus-jakarta)', 'sans-serif'],
-        geist: ['var(--font-geist)', 'monospace'],
-        'plus-jakarta': ['var(--font-plus-jakarta)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+        sora: ['var(--font-inter)', 'sans-serif'],
+        manrope: ['var(--font-manrope)', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
       },
       colors: {
         // shadcn/ui semantic aliases

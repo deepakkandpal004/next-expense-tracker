@@ -19,6 +19,7 @@ import {
 } from "@/lib/domain/record-selection";
 import { withReportingPeriodSearchParams } from "@/lib/domain/reporting-period";
 import type { ReportingPeriod, ResolvedPeriod, SortDirection, SortKey, Transaction, TransactionQuery, TransactionType } from "@/lib/domain/types";
+import { MonthSwitcher } from "@/components/patterns/month-switcher";
 import { TransactionTable } from "./transaction-table";
 import { TransactionFilters } from "./transaction-filters";
 import { TransactionPagination } from "./transaction-pagination";
@@ -60,6 +61,13 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
   const [anomalyIds, setAnomalyIds] = useState<ReadonlySet<string> | undefined>();
+
+  // Keep local rows in sync with the server-rendered payload: useState only
+  // initializes once, so after router.refresh() delivers new records the table
+  // would otherwise show stale data until a full page reload.
+  useEffect(() => {
+    setItems(records);
+  }, [records]);
 
   useEffect(() => {
     getForecastSnapshot(resolvedPeriod).then(r => {
@@ -187,10 +195,10 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
 
   return (
     <div className="grid gap-6">
-      <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-display-xl font-bold text-on-surface">Transactions</h1>
-          <p className="mt-1 text-body text-on-surface-variant/60">{resolvedPeriod.label}</p>
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <h1 className="text-display-2xl font-bold tracking-tight text-on-surface">Transactions</h1>
+          <MonthSwitcher period={resolvedPeriod} />
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button icon={<Upload size={16} />} intent="secondary" label="Import" onClick={() => setImportOpen(true)} />
@@ -203,7 +211,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
 
       <section
         aria-label="Filter and sort records"
-        className="glass-vessel p-4"
+        className="relative z-10 glass-vessel p-4"
       >
         <TransactionFilters
           search={query.search}

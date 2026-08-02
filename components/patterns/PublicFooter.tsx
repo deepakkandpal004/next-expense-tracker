@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { PUBLIC_DISCLOSURE_NAVIGATION, PUBLIC_NAVIGATION, SUPPORT_EMAIL, SUPPORT_PHONE_LABEL } from './public-navigation';
+import { PUBLIC_DISCLOSURE_NAVIGATION, PUBLIC_NAVIGATION, SUPPORT_EMAIL, SUPPORT_EMAIL_ALT } from './public-navigation';
 
 export function PublicFooter() {
   return (
-    <footer className="relative border-t border-white/[0.06] bg-[#0B0F14]">
+    <footer className="relative isolate border-t border-white/[0.06] bg-[#0B0F14]">
       {/* Subtle gradient glow at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00DCE5]/20 to-transparent" />
 
@@ -57,10 +57,10 @@ export function PublicFooter() {
               </li>
               <li>
                 <a
-                  href={`tel:+919123495043`}
+                  href={`mailto:${SUPPORT_EMAIL_ALT}`}
                   className="text-sm text-[#9AA3AF] transition-colors duration-200 hover:text-white"
                 >
-                  {SUPPORT_PHONE_LABEL}
+                  {SUPPORT_EMAIL_ALT}
                 </a>
               </li>
             </ul>

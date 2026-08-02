@@ -21,7 +21,7 @@ function parseRequest(input: DeleteRecordRequest): ParseResult<DeleteRecordReque
 }
 
 export async function deleteTransactionRecord(input: DeleteRecordRequest): Promise<DeleteRecordResult> {
-  return run({ scope: 'record', input, parse: parseRequest, execute: async (actor, request): Promise<DeleteData> => { const mutation = await deleteRecordOnce(db, actor.userId, request.requestId, request.recordId); return { recordId: mutation.value.id, requestId: request.requestId, replayed: mutation.replayed }; }, message: (data) => data.replayed ? 'Transaction was already deleted.' : 'Transaction deleted.', revalidatePaths: ['/', '/dashboard', '/records', '/insights'], preserve: (request): DeleteData => ({ recordId: request.recordId, requestId: request.requestId }) });
+  return run({ scope: 'record', input, parse: parseRequest, execute: async (actor, request): Promise<DeleteData> => { const mutation = await deleteRecordOnce(db, actor.userId, request.requestId, request.recordId); return { recordId: mutation.value.id, requestId: request.requestId, replayed: mutation.replayed }; }, message: (data) => data.replayed ? 'Transaction was already deleted.' : 'Transaction deleted.', revalidatePaths: ['/', '/dashboard', '/records', '/ai-insights'], preserve: (request): DeleteData => ({ recordId: request.recordId, requestId: request.requestId }) });
 }
 
 /** Compatibility adapter for the existing record card; new workflows must retain requestId for retries. */

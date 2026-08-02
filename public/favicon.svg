@@ -1,20 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00DCE5"/>
-      <stop offset="100%" stop-color="#00DCE5" stop-opacity="0.6"/>
-    </linearGradient>
-  </defs>
-  
-  <!-- Background -->
+  <!-- Minimal brand mark: single upward chevron -->
   <rect width="512" height="512" rx="108" fill="#0B0F14"/>
-  
-  <!-- Abstract upward chart line forming "E" shape -->
-  <path d="M140 380 L140 200 L280 200" stroke="url(#glow)" stroke-width="48" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  
-  <!-- Rising bars -->
-  <rect x="200" y="280" width="40" height="100" rx="8" fill="#00DCE5" opacity="0.3"/>
-  <rect x="260" y="240" width="40" height="140" rx="8" fill="#00DCE5" opacity="0.5"/>
-  <rect x="320" y="190" width="40" height="190" rx="8" fill="#00DCE5" opacity="0.7"/>
-  <rect x="380" y="140" width="40" height="240" rx="8" fill="#00DCE5" opacity="0.9"/>
+  <path d="M160 330 L256 170 L352 330" stroke="#00DCE5" stroke-width="56" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>

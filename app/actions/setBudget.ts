@@ -72,6 +72,6 @@ export async function setBudgetResult(input: SetBudgetRequest): Promise<SetBudge
         currency: command.currency,
       }),
     message: 'Budget saved.',
-    revalidatePaths: ['/dashboard'],
+    revalidatePaths: ['/', '/dashboard', '/budgets'],
   });
 }

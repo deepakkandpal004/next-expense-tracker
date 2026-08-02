@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Plus_Jakarta_Sans, Geist } from 'next/font/google';
+import {  Inter, Manrope } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
@@ -13,10 +13,10 @@ import {
 } from '@/lib/preferences/preferences';
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist' });
+const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: '--font-plus-jakarta',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
@@ -55,7 +55,7 @@ export default async function RootLayout({
       lang='en'
       data-appearance-preference={initialAppearance}
       data-density={initialDensity}
-      suppressHydrationWarning className={cn("dark", geist.variable)}
+      suppressHydrationWarning className={cn("dark", manrope.variable)}
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.light} />
@@ -69,7 +69,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}
         />
       </head>
-      <body className={`${plusJakarta.variable} ${geist.variable} antialiased`}>
+      <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         <a
           className='sr-only fixed left-4 top-4 z-50 rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground focus:not-sr-only focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
           href='#main-content'

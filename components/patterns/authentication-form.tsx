@@ -3,7 +3,7 @@
 import type { ChangeEvent, FormEvent, ReactNode, RefObject } from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Field, StatusRegion } from '@/components/ui';
 
@@ -193,10 +193,6 @@ export function AuthTaskLinks() {
       <Link className="text-[#00DCE5] hover:text-[#00DCE5]/80 transition-colors font-medium" href="/sign-up">
         Create account
       </Link>
-      <span className="text-white/10">|</span>
-      <Link className="text-[#00DCE5] hover:text-[#00DCE5]/80 transition-colors font-medium" href="/forgot-password">
-        Reset password
-      </Link>
     </nav>
   );
 }
@@ -216,79 +212,17 @@ export function getEmailError(value: string) {
 
 export function AuthPageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="relative flex min-h-screen">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-12">
       {/* Background */}
-      <div className="pointer-events-none fixed inset-0 bg-[#0B0F14]">
-        <div className="absolute left-1/4 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
-        <div className="absolute right-1/4 bottom-0 h-[500px] w-[500px] rounded-full bg-[#A855F7]/[0.03] blur-[100px]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0A1322] via-[#0B0F14] to-[#0A0B0D]">
+        <div className="absolute left-1/2 top-[-25%] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.06] blur-[140px]" />
+        <div className="absolute bottom-[-15%] right-[-8%] h-[480px] w-[480px] rounded-full bg-[#A855F7]/[0.05] blur-[120px]" />
       </div>
 
-      {/* Form Side */}
-      <div className="relative z-10 flex w-full items-center justify-center px-6 py-12 lg:w-1/2 lg:px-12">
-        <div className="w-full max-w-[400px]">
+      {/* Form card */}
+      <div className="relative z-10 w-full max-w-[420px]">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#0B0F14]/70 p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:p-10">
           {children}
-        </div>
-      </div>
-
-      {/* Branding Side */}
-      <div className="relative z-10 hidden w-1/2 items-center justify-center border-l border-white/[0.06] lg:flex">
-        <div className="w-full max-w-md px-12">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            {/* Features */}
-            <div className="space-y-8">
-              {[
-                {
-                  icon: Sparkles,
-                  title: 'AI-Powered Insights',
-                  desc: 'Smart categorization and spending forecasts.',
-                  color: '#00DCE5',
-                },
-                {
-                  icon: ArrowRight,
-                  title: 'Track Smarter',
-                  desc: 'Record transactions and understand your patterns.',
-                  color: '#A855F7',
-                },
-              ].map((feature, i) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-                  className="flex items-start gap-4"
-                >
-                  <div
-                    className="flex size-10 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: `${feature.color}15` }}
-                  >
-                    <feature.icon size={20} style={{ color: feature.color }} />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-white">{feature.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-[#9AA3AF]">{feature.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="mt-12 grid grid-cols-3 gap-4 border-t border-white/[0.06] pt-8">
-              {[
-                { value: '10K+', label: 'Transactions' },
-                { value: '99.9%', label: 'Uptime' },
-                { value: '100%', label: 'Free' },
-              ].map((stat) => (
-                <div key={stat.label} className="min-w-0">
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="mt-1 text-xs text-[#9AA3AF]">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
     </div>

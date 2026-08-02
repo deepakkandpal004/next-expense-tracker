@@ -27,6 +27,8 @@ function KpiCard({
   changePercent,
   trend,
   sublabel,
+  positiveWhenUp = false,
+  suffix = "%",
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -35,7 +37,11 @@ function KpiCard({
   changePercent?: number;
   trend?: "up" | "down";
   sublabel?: string;
+  positiveWhenUp?: boolean;
+  suffix?: string;
 }) {
+  const isPositive = positiveWhenUp ? trend === "up" : trend === "down";
+  const tone = isPositive ? "bg-success-surface text-success" : "bg-danger-surface text-danger";
   return (
     <motion.div
       variants={listItemVariants}
@@ -61,13 +67,11 @@ function KpiCard({
             <span
               className={cn(
                 "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-                trend === "up"
-                  ? "bg-danger-surface text-danger"
-                  : "bg-success-surface text-success",
+                tone,
               )}
             >
               {trend === "up" ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-              {trend === "up" ? "+" : ""}{changePercent}%
+              {trend === "up" ? "+" : ""}{changePercent}{suffix}
             </span>
             <span className="text-[10px] text-foreground-secondary">vs last month</span>
           </div>
@@ -126,7 +130,9 @@ export function SummaryKpiRow({
         label="Financial Health"
         value={`${financialHealth.score} / 100`}
         changePercent={financialHealth.changePoints}
-        trend={financialHealth.changePoints >= 0 ? "down" : "up"}
+        trend={financialHealth.changePoints >= 0 ? "up" : "down"}
+        positiveWhenUp
+        suffix=""
         sublabel={`${financialHealth.changePoints >= 0 ? "+" : ""}${financialHealth.changePoints} points vs last month`}
       />
     </motion.div>

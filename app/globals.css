@@ -248,7 +248,7 @@ body {
   overflow-x: clip;
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: var(--font-plus-jakarta), Arial, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   text-rendering: optimizeLegibility;
@@ -267,18 +267,18 @@ label,
 nav,
 .font-heading,
 .font-sans {
-  font-family: var(--font-plus-jakarta), Arial, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
 }
 
 h1,
 .font-display,
 .font-sora,
 .product-mark {
-  font-family: var(--font-plus-jakarta), Arial, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
 }
 
-.font-geist {
-  font-family: var(--font-geist), monospace;
+.font-manrope {
+  font-family: var(--font-manrope), sans-serif;
 }
 
 h1,
@@ -952,7 +952,7 @@ p {
    ──────────────────────────────────────────────────────────── */
 
 .text-display-hero {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;
   line-height: 1.1;
@@ -960,7 +960,7 @@ p {
 }
 
 .text-display-xl {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.15;
@@ -968,7 +968,7 @@ p {
 }
 
 .text-display-lg {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
   line-height: 1.2;
@@ -976,14 +976,14 @@ p {
 }
 
 .text-display-md {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 600;
   line-height: 1.25;
 }
 
 .text-display-sm {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 600;
   line-height: 1.3;
@@ -2031,22 +2031,26 @@ p {
 
 /* ─── Glass vessel card ─── */
 .glass-vessel {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    border-color 0.4s var(--motion-ease-emphasized),
+    box-shadow 0.4s var(--motion-ease-emphasized),
+    background-color 0.4s var(--motion-ease-emphasized);
 }
 
 .glass-vessel:hover {
-  border-color: rgba(0, 220, 229, 0.15);
-  box-shadow: 0 0 30px rgba(0, 220, 229, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* ─── Pulse logo glow ─── */
 .pulse-logo {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #63f7ff;

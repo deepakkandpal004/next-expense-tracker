@@ -125,6 +125,50 @@ export function previousResolvedPeriod(period: ResolvedPeriod): ResolvedPeriod {
 }
 
 /**
+ * Produces the next equivalent reporting period. Calendar presets shift by a full
+ * calendar month so 28/29/30/31-day differences are preserved. Custom ranges shift by
+ * their own length, starting the day after the current period ends.
+ */
+export function nextResolvedPeriod(period: ResolvedPeriod): ResolvedPeriod {
+  if (period.kind === "current-month" || period.kind === "previous-month") {
+    const parsedStart = new Date(`${period.start}T00:00:00Z`);
+    const nextStart = new Date(
+      Date.UTC(parsedStart.getUTCFullYear(), parsedStart.getUTCMonth() + 1, 1),
+    );
+    const nextEnd = new Date(
+      Date.UTC(nextStart.getUTCFullYear(), nextStart.getUTCMonth() + 1, 0),
+    );
+    return resolvedPeriod(period.kind, toISODate(nextStart), toISODate(nextEnd));
+  }
+
+  const days = daysInResolvedPeriod(period);
+  const nextStart = shiftISODate(period.end, 1);
+  const nextEnd = shiftISODate(nextStart, days - 1);
+  return resolvedPeriod("custom", nextStart, nextEnd);
+}
+
+/** The calendar-month period containing an ISO date (for example a transaction date). */
+export function reportingPeriodForISODate(
+  isoDate: string,
+): ResolvedPeriod | null {
+  const parsed = new Date(isoDate);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  const start = new Date(Date.UTC(parsed.getUTCFullYear(), parsed.getUTCMonth(), 1));
+  const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0));
+  return resolvedPeriod("custom", toISODate(start), toISODate(end));
+}
+
+/** Day-granular inclusion check for an ISO date within a resolved period (UTC). */
+export function resolvedPeriodIncludesDate(
+  period: ResolvedPeriod,
+  isoDate: string,
+): boolean {
+  const day = isoDate.slice(0, 10);
+  return day >= period.start && day <= period.end;
+}
+
+/**
  * Validates user input without rewriting it. Invalid custom values remain in
  * `input` so form fields can display exactly what the user entered.
  */

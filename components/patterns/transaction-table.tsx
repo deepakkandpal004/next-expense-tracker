@@ -190,13 +190,13 @@ export function TransactionTable({
                       {categoryDef?.label ?? row.categoryId}
                     </Badge>
                   </td>
-                  <td className="hidden px-4 py-3 text-sm text-[#9AA3AF] font-geist sm:table-cell">
+                  <td className="hidden px-4 py-3 text-sm text-[#9AA3AF] font-manrope sm:table-cell">
                     <DateText value={row.occurredOn} />
                   </td>
                   <td className="px-4 py-3 text-right">
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1 text-sm font-bold tabular-nums font-geist",
+                        "inline-flex items-center gap-1 text-sm font-bold tabular-nums font-manrope",
                         isIncome ? "text-[#22C55E]" : "text-[#F04438]",
                       )}
                     >

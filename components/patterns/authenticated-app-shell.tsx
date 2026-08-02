@@ -4,13 +4,24 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import AddNewRecord, { type TransactionSubmission } from "@/components/AddNewRecord";
 import { createTransaction, type CreateTransactionResult } from "@/app/actions/addExpenseRecord";
+import {
+  parseReportingPeriod,
+  reportingPeriodForISODate,
+  resolvedPeriodIncludesDate,
+  withReportingPeriodSearchParams,
+} from "@/lib/domain/reporting-period";
 import { Sheet } from "@/components/ui";
 import type { TransactionType } from "@/lib/domain/types";
 import { AppHeader } from "./app-header";
-import { AppSidebar, type SidebarDestinationId, type SidebarUser } from "./app-sidebar";
+import { AppSidebar, type SidebarDestinationId } from "./app-sidebar";
 
 /** Serializable account data deliberately excludes passwords, tokens, and timestamps. */
-export type SafeUser = SidebarUser;
+export interface SafeUser {
+  id: string;
+  email: string;
+  name: string | null;
+  imageUrl: string | null;
+}
 
 interface AuthenticatedAppShellProps {
   children: ReactNode;
@@ -68,6 +79,24 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   const submitTransaction = async (submission: TransactionSubmission): Promise<CreateTransactionResult> => {
     const result = await createTransaction(submission);
     if (result.status === "success") {
+      const transactionDate = result.data.transaction?.date;
+      if (transactionDate) {
+        const recordPeriod = reportingPeriodForISODate(transactionDate);
+        const current = parseReportingPeriod(new URLSearchParams(window.location.search));
+        if (recordPeriod && current.valid && !resolvedPeriodIncludesDate(current.period, transactionDate)) {
+          const params = withReportingPeriodSearchParams(window.location.search, {
+            kind: "custom",
+            start: recordPeriod.start,
+            end: recordPeriod.end,
+          });
+          if (params) {
+            const query = params.toString();
+            router.replace(`${pathname}${query ? `?${query}` : ""}`);
+            router.refresh();
+            return result;
+          }
+        }
+      }
       router.refresh();
     }
     return result;
@@ -103,9 +132,6 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           activeDestinationId={activeDestinationId}
           hrefFor={hrefFor}
           onNewRecord={handleNewRecord}
-          onSignOut={signOut}
-          signingOut={signingOut}
-          user={user}
         />
       </div>
 
@@ -143,9 +169,6 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           hrefFor={hrefFor}
           onNavigate={() => setMobileNavOpen(false)}
           onNewRecord={() => { setMobileNavOpen(false); handleNewRecord(); }}
-          onSignOut={signOut}
-          signingOut={signingOut}
-          user={user}
         />
       </Sheet>
 

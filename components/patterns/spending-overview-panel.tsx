@@ -64,55 +64,53 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
       {
         label: "Income",
         data: incomeData,
-        borderColor: "var(--color-kpi-income)",
+        borderColor: "#4ADE80",
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: canvasCtx, chartArea } = chart;
-          if (!chartArea) return "rgba(34, 197, 94, 0.08)";
+          if (!chartArea) return "rgba(74, 222, 128, 0.08)";
           const gradient = canvasCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, "rgba(34, 197, 94, 0.15)");
-          gradient.addColorStop(0.5, "rgba(34, 197, 94, 0.05)");
-          gradient.addColorStop(1, "rgba(34, 197, 94, 0)");
+          gradient.addColorStop(0, "rgba(74, 222, 128, 0.18)");
+          gradient.addColorStop(0.5, "rgba(74, 222, 128, 0.05)");
+          gradient.addColorStop(1, "rgba(74, 222, 128, 0)");
           return gradient;
         },
-        pointBackgroundColor: "var(--color-kpi-income)",
-        pointBorderColor: "var(--color-surface)",
+        pointBackgroundColor: "#4ADE80",
+        pointBorderColor: "#0B0F14",
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderWidth: 3,
-        pointHoverBorderColor: "var(--color-surface)",
+        pointHoverBorderColor: "#0B0F14",
         borderWidth: 2.5,
         tension: 0.4,
         fill: true,
-        semanticToken: "kpi-income",
-      } as ChartDataset<"line"> & { semanticToken: string },
+      } as ChartDataset<"line">,
       {
         label: "Spending",
         data: spendingData,
-        borderColor: "var(--color-kpi-expense)",
+        borderColor: "#FF7AC6",
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: canvasCtx, chartArea } = chart;
-          if (!chartArea) return "rgba(249, 115, 22, 0.06)";
+          if (!chartArea) return "rgba(255, 122, 198, 0.08)";
           const gradient = canvasCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, "rgba(249, 115, 22, 0.12)");
-          gradient.addColorStop(0.5, "rgba(249, 115, 22, 0.04)");
-          gradient.addColorStop(1, "rgba(249, 115, 22, 0)");
+          gradient.addColorStop(0, "rgba(255, 122, 198, 0.15)");
+          gradient.addColorStop(0.5, "rgba(255, 122, 198, 0.04)");
+          gradient.addColorStop(1, "rgba(255, 122, 198, 0)");
           return gradient;
         },
-        pointBackgroundColor: "var(--color-kpi-expense)",
-        pointBorderColor: "var(--color-surface)",
+        pointBackgroundColor: "#FF7AC6",
+        pointBorderColor: "#0B0F14",
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderWidth: 3,
-        pointHoverBorderColor: "var(--color-surface)",
+        pointHoverBorderColor: "#0B0F14",
         borderWidth: 2.5,
         tension: 0.4,
         fill: true,
-        semanticToken: "kpi-expense",
-      } as ChartDataset<"line"> & { semanticToken: string },
+      } as ChartDataset<"line">,
     ],
   };
 }
@@ -127,25 +125,23 @@ function buildBarData(model: ChartModel): ChartData<"bar"> {
       {
         label: "Income",
         data: incomeData,
-        backgroundColor: "var(--color-kpi-income)",
-        hoverBackgroundColor: "var(--color-kpi-income)",
-        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+        backgroundColor: "rgba(74, 222, 128, 0.75)",
+        hoverBackgroundColor: "#4ADE80",
+        borderRadius: 6,
         borderWidth: 0,
-        maxBarThickness: 32,
+        maxBarThickness: 24,
         borderSkipped: false,
-        semanticToken: "kpi-income",
-      } as ChartDataset<"bar"> & { semanticToken: string },
+      } as ChartDataset<"bar">,
       {
         label: "Spending",
         data: spendingData,
-        backgroundColor: "var(--color-kpi-expense)",
-        hoverBackgroundColor: "var(--color-kpi-expense)",
-        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+        backgroundColor: "rgba(255, 122, 198, 0.75)",
+        hoverBackgroundColor: "#FF7AC6",
+        borderRadius: 6,
         borderWidth: 0,
-        maxBarThickness: 32,
+        maxBarThickness: 24,
         borderSkipped: false,
-        semanticToken: "kpi-expense",
-      } as ChartDataset<"bar"> & { semanticToken: string },
+      } as ChartDataset<"bar">,
     ],
   };
 }
@@ -154,7 +150,7 @@ function buildBarData(model: ChartModel): ChartData<"bar"> {
    CHART OPTIONS (Stripe-inspired)
    ──────────────────────────────────────────────────────────── */
 
-function buildLineOptions(): ChartOptions {
+function buildLineOptions(currency: string): ChartOptions {
   return {
     animation: { duration: 800, easing: "easeOutQuart" },
     responsive: true,
@@ -164,9 +160,9 @@ function buildLineOptions(): ChartOptions {
       legend: { display: false },
       tooltip: {
         enabled: true,
-        backgroundColor: "rgba(15, 23, 42, 0.92)",
-        titleColor: "#f8fafc",
-        bodyColor: "#cbd5e1",
+        backgroundColor: "rgba(10, 15, 22, 0.95)",
+        titleColor: "#F5F7FA",
+        bodyColor: "#C5CCD6",
         borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
         padding: { top: 10, bottom: 10, left: 14, right: 14 },
@@ -180,7 +176,7 @@ function buildLineOptions(): ChartOptions {
           title: (items) => items[0]?.label ?? "",
           label: (ctx) => {
             const value = typeof ctx.raw === "number" ? ctx.raw : 0;
-            return ` ${ctx.dataset.label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+            return ` ${ctx.dataset.label}: ${currency}${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
           },
         },
       },
@@ -192,7 +188,7 @@ function buildLineOptions(): ChartOptions {
         ticks: {
           maxTicksLimit: 7,
           font: { size: 11, weight: 500 },
-          color: "var(--color-text-muted)",
+          color: "#5B6472",
           padding: 8,
         },
       },
@@ -200,19 +196,19 @@ function buildLineOptions(): ChartOptions {
         beginAtZero: true,
         border: { display: false },
         grid: {
-          color: "var(--color-border)",
-          lineWidth: 0.5,
+          color: "rgba(255, 255, 255, 0.05)",
+          lineWidth: 1,
         },
         ticks: {
           font: { size: 11 },
-          color: "var(--color-text-muted)",
+          color: "#5B6472",
           padding: 12,
           maxTicksLimit: 6,
           callback: (value) => {
             const num = typeof value === "number" ? value : 0;
-            if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
-            if (num >= 1000) return `₹${(num / 1000).toFixed(0)}K`;
-            return `₹${num}`;
+            if (num >= 100000) return `${currency}${(num / 100000).toFixed(1)}L`;
+            if (num >= 1000) return `${currency}${(num / 1000).toFixed(0)}K`;
+            return `${currency}${num}`;
           },
         },
       },
@@ -220,7 +216,7 @@ function buildLineOptions(): ChartOptions {
   } as ChartOptions;
 }
 
-function buildBarOptions(): ChartOptions {
+function buildBarOptions(currency: string): ChartOptions {
   return {
     animation: { duration: 800, easing: "easeOutQuart" },
     responsive: true,
@@ -230,9 +226,9 @@ function buildBarOptions(): ChartOptions {
       legend: { display: false },
       tooltip: {
         enabled: true,
-        backgroundColor: "rgba(15, 23, 42, 0.92)",
-        titleColor: "#f8fafc",
-        bodyColor: "#cbd5e1",
+        backgroundColor: "rgba(10, 15, 22, 0.95)",
+        titleColor: "#F5F7FA",
+        bodyColor: "#C5CCD6",
         borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
         padding: { top: 10, bottom: 10, left: 14, right: 14 },
@@ -246,7 +242,7 @@ function buildBarOptions(): ChartOptions {
           title: (items) => items[0]?.label ?? "",
           label: (ctx) => {
             const value = typeof ctx.raw === "number" ? ctx.raw : 0;
-            return ` ${ctx.dataset.label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+            return ` ${ctx.dataset.label}: ${currency}${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
           },
         },
       },
@@ -258,7 +254,7 @@ function buildBarOptions(): ChartOptions {
         ticks: {
           maxTicksLimit: 7,
           font: { size: 11, weight: 500 },
-          color: "var(--color-text-muted)",
+          color: "#5B6472",
           padding: 8,
         },
       },
@@ -266,19 +262,19 @@ function buildBarOptions(): ChartOptions {
         beginAtZero: true,
         border: { display: false },
         grid: {
-          color: "var(--color-border)",
-          lineWidth: 0.5,
+          color: "rgba(255, 255, 255, 0.05)",
+          lineWidth: 1,
         },
         ticks: {
           font: { size: 11 },
-          color: "var(--color-text-muted)",
+          color: "#5B6472",
           padding: 12,
           maxTicksLimit: 6,
           callback: (value) => {
             const num = typeof value === "number" ? value : 0;
-            if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
-            if (num >= 1000) return `₹${(num / 1000).toFixed(0)}K`;
-            return `₹${num}`;
+            if (num >= 100000) return `${currency}${(num / 100000).toFixed(1)}L`;
+            if (num >= 1000) return `${currency}${(num / 1000).toFixed(0)}K`;
+            return `${currency}${num}`;
           },
         },
       },
@@ -337,6 +333,7 @@ export function SpendingOverviewPanel({
   trendModel,
   spendingInsight,
   period,
+  currency,
 }: SpendingOverviewPanelProps) {
   const { resolvedAppearance } = useTheme();
   const chartRef = useRef<MutableChartLike | null>(null);
@@ -346,8 +343,8 @@ export function SpendingOverviewPanel({
 
   const lineData = useMemo(() => (isReady ? buildLineData(trendModel) : null), [isReady, trendModel]);
   const barData = useMemo(() => (isReady ? buildBarData(trendModel) : null), [isReady, trendModel]);
-  const lineOptions = useMemo(() => buildLineOptions(), []);
-  const barOptions = useMemo(() => buildBarOptions(), []);
+  const lineOptions = useMemo(() => buildLineOptions(currency), [currency]);
+  const barOptions = useMemo(() => buildBarOptions(currency), [currency]);
 
   // Toggle series visibility
   const toggleSeries = (key: string) => {
@@ -384,7 +381,7 @@ export function SpendingOverviewPanel({
   };
 
   // Apply hidden series to chart data
-  const filteredLineData = useMemo(() => {
+  const filteredLineData = useMemo<ChartData<"line"> | null>(() => {
     if (!lineData) return null;
     return {
       ...lineData,
@@ -392,7 +389,7 @@ export function SpendingOverviewPanel({
     };
   }, [lineData, hiddenSeries]);
 
-  const filteredBarData = useMemo(() => {
+  const filteredBarData = useMemo<ChartData<"bar"> | null>(() => {
     if (!barData) return null;
     return {
       ...barData,
@@ -409,8 +406,8 @@ export function SpendingOverviewPanel({
   const showSuccessBanner = spendingTrend && spendingTrend.direction === "down" && spendingTrend.changePercent < -0.05;
 
   const legendSeries = [
-    { label: "Income", color: "var(--color-kpi-income)", key: "Income" },
-    { label: "Spending", color: "var(--color-kpi-expense)", key: "Spending" },
+    { label: "Income", color: "#4ADE80", key: "Income" },
+    { label: "Spending", color: "#FF7AC6", key: "Spending" },
   ];
 
   return (
@@ -419,7 +416,7 @@ export function SpendingOverviewPanel({
       className="relative overflow-hidden glass-vessel"
     >
       {/* Header */}
-      <div className="relative flex flex-wrap items-start justify-between gap-3 px-5 pt-4 pb-3">
+      <div className="relative flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-4">
         <div>
           <h2 className="text-sm font-semibold text-foreground" id="spending-overview-title">
             Income & Spending
@@ -428,17 +425,17 @@ export function SpendingOverviewPanel({
         </div>
         <div
           aria-label="Chart type"
-            className="flex overflow-hidden rounded-lg border border-border/50"
+          className="flex overflow-hidden rounded-lg border border-white/10"
           role="group"
         >
           {(["line", "bar"] as ChartVisualization[]).map((type) => (
             <button
               aria-pressed={vizType === type}
               className={cn(
-                "inline-flex min-h-[36px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
+                "inline-flex min-h-[34px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
                 vizType === type
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-transparent text-foreground-secondary hover:bg-surface-subtle",
+                  ? "bg-[#00DCE5] text-[#0B0F14]"
+                  : "bg-transparent text-foreground-secondary hover:bg-white/5",
               )}
               key={type}
               onClick={() => setVizType(type)}
@@ -452,22 +449,33 @@ export function SpendingOverviewPanel({
       </div>
 
       {/* Legend */}
-      <div className="relative px-5 pb-3">
+      <div className="relative flex items-center justify-between px-5 pb-4">
         <ChartLegend
           series={legendSeries}
           hiddenSeries={hiddenSeries}
           onToggle={toggleSeries}
         />
+        {showSuccessBanner && (
+          <motion.span
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#4ADE80]/10 px-3 py-1 text-[11px] font-semibold text-[#4ADE80]"
+          >
+            <TrendingDown aria-hidden="true" size={12} />
+            {Math.abs(spendingTrend!.changePercent * 100).toFixed(0)}% this period
+          </motion.span>
+        )}
       </div>
 
       {/* Chart */}
       <div className="relative px-5 pb-5">
-        <div className="min-h-[20rem]">
+        <div className="relative h-72 w-full sm:h-80">
           {isReady && filteredLineData && filteredBarData ? (
             <AnimatePresence mode="wait">
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
-                className="h-80"
+                className="absolute inset-0"
                 exit={{ opacity: 0, y: 4 }}
                 initial={{ opacity: 0, y: 4 }}
                 key={vizType}
@@ -497,7 +505,7 @@ export function SpendingOverviewPanel({
               </motion.div>
             </AnimatePresence>
           ) : (
-            <div className="flex h-80 flex-col items-center justify-center text-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-on-surface-variant/40">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 3v18h18" />
@@ -517,22 +525,6 @@ export function SpendingOverviewPanel({
             </div>
           )}
         </div>
-
-        {/* Success banner */}
-        {showSuccessBanner && (
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 flex items-start gap-2.5 rounded-xl border border-kpi-income/20 bg-kpi-income-surface/50 px-3.5 py-2.5"
-            exit={{ opacity: 0, y: -4 }}
-            initial={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <TrendingDown aria-hidden="true" className="mt-0.5 shrink-0 text-kpi-income" size={15} />
-            <p className="text-xs font-medium text-kpi-income-foreground">
-              Spending down {Math.abs(spendingTrend!.changePercent * 100).toFixed(0)}% vs last period. Keep it up.
-            </p>
-          </motion.div>
-        )}
       </div>
     </section>
   );

@@ -14,7 +14,7 @@ interface DashboardPageProps {
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const user = await getAuthUser();
-  if (!user) redirect('/sign-in');
+  if (!user) redirect('/api/auth/clear-session');
 
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
