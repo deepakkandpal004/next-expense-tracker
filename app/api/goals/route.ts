@@ -21,6 +21,35 @@ export async function GET() {
   }
 }
 
+export async function DELETE(request: Request) {
+  try {
+    const user = await getAuthUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await request.json();
+
+    if (!id || typeof id !== 'string') {
+      return NextResponse.json({ error: 'Goal id is required' }, { status: 400 });
+    }
+
+    const goal = await db.goal.findFirst({
+      where: { id, userId: user.id },
+    });
+    if (!goal) {
+      return NextResponse.json({ error: 'Goal not found' }, { status: 404 });
+    }
+
+    await db.goal.delete({ where: { id } });
+
+    return NextResponse.json({ success: true, id });
+  } catch (error) {
+    console.error('Goal delete error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const user = await getAuthUser();

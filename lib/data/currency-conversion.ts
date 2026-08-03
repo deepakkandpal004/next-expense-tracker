@@ -1,3 +1,5 @@
+import type { Prisma } from '@prisma/client';
+
 import { db } from '../db';
 
 const RATE_TTL_MS = 6 * 60 * 60 * 1000;
@@ -55,6 +57,7 @@ export async function countStoredAmounts(userId: string): Promise<number> {
  * mid-way can't leave half the account converted.
  */
 export async function convertUserAmounts(
+  tx: Prisma.TransactionClient,
   userId: string,
   to: string,
   rate: number,
@@ -63,46 +66,44 @@ export async function convertUserAmounts(
 
   let converted = 0;
 
-  await db.$transaction(async (tx) => {
-    const records = await tx.record.findMany({ where: { userId } });
-    if (records.length > 0) {
-      converted += records.length;
-      for (const record of records) {
-        await tx.record.update({ where: { id: record.id }, data: { amount: toTwoDecimals(record.amount) } });
-      }
+  const records = await tx.record.findMany({ where: { userId } });
+  if (records.length > 0) {
+    converted += records.length;
+    for (const record of records) {
+      await tx.record.update({ where: { id: record.id }, data: { amount: toTwoDecimals(record.amount) } });
     }
+  }
 
-    const recurring = await tx.recurringRecord.findMany({ where: { userId } });
-    if (recurring.length > 0) {
-      converted += recurring.length;
-      for (const record of recurring) {
-        await tx.recurringRecord.update({ where: { id: record.id }, data: { amount: toTwoDecimals(record.amount) } });
-      }
+  const recurring = await tx.recurringRecord.findMany({ where: { userId } });
+  if (recurring.length > 0) {
+    converted += recurring.length;
+    for (const record of recurring) {
+      await tx.recurringRecord.update({ where: { id: record.id }, data: { amount: toTwoDecimals(record.amount) } });
     }
+  }
 
-    const goals = await tx.goal.findMany({ where: { userId } });
-    if (goals.length > 0) {
-      converted += goals.length;
-      for (const goal of goals) {
-        await tx.goal.update({
-          where: { id: goal.id },
-          data: {
-            targetAmount: toTwoDecimals(goal.targetAmount),
-            currentAmount: toTwoDecimals(goal.currentAmount),
-            monthlyContribution: toTwoDecimals(goal.monthlyContribution),
-          },
-        });
-      }
+  const goals = await tx.goal.findMany({ where: { userId } });
+  if (goals.length > 0) {
+    converted += goals.length;
+    for (const goal of goals) {
+      await tx.goal.update({
+        where: { id: goal.id },
+        data: {
+          targetAmount: toTwoDecimals(goal.targetAmount),
+          currentAmount: toTwoDecimals(goal.currentAmount),
+          monthlyContribution: toTwoDecimals(goal.monthlyContribution),
+        },
+      });
     }
+  }
 
-    const budgets = await tx.budget.findMany({ where: { userId } });
-    if (budgets.length > 0) {
-      converted += budgets.length;
-      for (const budget of budgets) {
-        await tx.budget.update({ where: { id: budget.id }, data: { amount: toTwoDecimals(budget.amount), currency: to } });
-      }
+  const budgets = await tx.budget.findMany({ where: { userId } });
+  if (budgets.length > 0) {
+    converted += budgets.length;
+    for (const budget of budgets) {
+      await tx.budget.update({ where: { id: budget.id }, data: { amount: toTwoDecimals(budget.amount), currency: to } });
     }
-  });
+  }
 
   return { converted };
 }

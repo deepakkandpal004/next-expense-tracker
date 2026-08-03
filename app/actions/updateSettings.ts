@@ -53,29 +53,60 @@ export async function updateSettings(
     }
 
     let conversionMessage = '';
-    if (changes.currency && changes.currency !== (user.currency ?? 'INR')) {
-      const from = user.currency ?? 'INR';
-      const to = changes.currency;
-      const storedAmounts = await countStoredAmounts(user.id);
+    let currencyHandledInTransaction = false;
+    const targetCurrency = changes.currency;
+    const currentCurrency = user.currency ?? 'INR';
 
+    if (targetCurrency && targetCurrency !== currentCurrency) {
+      let rate: number;
+      try {
+        rate = await getExchangeRate(currentCurrency, targetCurrency);
+      } catch {
+        return {
+          status: 'error',
+          message: `Could not switch to ${targetCurrency}: the exchange rate for ${currentCurrency} is temporarily unavailable. Your amounts were not changed. Please try again later.`,
+          retryable: true,
+        };
+      }
+
+      const storedAmounts = await countStoredAmounts(user.id);
       if (storedAmounts > 0) {
-        try {
-          const rate = await getExchangeRate(from, to);
-          const { converted } = await convertUserAmounts(user.id, to, rate);
-          conversionMessage = ` Converted ${converted} amount(s) at 1 ${from} = ${rate.toFixed(4)} ${to}.`;
-        } catch {
-          return {
-            status: 'error',
-            message: `Could not switch to ${to}: the exchange rate for ${from} is temporarily unavailable. Your amounts were not changed. Please try again later.`,
-            retryable: true,
-          };
-        }
+        await db.$transaction(async (tx) => {
+          // Lock the user row so concurrent save requests serialize: a second
+          // request waits until the first commits and then sees the new
+          // currency, preventing the same amounts from being converted twice.
+          const rows = await tx.$queryRaw<{ currency: string | null }[]>`
+            SELECT "currency" FROM "User" WHERE "id" = ${user.id} FOR UPDATE
+          `;
+          const lockedCurrency = (rows[0]?.currency ?? 'INR').toUpperCase();
+
+          if (lockedCurrency === targetCurrency) {
+            currencyHandledInTransaction = true;
+            return;
+          }
+          if (lockedCurrency !== currentCurrency) {
+            // Currency changed underneath us; refuse to guess instead of
+            // corrupting amounts a second time.
+            return;
+          }
+
+          const { converted } = await convertUserAmounts(tx, user.id, targetCurrency, rate);
+          await tx.user.update({ where: { id: user.id }, data: { currency: targetCurrency } });
+          currencyHandledInTransaction = true;
+          if (converted > 0) {
+            conversionMessage = ` Converted ${converted} amount(s) at 1 ${currentCurrency} = ${rate.toFixed(4)} ${targetCurrency}.`;
+          }
+        });
       }
     }
 
+    const updateData: { name?: string | null; currency?: string } = {
+      ...(changes.name !== undefined ? { name: changes.name } : {}),
+      ...(targetCurrency && !currencyHandledInTransaction ? { currency: targetCurrency } : {}),
+    };
     const updated = await db.user.update({
       where: { id: user.id },
-      data: changes,
+      data: updateData,
     });
     return {
       status: 'success',

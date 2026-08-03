@@ -43,6 +43,7 @@ export function SettingsView() {
   }, []);
 
   const handleSave = async () => {
+    if (saving) return;
     setSaving(true);
     setMessage(null);
     const result = await updateSettings({ name, currency });

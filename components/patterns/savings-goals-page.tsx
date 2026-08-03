@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Plus,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/ui/cn";
@@ -368,11 +369,13 @@ function GoalCard({
   goal,
   index,
   onSelect,
+  onDelete,
   currency = "INR",
 }: {
   goal: SavingsGoal;
   index: number;
   onSelect: (goal: SavingsGoal) => void;
+  onDelete: (goal: SavingsGoal) => void;
   currency?: string;
 }) {
   const progress = calculateProgress(goal.currentAmount, goal.targetAmount);
@@ -421,7 +424,7 @@ function GoalCard({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="absolute right-4 top-4"
+          className="absolute right-12 top-4"
         >
           <div className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-1">
             <Trophy size={12} className="text-success" />
@@ -429,6 +432,19 @@ function GoalCard({
           </div>
         </motion.div>
       )}
+
+      {/* Delete button */}
+      <button
+        type="button"
+        aria-label={`Delete ${goal.name} goal`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(goal);
+        }}
+        className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-foreground-secondary/60 transition-colors hover:bg-error/10 hover:text-error focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
+      >
+        <Trash2 size={16} />
+      </button>
 
       <div className="relative flex items-start gap-4">
         {/* Icon */}
@@ -504,11 +520,13 @@ function GoalCard({
 function GoalDetailModal({
   goal,
   onClose,
+  onDelete,
   onCelebrate,
   currency = "INR",
 }: {
   goal: SavingsGoal;
   onClose: () => void;
+  onDelete: (goal: SavingsGoal) => void;
   onCelebrate: () => void;
   currency?: string;
 }) {
@@ -635,6 +653,16 @@ function GoalDetailModal({
               <span className="font-semibold">Celebrate!</span>
             </motion.button>
           )}
+
+          {/* Delete goal */}
+          <button
+            type="button"
+            onClick={() => onDelete(goal)}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-error/30 py-2.5 text-sm font-medium text-error transition-colors hover:bg-error/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
+          >
+            <Trash2 size={16} />
+            <span>Delete Goal</span>
+          </button>
         </div>
       </motion.div>
     </motion.div>
@@ -942,11 +970,85 @@ function AddGoalModal({
 }
 
 /* ────────────────────────────────────────────────────────────
+   DELETE GOAL CONFIRM MODAL
+   ──────────────────────────────────────────────────────────── */
+
+function DeleteGoalModal({
+  goal,
+  deleting,
+  onCancel,
+  onConfirm,
+}: {
+  goal: SavingsGoal;
+  deleting: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-4"
+      onClick={onCancel}
+      onKeyDown={(e) => { if (e.key === "Escape") onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Delete ${goal.name} goal`}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-xl"
+      >
+        <div className="flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-error/10">
+            <Trash2 size={18} className="text-error" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-bold text-foreground">Delete goal?</h2>
+            <p className="mt-1 text-sm text-foreground-secondary">
+              &ldquo;{goal.name}&rdquo; and its progress will be permanently deleted. This action
+              cannot be undone.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={deleting}
+            className="flex-1 rounded-xl border border-border/60 px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={deleting}
+            className="flex-1 rounded-xl bg-error px-4 py-2.5 text-sm font-medium text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
+          >
+            {deleting ? "Deleting…" : "Delete Goal"}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
    MAIN COMPONENT
    ──────────────────────────────────────────────────────────── */
 
 export function SavingsGoalsPage({ currency }: { currency?: string }) {
+  const { toast } = useToast();
   const [selectedGoal, setSelectedGoal] = useState<SavingsGoal | null>(null);
+  const [goalToDelete, setGoalToDelete] = useState<SavingsGoal | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [goals, setGoals] = useState<SavingsGoal[]>([]);
@@ -972,6 +1074,36 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
 
   function handleGoalCreated(goal: SavingsGoal) {
     setGoals((prev) => [goal, ...prev]);
+  }
+
+  async function handleDeleteGoal() {
+    if (!goalToDelete) return;
+
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/goals", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: goalToDelete.id }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete goal");
+      }
+
+      setGoals((prev) => prev.filter((g) => g.id !== goalToDelete.id));
+      if (selectedGoal?.id === goalToDelete.id) setSelectedGoal(null);
+      setGoalToDelete(null);
+      toast({ description: "Goal deleted.", tone: "success" });
+    } catch (err: unknown) {
+      toast({
+        description: err instanceof Error ? err.message : "Could not delete goal.",
+        tone: "error",
+      });
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const stats = useMemo(() => getGoalStats(goals), [goals]);
@@ -1026,6 +1158,7 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
               goal={goal}
               index={index}
               onSelect={setSelectedGoal}
+              onDelete={setGoalToDelete}
               currency={currency}
             />
           ))}
@@ -1037,6 +1170,7 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
           <GoalDetailModal
             goal={selectedGoal}
             onClose={() => setSelectedGoal(null)}
+            onDelete={setGoalToDelete}
             onCelebrate={handleCelebrate}
             currency={currency}
           />
@@ -1049,6 +1183,17 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
             currency={currency}
             onClose={() => setShowAddModal(false)}
             onCreated={handleGoalCreated}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {goalToDelete && (
+          <DeleteGoalModal
+            goal={goalToDelete}
+            deleting={deleting}
+            onCancel={() => setGoalToDelete(null)}
+            onConfirm={() => void handleDeleteGoal()}
           />
         )}
       </AnimatePresence>
