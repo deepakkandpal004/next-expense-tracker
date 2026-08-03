@@ -94,7 +94,7 @@ export async function updateSettings(
           await tx.user.update({ where: { id: user.id }, data: { currency: targetCurrency } });
           currencyHandledInTransaction = true;
           if (converted > 0) {
-            conversionMessage = ` Converted ${converted} amount(s) at 1 ${currentCurrency} = ${rate.toFixed(4)} ${targetCurrency}.`;
+            conversionMessage = ` Converted ${converted} amount(s) at 1 ${currentCurrency} = ${rate.toFixed(6)} ${targetCurrency}.`;
           }
         });
       }
