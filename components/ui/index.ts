@@ -5,6 +5,7 @@ export * from "./data-display";
 export * from "./feedback";
 export * from "./forms";
 export * from "./overlays";
+export * from "./toast";
 export * from "@/lib/ui/primitive-registry";
 export * from "@/lib/ui/animations";
 

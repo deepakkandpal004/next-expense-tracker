@@ -3,7 +3,7 @@
 import { Pencil, Plus } from "lucide-react";
 import { useState } from "react";
 import { setBudgetResult } from "@/app/actions/setBudget";
-import { Button, Dialog, Field } from "@/components/ui";
+import { Button, Dialog, Field, useToast } from "@/components/ui";
 
 interface SetBudgetDialogProps {
   currency: string;
@@ -21,6 +21,7 @@ export function SetBudgetDialog({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const today = new Date().toISOString().slice(0, 10);
+  const { toast } = useToast();
 
   const submit = async () => {
     setPending(true);
@@ -31,6 +32,7 @@ export function SetBudgetDialog({
         setOpen(false);
         setAmount("");
         await onSaved?.();
+        toast({ description: result.message, tone: "success" });
         return;
       }
       setError(result.message);

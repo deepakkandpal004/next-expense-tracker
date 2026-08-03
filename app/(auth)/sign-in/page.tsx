@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Field } from '@/components/ui';
+import { Button, Field, useToast } from '@/components/ui';
 import {
   AuthTaskLinks,
   AuthenticationForm,
@@ -21,6 +21,7 @@ export default function SignInPage() {
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,6 +49,7 @@ export default function SignInPage() {
         return;
       }
       setFormError(null);
+      toast({ description: 'Welcome back!', tone: 'success' });
       router.replace('/dashboard');
     } catch {
       setFormError('We could not complete sign in. Check your connection and retry.');

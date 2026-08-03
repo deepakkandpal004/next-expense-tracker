@@ -9,7 +9,7 @@ import {
   Alert,
   Button,
   Dialog,
-  StatusRegion,
+  useToast,
 } from "@/components/ui";
 import {
   clearRecordFilters,
@@ -48,8 +48,8 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const [items, setItems] = useState(records);
-  const [status, setStatus] = useState<string | undefined>();
   const [exportOpen, setExportOpen] = useState(false);
   const [exportPending, setExportPending] = useState(false);
   const [exportError, setExportError] = useState<string | undefined>();
@@ -146,7 +146,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
       const result = await deleteTransactionRecord({ recordId: record.id, requestId });
       if (result.status === "success") {
         setItems((current) => current.filter((item) => item.id !== record.id));
-        setStatus(result.message);
+        toast({ description: result.message, tone: "success" });
         if (paginatedRecords.length === 1 && currentPage > 1) {
           setCurrentPage(currentPage - 1);
         }
@@ -180,7 +180,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      setStatus(`Export created: ${file.filename}`);
+      toast({ description: `Export created: ${file.filename}`, tone: "success" });
       setExportOpen(false);
     } catch {
       setExportError("The export could not be created. Please retry.");
@@ -206,8 +206,6 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
           <Button label="Add" onClick={() => window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }))} />
         </div>
       </header>
-
-      <StatusRegion message={status} visible={Boolean(status)} />
 
       <section
         aria-label="Filter and sort records"
@@ -345,7 +343,9 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
             const res = await importTransactionsFromCsv(fd);
             if (res.status === "success") {
               setImportResult({ imported: res.data.imported, skipped: res.data.skipped });
-              setStatus(`Imported ${res.data.imported} transactions.`);
+              toast({ description: `Imported ${res.data.imported} transactions.`, tone: "success" });
+            } else {
+              toast({ description: res.message, tone: "error" });
             }
             setImportPending(false);
           }} />

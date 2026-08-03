@@ -11,7 +11,7 @@ import {
   type CategoryWithSpending,
 } from "@/app/actions/manageCategories";
 import { formatCurrency } from "@/lib/formatters/locale";
-import { Button } from "@/components/ui";
+import { Button, useToast } from "@/components/ui";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 
 interface CategoryCardProps {
@@ -58,6 +58,7 @@ function CategoryCard({ category, currency, onEdit, onDelete }: CategoryCardProp
 }
 
 export function CategoriesView({ currency = "INR" }: { currency?: string }) {
+  const { toast } = useToast();
   const [categories, setCategories] = useState<CategoryWithSpending[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<CategoryWithSpending | null>(null);
@@ -83,9 +84,9 @@ export function CategoriesView({ currency = "INR" }: { currency?: string }) {
     if (!editing || !editLabel.trim()) return;
     const result = await upsertCategory(editing.categoryId, { label: editLabel.trim() });
     if (result.status === "success") {
-      setMessage("Category renamed.");
       setEditing(null);
       load();
+      toast({ description: "Category renamed.", tone: "success" });
     } else {
       setMessage(result.message);
     }
@@ -95,10 +96,10 @@ export function CategoriesView({ currency = "INR" }: { currency?: string }) {
     if (!newLabel.trim()) return;
     const result = await createCustomCategory(newLabel.trim());
     if (result.status === "success") {
-      setMessage("Category created.");
       setCreating(false);
       setNewLabel("");
       load();
+      toast({ description: "Category created.", tone: "success" });
     } else {
       setMessage(result.message);
     }
@@ -107,8 +108,8 @@ export function CategoriesView({ currency = "INR" }: { currency?: string }) {
   const handleDelete = async (cat: CategoryWithSpending) => {
     const result = await deleteCustomCategory(cat.categoryId);
     if (result.status === "success") {
-      setMessage("Category deleted.");
       load();
+      toast({ description: "Category deleted.", tone: "success" });
     } else {
       setMessage(result.message);
     }

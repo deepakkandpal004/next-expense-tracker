@@ -50,43 +50,46 @@ function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"do
    DOUGHNUT OPTIONS (Stripe-inspired)
    ──────────────────────────────────────────────────────────── */
 
-const DOUGHNUT_OPTIONS: ChartOptions<"doughnut"> = {
-  animation: {
-    animateRotate: true,
-    animateScale: true,
-    duration: 1000,
-    easing: "easeOutQuart",
-  },
-  responsive: true,
-  maintainAspectRatio: false,
-  cutout: "72%",
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      enabled: true,
-      backgroundColor: "rgba(15, 23, 42, 0.92)",
-      titleColor: "#f8fafc",
-      bodyColor: "#cbd5e1",
-      borderColor: "rgba(255, 255, 255, 0.08)",
-      borderWidth: 1,
-      padding: { top: 10, bottom: 10, left: 14, right: 14 },
-      cornerRadius: 10,
-      boxPadding: 4,
-      caretSize: 0,
-      displayColors: true,
-      usePointStyle: true,
-      callbacks: {
-        label: (ctx) => {
-          const value = typeof ctx.raw === "number" ? ctx.raw : 0;
-          const label = ctx.label ?? "";
-          const total = ctx.dataset.data.reduce((a, b) => (typeof a === "number" ? a : 0) + (typeof b === "number" ? b : 0), 0);
-          const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0";
-          return ` ${label}: ₹${value.toLocaleString("en-IN", { maximumFractionDigits: 0 })} (${pct}%)`;
+function buildDoughnutOptions(currency: string): ChartOptions<"doughnut"> {
+  return {
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 1000,
+      easing: "easeOutQuart",
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "72%",
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        enabled: true,
+        backgroundColor: "rgba(15, 23, 42, 0.92)",
+        titleColor: "#f8fafc",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(255, 255, 255, 0.08)",
+        borderWidth: 1,
+        padding: { top: 10, bottom: 10, left: 14, right: 14 },
+        cornerRadius: 10,
+        boxPadding: 4,
+        caretSize: 0,
+        displayColors: true,
+        usePointStyle: true,
+        callbacks: {
+          label: (ctx) => {
+            const value = typeof ctx.raw === "number" ? ctx.raw : 0;
+            const label = ctx.label ?? "";
+            const total = ctx.dataset.data.reduce((a, b) => (typeof a === "number" ? a : 0) + (typeof b === "number" ? b : 0), 0);
+            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0";
+            const formatted = formatCurrency({ minorValue: Math.round(value * 100), currency });
+            return ` ${label}: ${formatted} (${pct}%)`;
+          },
         },
       },
     },
-  },
-};
+  };
+}
 
 /* ────────────────────────────────────────────────────────────
    CATEGORY ROW
@@ -168,6 +171,7 @@ export function CategoryBreakdownPanel({
   // resolvedAppearance triggers rebuild when theme changes so CSS variables resolve to correct colors
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown, resolvedAppearance]);
+  const options = useMemo(() => buildDoughnutOptions(currency), [currency]);
 
   return (
     <section
@@ -189,7 +193,7 @@ export function CategoryBreakdownPanel({
             <ChartCanvas
               aria-label={`Spending by category doughnut chart for ${period}`}
               data={data}
-              options={DOUGHNUT_OPTIONS}
+              options={options}
               role="img"
               tabIndex={-1}
               type="doughnut"

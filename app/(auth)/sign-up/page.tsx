@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Field } from '@/components/ui';
+import { Button, Field, useToast } from '@/components/ui';
 import {
   AuthTaskLinks,
   AuthenticationForm,
@@ -23,6 +23,7 @@ export default function SignUpPage() {
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,6 +55,7 @@ export default function SignUpPage() {
         return;
       }
       setFormError(null);
+      toast({ description: 'Account created. Welcome!', tone: 'success' });
       router.replace('/dashboard');
     } catch {
       setFormError('We could not complete account creation. Check your connection and retry.');

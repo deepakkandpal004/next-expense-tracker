@@ -7,7 +7,7 @@ import { TopInsights } from "./ai-insights/top-insights";
 import { GenerateButton } from "./ai-insights/generate-button";
 import { ConfidencePanel } from "./ai-insights/confidence-panel";
 import { MonthSwitcher } from "@/components/patterns/month-switcher";
-import { ErrorState, LinkButton } from "@/components/ui";
+import { ErrorState, LinkButton, useToast } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { AiInsightsSkeleton } from "@/components/ui/skeletons";
 import { getAiFinancialInsights, type AiFinancialInsightsData } from "@/app/actions/getAiFinancialInsights";
@@ -90,6 +90,7 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, error: ini
   const [data, setData] = useState<AiFinancialInsightsData | null>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(initialError);
+  const { toast } = useToast();
 
   // Keep local state in sync with the server-rendered payload: useState only
   // initializes once, so after switching periods delivers a new initialData
@@ -114,19 +115,26 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, error: ini
       if (latestPeriodRef.current !== requestedPeriod) return;
       if (result.status === "success") {
         setData(result.data);
+        toast({ description: result.message, tone: "success" });
       } else {
         setError(result.message);
+        if (data) {
+          toast({ description: result.message, tone: "error" });
+        }
       }
     } catch {
       if (latestPeriodRef.current === requestedPeriod) {
         setError("Failed to generate insights. Please try again.");
+        if (data) {
+          toast({ description: "Failed to generate insights. Please try again.", tone: "error" });
+        }
       }
     } finally {
       if (latestPeriodRef.current === requestedPeriod) {
         setLoading(false);
       }
     }
-  }, [loading, period]);
+  }, [loading, period, data, toast]);
 
   if (!data && !loading && !error) {
     return (

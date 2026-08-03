@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ToastProvider } from '@/components/ui/toast';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import type { AppearancePreference, ContentDensity } from '@/lib/domain/types';
 
@@ -23,7 +24,9 @@ export function RootProviders({
       initialDensity={initialDensity}
     >
       <TooltipProvider>
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </TooltipProvider>
     </ThemeProvider>
   );

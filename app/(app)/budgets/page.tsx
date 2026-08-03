@@ -18,7 +18,7 @@ export default async function BudgetRoute({ searchParams }: BudgetPageProps) {
 
   const query = await searchParams;
   const { period } = resolveValidReportingPeriod(toSearchParams(query));
-  const dashboard = await getDashboardData(user.id, period);
+  const dashboard = await getDashboardData(user.id, period, user.currency);
 
   return (
     <BudgetPage

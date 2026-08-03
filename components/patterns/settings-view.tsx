@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { User, DollarSign, AlertTriangle, CheckCircle2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getSettings, updateSettings, type UserSettings } from "@/app/actions/updateSettings";
-import { Button } from "@/components/ui";
+import { Button, useToast } from "@/components/ui";
 import { listItemVariants } from "@/lib/ui/motion";
 
 const CURRENCIES = [
@@ -21,6 +21,7 @@ const CURRENCIES = [
 ];
 
 export function SettingsView() {
+  const { toast } = useToast();
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -47,7 +48,8 @@ export function SettingsView() {
     const result = await updateSettings({ name, currency });
     if (result.status === "success") {
       setSettings(result.data);
-      setMessage({ type: "success", text: "Settings saved." });
+      setCurrency(result.data.currency);
+      toast({ description: result.message, tone: "success" });
     } else {
       setMessage({ type: "error", text: result.message });
     }

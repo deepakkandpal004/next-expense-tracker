@@ -19,9 +19,9 @@ import {
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/ui/cn";
-import { CurrencyText } from "@/components/ui";
+import { CurrencyText, useToast } from "@/components/ui";
 import { EmptyState } from "@/components/ui/empty-state";
-import { formatCurrency } from "@/lib/formatters/locale";
+import { formatCurrency, getCurrencySymbol } from "@/lib/formatters/locale";
 
 /* ────────────────────────────────────────────────────────────
    TYPES
@@ -81,6 +81,11 @@ function getCategoryConfig(category: string) {
 /* ────────────────────────────────────────────────────────────
    DB GOAL → UI GOAL MAPPING
    ──────────────────────────────────────────────────────────── */
+
+/** Converts a major-unit monetary amount (as stored in the DB) to minor units. */
+function toMinorUnits(amount: number): number {
+  return Math.round(amount * 100);
+}
 
 interface DbGoal {
   id: string;
@@ -337,7 +342,7 @@ function MilestoneTimeline({
                       {milestone.label}
                     </span>
                     <span className="text-xs text-foreground-secondary tabular-nums">
-                      <CurrencyText currency={currency} minorValue={milestone.amount} />
+                      <CurrencyText currency={currency} minorValue={toMinorUnits(milestone.amount)} />
                     </span>
                   </div>
                   {milestone.completedAt && (
@@ -441,8 +446,8 @@ function GoalCard({
           <h3 className="text-lg font-semibold text-foreground">{goal.name}</h3>
           <div className="mt-1 flex items-center gap-2 text-sm text-foreground-secondary">
             <span>
-              <CurrencyText currency={currency} minorValue={goal.currentAmount} /> of{" "}
-              <CurrencyText currency={currency} minorValue={goal.targetAmount} />
+              <CurrencyText currency={currency} minorValue={toMinorUnits(goal.currentAmount)} /> of{" "}
+              <CurrencyText currency={currency} minorValue={toMinorUnits(goal.targetAmount)} />
             </span>
           </div>
 
@@ -476,7 +481,7 @@ function GoalCard({
             <div className="flex items-center gap-1">
               <TrendingUp size={12} />
               <span>
-                <CurrencyText currency={currency} minorValue={goal.monthlyContribution} />/mo
+                <CurrencyText currency={currency} minorValue={toMinorUnits(goal.monthlyContribution)} />/mo
               </span>
             </div>
           </div>
@@ -550,7 +555,7 @@ function GoalDetailModal({
               <div>
                 <h2 className="text-xl font-bold text-white">{goal.name}</h2>
                 <p className="text-sm text-white/80">
-                  {isCompleted ? "Goal reached!" : `Target: ${formatCurrency({ minorValue: goal.targetAmount, currency: currency })}`}
+                  {isCompleted ? "Goal reached!" : `Target: ${formatCurrency({ minorValue: toMinorUnits(goal.targetAmount), currency: currency })}`}
                 </p>
               </div>
             </div>
@@ -580,7 +585,7 @@ function GoalDetailModal({
             <div className="rounded-xl bg-surface-subtle p-4">
               <p className="text-xs text-foreground-secondary">Saved</p>
               <p className="mt-1 text-lg font-bold text-foreground">
-                <CurrencyText currency={currency} minorValue={goal.currentAmount} />
+                <CurrencyText currency={currency} minorValue={toMinorUnits(goal.currentAmount)} />
               </p>
             </div>
             <div className="rounded-xl bg-surface-subtle p-4">
@@ -591,7 +596,7 @@ function GoalDetailModal({
                 "mt-1 text-lg font-bold",
                 isCompleted ? "text-success" : "text-foreground",
               )}>
-                <CurrencyText currency={currency} minorValue={isCompleted ? goal.targetAmount : remaining} />
+                <CurrencyText currency={currency} minorValue={toMinorUnits(isCompleted ? goal.targetAmount : remaining)} />
               </p>
             </div>
           </div>
@@ -644,14 +649,14 @@ function GoalStats({ stats, currency = "INR" }: { stats: GoalStats; currency?: s
   const statItems = [
     {
       label: "Total Saved",
-      value: formatCurrency({ minorValue: stats.totalSaved, currency: currency }),
+      value: formatCurrency({ minorValue: toMinorUnits(stats.totalSaved), currency: currency }),
       icon: DollarSign,
       color: "text-kpi-savings",
       bg: "bg-kpi-savings-surface",
     },
     {
       label: "Monthly Savings",
-      value: formatCurrency({ minorValue: stats.monthlyRate, currency: currency }),
+      value: formatCurrency({ minorValue: toMinorUnits(stats.monthlyRate), currency: currency }),
       icon: TrendingUp,
       color: "text-accent",
       bg: "bg-accent/10",
@@ -703,12 +708,15 @@ function GoalStats({ stats, currency = "INR" }: { stats: GoalStats; currency?: s
    ──────────────────────────────────────────────────────────── */
 
 function AddGoalModal({
+  currency = "INR",
   onClose,
   onCreated,
 }: {
+  currency?: string;
   onClose: () => void;
   onCreated: (goal: SavingsGoal) => void;
 }) {
+  const { toast } = useToast();
   const [name, setName] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
   const [currentAmount, setCurrentAmount] = useState("");
@@ -764,6 +772,7 @@ function AddGoalModal({
       const { goal: dbGoal } = await res.json();
       onCreated(mapDbGoalToSavingsGoal(dbGoal));
       onClose();
+      toast({ description: "Goal created.", tone: "success" });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -827,7 +836,7 @@ function AddGoalModal({
             {/* Target Amount */}
             <div>
               <label htmlFor="target-amount" className="mb-1 block text-sm font-medium text-foreground">
-                Target Amount (₹)
+                Target Amount ({getCurrencySymbol(currency)})
               </label>
               <input
                 id="target-amount"
@@ -843,7 +852,7 @@ function AddGoalModal({
             {/* Current Amount */}
             <div>
               <label htmlFor="current-amount" className="mb-1 block text-sm font-medium text-foreground">
-                Already Saved (₹) <span className="text-foreground-secondary">optional</span>
+                Already Saved ({getCurrencySymbol(currency)}) <span className="text-foreground-secondary">optional</span>
               </label>
               <input
                 id="current-amount"
@@ -859,7 +868,7 @@ function AddGoalModal({
             {/* Monthly Contribution */}
             <div>
               <label htmlFor="monthly-contrib" className="mb-1 block text-sm font-medium text-foreground">
-                Monthly Contribution (₹) <span className="text-foreground-secondary">optional</span>
+                Monthly Contribution ({getCurrencySymbol(currency)}) <span className="text-foreground-secondary">optional</span>
               </label>
               <input
                 id="monthly-contrib"
@@ -1037,6 +1046,7 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
       <AnimatePresence>
         {showAddModal && (
           <AddGoalModal
+            currency={currency}
             onClose={() => setShowAddModal(false)}
             onCreated={handleGoalCreated}
           />

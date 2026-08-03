@@ -18,7 +18,7 @@ import { deleteRecurringRecord } from "@/app/actions/deleteRecurringRecord";
 import { toggleRecurringRecord } from "@/app/actions/toggleRecurringRecord";
 import { getRecurringRecords, type RecurringRecordDTO } from "@/app/actions/getRecurringRecords";
 import { processRecurringRecords } from "@/app/actions/processRecurringRecords";
-import { Button, Alert, Card, CardContent, Input } from "@/components/ui";
+import { Button, Alert, Card, CardContent, Input, useToast } from "@/components/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CATEGORY_DEFINITIONS } from "@/lib/domain/categories";
 import { formatCurrency } from "@/lib/formatters/locale";
@@ -32,6 +32,7 @@ const FREQUENCY_LABELS: Record<string, string> = {
 };
 
 export function RecurringView({ currency = "INR" }: { currency?: string }) {
+  const { toast } = useToast();
   const [records, setRecords] = useState<RecurringRecordDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -80,6 +81,7 @@ export function RecurringView({ currency = "INR" }: { currency?: string }) {
       setShowForm(false);
       resetForm();
       loadRecords();
+      toast({ description: result.message, tone: "success" });
     } else {
       setError(result.message);
     }
@@ -87,20 +89,27 @@ export function RecurringView({ currency = "INR" }: { currency?: string }) {
   };
 
   const handleDelete = async (id: string) => {
-    await deleteRecurringRecord(id);
+    const result = await deleteRecurringRecord(id);
     loadRecords();
+    toast({ description: result.message, tone: result.status === "success" ? "success" : "error" });
   };
 
   const handleToggle = async (id: string, active: boolean) => {
-    await toggleRecurringRecord(id, active);
+    const result = await toggleRecurringRecord(id, active);
     loadRecords();
+    toast({ description: result.message, tone: result.status === "success" ? "success" : "error" });
   };
 
   const handleProcessNow = async () => {
     setProcessing(true);
     const result = await processRecurringRecords();
-    if (result.status === "success" && result.data.created > 0) {
-      loadRecords();
+    if (result.status === "success") {
+      if (result.data.created > 0) {
+        loadRecords();
+      }
+      toast({ description: result.message, tone: "success" });
+    } else {
+      toast({ description: result.message, tone: "error" });
     }
     setProcessing(false);
   };

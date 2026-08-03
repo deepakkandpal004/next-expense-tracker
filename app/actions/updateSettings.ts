@@ -2,6 +2,11 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
+import {
+  convertUserAmounts,
+  countStoredAmounts,
+  getExchangeRate,
+} from '@/lib/data/currency-conversion';
 import type { ActionResult } from '@/lib/domain/types';
 
 export interface UserSettings {
@@ -39,17 +44,43 @@ export async function updateSettings(
   }
 
   try {
+    const changes: { name?: string | null; currency?: string } = {};
+    if (data.name !== undefined) {
+      changes.name = data.name.trim() || null;
+    }
+    if (data.currency !== undefined) {
+      changes.currency = data.currency.trim().toUpperCase();
+    }
+
+    let conversionMessage = '';
+    if (changes.currency && changes.currency !== (user.currency ?? 'INR')) {
+      const from = user.currency ?? 'INR';
+      const to = changes.currency;
+      const storedAmounts = await countStoredAmounts(user.id);
+
+      if (storedAmounts > 0) {
+        try {
+          const rate = await getExchangeRate(from, to);
+          const { converted } = await convertUserAmounts(user.id, to, rate);
+          conversionMessage = ` Converted ${converted} amount(s) at 1 ${from} = ${rate.toFixed(4)} ${to}.`;
+        } catch {
+          return {
+            status: 'error',
+            message: `Could not switch to ${to}: the exchange rate for ${from} is temporarily unavailable. Your amounts were not changed. Please try again later.`,
+            retryable: true,
+          };
+        }
+      }
+    }
+
     const updated = await db.user.update({
       where: { id: user.id },
-      data: {
-        ...(data.name !== undefined ? { name: data.name.trim() || null } : {}),
-        ...(data.currency !== undefined ? { currency: data.currency.toUpperCase() } : {}),
-      },
+      data: changes,
     });
     return {
       status: 'success',
       data: { name: updated.name ?? '', email: updated.email, currency: updated.currency ?? 'INR' },
-      message: 'Settings updated.',
+      message: `Settings updated.${conversionMessage}`,
     };
   } catch (error) {
     console.error('Failed to update settings', error);

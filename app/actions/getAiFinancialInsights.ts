@@ -79,7 +79,7 @@ export async function getAiFinancialInsights(
   }
 
   try {
-    const dashboard = await getDashboardData(user.id, normalized.period);
+    const dashboard = await getDashboardData(user.id, normalized.period, user.currency);
 
     const spendingTrend = dashboard.insights.spending.trend;
     const incomeTrend = dashboard.insights.income.trend;

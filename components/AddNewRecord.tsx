@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { suggestCategoryResult } from "@/app/actions/suggestCategory";
-import { Button, Dialog, Field, Select, StatusRegion } from "@/components/ui";
+import { Button, Dialog, Field, Select, StatusRegion, useToast } from "@/components/ui";
 import { AI_DISCLOSURE_VERSION } from "@/lib/domain/ai";
 import { CATEGORY_REGISTRY, EXPENSE_CATEGORY_IDS, type ExpenseCategoryId } from "@/lib/domain/categories";
 import {
@@ -90,6 +90,7 @@ export default function AddNewRecord({
   const [status, setStatus] = useState<{ message: string; politeness: "polite" | "assertive" } | null>(null);
   const requestIdRef = useRef<string | null>(null);
   const retrySubmissionRef = useRef<TransactionSubmission | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open && defaultType !== undefined) {
@@ -145,6 +146,7 @@ export default function AddNewRecord({
       setFieldErrors({});
       setSubmissionFailure(null);
       setOpen(false);
+      toast({ description: result.message, tone: "success" });
       return;
     }
 

@@ -18,7 +18,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
-  const dashboard = await getDashboardData(user.id, period);
+  const dashboard = await getDashboardData(user.id, period, user.currency);
 
   return <DashboardView dashboard={dashboard} period={periodInput} user={{ name: user.name }} />;
 }

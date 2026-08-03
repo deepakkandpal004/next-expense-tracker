@@ -108,6 +108,22 @@ export function formatCurrency(
   }).format(majorValue);
 }
 
+/** Returns the display symbol (e.g. "₹", "$", "€") for a currency code. */
+export function getCurrencySymbol(
+  currency: CurrencyCode,
+  options: LocaleOptions = {},
+): string {
+  const part = new Intl.NumberFormat(localeFrom(options), {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+  })
+    .formatToParts(0)
+    .find(({ type }) => type === "currency");
+
+  return part?.value ?? currency;
+}
+
 /** Visible label for data states that cannot supply a financial amount. */
 export const UNAVAILABLE_METRIC_LABEL = "Unavailable";
 
