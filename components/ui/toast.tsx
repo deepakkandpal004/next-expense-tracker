@@ -47,11 +47,32 @@ const TONE_ICON: Record<ToastTone, typeof CheckCircle2> = {
   warning: AlertOctagon,
 };
 
-const TONE_ICON_CLASS: Record<ToastTone, string> = {
-  success: "text-success",
-  error: "text-danger",
-  info: "text-info-foreground",
-  warning: "text-warning-foreground",
+const TONE_SURFACE_CLASS: Record<ToastTone, string> = {
+  success: "border-success-border/80 bg-gradient-to-br from-success-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(34,197,94,0.85)]",
+  error: "border-danger-border/80 bg-gradient-to-br from-danger-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(240,68,56,0.85)]",
+  info: "border-info-border/80 bg-gradient-to-br from-info-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(0,220,229,0.85)]",
+  warning: "border-warning-border/80 bg-gradient-to-br from-warning-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(245,166,35,0.85)]",
+};
+
+const TONE_BADGE_CLASS: Record<ToastTone, string> = {
+  success: "bg-success-surface text-success",
+  error: "bg-danger-surface text-danger",
+  info: "bg-info-surface text-info-foreground",
+  warning: "bg-warning-surface text-warning-foreground",
+};
+
+const TONE_PROGRESS_CLASS: Record<ToastTone, string> = {
+  success: "bg-success",
+  error: "bg-danger",
+  info: "bg-info",
+  warning: "bg-warning",
+};
+
+const TONE_TITLE: Record<ToastTone, string> = {
+  success: "Success",
+  error: "Something went wrong",
+  info: "Heads up",
+  warning: "Attention needed",
 };
 
 const ToastContext = createContext<ToastContextValue | null>(null);
@@ -97,7 +118,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="pointer-events-none fixed right-4 top-4 z-[100] flex w-[min(360px,calc(100vw-2rem))] flex-col gap-2"
+        className="pointer-events-none fixed right-4 top-4 z-[100] flex w-[min(400px,calc(100vw-2rem))] flex-col gap-3 sm:right-5 sm:top-5"
       >
         <AnimatePresence>
           {toasts.map((item) => {
@@ -106,24 +127,27 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <motion.div
                 key={item.id}
                 data-toast="true"
-                initial={{ opacity: 0, x: 24, scale: 0.97 }}
+                initial={{ opacity: 0, x: 28, scale: 0.96 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 24, scale: 0.97 }}
+                exit={{ opacity: 0, x: 28, scale: 0.96 }}
                 transition={{ duration: MOTION_DURATION.standard, ease: MOTION_EASE.emphasized }}
                 className={cn(
-                  "pointer-events-auto flex items-start gap-3 rounded-xl border border-border/60 bg-surface p-3.5 shadow-lg shadow-black/20",
-                  item.tone === "error" && "border-danger-border/60",
+                  "pointer-events-auto relative flex items-start gap-3 overflow-hidden rounded-2xl border p-4 pr-3 backdrop-blur-xl",
+                  TONE_SURFACE_CLASS[item.tone],
                 )}
                 role={item.tone === "error" ? "alert" : "status"}
               >
-                <span aria-hidden="true" className={cn("mt-0.5 shrink-0", TONE_ICON_CLASS[item.tone])}>
-                  <Icon size={18} />
+                <span
+                  aria-hidden="true"
+                  className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", TONE_BADGE_CLASS[item.tone])}
+                >
+                  <Icon size={19} strokeWidth={2.25} />
                 </span>
-                <div className="min-w-0 flex-1">
-                  {item.title ? (
-                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                  ) : null}
-                  <p className={cn("text-sm text-foreground-secondary", item.title && "mt-0.5")}>
+                <div className="min-w-0 flex-1 pt-0.5">
+                  <p className="text-sm font-semibold leading-5 text-foreground">
+                    {item.title ?? TONE_TITLE[item.tone]}
+                  </p>
+                  <p className="mt-0.5 text-sm leading-5 text-foreground-secondary">
                     {item.description}
                   </p>
                 </div>
@@ -131,10 +155,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   type="button"
                   aria-label="Dismiss notification"
                   onClick={() => dismiss(item.id)}
-                  className="shrink-0 rounded-md p-1 text-foreground-secondary/60 transition-colors hover:bg-surface-subtle hover:text-foreground"
+                  className="-mr-1 -mt-1 flex size-8 shrink-0 items-center justify-center rounded-lg text-foreground-secondary/70 transition-colors hover:bg-black/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info focus-visible:ring-offset-2 focus-visible:ring-offset-surface dark:hover:bg-white/10"
                 >
-                  <X size={14} />
+                  <X size={16} />
                 </button>
+                <motion.span
+                  aria-hidden="true"
+                  className={cn("absolute inset-x-0 bottom-0 h-0.5 origin-left", TONE_PROGRESS_CLASS[item.tone])}
+                  initial={{ scaleX: 1 }}
+                  animate={{ scaleX: 0 }}
+                  transition={{ duration: item.duration / 1000, ease: "linear" }}
+                />
               </motion.div>
             );
           })}

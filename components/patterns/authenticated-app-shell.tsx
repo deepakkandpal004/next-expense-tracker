@@ -57,6 +57,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   const router = useRouter();
 
   const [signingOut, setSigningOut] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [accountError, setAccountError] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [addTransactionOpen, setAddTransactionOpen] = useState(false);
@@ -130,8 +131,10 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
       <div className="hidden md:flex shrink-0 relative z-10">
         <AppSidebar
           activeDestinationId={activeDestinationId}
+          collapsed={sidebarCollapsed}
           hrefFor={hrefFor}
           onNewRecord={handleNewRecord}
+          onToggleCollapsed={() => setSidebarCollapsed((v) => !v)}
         />
       </div>
 

@@ -12,10 +12,13 @@ export function PublicFooter() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="group inline-flex items-center gap-2.5">
-              <span className="grid size-8 place-items-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
-                <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
+              <span className="grid size-8 place-items-center rounded-lg bg-white p-1 transition-transform duration-300 group-hover:scale-110">
+                <img src="/Expense%20AI.png?v=4" alt="" className="h-full w-auto object-contain" />
               </span>
-              <span className="text-lg font-bold text-white">Expense AI</span>
+              <span className="text-xl font-bold">
+                <span className="text-white">Expense </span>
+                <span className="text-[#00DCE5]">AI</span>
+              </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#9AA3AF]">
               Smart expense tracking with AI-powered insights to help you understand and manage your finances.

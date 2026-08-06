@@ -27,12 +27,8 @@ export const metadata: Metadata = {
   description:
     'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
-    icon: [
-      { url: '/favicon.png?v=2', type: 'image/png' },
-      { url: '/favicon.svg?v=2', type: 'image/svg+xml' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: { url: '/apple-touch-icon.png', type: 'image/png' },
+    icon: [{ url: '/favicon.png?v=9', type: 'image/png' }],
+    apple: { url: '/favicon.png?v=9', type: 'image/png' },
   },
 };
 

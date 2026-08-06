@@ -13,6 +13,8 @@ import {
   Target,
   Wallet,
   Plus,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
@@ -34,6 +36,7 @@ interface AppSidebarProps {
   hrefFor: (destination: Exclude<SidebarDestinationId, NavPlaceholderId>) => string;
   onNavigate?: () => void;
   onNewRecord?: () => void;
+  onToggleCollapsed?: () => void;
   collapsed?: boolean;
 }
 
@@ -80,10 +83,10 @@ function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex items-center gap-3 rounded-xl py-2.5 transition-all duration-200",
-    expanded ? "px-3" : "justify-center px-0",
+    "group relative flex h-11 items-center rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]",
+    expanded ? "w-full gap-3 px-3" : "mx-auto w-11 justify-center px-0",
     isActive
-      ? "text-white bg-[rgba(0,220,229,0.12)] font-medium"
+      ? "bg-[rgba(0,220,229,0.12)] font-medium text-white hover:bg-[rgba(0,220,229,0.18)]"
       : "text-[#8B95A5] hover:bg-white/[0.04] hover:text-[#C5CCD6]",
     item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-[#5B6472]",
   );
@@ -102,8 +105,10 @@ function NavRow({
       </span>
       <span
         className={cn(
-          "min-w-0 flex-1 truncate text-sm whitespace-nowrap transition-all duration-200",
-          expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
+          "truncate text-sm whitespace-nowrap transition-all duration-200",
+          expanded
+            ? "min-w-0 flex-1 opacity-100"
+            : "w-0 flex-none overflow-hidden opacity-0",
         )}
       >
         {item.label}
@@ -146,6 +151,7 @@ export function AppSidebar({
   hrefFor,
   onNavigate,
   onNewRecord,
+  onToggleCollapsed,
   collapsed = false,
 }: AppSidebarProps) {
   const expanded = !collapsed;
@@ -161,23 +167,24 @@ export function AppSidebar({
     >
       {/* Logo */}
       <Link href="/" aria-label="Expense AI home" className={cn(
-        "flex items-center border-b border-white/[0.06] shrink-0 hover:bg-white/[0.03] transition-colors",
-        expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5",
+        "group flex items-center border-b border-white/[0.06] shrink-0 hover:bg-white/[0.03] transition-colors",
+        expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5 gap-0",
       )}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
+        <div className="flex h-[30px] shrink-0 items-center justify-center rounded-lg bg-white p-1.5 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
+          <img src="/Expense%20AI.png?v=4" alt="" className="h-full w-auto object-contain" />
         </div>
         <span className={cn(
-          "pulse-logo text-base whitespace-nowrap transition-all duration-300",
+          "pulse-logo text-xl whitespace-nowrap transition-all duration-300",
           expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
         )}>
-          Expense AI
+          <span className="text-white">Expense </span>
+          <span className="text-[#00DCE5]">AI</span>
         </span>
       </Link>
 
       {/* Navigation */}
-      <nav aria-label="Primary" className="flex-1 overflow-y-auto px-3 py-4">
+      <nav aria-label="Primary" className={cn("flex-1 overflow-y-auto py-4", expanded ? "px-3" : "px-2")}>
         {expanded ? (
           <ul className="flex flex-col gap-5">
             {NAV_SECTIONS.map((section) => (
@@ -235,12 +242,12 @@ export function AppSidebar({
       </nav>
 
       {/* New Record FAB */}
-      <div className="px-3 pb-3 shrink-0">
+      <div className={cn("shrink-0 pb-3", expanded ? "px-3" : "px-2")}>
         <button
           onClick={() => onNewRecord?.()}
           className={cn(
-            "w-full bg-[#00DCE5] text-[#0B0F14] font-semibold rounded-xl flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#00DCE5]/90 hover:shadow-[0_0_20px_rgba(0,220,229,0.3)] active:scale-[0.98]",
-            expanded ? "py-3 px-4" : "py-3 px-0",
+            "flex items-center justify-center rounded-xl bg-[#00DCE5] font-semibold text-[#0B0F14] transition-all duration-200 hover:bg-[#00DCE5]/90 hover:shadow-[0_0_20px_rgba(0,220,229,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] active:scale-[0.98]",
+            expanded ? "h-12 w-full gap-2 px-4" : "mx-auto size-11",
           )}
         >
           <Plus size={18} strokeWidth={2.5} className="shrink-0" />
@@ -251,6 +258,21 @@ export function AppSidebar({
             New Record
           </span>
         </button>
+
+        {onToggleCollapsed && (
+          <button
+            type="button"
+            aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
+            title={expanded ? "Collapse sidebar" : "Expand sidebar"}
+            onClick={onToggleCollapsed}
+            className={cn(
+              "mt-2 flex items-center justify-center rounded-xl text-[#5B6472] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]",
+              expanded ? "h-10 w-full" : "mx-auto size-11",
+            )}
+          >
+            {expanded ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+          </button>
+        )}
       </div>
     </aside>
   );

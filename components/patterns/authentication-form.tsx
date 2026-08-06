@@ -101,11 +101,14 @@ export function AuthenticationForm({
   return (
     <div className="w-full">
       {/* Logo */}
-      <Link href="/" className="mb-8 inline-flex items-center gap-2.5">
-        <span className="grid size-10 place-items-center rounded-xl bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
-          <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
+      <Link href="/" className="group mb-8 inline-flex items-center gap-2.5">
+        <span className="grid size-10 place-items-center rounded-xl bg-white p-1.5 transition-transform duration-300 group-hover:scale-110">
+          <img src="/Expense%20AI.png?v=4" alt="" className="h-full w-auto object-contain" />
         </span>
-        <span className="text-xl font-bold text-white">Expense AI</span>
+        <span className="text-2xl font-bold">
+          <span className="text-white">Expense </span>
+          <span className="text-[#00DCE5]">AI</span>
+        </span>
       </Link>
 
       {/* Header */}

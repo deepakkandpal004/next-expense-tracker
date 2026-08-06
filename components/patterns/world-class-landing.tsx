@@ -14,6 +14,7 @@ import {
   Bell,
   Globe,
   ChevronDown,
+  Check,
   ArrowRight,
   Play,
   Wallet,
@@ -360,6 +361,109 @@ function HeroSection() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────
+   HOW IT WORKS
+   ──────────────────────────────────────────────────────────── */
+
+const workflowSteps = [
+  {
+    number: "01",
+    icon: Wallet,
+    title: "Capture the moment",
+    description: "Add an expense or income in seconds, whenever it happens.",
+    color: "#00DCE5",
+    surface: "bg-[#00DCE5]/[0.10]",
+  },
+  {
+    number: "02",
+    icon: Brain,
+    title: "Let AI find the pattern",
+    description: "Keep categories, recurring costs, and spending trends organized.",
+    color: "#A855F7",
+    surface: "bg-[#A855F7]/[0.10]",
+  },
+  {
+    number: "03",
+    icon: Target,
+    title: "Make your next move",
+    description: "Use budgets and practical insights to stay on track each month.",
+    color: "#22C55E",
+    surface: "bg-[#22C55E]/[0.10]",
+  },
+];
+
+function HowItWorksSection() {
+  return (
+    <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-[#0A0E13] py-24 sm:py-28">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute left-[-12%] top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.045] blur-[130px]" />
+        <div className="absolute right-[-10%] top-0 size-[340px] rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-16 lg:px-8">
+        <AnimateInView>
+          <span className="inline-flex rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+            A simpler routine
+          </span>
+          <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            From a quick entry to a clearer plan.
+          </h2>
+          <p className="mt-5 max-w-lg text-lg leading-relaxed text-[#9AA3AF]">
+            Expense AI turns the small financial decisions you make every day into a picture you can actually use.
+          </p>
+
+          <div className="mt-8 space-y-3">
+            {[
+              "A single place for spending, budgets, and goals",
+              "Clear signals instead of noisy spreadsheets",
+              "Helpful context before the month gets away from you",
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 text-sm text-[#C7CDD6]">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#00DCE5]/[0.12] text-[#00DCE5]">
+                  <Check size={13} strokeWidth={3} />
+                </span>
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <Link
+            href="/sign-up"
+            className="group mt-9 inline-flex items-center gap-2 text-sm font-semibold text-[#00DCE5] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0E13]"
+          >
+            Create your free account
+            <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+          </Link>
+        </AnimateInView>
+
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          {workflowSteps.map((step, index) => (
+            <AnimateInView key={step.number} delay={index * 0.1}>
+              <motion.div
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 transition-colors duration-300 hover:border-white/[0.14] hover:bg-white/[0.045] sm:h-full lg:flex lg:items-center lg:gap-5"
+              >
+                <span className="absolute right-5 top-4 font-mono text-xs font-semibold tracking-wider text-white/[0.18] lg:static lg:order-3 lg:ml-auto">
+                  {step.number}
+                </span>
+                <div className={`flex size-11 items-center justify-center rounded-xl ${step.surface}`}>
+                  <step.icon size={21} style={{ color: step.color }} />
+                </div>
+                <div className="mt-4 lg:mt-0">
+                  <h3 className="text-base font-semibold text-white">{step.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#9AA3AF]">{step.description}</p>
+                </div>
+                <ArrowRight size={17} className="mt-4 text-[#5B6472] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#00DCE5] lg:mt-0" />
+              </motion.div>
+            </AnimateInView>
+          ))}
         </div>
       </div>
     </section>
@@ -850,6 +954,7 @@ export function WorldClassLandingPage() {
   return (
     <main>
       <HeroSection />
+      <HowItWorksSection />
       <FeaturesSection />
       <AISection />
       <FAQSection />
