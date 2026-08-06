@@ -13,7 +13,7 @@ export function PublicFooter() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="group inline-flex items-center gap-2.5">
               <span className="grid size-8 place-items-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
-                <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
+                <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
               </span>
               <span className="text-lg font-bold text-white">Expense AI</span>
             </Link>

@@ -166,7 +166,7 @@ export function AppSidebar({
       )}>
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
+          <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
         </div>
         <span className={cn(
           "pulse-logo text-base whitespace-nowrap transition-all duration-300",

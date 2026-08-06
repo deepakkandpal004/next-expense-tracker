@@ -103,7 +103,7 @@ export function AuthenticationForm({
       {/* Logo */}
       <Link href="/" className="mb-8 inline-flex items-center gap-2.5">
         <span className="grid size-10 place-items-center rounded-xl bg-[#00DCE5]/10 ring-1 ring-[#00DCE5]/20">
-          <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
+          <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
         </span>
         <span className="text-xl font-bold text-white">Expense AI</span>
       </Link>

@@ -30,7 +30,7 @@ export function PublicHeader({ isAuthenticated = false }: { isAuthenticated?: bo
         >
           <span className="relative grid size-9 place-items-center rounded-xl overflow-hidden bg-[#00DCE5]/10 shadow-[0_0_20px_rgba(0,220,229,0.15)] ring-1 ring-[#00DCE5]/20 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,220,229,0.25)] group-hover:ring-[#00DCE5]/30">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icon.svg" alt="" className="h-full w-full object-cover" />
+            <img src="/favicon.png" alt="" className="h-full w-full object-cover" />
           </span>
           <span className="text-lg font-bold text-white tracking-tight">
             Expense AI
