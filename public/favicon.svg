@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Minimal brand mark: single upward chevron -->
-  <rect width="512" height="512" rx="108" fill="#0B0F14"/>
-  <path d="M160 330 L256 170 L352 330" stroke="#00DCE5" stroke-width="56" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-</svg>

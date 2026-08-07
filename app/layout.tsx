@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   description:
     'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
-    icon: [{ url: '/favicon.png?v=9', type: 'image/png' }],
-    apple: { url: '/favicon.png?v=9', type: 'image/png' },
+    icon: [{ url: '/favicon.png?v=15', type: 'image/png', sizes: '512x512' }],
+    apple: [{ url: '/favicon.png?v=15', sizes: '512x512' }],
   },
 };
 
@@ -57,6 +57,8 @@ export default async function RootLayout({
       <head>
         <meta name='theme-color' content={THEME_COLORS.light} />
         <link rel='manifest' href='/manifest.json' />
+        <link rel='icon' type='image/png' sizes='512x512' href='/favicon.png?v=14' />
+        <link rel='apple-touch-icon' sizes='512x512' href='/favicon.png?v=14' />
         <meta name='application-name' content='Expense AI' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />

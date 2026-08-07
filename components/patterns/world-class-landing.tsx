@@ -80,13 +80,13 @@ export function FloatingShapes() {
 
 function HeroSection() {
   return (
-    <section className="relative -mt-[68px]">
+    <section className="relative -mt-[76px] overflow-hidden">
       {/* Fintech background — hero only */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <FloatingShapes />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-[168px] pb-24 sm:px-10 sm:pt-[180px] sm:pb-28 lg:px-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-[176px] sm:px-10 sm:pb-28 sm:pt-[190px] lg:px-12">
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           {/* Left — copy */}
           <div className="text-center lg:text-left">
@@ -107,7 +107,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="mt-6 text-4xl font-bold leading-[1.08] tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl"
             >
               Track every expense.
               <br />
@@ -137,7 +137,7 @@ function HeroSection() {
             >
               <Link
                 href="/sign-up"
-                className="group relative flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-7 py-3.5 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+                className="group relative flex h-12 items-center gap-2.5 rounded-2xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight
@@ -147,7 +147,7 @@ function HeroSection() {
               </Link>
               <Link
                 href="/features"
-                className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] active:scale-[0.97]"
+                className="group flex h-12 items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
               >
                 <span className="flex size-6 items-center justify-center rounded-full bg-white/10 transition-all duration-300 group-hover:bg-white/15">
                   <Play size={12} className="ml-0.5" />
@@ -185,7 +185,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="mt-8 flex items-center gap-3 rounded-xl border border-[#00DCE5]/15 bg-[#00DCE5]/[0.05] p-3.5"
+              className="mt-8 flex items-center gap-3 rounded-2xl border border-[#00DCE5]/20 bg-gradient-to-r from-[#00DCE5]/[0.09] to-[#A855F7]/[0.045] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00DCE5]/[0.12] text-[#00DCE5]">
                 <Brain size={18} />
@@ -235,7 +235,7 @@ function HeroSection() {
             </motion.div>
 
             {/* Browser frame */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F14]/80 shadow-[0_0_60px_rgba(0,220,229,0.08)] backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-[28px] border border-white/[0.09] bg-[#0B0F14]/85 shadow-[0_24px_70px_rgba(0,0,0,0.36),0_0_60px_rgba(0,220,229,0.08)] backdrop-blur-xl">
               {/* Title bar */}
               <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-3">
                 <div className="flex gap-1.5">
@@ -865,14 +865,14 @@ function FAQSection() {
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:text-[#00DCE5]"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:text-[#00DCE5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#00DCE5]/70"
                     aria-expanded={isOpen}
                   >
                     {faq.q}
                     <ChevronDown
                       size={16}
-                      className={`shrink-0 transition-transform duration-200 ${
-                        isOpen ? "rotate-180" : ""
+                      className={`shrink-0 text-[#9AA3AF] transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-[#00DCE5]" : ""
                       }`}
                     />
                   </button>
@@ -904,42 +904,50 @@ function FAQSection() {
 
 function CTASection() {
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-surface-subtle to-canvas py-24 sm:py-32">
-      {/* Glow */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="h-[400px] w-[400px] rounded-full bg-accent/10 blur-[120px]" />
+    <section className="relative isolate overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute left-1/2 top-1/2 h-[460px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.07] blur-[150px]" />
+        <div className="absolute -bottom-40 right-[-5%] size-[340px] rounded-full bg-[#A855F7]/[0.07] blur-[130px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <AnimateInView>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            Start understanding your money today
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground-secondary">
-            Join thousands of people who have transformed their financial lives
-            with Expense AI.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href="/sign-up"
-              className="group flex items-center gap-2 rounded-xl bg-foreground px-8 py-3.5 text-sm font-semibold text-background transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
-            >
-              Get started for free
-              <ArrowRight
-                size={16}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
-            </Link>
-            <Link
-              href="/features"
-              className="flex items-center gap-2 rounded-xl border border-border px-8 py-3.5 text-sm font-semibold text-foreground transition-all hover:bg-surface-subtle active:scale-[0.98]"
-            >
-              Explore Features
-            </Link>
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-[#00DCE5]/[0.06] px-6 py-14 text-center shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-12 sm:py-16">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00DCE5]/60 to-transparent" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.09] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+              <Sparkles size={14} />
+              Your next money habit starts here
+            </span>
+            <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Build a calmer relationship with money.
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#9AA3AF]">
+              Start with the habits you already have. Expense AI helps make each one easier to understand and act on.
+            </p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/sign-up"
+                className="group flex h-12 items-center gap-2 rounded-xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_28px_rgba(0,220,229,0.36)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
+              >
+                Get started for free
+                <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="/features"
+                className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.2] hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
+              >
+                Explore features
+              </Link>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-[#9AA3AF]">
+              {["Free to start", "No credit card required", "Your data stays yours"].map((item) => (
+                <span key={item} className="flex items-center gap-1.5">
+                  <Check size={14} className="text-[#22C55E]" strokeWidth={3} />
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
-          <p className="mt-6 text-sm text-foreground-secondary">
-            Free forever. No credit card required. No limits.
-          </p>
         </AnimateInView>
       </div>
     </section>

@@ -168,11 +168,11 @@ export function AppSidebar({
       {/* Logo */}
       <Link href="/" aria-label="Expense AI home" className={cn(
         "group flex items-center border-b border-white/[0.06] shrink-0 hover:bg-white/[0.03] transition-colors",
-        expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5 gap-0",
+        expanded ? "pl-5 pr-0 py-5 gap-1" : "justify-center px-0 py-5 gap-0",
       )}>
-        <div className="flex h-[30px] shrink-0 items-center justify-center rounded-lg bg-white p-1.5 overflow-hidden">
+        <div className="flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-2xl overflow-hidden -mr-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Expense%20AI.png?v=4" alt="" className="h-full w-auto object-contain" />
+          <img src="/logo.png" alt="" className="h-full w-full object-cover" />
         </div>
         <span className={cn(
           "pulse-logo text-xl whitespace-nowrap transition-all duration-300",

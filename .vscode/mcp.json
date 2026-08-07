@@ -1,0 +1,12 @@
+
+{
+  "servers": {
+    "repowise": {
+      "type": "http",
+      "url": "https://api.repowise.dev/mcp/deepakkandpal004/next-expense-tracker",
+      "headers": {
+        "Authorization": "Bearer rw_live_Nuin90WKvGt-Nqoorc0dXx2M-s9EReKS"
+      }
+    }
+  }
+}

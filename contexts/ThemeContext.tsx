@@ -39,7 +39,6 @@ interface ThemeContextType {
   setAppearance: (preference: AppearancePreference) => void;
   density: ContentDensity;
   setDensity: (density: ContentDensity) => void;
-  /** Compatibility aliases while legacy chart consumers migrate. */
   theme: ResolvedAppearance;
   toggleTheme: () => void;
 }
@@ -78,13 +77,11 @@ function persistPreference(name: string, value: string, storageKey: string) {
   try {
     localStorage.setItem(storageKey, value);
   } catch {
-    // The cookie and in-memory state still preserve the active document.
   }
 
   try {
     document.cookie = serializePreferenceCookie(name, value);
   } catch {
-    // Browser privacy settings must not prevent a presentation change.
   }
 }
 
