@@ -113,7 +113,7 @@ export async function createCustomCategory(
         categoryId,
         label,
         iconName: iconName ?? 'Shapes',
-        color: color ?? '#8B95A5',
+        color: color ?? '#6B7280',
         isCustom: true,
       },
     });

@@ -117,7 +117,7 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
 
   return (
     <div className="grid gap-6">
-      <header className="flex min-w-0 items-center justify-between">
+      <header className="mb-6 flex min-w-0 items-center justify-between">
         <h1 className="text-display-2xl font-bold tracking-tight text-primary-fixed">Dashboard</h1>
         <MonthSwitcher period={currentDashboard.period} />
       </header>

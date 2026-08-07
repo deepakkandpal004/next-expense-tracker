@@ -28,7 +28,7 @@ function FieldFrame({
   return (
     <div className="grid gap-1.5">
       <label className="text-interface-sm font-medium text-foreground" htmlFor={id}>
-        {label}{required ? <span aria-hidden="true"> *</span> : null}
+        {label}
       </label>
       {description ? <p className="text-interface-xs text-foreground-secondary" id={`${id}-description`}>{description}</p> : null}
       {children}

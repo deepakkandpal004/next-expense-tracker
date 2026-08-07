@@ -26,7 +26,7 @@ export function GenerateButton({ onGenerate, loading = false, className }: Gener
         disabled={loading}
         className={cn(
           "flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground transition-all duration-300",
-          "hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(54,173,163,0.3)] hover:scale-[1.02]",
+          "hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(0,245,255,0.3)] hover:scale-[1.02]",
           "active:scale-[0.98]",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none",
         )}

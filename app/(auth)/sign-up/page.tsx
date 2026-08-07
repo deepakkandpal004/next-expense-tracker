@@ -118,7 +118,6 @@ export default function SignUpPage() {
         />
         <PasswordField
           autoComplete="new-password"
-          description="Required. The server requires a password before it can create an account."
           disabled={pending}
           error={errors.password}
           id="password"

@@ -212,7 +212,7 @@ export function RecentTransactionsCard({
         </h2>
         <Link
           aria-label="View all transactions"
-          className="text-xs font-medium text-primary-fixed transition-all hover:drop-shadow-[0_0_8px_#36ADA3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="text-xs font-medium text-primary-fixed transition-all hover:drop-shadow-[0_0_8px_#00dce5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           href={allRecordsHref}
         >
           View all
@@ -233,7 +233,7 @@ export function RecentTransactionsCard({
           </p>
           <a
             href={allRecordsHref.replace("/records", "/records?addTransaction=1")}
-            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-on-primary-fixed bg-primary-container rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(54,173,163,0.3)]"
+            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-on-primary-fixed bg-primary-container rounded-full hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)]"
           >
             <DollarSign size={16} strokeWidth={2.2} />
             Add Your First Transaction

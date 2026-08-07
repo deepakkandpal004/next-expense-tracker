@@ -15,7 +15,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         className={cn(
           "glass-card p-5 transition-all duration-200",
           variant === "nested" && "bg-[var(--bg-surface-2)] border-[var(--border-subtle)]",
-          variant === "accent" && "border-[rgba(54,173,163,0.25)] bg-[rgba(54,173,163,0.04)]",
+          variant === "accent" && "border-[rgba(0,220,229,0.25)] bg-[rgba(0,220,229,0.04)]",
           className
         )}
         {...props}

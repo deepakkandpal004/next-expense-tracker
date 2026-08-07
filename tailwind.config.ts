@@ -10,10 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'],
-        sora: ['var(--font-inter)', 'sans-serif'],
-        manrope: ['var(--font-manrope)', 'sans-serif'],
-        inter: ['var(--font-inter)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        inter: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        outfit: ['var(--font-outfit)', 'Outfit', 'system-ui', '-apple-system', 'sans-serif'],
+        viga: ['var(--font-viga)', 'Viga', 'system-ui', '-apple-system', 'sans-serif'],
+        'viga-bold': ['var(--font-viga)', 'Viga', 'system-ui', '-apple-system', 'sans-serif'],
+        'viga-black': ['var(--font-viga)', 'Viga', 'system-ui', '-apple-system', 'sans-serif'],
+        manrope: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sora: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         // shadcn/ui semantic aliases
@@ -143,12 +147,12 @@ const config: Config = {
           'accent-foreground': 'var(--sidebar-accent-foreground)',
           border: 'var(--sidebar-border)',
           ring: 'var(--sidebar-ring)',
-          bg: '#121358',
-          'bg-end': '#232F72',
-          'foreground-muted': '#A9B4CF',
+          bg: '#0c0c1f',
+          'bg-end': '#1a1a2d',
+          'foreground-muted': '#b9caca',
           'item-hover': 'rgb(255 255 255 / 0.06)',
-          'item-active-bg': 'rgb(54 173 163 / 0.15)',
-          'item-active-foreground': '#36ADA3',
+          'item-active-bg': 'rgb(0 220 229 / 0.15)',
+          'item-active-foreground': '#63f7ff',
         },
         // Compatibility aliases while route components migrate to semantic roles.
         theme: {
@@ -168,6 +172,18 @@ const config: Config = {
         'token-8': 'var(--space-8)',
         'token-12': 'var(--space-12)',
         'token-16': 'var(--space-16)',
+      },
+      letterSpacing: {
+        'tighter': '-0.05em',
+        'tight': '-0.025em',
+        'normal': '-0.01em',
+        'wide': '0.025em',
+        'wider': '0.05em',
+        'widest': '0.1em',
+        'display': '-0.03em',
+        'heading': '-0.02em',
+        'body': '-0.01em',
+        'micro': '-0.005em',
       },
       borderRadius: {
         square: 'var(--radius-square)',

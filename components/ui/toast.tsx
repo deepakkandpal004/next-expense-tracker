@@ -50,7 +50,7 @@ const TONE_ICON: Record<ToastTone, typeof CheckCircle2> = {
 const TONE_SURFACE_CLASS: Record<ToastTone, string> = {
   success: "border-success-border/80 bg-gradient-to-br from-success-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(34,197,94,0.85)]",
   error: "border-danger-border/80 bg-gradient-to-br from-danger-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(240,68,56,0.85)]",
-  info: "border-info-border/80 bg-gradient-to-br from-info-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(54,173,163,0.85)]",
+  info: "border-info-border/80 bg-gradient-to-br from-info-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(0,220,229,0.85)]",
   warning: "border-warning-border/80 bg-gradient-to-br from-warning-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(245,166,35,0.85)]",
 };
 

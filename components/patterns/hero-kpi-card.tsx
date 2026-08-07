@@ -79,8 +79,8 @@ function TrendPill({
         isFlat
           ? "bg-white/5 text-on-surface-variant/50"
           : isFavourable
-            ? "bg-[#22C55E]/15 text-[#22C55E]"
-            : "bg-[#F5A623]/15 text-[#F5A623]",
+            ? "bg-[#4ADE80]/15 text-[#4ADE80]"
+            : "bg-[#FF7AC6]/15 text-[#FF7AC6]",
       )}
     >
       <Icon size={10} strokeWidth={2.5} />
@@ -137,26 +137,26 @@ const KPI_STYLES = {
   balance: {
     label: "Balance",
     icon: Wallet,
-    chip: "bg-[#36ADA3]/15 text-[#36ADA3]",
-    spark: "#36ADA3",
+    chip: "bg-[#00DCE5]/15 text-[#00DCE5]",
+    spark: "#00DCE5",
   },
   income: {
     label: "Income",
     icon: TrendingUp,
-    chip: "bg-[#22C55E]/15 text-[#22C55E]",
-    spark: "#22C55E",
+    chip: "bg-[#4ADE80]/15 text-[#4ADE80]",
+    spark: "#4ADE80",
   },
   expense: {
     label: "Expenses",
     icon: TrendingDown,
-    chip: "bg-[#F5A623]/15 text-[#F5A623]",
-    spark: "#F5A623",
+    chip: "bg-[#FF7AC6]/15 text-[#FF7AC6]",
+    spark: "#FF7AC6",
   },
   savings: {
     label: "Savings",
     icon: PiggyBank,
-    chip: "bg-[#2F578A]/15 text-[#2F578A]",
-    spark: "#2F578A",
+    chip: "bg-[#A855F7]/15 text-[#A855F7]",
+    spark: "#A855F7",
   },
 } as const;
 
@@ -220,10 +220,10 @@ function KpiCard({
    ──────────────────────────────────────────────────────────── */
 
 const AI_STYLES = {
-  positive: { icon: TrendingUp, chip: "bg-[#22C55E]/15 text-[#22C55E]" },
-  warning: { icon: Zap, chip: "bg-[#F5A623]/15 text-[#F5A623]" },
-  info: { icon: Brain, chip: "bg-[#36ADA3]/15 text-[#36ADA3]" },
-  celebration: { icon: Target, chip: "bg-[#2F578A]/15 text-[#2F578A]" },
+  positive: { icon: TrendingUp, chip: "bg-[#4ADE80]/15 text-[#4ADE80]" },
+  warning: { icon: Zap, chip: "bg-[#FF7AC6]/15 text-[#FF7AC6]" },
+  info: { icon: Brain, chip: "bg-[#00DCE5]/15 text-[#00DCE5]" },
+  celebration: { icon: Target, chip: "bg-[#A855F7]/15 text-[#A855F7]" },
 } as const;
 
 function AIInsightStrip({ insight }: { insight: NonNullable<HeroKpiCardProps["aiInsight"]> }) {
@@ -256,7 +256,7 @@ function AIInsightStrip({ insight }: { insight: NonNullable<HeroKpiCardProps["ai
           {insight.actionLabel && insight.actionHref && (
             <a
               href={insight.actionHref}
-              className="inline-flex items-center gap-1 rounded-full bg-[#36ADA3]/15 px-3.5 py-1.5 text-xs font-semibold text-[#36ADA3] transition-colors hover:bg-[#36ADA3]/25"
+              className="inline-flex items-center gap-1 rounded-full bg-[#00DCE5]/15 px-3.5 py-1.5 text-xs font-semibold text-[#00DCE5] transition-colors hover:bg-[#00DCE5]/25"
             >
               {insight.actionLabel}
             </a>
@@ -310,7 +310,7 @@ export function HeroKpiCard({
           invertPolarity={false}
           footer={
             streak >= 3 ? (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#F5A623]">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#FFB020]">
                 <Flame size={10} strokeWidth={2.5} />
                 {streak}d
               </span>

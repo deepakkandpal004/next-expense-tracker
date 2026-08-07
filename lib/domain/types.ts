@@ -3,8 +3,8 @@ export type ISODateTime = string;
 export type CurrencyCode = string;
 export type MinorUnitAmount = number;
 
-export type AppearancePreference = "light" | "dark" | "system";
-export type ResolvedAppearance = "light" | "dark";
+export type AppearancePreference = "dark";
+export type ResolvedAppearance = "dark";
 export type ContentDensity = "comfortable" | "compact";
 
 export type TransactionType = "income" | "expense";

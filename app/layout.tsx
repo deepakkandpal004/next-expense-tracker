@@ -1,24 +1,34 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import {  Inter, Manrope } from 'next/font/google';
+import { Inter, Outfit, Viga } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
-  APPEARANCE_COOKIE_NAME,
   DENSITY_COOKIE_NAME,
   PREFERENCES_BOOTSTRAP_SCRIPT,
   THEME_COLORS,
-  isAppearancePreference,
   isContentDensity,
 } from '@/lib/preferences/preferences';
 import { cn } from "@/lib/utils";
 
-const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' });
-
-const inter = Inter({
+const inter = Inter({ 
+  subsets: ['latin'], 
   variable: '--font-inter',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
+
+const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-outfit',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
+
+const viga = Viga({
+  subsets: ['latin'],
+  variable: '--font-viga',
+  weight: ['400'],
   display: 'swap',
 });
 
@@ -27,8 +37,8 @@ export const metadata: Metadata = {
   description:
     'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
-    icon: [{ url: '/favicon.png?v=15', type: 'image/png', sizes: '512x512' }],
-    apple: [{ url: '/favicon.png?v=15', sizes: '512x512' }],
+    icon: [{ url: '/icon.png', type: 'image/png', sizes: '512x512' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '512x512' }],
   },
 };
 
@@ -38,11 +48,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const appearanceCookie = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value;
   const densityCookie = cookieStore.get(DENSITY_COOKIE_NAME)?.value;
-  const initialAppearance = isAppearancePreference(appearanceCookie)
-    ? appearanceCookie
-    : 'system';
   const initialDensity = isContentDensity(densityCookie)
     ? densityCookie
     : 'comfortable';
@@ -50,18 +56,18 @@ export default async function RootLayout({
   return (
     <html
       lang='en'
-      data-appearance-preference={initialAppearance}
+      data-appearance-preference='dark'
       data-density={initialDensity}
-      suppressHydrationWarning className={cn("dark", manrope.variable)}
+      suppressHydrationWarning
+      className={cn("dark", inter.variable, outfit.variable, viga.variable)}
     >
       <head>
-        <meta name='theme-color' content={THEME_COLORS.light} />
+        <meta name='theme-color' content={THEME_COLORS.dark} />
         <link rel='manifest' href='/manifest.json' />
-        <link rel='icon' type='image/png' sizes='512x512' href='/favicon.png?v=14' />
-        <link rel='apple-touch-icon' sizes='512x512' href='/favicon.png?v=14' />
+        <link rel='icon' type='image/png' sizes='512x512' href='/icon.png' />
+        <link rel='apple-touch-icon' sizes='512x512' href='/apple-touch-icon.png' />
         <meta name='application-name' content='Expense AI' />
         <meta name='mobile-web-app-capable' content='yes' />
-        <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
         <meta name='apple-mobile-web-app-title' content='Expense AI' />
         <script
@@ -69,7 +75,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}
         />
       </head>
-      <body className={`${inter.variable} ${manrope.variable} antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <a
           className='sr-only fixed left-4 top-4 z-50 rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground focus:not-sr-only focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
           href='#main-content'
@@ -77,7 +83,6 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <RootProviders
-          initialAppearance={initialAppearance}
           initialDensity={initialDensity}
         >
           <main id='main-content' tabIndex={-1}>
@@ -88,3 +93,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

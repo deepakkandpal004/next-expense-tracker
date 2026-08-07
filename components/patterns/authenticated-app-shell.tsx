@@ -139,22 +139,27 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
       </div>
 
       {/* Main content area */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto relative z-10">
-        <AppHeader
-          accountError={accountError}
-          onMobileMenuOpen={() => setMobileNavOpen(true)}
-          onSignOut={signOut}
-          signingOut={signingOut}
-          user={user}
-        />
+      <div className="flex min-w-0 flex-1 flex-col relative z-10">
+        {/* Non-scrolling floating top bar */}
+        <div className="shrink-0 px-3 pt-3 sm:px-4">
+          <AppHeader
+            accountError={accountError}
+            onMobileMenuOpen={() => setMobileNavOpen(true)}
+            onSignOut={signOut}
+            signingOut={signingOut}
+            user={user}
+          />
+        </div>
 
-        <main
-          className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8"
-          id="main-content"
-          tabIndex={-1}
-        >
-          {children}
-        </main>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <main
+            className="min-w-0 px-4 pb-8 pt-6 sm:px-6 lg:px-8"
+            id="main-content"
+            tabIndex={-1}
+          >
+            {children}
+          </main>
+        </div>
       </div>
 
       {/* Mobile sidebar — Sheet overlay */}
