@@ -11,7 +11,6 @@ interface FieldFrameProps {
   description?: string;
   error?: string;
   successMessage?: string;
-  required?: boolean;
   children: ReactNode;
 }
 
@@ -21,7 +20,6 @@ function FieldFrame({
   description,
   error,
   successMessage,
-  required,
   children,
 }: FieldFrameProps) {
   enforceSentenceCase(label, "Field label");
@@ -51,7 +49,7 @@ export function Field({ id, label, description, error, successMessage, loading =
   const describedBy = [description && `${id}-description`, error && `${id}-error`, !error && successMessage && `${id}-success`].filter(Boolean).join(" ") || undefined;
   const state = error ? "invalid" : successMessage ? "success" : loading ? "loading" : "default";
   return (
-    <FieldFrame id={id} label={label} description={description} error={error} successMessage={successMessage} required={required}>
+    <FieldFrame id={id} label={label} description={description} error={error} successMessage={successMessage}>
       <input
         {...props}
         aria-busy={loading || undefined}
@@ -91,7 +89,7 @@ export function Select({ id, label, options, placeholder, description, error, su
   const describedBy = [description && `${id}-description`, error && `${id}-error`, !error && successMessage && `${id}-success`].filter(Boolean).join(" ") || undefined;
   const state = error ? "invalid" : successMessage ? "success" : loading ? "loading" : "default";
   return (
-    <FieldFrame id={id} label={label} description={description} error={error} successMessage={successMessage} required={required}>
+    <FieldFrame id={id} label={label} description={description} error={error} successMessage={successMessage}>
       <select
         {...props}
         aria-busy={loading || undefined}
