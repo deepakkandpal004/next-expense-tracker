@@ -143,12 +143,12 @@ const config: Config = {
           'accent-foreground': 'var(--sidebar-accent-foreground)',
           border: 'var(--sidebar-border)',
           ring: 'var(--sidebar-ring)',
-          bg: '#0c0c1f',
-          'bg-end': '#1a1a2d',
-          'foreground-muted': '#b9caca',
+          bg: '#121358',
+          'bg-end': '#232F72',
+          'foreground-muted': '#A9B4CF',
           'item-hover': 'rgb(255 255 255 / 0.06)',
-          'item-active-bg': 'rgb(0 220 229 / 0.15)',
-          'item-active-foreground': '#63f7ff',
+          'item-active-bg': 'rgb(54 173 163 / 0.15)',
+          'item-active-foreground': '#36ADA3',
         },
         // Compatibility aliases while route components migrate to semantic roles.
         theme: {

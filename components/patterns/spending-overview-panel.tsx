@@ -64,7 +64,7 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
       {
         label: "Income",
         data: incomeData,
-        borderColor: "#4ADE80",
+        borderColor: "#22C55E",
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: canvasCtx, chartArea } = chart;
@@ -75,13 +75,13 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
           gradient.addColorStop(1, "rgba(74, 222, 128, 0)");
           return gradient;
         },
-        pointBackgroundColor: "#4ADE80",
-        pointBorderColor: "#0B0F14",
+        pointBackgroundColor: "#22C55E",
+        pointBorderColor: "#121358",
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderWidth: 3,
-        pointHoverBorderColor: "#0B0F14",
+        pointHoverBorderColor: "#121358",
         borderWidth: 2.5,
         tension: 0.4,
         fill: true,
@@ -89,7 +89,7 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
       {
         label: "Spending",
         data: spendingData,
-        borderColor: "#FF7AC6",
+        borderColor: "#F5A623",
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: canvasCtx, chartArea } = chart;
@@ -100,13 +100,13 @@ function buildLineData(model: ChartModel): ChartData<"line"> {
           gradient.addColorStop(1, "rgba(255, 122, 198, 0)");
           return gradient;
         },
-        pointBackgroundColor: "#FF7AC6",
-        pointBorderColor: "#0B0F14",
+        pointBackgroundColor: "#F5A623",
+        pointBorderColor: "#121358",
         pointBorderWidth: 2,
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderWidth: 3,
-        pointHoverBorderColor: "#0B0F14",
+        pointHoverBorderColor: "#121358",
         borderWidth: 2.5,
         tension: 0.4,
         fill: true,
@@ -126,7 +126,7 @@ function buildBarData(model: ChartModel): ChartData<"bar"> {
         label: "Income",
         data: incomeData,
         backgroundColor: "rgba(74, 222, 128, 0.75)",
-        hoverBackgroundColor: "#4ADE80",
+        hoverBackgroundColor: "#22C55E",
         borderRadius: 6,
         borderWidth: 0,
         maxBarThickness: 24,
@@ -136,7 +136,7 @@ function buildBarData(model: ChartModel): ChartData<"bar"> {
         label: "Spending",
         data: spendingData,
         backgroundColor: "rgba(255, 122, 198, 0.75)",
-        hoverBackgroundColor: "#FF7AC6",
+        hoverBackgroundColor: "#F5A623",
         borderRadius: 6,
         borderWidth: 0,
         maxBarThickness: 24,
@@ -162,7 +162,7 @@ function buildLineOptions(currency: string): ChartOptions {
         enabled: true,
         backgroundColor: "rgba(10, 15, 22, 0.95)",
         titleColor: "#F5F7FA",
-        bodyColor: "#C5CCD6",
+        bodyColor: "#D3DBEB",
         borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
         padding: { top: 10, bottom: 10, left: 14, right: 14 },
@@ -188,7 +188,7 @@ function buildLineOptions(currency: string): ChartOptions {
         ticks: {
           maxTicksLimit: 7,
           font: { size: 11, weight: 500 },
-          color: "#5B6472",
+          color: "#6B769E",
           padding: 8,
         },
       },
@@ -201,7 +201,7 @@ function buildLineOptions(currency: string): ChartOptions {
         },
         ticks: {
           font: { size: 11 },
-          color: "#5B6472",
+          color: "#6B769E",
           padding: 12,
           maxTicksLimit: 6,
           callback: (value) => {
@@ -228,7 +228,7 @@ function buildBarOptions(currency: string): ChartOptions {
         enabled: true,
         backgroundColor: "rgba(10, 15, 22, 0.95)",
         titleColor: "#F5F7FA",
-        bodyColor: "#C5CCD6",
+        bodyColor: "#D3DBEB",
         borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
         padding: { top: 10, bottom: 10, left: 14, right: 14 },
@@ -254,7 +254,7 @@ function buildBarOptions(currency: string): ChartOptions {
         ticks: {
           maxTicksLimit: 7,
           font: { size: 11, weight: 500 },
-          color: "#5B6472",
+          color: "#6B769E",
           padding: 8,
         },
       },
@@ -267,7 +267,7 @@ function buildBarOptions(currency: string): ChartOptions {
         },
         ticks: {
           font: { size: 11 },
-          color: "#5B6472",
+          color: "#6B769E",
           padding: 12,
           maxTicksLimit: 6,
           callback: (value) => {
@@ -406,8 +406,8 @@ export function SpendingOverviewPanel({
   const showSuccessBanner = spendingTrend && spendingTrend.direction === "down" && spendingTrend.changePercent < -0.05;
 
   const legendSeries = [
-    { label: "Income", color: "#4ADE80", key: "Income" },
-    { label: "Spending", color: "#FF7AC6", key: "Spending" },
+    { label: "Income", color: "#22C55E", key: "Income" },
+    { label: "Spending", color: "#F5A623", key: "Spending" },
   ];
 
   return (
@@ -434,7 +434,7 @@ export function SpendingOverviewPanel({
               className={cn(
                 "inline-flex min-h-[34px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
                 vizType === type
-                  ? "bg-[#00DCE5] text-[#0B0F14]"
+                  ? "bg-[#36ADA3] text-[#121358]"
                   : "bg-transparent text-foreground-secondary hover:bg-white/5",
               )}
               key={type}
@@ -460,7 +460,7 @@ export function SpendingOverviewPanel({
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#4ADE80]/10 px-3 py-1 text-[11px] font-semibold text-[#4ADE80]"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#22C55E]/10 px-3 py-1 text-[11px] font-semibold text-[#22C55E]"
           >
             <TrendingDown aria-hidden="true" size={12} />
             {Math.abs(spendingTrend!.changePercent * 100).toFixed(0)}% this period

@@ -81,7 +81,7 @@ export function serializePreferenceCookie(
 
 export const THEME_COLORS: Readonly<Record<ResolvedAppearance, string>> = {
   light: "#f8fafc",
-  dark: "#0b132b",
+  dark: "#121358",
 };
 
 // Runs in <head> before visible content. It deliberately has no dependencies so

@@ -190,7 +190,7 @@ export function TransactionTable({
                       {categoryDef?.label ?? row.categoryId}
                     </Badge>
                   </td>
-                  <td className="hidden px-4 py-3 text-sm text-[#9AA3AF] font-manrope sm:table-cell">
+                  <td className="hidden px-4 py-3 text-sm text-[#A9B4CF] font-manrope sm:table-cell">
                     <DateText value={row.occurredOn} />
                   </td>
                   <td className="px-4 py-3 text-right">

@@ -67,12 +67,12 @@ const CATEGORY_CONFIG: Record<
   string,
   { icon: React.ComponentType<{ size?: number; className?: string }>; color: string; gradient: string }
 > = {
-  travel: { icon: Plane, color: "#3b82f6", gradient: "from-blue-500 to-cyan-400" },
-  vehicle: { icon: Car, color: "#8b5cf6", gradient: "from-violet-500 to-purple-400" },
+  travel: { icon: Plane, color: "#2F578A", gradient: "from-blue-500 to-cyan-400" },
+  vehicle: { icon: Car, color: "#3D4AA0", gradient: "from-indigo-600 to-blue-500" },
   safety: { icon: Shield, color: "#22c55e", gradient: "from-emerald-500 to-green-400" },
-  property: { icon: Home, color: "#f59e0b", gradient: "from-amber-500 to-orange-400" },
-  education: { icon: Target, color: "#ec4899", gradient: "from-pink-500 to-rose-400" },
-  other: { icon: Target, color: "#6366f1", gradient: "from-indigo-500 to-blue-400" },
+  property: { icon: Home, color: "#F5A623", gradient: "from-amber-500 to-orange-400" },
+  education: { icon: Target, color: "#4FB0C5", gradient: "from-teal-500 to-cyan-600" },
+  other: { icon: Target, color: "#2F578A", gradient: "from-indigo-500 to-blue-400" },
 };
 
 function getCategoryConfig(category: string) {
@@ -180,7 +180,7 @@ function CelebrationEffect({ show }: { show: boolean }) {
     x: Math.random() * 100,
     delay: Math.random() * 0.5,
     duration: 1.5 + Math.random() * 1,
-    color: ["#f59e0b", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"][Math.floor(Math.random() * 5)],
+    color: ["#F5A623", "#22c55e", "#2F578A", "#3D4AA0", "#4FB0C5"][Math.floor(Math.random() * 5)],
     size: 4 + Math.random() * 6,
   }));
 

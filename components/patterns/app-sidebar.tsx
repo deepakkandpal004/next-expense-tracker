@@ -83,19 +83,19 @@ function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex h-11 items-center rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]",
+    "group relative flex h-11 items-center rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358]",
     expanded ? "w-full gap-3 px-3" : "mx-auto w-11 justify-center px-0",
     isActive
-      ? "bg-[rgba(0,220,229,0.12)] font-medium text-white hover:bg-[rgba(0,220,229,0.18)]"
-      : "text-[#8B95A5] hover:bg-white/[0.04] hover:text-[#C5CCD6]",
-    item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-[#5B6472]",
+      ? "bg-[rgba(54,173,163,0.12)] font-medium text-white hover:bg-[rgba(54,173,163,0.18)]"
+      : "text-[#8B95A5] hover:bg-white/[0.04] hover:text-[#D3DBEB]",
+    item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-[#6B769E]",
   );
 
   const iconClass = cn(
     "shrink-0 transition-colors duration-200",
     isActive
-      ? "text-[#00DCE5]"
-      : "text-[#6B7580] group-hover:text-[#9AA3AF]",
+      ? "text-[#36ADA3]"
+      : "text-[#6B769E] group-hover:text-[#A9B4CF]",
   );
 
   const content = (
@@ -114,7 +114,7 @@ function NavRow({
         {item.label}
       </span>
       {isActive && expanded && (
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#00DCE5] shadow-[0_0_6px_rgba(0,220,229,0.6)]" />
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#36ADA3] shadow-[0_0_6px_rgba(54,173,163,0.6)]" />
       )}
     </>
   );
@@ -161,7 +161,7 @@ export function AppSidebar({
       aria-label="Application navigation"
       className={cn(
         "flex h-full flex-col transition-all duration-300 ease-in-out overflow-hidden",
-        "bg-[#0D1117] border-r border-white/[0.06]",
+        "bg-[#121358] border-r border-white/[0.06]",
         expanded ? "w-[240px]" : "w-[60px]",
       )}
     >
@@ -179,7 +179,7 @@ export function AppSidebar({
           expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
         )}>
           <span className="text-white">Expense </span>
-          <span className="text-[#00DCE5]">AI</span>
+          <span className="text-[#36ADA3]">AI</span>
         </span>
       </Link>
 
@@ -189,7 +189,7 @@ export function AppSidebar({
           <ul className="flex flex-col gap-5">
             {NAV_SECTIONS.map((section) => (
               <li key={section.title}>
-                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#5B6472]">
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#6B769E]">
                   {section.title}
                 </p>
                 <ul className="flex flex-col gap-0.5">
@@ -246,7 +246,7 @@ export function AppSidebar({
         <button
           onClick={() => onNewRecord?.()}
           className={cn(
-            "flex items-center justify-center rounded-xl bg-[#00DCE5] font-semibold text-[#0B0F14] transition-all duration-200 hover:bg-[#00DCE5]/90 hover:shadow-[0_0_20px_rgba(0,220,229,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] active:scale-[0.98]",
+            "flex items-center justify-center rounded-xl bg-[#36ADA3] font-semibold text-[#121358] transition-all duration-200 hover:bg-[#36ADA3]/90 hover:shadow-[0_0_20px_rgba(54,173,163,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358] active:scale-[0.98]",
             expanded ? "h-12 w-full gap-2 px-4" : "mx-auto size-11",
           )}
         >
@@ -266,7 +266,7 @@ export function AppSidebar({
             title={expanded ? "Collapse sidebar" : "Expand sidebar"}
             onClick={onToggleCollapsed}
             className={cn(
-              "mt-2 flex items-center justify-center rounded-xl text-[#5B6472] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]",
+              "mt-2 flex items-center justify-center rounded-xl text-[#6B769E] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358]",
               expanded ? "h-10 w-full" : "mx-auto size-11",
             )}
           >

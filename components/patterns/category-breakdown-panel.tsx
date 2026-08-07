@@ -31,14 +31,14 @@ export interface CategoryBreakdownPanelProps {
    ──────────────────────────────────────────────────────────── */
 
 function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
-  const defaultColors = ["#00DCE5", "#A855F7", "#22C55E", "#FBBF24", "#F04438", "#3B82F6", "#EC4899", "#F97316"];
+  const defaultColors = ["#36ADA3", "#2F578A", "#22C55E", "#F5A623", "#F04438", "#6E9BE3", "#4FB0C5", "#3D4AA0"];
   const styles = typeof window !== "undefined" ? window.getComputedStyle(document.documentElement) : null;
   return {
     labels: rows.map((row) => row.label),
     datasets: [{
       data: rows.map((row) => row.amountMinor / 100),
       backgroundColor: rows.map((row, i) => styles?.getPropertyValue(`--color-${row.semanticToken}`).trim() || defaultColors[i % defaultColors.length]),
-      borderColor: styles?.getPropertyValue("--color-surface").trim() || "#080C10",
+      borderColor: styles?.getPropertyValue("--color-surface").trim() || "#0D1145",
       borderWidth: 3,
       hoverOffset: 8,
       spacing: 2,
@@ -67,7 +67,7 @@ function buildDoughnutOptions(currency: string): ChartOptions<"doughnut"> {
         enabled: true,
         backgroundColor: "rgba(15, 23, 42, 0.92)",
         titleColor: "#f8fafc",
-        bodyColor: "#cbd5e1",
+        bodyColor: "#A9B4CF",
         borderColor: "rgba(255, 255, 255, 0.08)",
         borderWidth: 1,
         padding: { top: 10, bottom: 10, left: 14, right: 14 },

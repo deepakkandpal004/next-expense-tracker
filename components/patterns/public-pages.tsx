@@ -60,8 +60,8 @@ const coreFeatures = [
     icon: BarChart3,
     title: 'Smart Analytics',
     description: 'Beautiful charts and insights that help you understand where your money goes.',
-    color: '#00DCE5',
-    bgColor: 'rgba(0,220,229,0.08)',
+    color: '#36ADA3',
+    bgColor: 'rgba(54,173,163,0.08)',
     span: 'lg:col-span-2 lg:row-span-2',
     featured: true,
   },
@@ -69,8 +69,8 @@ const coreFeatures = [
     icon: Brain,
     title: 'AI Categorization',
     description: 'Automatically categorize transactions with AI-powered suggestions.',
-    color: '#A855F7',
-    bgColor: 'rgba(168,85,247,0.08)',
+    color: '#2F578A',
+    bgColor: 'rgba(47,87,138,0.08)',
     span: 'lg:col-span-1',
     featured: false,
   },
@@ -87,8 +87,8 @@ const coreFeatures = [
     icon: Shield,
     title: 'Bank-Grade Security',
     description: 'Your data is encrypted and secure. We never sell your information.',
-    color: '#3B82F6',
-    bgColor: 'rgba(59,130,246,0.08)',
+    color: '#6E9BE3',
+    bgColor: 'rgba(110,155,227,0.08)',
     span: 'lg:col-span-1',
     featured: false,
   },
@@ -96,8 +96,8 @@ const coreFeatures = [
     icon: Zap,
     title: 'Instant Sync',
     description: 'Real-time updates across all your devices. Always up to date.',
-    color: '#FBBF24',
-    bgColor: 'rgba(251,191,36,0.08)',
+    color: '#F5A623',
+    bgColor: 'rgba(245,166,35,0.08)',
     span: 'lg:col-span-1',
     featured: false,
   },
@@ -117,15 +117,15 @@ const detailedFeatures = [
     icon: TrendingUp,
     title: 'Spending Forecasts',
     description: 'AI predicts your monthly spending based on historical patterns, helping you plan ahead.',
-    color: '#00DCE5',
-    bgColor: 'rgba(0,220,229,0.08)',
+    color: '#36ADA3',
+    bgColor: 'rgba(54,173,163,0.08)',
   },
   {
     icon: Bell,
     title: 'Anomaly Detection',
     description: 'Get alerted to unusual spending patterns before they become problems.',
-    color: '#A855F7',
-    bgColor: 'rgba(168,85,247,0.08)',
+    color: '#2F578A',
+    bgColor: 'rgba(47,87,138,0.08)',
   },
   {
     icon: Search,
@@ -138,15 +138,15 @@ const detailedFeatures = [
     icon: Download,
     title: 'CSV Export',
     description: 'Export your data anytime for accounting or personal records.',
-    color: '#3B82F6',
-    bgColor: 'rgba(59,130,246,0.08)',
+    color: '#2F578A',
+    bgColor: 'rgba(110,155,227,0.08)',
   },
   {
     icon: RefreshCw,
     title: 'Recurring Transactions',
     description: 'Automate regular income and expense tracking with recurring entries.',
-    color: '#FBBF24',
-    bgColor: 'rgba(251,191,36,0.08)',
+    color: '#F5A623',
+    bgColor: 'rgba(245,166,35,0.08)',
   },
   {
     icon: Target,
@@ -193,25 +193,25 @@ const faqs = [
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-[#121358] py-24 sm:py-32">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.03] blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#36ADA3]">
             Features
           </span>
           <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             Everything you need to
             <br />
-            <span className="bg-gradient-to-r from-[#00DCE5] via-[#A855F7] to-[#22C55E] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#36ADA3] via-[#2F578A] to-[#22C55E] bg-clip-text text-transparent">
               master your finances
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-[#A9B4CF]">
             Powerful tools designed to give you clarity and control over your money.
             Track smarter, spend wiser.
           </p>
@@ -225,7 +225,7 @@ function HeroSection() {
         >
           <Link
             href="/sign-up"
-            className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-7 py-3.5 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+            className="group flex items-center gap-2.5 rounded-xl bg-[#36ADA3] px-7 py-3.5 text-sm font-semibold text-[#121358] transition-all duration-300 hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] hover:scale-[1.03] active:scale-[0.97]"
           >
             Get started free
             <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -248,16 +248,16 @@ function HeroSection() {
 
 function CoreFeaturesSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-[#121358] py-24 sm:py-32">
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#A855F7]/20 bg-[#A855F7]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#A855F7]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#2F578A]/20 bg-[#2F578A]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#2F578A]">
             Core Features
           </span>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Built for what matters
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#A9B4CF]">
             Essential tools for tracking, analyzing, and understanding your finances.
           </p>
         </AnimateInView>
@@ -268,7 +268,7 @@ function CoreFeaturesSection() {
               <motion.div
                 whileHover={{ y: -4, scale: 1.01 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(0,220,229,0.06)]"
+                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(54,173,163,0.06)]"
               >
                 <div
                   className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
@@ -284,19 +284,19 @@ function CoreFeaturesSection() {
                   </div>
 
                   <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#9AA3AF]">{feature.description}</p>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#A9B4CF]">{feature.description}</p>
 
                   {feature.featured && (
                     <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                      <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                      <div className="flex items-center justify-between text-xs text-[#A9B4CF]/60">
                         <span>This month</span>
-                        <span className="text-[#00DCE5]">+24% savings</span>
+                        <span className="text-[#36ADA3]">+24% savings</span>
                       </div>
                       <div className="mt-3 flex items-end gap-1 h-12">
                         {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
                           <div
                             key={i}
-                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60"
+                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#36ADA3]/20 to-[#36ADA3]/60"
                             style={{ height: `${h}%` }}
                           />
                         ))}
@@ -319,9 +319,9 @@ function CoreFeaturesSection() {
 
 function DetailedFeaturesSection() {
   return (
-    <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+    <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#0D1145] py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#A855F7]/[0.03] blur-[100px]" />
+        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#2F578A]/[0.03] blur-[100px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -332,7 +332,7 @@ function DetailedFeaturesSection() {
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Go beyond basic tracking
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#A9B4CF]">
             Advanced features that help you understand, predict, and optimize your finances.
           </p>
         </AnimateInView>
@@ -352,7 +352,7 @@ function DetailedFeaturesSection() {
                   <feature.icon size={24} style={{ color: feature.color }} />
                 </div>
                 <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#9AA3AF]">{feature.description}</p>
+                <p className="mt-2 text-sm leading-relaxed text-[#A9B4CF]">{feature.description}</p>
               </motion.div>
             </AnimateInView>
           ))}
@@ -368,14 +368,14 @@ function DetailedFeaturesSection() {
 
 function StatsSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-20">
+    <section className="relative overflow-hidden bg-[#121358] py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <AnimateInView key={stat.label} delay={index * 0.1}>
               <div className="text-center">
                 <p className="text-4xl font-bold text-white">{stat.value}</p>
-                <p className="mt-2 text-sm text-[#9AA3AF]">{stat.label}</p>
+                <p className="mt-2 text-sm text-[#A9B4CF]">{stat.label}</p>
               </div>
             </AnimateInView>
           ))}
@@ -394,14 +394,14 @@ function FaqSection() {
   const baseId = useId();
 
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-[#121358] py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 bottom-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.02] blur-[100px]" />
+        <div className="absolute left-1/2 bottom-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.02] blur-[100px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-[#9AA3AF]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-[#A9B4CF]">
             FAQ
           </span>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -427,7 +427,7 @@ function FaqSection() {
                       {faq.question}
                       <ChevronDown
                         size={18}
-                        className={`shrink-0 text-[#9AA3AF] transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+                        className={`shrink-0 text-[#A9B4CF] transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
                       />
                     </button>
                   </h3>
@@ -437,7 +437,7 @@ function FaqSection() {
                     aria-labelledby={`faq-${index}`}
                     className={`overflow-hidden transition-all duration-300 ${expanded ? 'max-h-40' : 'max-h-0'}`}
                   >
-                    <p className="px-6 pb-4 text-sm leading-relaxed text-[#9AA3AF]">
+                    <p className="px-6 pb-4 text-sm leading-relaxed text-[#A9B4CF]">
                       {faq.answer}
                     </p>
                   </div>
@@ -457,9 +457,9 @@ function FaqSection() {
 
 function CtaSection() {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+    <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#0D1145] py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#36ADA3]/[0.04] blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
@@ -467,13 +467,13 @@ function CtaSection() {
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Start tracking smarter today
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#A9B4CF]">
             Join thousands of users who understand their finances better with Expense AI.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/sign-up"
-              className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-8 py-4 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+              className="group flex items-center gap-2.5 rounded-xl bg-[#36ADA3] px-8 py-4 text-sm font-semibold text-[#121358] transition-all duration-300 hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] hover:scale-[1.03] active:scale-[0.97]"
             >
               Get started free
               <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -485,7 +485,7 @@ function CtaSection() {
               Back to home
             </Link>
           </div>
-          <p className="mt-6 text-xs text-[#9AA3AF]/60">No credit card required. Free forever.</p>
+          <p className="mt-6 text-xs text-[#A9B4CF]/60">No credit card required. Free forever.</p>
         </AnimateInView>
       </div>
     </section>
@@ -498,7 +498,7 @@ function CtaSection() {
 
 export function FeaturesPageContent() {
   return (
-    <main className="min-h-screen bg-[#0B0F14]">
+    <main className="min-h-screen bg-[#121358]">
       <HeroSection />
       <CoreFeaturesSection />
       <DetailedFeaturesSection />
@@ -573,11 +573,11 @@ export function LandingPageContent() {
 
 export function AboutPageContent() {
   return (
-    <main className="min-h-screen bg-[#0B0F14]">
+    <main className="min-h-screen bg-[#121358]">
       {/* Hero — editorial style, minimal */}
       <section className="relative overflow-hidden py-32 sm:py-40">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[150px]" />
+          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.03] blur-[150px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
@@ -585,11 +585,11 @@ export function AboutPageContent() {
               We believe finance
               <br />
               should be{' '}
-              <span className="bg-gradient-to-r from-[#00DCE5] to-[#A855F7] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#36ADA3] to-[#2F578A] bg-clip-text text-transparent">
                 clear
               </span>
             </h1>
-            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#9AA3AF]">
+            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#A9B4CF]">
               Expense AI exists to make financial tracking simple, private, and accessible.
               No complexity. No hidden agendas. Just clarity.
             </p>
@@ -598,7 +598,7 @@ export function AboutPageContent() {
       </section>
 
       {/* Stats — large, minimal */}
-      <section className="relative border-y border-white/[0.06] bg-[#080C10] py-20">
+      <section className="relative border-y border-white/[0.06] bg-[#0D1145] py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
             {[
@@ -610,7 +610,7 @@ export function AboutPageContent() {
               <AnimateInView key={stat.label} delay={index * 0.1}>
                 <div className="text-center">
                   <p className="text-5xl font-bold tracking-tight text-white sm:text-6xl">{stat.value}</p>
-                  <p className="mt-3 text-sm font-medium uppercase tracking-wider text-[#9AA3AF]/60">{stat.label}</p>
+                  <p className="mt-3 text-sm font-medium uppercase tracking-wider text-[#A9B4CF]/60">{stat.label}</p>
                 </div>
               </AnimateInView>
             ))}
@@ -619,18 +619,18 @@ export function AboutPageContent() {
       </section>
 
       {/* Story — split layout, editorial */}
-      <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+      <section className="relative overflow-hidden bg-[#121358] py-24 sm:py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-[#A855F7]/[0.03] blur-[120px]" />
+          <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-[#2F578A]/[0.03] blur-[120px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-start gap-16 lg:grid-cols-2">
             <AnimateInView>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#A855F7]">Our Story</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-[#2F578A]">Our Story</p>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Why we built this
               </h2>
-              <div className="mt-6 space-y-4 text-base leading-relaxed text-[#9AA3AF]">
+              <div className="mt-6 space-y-4 text-base leading-relaxed text-[#A9B4CF]">
                 <p>
                   Most expense trackers are either too simple or too complicated.
                   We wanted something in between — powerful enough for real financial
@@ -676,9 +676,9 @@ export function AboutPageContent() {
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]"
                   >
-                    <span className="text-xs font-semibold text-[#00DCE5]/60">{item.step}</span>
+                    <span className="text-xs font-semibold text-[#36ADA3]/60">{item.step}</span>
                     <h3 className="mt-2 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="mt-1 text-sm text-[#9AA3AF]">{item.desc}</p>
+                    <p className="mt-1 text-sm text-[#A9B4CF]">{item.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -688,10 +688,10 @@ export function AboutPageContent() {
       </section>
 
       {/* Principles — minimal grid */}
-      <section className="relative border-y border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+      <section className="relative border-y border-white/[0.06] bg-[#0D1145] py-24 sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <AnimateInView className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#00DCE5]/60">Principles</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#36ADA3]/60">Principles</p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               What guides us
             </h2>
@@ -703,13 +703,13 @@ export function AboutPageContent() {
                 icon: Shield,
                 title: 'Privacy',
                 desc: 'Your data stays yours. Always.',
-                color: '#3B82F6',
+                color: '#2F578A',
               },
               {
                 icon: Brain,
                 title: 'Transparency',
                 desc: 'AI is optional and clearly explained.',
-                color: '#A855F7',
+                color: '#2F578A',
               },
               {
                 icon: Target,
@@ -721,7 +721,7 @@ export function AboutPageContent() {
                 icon: Zap,
                 title: 'Speed',
                 desc: 'Instant sync across all devices.',
-                color: '#FBBF24',
+                color: '#F5A623',
               },
               {
                 icon: Globe,
@@ -733,16 +733,16 @@ export function AboutPageContent() {
                 icon: BarChart3,
                 title: 'Clarity',
                 desc: 'Beautiful visuals, actionable data.',
-                color: '#00DCE5',
+                color: '#36ADA3',
               },
             ].map((p, index) => (
               <AnimateInView key={p.title} delay={index * 0.06}>
-                <div className="group bg-[#0B0F14] p-8 transition-colors duration-300 hover:bg-white/[0.02]">
+                <div className="group bg-[#121358] p-8 transition-colors duration-300 hover:bg-white/[0.02]">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-white/[0.04]">
                     <p.icon size={20} style={{ color: p.color }} />
                   </div>
                   <h3 className="mt-4 text-base font-semibold text-white">{p.title}</h3>
-                  <p className="mt-1 text-sm text-[#9AA3AF]">{p.desc}</p>
+                  <p className="mt-1 text-sm text-[#A9B4CF]">{p.desc}</p>
                 </div>
               </AnimateInView>
             ))}
@@ -751,22 +751,22 @@ export function AboutPageContent() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden bg-[#0B0F14] py-32">
+      <section className="relative overflow-hidden bg-[#121358] py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#36ADA3]/[0.04] blur-[120px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
             <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Start with clarity
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-[#9AA3AF]">
+            <p className="mx-auto mt-4 max-w-md text-[#A9B4CF]">
               Join thousands who track smarter with Expense AI.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/sign-up"
-                className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-8 py-4 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+                className="group flex items-center gap-2.5 rounded-xl bg-[#36ADA3] px-8 py-4 text-sm font-semibold text-[#121358] transition-all duration-300 hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] hover:scale-[1.03] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -787,18 +787,18 @@ export function AboutPageContent() {
 
 export function ContactPageContent() {
   return (
-    <main className="min-h-screen bg-[#0B0F14]">
+    <main className="min-h-screen bg-[#121358]">
       {/* Hero */}
       <section className="relative overflow-hidden py-32 sm:py-40">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[150px]" />
+          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.03] blur-[150px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
             <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
               Get in touch
             </h1>
-            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#9AA3AF]">
+            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#A9B4CF]">
               Have a question, need support, or want to share feedback?
               We&apos;d love to hear from you.
             </p>
@@ -807,7 +807,7 @@ export function ContactPageContent() {
       </section>
 
       {/* Contact Options */}
-      <section className="relative border-y border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+      <section className="relative border-y border-white/[0.06] bg-[#0D1145] py-24 sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -817,8 +817,8 @@ export function ContactPageContent() {
                 description: 'For account, product, or accessibility questions',
                 action: 'deepakkandpal.tech@gmail.com',
                 href: 'mailto:deepakkandpal.tech@gmail.com',
-                color: '#00DCE5',
-                bgColor: 'rgba(0,220,229,0.08)',
+                color: '#36ADA3',
+                bgColor: 'rgba(54,173,163,0.08)',
               },
               {
                 icon: Mail,
@@ -826,8 +826,8 @@ export function ContactPageContent() {
                 description: 'For partnerships or business inquiries',
                 action: 'deepakkandpal.work@gmail.com',
                 href: 'mailto:deepakkandpal.work@gmail.com',
-                color: '#A855F7',
-                bgColor: 'rgba(168,85,247,0.08)',
+                color: '#2F578A',
+                bgColor: 'rgba(47,87,138,0.08)',
               },
               {
                 icon: Clock,
@@ -857,7 +857,7 @@ export function ContactPageContent() {
                       <item.icon size={24} style={{ color: item.color }} />
                     </div>
                     <h3 className="mt-5 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-sm text-[#9AA3AF]">{item.description}</p>
+                    <p className="mt-2 text-sm text-[#A9B4CF]">{item.description}</p>
                     <a
                       href={item.href}
                       className="mt-4 inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 hover:opacity-80"
@@ -875,13 +875,13 @@ export function ContactPageContent() {
       </section>
 
       {/* Quick Links */}
-      <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+      <section className="relative overflow-hidden bg-[#121358] py-24 sm:py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#A855F7]/[0.03] blur-[100px]" />
+          <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#2F578A]/[0.03] blur-[100px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <AnimateInView className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#A855F7]/60">Resources</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#2F578A]/60">Resources</p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Find answers fast
             </h2>
@@ -894,14 +894,14 @@ export function ContactPageContent() {
                 title: 'FAQ',
                 description: 'Answers to common questions about Expense AI.',
                 href: '/features',
-                color: '#00DCE5',
+                color: '#36ADA3',
               },
               {
                 icon: Shield,
                 title: 'AI Transparency',
                 description: 'Learn how our AI features use your data.',
                 href: '/ai-transparency',
-                color: '#A855F7',
+                color: '#2F578A',
               },
               {
                 icon: Lock,
@@ -915,7 +915,7 @@ export function ContactPageContent() {
                 title: 'Features',
                 description: 'Explore everything Expense AI can do.',
                 href: '/features',
-                color: '#FBBF24',
+                color: '#F5A623',
               },
             ].map((item, index) => (
               <AnimateInView key={item.title} delay={index * 0.08}>
@@ -930,10 +930,10 @@ export function ContactPageContent() {
                     <item.icon size={20} style={{ color: item.color }} />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white group-hover:text-[#00DCE5] transition-colors duration-200">
+                    <h3 className="text-base font-semibold text-white group-hover:text-[#36ADA3] transition-colors duration-200">
                       {item.title}
                     </h3>
-                    <p className="mt-1 text-sm text-[#9AA3AF]">{item.description}</p>
+                    <p className="mt-1 text-sm text-[#A9B4CF]">{item.description}</p>
                   </div>
                 </Link>
               </AnimateInView>
@@ -943,22 +943,22 @@ export function ContactPageContent() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#080C10] py-32">
+      <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#0D1145] py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#36ADA3]/[0.04] blur-[120px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
             <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Ready to get started?
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-[#9AA3AF]">
+            <p className="mx-auto mt-4 max-w-md text-[#A9B4CF]">
               Join thousands who track smarter with Expense AI.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/sign-up"
-                className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-8 py-4 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+                className="group flex items-center gap-2.5 rounded-xl bg-[#36ADA3] px-8 py-4 text-sm font-semibold text-[#121358] transition-all duration-300 hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] hover:scale-[1.03] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -983,17 +983,17 @@ export function PrivacyPageContent() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#36ADA3]/[0.04] blur-[120px]" />
         </div>
         <div className="content-frame relative py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#00DCE5] uppercase tracking-wider">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#36ADA3] uppercase tracking-wider">
               Privacy
             </span>
             <h1 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-bold text-white tracking-tight leading-[1.1]">
               Your data stays yours.
             </h1>
-            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+            <p className="mt-5 text-lg text-[#A9B4CF] max-w-lg mx-auto leading-relaxed">
               We collect only what&apos;s needed to power your expense tracking. Nothing more.
             </p>
           </div>
@@ -1042,9 +1042,9 @@ export function PrivacyPageContent() {
       {/* Footer note */}
       <section className="content-frame border-t border-white/5 py-12 sm:py-16">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-[#9AA3AF]">
+          <p className="text-sm text-[#A9B4CF]">
             Questions? Contact us at{' '}
-            <span className="text-[#00DCE5]">privacy@expenseai.app</span>
+            <span className="text-[#36ADA3]">privacy@expenseai.app</span>
           </p>
         </div>
       </section>
@@ -1055,12 +1055,12 @@ export function PrivacyPageContent() {
 function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#00DCE5] border border-white/[0.06]">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#36ADA3] border border-white/[0.06]">
         {icon}
       </div>
       <div>
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+        <p className="mt-1 text-sm text-[#A9B4CF] leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -1069,11 +1069,11 @@ function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; titl
 function DataCard({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
-      <p className="text-[11px] font-semibold text-[#00DCE5] uppercase tracking-wider mb-3">{label}</p>
+      <p className="text-[11px] font-semibold text-[#36ADA3] uppercase tracking-wider mb-3">{label}</p>
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-center gap-2 text-sm text-[#9AA3AF]">
-            <span className="h-1 w-1 rounded-full bg-[#9AA3AF]/40" />
+          <li key={item} className="flex items-center gap-2 text-sm text-[#A9B4CF]">
+            <span className="h-1 w-1 rounded-full bg-[#A9B4CF]/40" />
             {item}
           </li>
         ))}
@@ -1124,17 +1124,17 @@ export function AiTransparencyPageContent() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#2F578A]/[0.04] blur-[120px]" />
         </div>
         <div className="content-frame relative py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#A855F7]/20 bg-[#A855F7]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#A855F7] uppercase tracking-wider">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#2F578A]/20 bg-[#2F578A]/[0.08] px-3 py-1 text-[11px] font-semibold text-[#2F578A] uppercase tracking-wider">
               AI Transparency
             </span>
             <h1 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-bold text-white tracking-tight leading-[1.1]">
               How AI uses your data.
             </h1>
-            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+            <p className="mt-5 text-lg text-[#A9B4CF] max-w-lg mx-auto leading-relaxed">
               AI features are optional. When enabled, we send only aggregated totals — never raw descriptions or IDs.
             </p>
           </div>
@@ -1168,8 +1168,8 @@ export function AiTransparencyPageContent() {
           <h2 className="text-xl font-bold text-white mb-8 text-center">Data disclosure</h2>
           <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
             <div className="grid grid-cols-2 border-b border-white/[0.06] bg-white/[0.02]">
-              <div className="px-5 py-3 text-[11px] font-semibold text-[#9AA3AF] uppercase tracking-wider">Field</div>
-              <div className="px-5 py-3 text-[11px] font-semibold text-[#9AA3AF] uppercase tracking-wider">Status</div>
+              <div className="px-5 py-3 text-[11px] font-semibold text-[#A9B4CF] uppercase tracking-wider">Field</div>
+              <div className="px-5 py-3 text-[11px] font-semibold text-[#A9B4CF] uppercase tracking-wider">Status</div>
             </div>
             <DisclosureRow field="Period dates" included />
             <DisclosureRow field="Currency" included />
@@ -1186,7 +1186,7 @@ export function AiTransparencyPageContent() {
       {/* Disclaimer */}
       <section className="content-frame border-t border-white/5 py-12 sm:py-16">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-[#9AA3AF] leading-relaxed">
+          <p className="text-sm text-[#A9B4CF] leading-relaxed">
             AI-generated insights are informational only and are not professional financial advice. Provider retention behavior has not been verified.
           </p>
         </div>
@@ -1198,12 +1198,12 @@ export function AiTransparencyPageContent() {
 function AiItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#A855F7] border border-white/[0.06]">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#2F578A] border border-white/[0.06]">
         {icon}
       </div>
       <div>
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+        <p className="mt-1 text-sm text-[#A9B4CF] leading-relaxed">{description}</p>
       </div>
     </div>
   );

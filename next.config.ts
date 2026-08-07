@@ -15,6 +15,7 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://ui-avatars.com",
       "font-src 'self'",
       "connect-src 'self' https://openrouter.ai",
+      "manifest-src 'self' https://vercel.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

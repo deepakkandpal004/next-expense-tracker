@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Field, StatusRegion } from '@/components/ui';
+import Image from 'next/image';
 
 export type AuthFieldErrors = Record<string, string | undefined>;
 
@@ -58,7 +59,7 @@ export function PasswordField({
           aria-pressed={visible}
           disabled={disabled}
           onClick={() => setVisible((c) => !c)}
-          className="absolute right-2 top-[34px] h-11 w-11 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:text-white hover:bg-white/5 transition-all"
+          className="absolute right-2 top-[34px] h-11 w-11 flex items-center justify-center rounded-lg text-[#A9B4CF] hover:text-white hover:bg-white/5 transition-all"
         >
           {visible ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
@@ -103,11 +104,11 @@ export function AuthenticationForm({
       {/* Logo */}
       <Link href="/" className="group mb-8 inline-flex items-center gap-1">
         <span className="grid size-20 place-items-center rounded-3xl overflow-hidden -mr-1 transition-transform duration-300 group-hover:scale-110">
-          <img src="/logo.png" alt="" className="h-full w-full object-cover" />
+          <Image src="/logo.png" alt="" width={80} height={80} className="h-full w-full object-cover" />
         </span>
         <span className="text-2xl font-bold">
           <span className="text-white">Expense </span>
-          <span className="text-[#00DCE5]">AI</span>
+          <span className="text-[#36ADA3]">AI</span>
         </span>
       </Link>
 
@@ -118,7 +119,7 @@ export function AuthenticationForm({
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
-        <p className="mt-3 text-sm text-[#9AA3AF]">{description}</p>
+        <p className="mt-3 text-sm text-[#A9B4CF]">{description}</p>
       </motion.div>
 
       {/* Form */}
@@ -149,11 +150,11 @@ export function AuthenticationForm({
         <button
           type="submit"
           disabled={pending}
-          className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#00DCE5] px-6 py-3.5 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#36ADA3] px-6 py-3.5 text-sm font-semibold text-[#121358] transition-all duration-300 hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {pending ? (
             <>
-              <span className="size-4 animate-spin rounded-full border-2 border-[#0B0F14]/30 border-t-[#0B0F14]" />
+              <span className="size-4 animate-spin rounded-full border-2 border-[#121358]/30 border-t-[#121358]" />
               {pendingLabel}
             </>
           ) : (
@@ -171,7 +172,7 @@ export function AuthenticationForm({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 text-center text-sm text-[#9AA3AF]"
+          className="mt-8 text-center text-sm text-[#A9B4CF]"
         >
           {footer}
         </motion.footer>
@@ -189,11 +190,11 @@ export function AuthenticationForm({
 export function AuthTaskLinks() {
   return (
     <nav aria-label="Account tasks" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-      <Link className="text-[#00DCE5] hover:text-[#00DCE5]/80 transition-colors font-medium" href="/sign-in">
+      <Link className="text-[#36ADA3] hover:text-[#36ADA3]/80 transition-colors font-medium" href="/sign-in">
         Sign in
       </Link>
       <span className="text-white/10">|</span>
-      <Link className="text-[#00DCE5] hover:text-[#00DCE5]/80 transition-colors font-medium" href="/sign-up">
+      <Link className="text-[#36ADA3] hover:text-[#36ADA3]/80 transition-colors font-medium" href="/sign-up">
         Create account
       </Link>
     </nav>
@@ -217,14 +218,14 @@ export function AuthPageLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-12">
       {/* Background */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0A1322] via-[#0B0F14] to-[#0A0B0D]">
-        <div className="absolute left-1/2 top-[-25%] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.06] blur-[140px]" />
-        <div className="absolute bottom-[-15%] right-[-8%] h-[480px] w-[480px] rounded-full bg-[#A855F7]/[0.05] blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#121358] via-[#121358] to-[#0D1133]">
+        <div className="absolute left-1/2 top-[-25%] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.06] blur-[140px]" />
+        <div className="absolute bottom-[-15%] right-[-8%] h-[480px] w-[480px] rounded-full bg-[#2F578A]/[0.05] blur-[120px]" />
       </div>
 
       {/* Form card */}
       <div className="relative z-10 w-full max-w-[420px]">
-        <div className="rounded-2xl border border-white/[0.08] bg-[#0B0F14]/70 p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:p-10">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#121358]/70 p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:p-10">
           {children}
         </div>
       </div>

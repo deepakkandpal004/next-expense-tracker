@@ -55,20 +55,20 @@ export function FloatingShapes() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Deep navy base wash */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A1322] via-[#0B0F16] to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#121358] via-[#121358] to-transparent" />
 
       {/* Primary glow — top center, breathing */}
       <motion.div
         animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.07, 1] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute left-1/2 top-[-30%] h-[700px] w-[1100px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.08] blur-[150px]"
+        className="absolute left-1/2 top-[-30%] h-[700px] w-[1100px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.08] blur-[150px]"
       />
 
       {/* Secondary glow — purple, bottom right */}
       <motion.div
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-22%] right-[-8%] h-[480px] w-[480px] rounded-full bg-[#A855F7]/[0.06] blur-[130px]"
+        className="absolute bottom-[-22%] right-[-8%] h-[480px] w-[480px] rounded-full bg-[#2F578A]/[0.06] blur-[130px]"
       />
     </div>
   );
@@ -96,7 +96,7 @@ function HeroSection() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5] shadow-[0_0_20px_rgba(0,220,229,0.1)]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#36ADA3] shadow-[0_0_20px_rgba(54,173,163,0.1)]">
                 <Sparkles size={14} className="animate-pulse" />
                 AI Powered Expense Tracking
               </span>
@@ -111,7 +111,7 @@ function HeroSection() {
             >
               Track every expense.
               <br />
-              <span className="bg-gradient-to-r from-[#00DCE5] via-[#A855F7] to-[#22C55E] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#36ADA3] via-[#2F578A] to-[#22C55E] bg-clip-text text-transparent">
                 Master every month.
               </span>
             </motion.h1>
@@ -121,7 +121,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="mx-auto mt-5 max-w-xl text-base text-[#9AA3AF] sm:text-lg lg:mx-0"
+              className="mx-auto mt-5 max-w-xl text-base text-[#A9B4CF] sm:text-lg lg:mx-0"
             >
               Expense AI auto-categorizes your transactions, tracks budgets and
               savings goals, and predicts what&apos;s coming — so you always
@@ -137,7 +137,7 @@ function HeroSection() {
             >
               <Link
                 href="/sign-up"
-                className="group relative flex h-12 items-center gap-2.5 rounded-2xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+                className="group relative flex h-12 items-center gap-2.5 rounded-2xl bg-[#36ADA3] px-6 text-sm font-semibold text-[#121358] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(54,173,163,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight
@@ -147,7 +147,7 @@ function HeroSection() {
               </Link>
               <Link
                 href="/features"
-                className="group flex h-12 items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+                className="group flex h-12 items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358] active:scale-[0.97]"
               >
                 <span className="flex size-6 items-center justify-center rounded-full bg-white/10 transition-all duration-300 group-hover:bg-white/15">
                   <Play size={12} className="ml-0.5" />
@@ -170,10 +170,10 @@ function HeroSection() {
               ].map((item) => (
                 <span
                   key={item.label}
-                  className="flex items-center gap-2 text-sm font-medium text-[#9AA3AF]"
+                  className="flex items-center gap-2 text-sm font-medium text-[#A9B4CF]"
                 >
-                  <span className="flex size-6 items-center justify-center rounded-full bg-[#00DCE5]/[0.1]">
-                    <item.icon size={12} className="text-[#00DCE5]" />
+                  <span className="flex size-6 items-center justify-center rounded-full bg-[#36ADA3]/[0.1]">
+                    <item.icon size={12} className="text-[#36ADA3]" />
                   </span>
                   {item.label}
                 </span>
@@ -185,14 +185,14 @@ function HeroSection() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="mt-8 flex items-center gap-3 rounded-2xl border border-[#00DCE5]/20 bg-gradient-to-r from-[#00DCE5]/[0.09] to-[#A855F7]/[0.045] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+              className="mt-8 flex items-center gap-3 rounded-2xl border border-[#36ADA3]/20 bg-gradient-to-r from-[#36ADA3]/[0.09] to-[#2F578A]/[0.045] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00DCE5]/[0.12] text-[#00DCE5]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#36ADA3]/[0.12] text-[#36ADA3]">
                 <Brain size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-white">AI Insight</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-[#9AA3AF]">
+                <p className="mt-0.5 text-xs leading-relaxed text-[#A9B4CF]">
                   You&apos;re on track to save{" "}
                   <span className="font-semibold text-[#22C55E]">₹2,400</span> this
                   month.
@@ -200,7 +200,7 @@ function HeroSection() {
               </div>
               <ArrowRight
                 size={14}
-                className="ml-auto shrink-0 text-[#5B6472]"
+                className="ml-auto shrink-0 text-[#6B769E]"
               />
             </motion.div>
           </div>
@@ -213,13 +213,13 @@ function HeroSection() {
             className="relative"
           >
             {/* Glow behind the card */}
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-b from-[#00DCE5]/[0.08] via-[#A855F7]/[0.04] to-transparent blur-2xl" />
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-b from-[#36ADA3]/[0.08] via-[#2F578A]/[0.04] to-transparent blur-2xl" />
 
             {/* Floating chips */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-2 -top-5 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0F14]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
+              className="absolute -right-2 -top-5 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#121358]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
             >
               <span className="size-1.5 animate-pulse rounded-full bg-[#22C55E]" />
               Budget suggestion · ₹8,000
@@ -228,14 +228,14 @@ function HeroSection() {
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-4 -left-3 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0F14]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
+              className="absolute -bottom-4 -left-3 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#121358]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
             >
               <span className="size-1.5 rounded-full bg-[#F5A623]" />
               Anomaly detected · +15% food spend
             </motion.div>
 
             {/* Browser frame */}
-            <div className="relative overflow-hidden rounded-[28px] border border-white/[0.09] bg-[#0B0F14]/85 shadow-[0_24px_70px_rgba(0,0,0,0.36),0_0_60px_rgba(0,220,229,0.08)] backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-[28px] border border-white/[0.09] bg-[#121358]/85 shadow-[0_24px_70px_rgba(0,0,0,0.36),0_0_60px_rgba(54,173,163,0.08)] backdrop-blur-xl">
               {/* Title bar */}
               <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-3">
                 <div className="flex gap-1.5">
@@ -243,7 +243,7 @@ function HeroSection() {
                   <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
                   <div className="h-3 w-3 rounded-full bg-[#28CA41]" />
                 </div>
-                <span className="ml-4 text-xs text-[#9AA3AF]/60">
+                <span className="ml-4 text-xs text-[#A9B4CF]/60">
                   Expense AI Dashboard
                 </span>
               </div>
@@ -256,8 +256,8 @@ function HeroSection() {
                     label: "Balance",
                     value: "₹1,24,500",
                     change: "+12.5%",
-                    color: "#00DCE5",
-                    bgColor: "rgba(0,220,229,0.08)",
+                    color: "#36ADA3",
+                    bgColor: "rgba(54,173,163,0.08)",
                   },
                   {
                     icon: TrendingUp,
@@ -291,7 +291,7 @@ function HeroSection() {
                         >
                           <stat.icon size={16} style={{ color: stat.color }} />
                         </div>
-                        <span className="text-xs font-medium text-[#9AA3AF]">
+                        <span className="text-xs font-medium text-[#A9B4CF]">
                           {stat.label}
                         </span>
                       </div>
@@ -311,9 +311,9 @@ function HeroSection() {
 
               {/* Mini chart area */}
               <div className="border-t border-white/[0.06] px-5 py-3">
-                <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                <div className="flex items-center justify-between text-xs text-[#A9B4CF]/60">
                   <span>Monthly Spending</span>
-                  <span className="text-[#00DCE5]">+15% this month</span>
+                  <span className="text-[#36ADA3]">+15% this month</span>
                 </div>
                 <div className="mt-3 flex items-end gap-1.5 h-14">
                   {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85, 50, 95].map((h, i) => (
@@ -322,7 +322,7 @@ function HeroSection() {
                       initial={{ height: 0 }}
                       animate={{ height: `${h}%` }}
                       transition={{ duration: 0.5, delay: 1.1 + i * 0.05 }}
-                      className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60 transition-all duration-300 hover:from-[#00DCE5]/30 hover:to-[#00DCE5]/80"
+                      className="flex-1 rounded-t-sm bg-gradient-to-t from-[#36ADA3]/20 to-[#36ADA3]/60 transition-all duration-300 hover:from-[#36ADA3]/30 hover:to-[#36ADA3]/80"
                     />
                   ))}
                 </div>
@@ -330,15 +330,15 @@ function HeroSection() {
 
               {/* Recent activity */}
               <div className="border-t border-white/[0.06] px-5 py-3">
-                <div className="mb-2 flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                <div className="mb-2 flex items-center justify-between text-xs text-[#A9B4CF]/60">
                   <span>Recent Activity</span>
-                  <span className="text-[#9AA3AF]">Today</span>
+                  <span className="text-[#A9B4CF]">Today</span>
                 </div>
                 <div className="space-y-1.5">
                   {[
                     { label: "Zomato", tag: "Food & Dining", amount: "-₹420", color: "#F5A623" },
-                    { label: "Uber", tag: "Transportation", amount: "-₹186", color: "#3B82F6" },
-                    { label: "Netflix", tag: "Entertainment", amount: "-₹199", color: "#EC4899" },
+                    { label: "Uber", tag: "Transportation", amount: "-₹186", color: "#2F578A" },
+                    { label: "Netflix", tag: "Entertainment", amount: "-₹199", color: "#4FB0C5" },
                   ].map((tx, i) => (
                     <motion.div
                       key={tx.label}
@@ -351,7 +351,7 @@ function HeroSection() {
                         <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: tx.color }} />
                         <div className="min-w-0">
                           <p className="truncate text-xs font-medium text-white">{tx.label}</p>
-                          <p className="truncate text-[10px] text-[#9AA3AF]/70">{tx.tag}</p>
+                          <p className="truncate text-[10px] text-[#A9B4CF]/70">{tx.tag}</p>
                         </div>
                       </div>
                       <span className="text-xs font-semibold tabular-nums text-white">{tx.amount}</span>
@@ -377,16 +377,16 @@ const workflowSteps = [
     icon: Wallet,
     title: "Capture the moment",
     description: "Add an expense or income in seconds, whenever it happens.",
-    color: "#00DCE5",
-    surface: "bg-[#00DCE5]/[0.10]",
+    color: "#36ADA3",
+    surface: "bg-[#36ADA3]/[0.10]",
   },
   {
     number: "02",
     icon: Brain,
     title: "Let AI find the pattern",
     description: "Keep categories, recurring costs, and spending trends organized.",
-    color: "#A855F7",
-    surface: "bg-[#A855F7]/[0.10]",
+    color: "#2F578A",
+    surface: "bg-[#2F578A]/[0.10]",
   },
   {
     number: "03",
@@ -400,21 +400,21 @@ const workflowSteps = [
 
 function HowItWorksSection() {
   return (
-    <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-[#0A0E13] py-24 sm:py-28">
+    <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-[#121358] py-24 sm:py-28">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-[-12%] top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.045] blur-[130px]" />
-        <div className="absolute right-[-10%] top-0 size-[340px] rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
+        <div className="absolute left-[-12%] top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-[#36ADA3]/[0.045] blur-[130px]" />
+        <div className="absolute right-[-10%] top-0 size-[340px] rounded-full bg-[#2F578A]/[0.04] blur-[120px]" />
       </div>
 
       <div className="relative mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-16 lg:px-8">
         <AnimateInView>
-          <span className="inline-flex rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+          <span className="inline-flex rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#36ADA3]">
             A simpler routine
           </span>
           <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             From a quick entry to a clearer plan.
           </h2>
-          <p className="mt-5 max-w-lg text-lg leading-relaxed text-[#9AA3AF]">
+          <p className="mt-5 max-w-lg text-lg leading-relaxed text-[#A9B4CF]">
             Expense AI turns the small financial decisions you make every day into a picture you can actually use.
           </p>
 
@@ -424,8 +424,8 @@ function HowItWorksSection() {
               "Clear signals instead of noisy spreadsheets",
               "Helpful context before the month gets away from you",
             ].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-[#C7CDD6]">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#00DCE5]/[0.12] text-[#00DCE5]">
+              <div key={item} className="flex items-center gap-3 text-sm text-[#D3DBEB]">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#36ADA3]/[0.12] text-[#36ADA3]">
                   <Check size={13} strokeWidth={3} />
                 </span>
                 {item}
@@ -435,7 +435,7 @@ function HowItWorksSection() {
 
           <Link
             href="/sign-up"
-            className="group mt-9 inline-flex items-center gap-2 text-sm font-semibold text-[#00DCE5] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A0E13]"
+            className="group mt-9 inline-flex items-center gap-2 text-sm font-semibold text-[#36ADA3] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3]/70 focus-visible:ring-offset-4 focus-visible:ring-offset-[#121358]"
           >
             Create your free account
             <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
@@ -458,9 +458,9 @@ function HowItWorksSection() {
                 </div>
                 <div className="mt-4 lg:mt-0">
                   <h3 className="text-base font-semibold text-white">{step.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[#9AA3AF]">{step.description}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#A9B4CF]">{step.description}</p>
                 </div>
-                <ArrowRight size={17} className="mt-4 text-[#5B6472] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#00DCE5] lg:mt-0" />
+                <ArrowRight size={17} className="mt-4 text-[#6B769E] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#36ADA3] lg:mt-0" />
               </motion.div>
             </AnimateInView>
           ))}
@@ -479,8 +479,8 @@ const features = [
     icon: BarChart3,
     title: "Smart Analytics",
     description: "Beautiful charts and insights that help you understand where your money goes.",
-    color: "#00DCE5",
-    bgColor: "rgba(0,220,229,0.08)",
+    color: "#36ADA3",
+    bgColor: "rgba(54,173,163,0.08)",
     span: "lg:col-span-2 lg:row-span-2",
     featured: true,
   },
@@ -488,8 +488,8 @@ const features = [
     icon: Brain,
     title: "AI Categorization",
     description: "Automatically categorize transactions with AI-powered suggestions.",
-    color: "#A855F7",
-    bgColor: "rgba(168,85,247,0.08)",
+    color: "#2F578A",
+    bgColor: "rgba(47,87,138,0.08)",
     span: "lg:col-span-1",
     featured: false,
   },
@@ -506,8 +506,8 @@ const features = [
     icon: Shield,
     title: "Bank-Grade Security",
     description: "Your data is encrypted and secure. We never sell your information.",
-    color: "#3B82F6",
-    bgColor: "rgba(59,130,246,0.08)",
+    color: "#6E9BE3",
+    bgColor: "rgba(110,155,227,0.08)",
     span: "lg:col-span-1",
     featured: false,
   },
@@ -515,8 +515,8 @@ const features = [
     icon: Zap,
     title: "Instant Sync",
     description: "Real-time updates across all your devices. Always up to date.",
-    color: "#FBBF24",
-    bgColor: "rgba(251,191,36,0.08)",
+    color: "#F5A623",
+    bgColor: "rgba(245,166,35,0.08)",
     span: "lg:col-span-1",
     featured: false,
   },
@@ -533,22 +533,22 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative isolate overflow-hidden bg-[#121358] py-24 sm:py-32">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#36ADA3]/[0.03] blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#36ADA3]">
             Features
           </span>
           <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Everything you need
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-[#A9B4CF]">
             Powerful tools designed to give you clarity and control over your money.
           </p>
         </AnimateInView>
@@ -564,7 +564,7 @@ function FeaturesSection() {
               <motion.div
                 whileHover={{ y: -4, scale: 1.01 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(0,220,229,0.06)]"
+                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(54,173,163,0.06)]"
               >
                 {/* Hover glow */}
                 <div
@@ -585,22 +585,22 @@ function FeaturesSection() {
                   <h3 className="mt-5 text-lg font-semibold text-white">
                     {feature.title}
                   </h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#9AA3AF]">
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#A9B4CF]">
                     {feature.description}
                   </p>
 
                   {/* Featured card extra content */}
                   {feature.featured && (
                     <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                      <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                      <div className="flex items-center justify-between text-xs text-[#A9B4CF]/60">
                         <span>This month</span>
-                        <span className="text-[#00DCE5]">+24% savings</span>
+                        <span className="text-[#36ADA3]">+24% savings</span>
                       </div>
                       <div className="mt-3 flex items-end gap-1 h-12">
                         {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
                           <div
                             key={i}
-                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60"
+                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#36ADA3]/20 to-[#36ADA3]/60"
                             style={{ height: `${h}%` }}
                           />
                         ))}
@@ -644,8 +644,8 @@ function AISection() {
     <section className="relative isolate overflow-hidden border-b border-border/50 bg-gradient-to-b from-surface-subtle to-surface py-24 sm:py-32">
       {/* Background: dot grid + soft glows */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-[-10%] top-[-20%] h-[500px] w-[500px] rounded-full bg-[#00DCE5]/[0.04] blur-[130px]" />
-        <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-[#A855F7]/[0.035] blur-[120px]" />
+        <div className="absolute left-[-10%] top-[-20%] h-[500px] w-[500px] rounded-full bg-[#36ADA3]/[0.04] blur-[130px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-[#2F578A]/[0.035] blur-[120px]" />
         <div
           className="absolute inset-0"
           style={{
@@ -660,14 +660,14 @@ function AISection() {
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <AnimateInView>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.08] px-4 py-1.5 text-xs font-semibold text-[#36ADA3]">
               <Sparkles size={14} />
               AI-Powered
             </span>
             <h2 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Intelligence that works for you
             </h2>
-            <p className="mt-5 text-lg text-[#9AA3AF]">
+            <p className="mt-5 text-lg text-[#A9B4CF]">
               Our AI understands your spending patterns and provides actionable
               insights to help you save more and spend smarter.
             </p>
@@ -680,18 +680,18 @@ function AISection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="group flex items-start gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-[#00DCE5]/20 hover:bg-[#00DCE5]/[0.04]"
+                  className="group flex items-start gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-[#36ADA3]/20 hover:bg-[#36ADA3]/[0.04]"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#00DCE5]/[0.1] transition-transform duration-300 group-hover:scale-105">
-                    <item.icon size={20} className="text-[#00DCE5]" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#36ADA3]/[0.1] transition-transform duration-300 group-hover:scale-105">
+                    <item.icon size={20} className="text-[#36ADA3]" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-white">{item.title}</h3>
-                    <p className="mt-0.5 text-sm text-[#9AA3AF]">{item.desc}</p>
+                    <p className="mt-0.5 text-sm text-[#A9B4CF]">{item.desc}</p>
                   </div>
                   <ArrowRight
                     size={16}
-                    className="mt-1 shrink-0 text-[#5B6472] opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
+                    className="mt-1 shrink-0 text-[#6B769E] opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
                   />
                 </motion.div>
               ))}
@@ -703,7 +703,7 @@ function AISection() {
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-3 -top-5 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0F14]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
+              className="absolute -right-3 -top-5 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#121358]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
             >
               <span className="size-1.5 animate-pulse rounded-full bg-[#22C55E]" />
               Budget suggestion · ₹8,000
@@ -712,26 +712,26 @@ function AISection() {
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-5 -left-4 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0F14]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
+              className="absolute -bottom-5 -left-4 z-20 hidden items-center gap-2 rounded-full border border-white/[0.08] bg-[#121358]/90 px-3.5 py-2 text-xs font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:flex"
             >
               <span className="size-1.5 rounded-full bg-[#F5A623]" />
               Anomaly detected · +15% food spend
             </motion.div>
 
             {/* Glow behind the card */}
-            <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-[#00DCE5]/[0.08] via-[#A855F7]/[0.04] to-transparent blur-2xl" />
+            <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-[#36ADA3]/[0.08] via-[#2F578A]/[0.04] to-transparent blur-2xl" />
 
             {/* Main card */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B0F14]/80 p-6 shadow-[0_0_60px_rgba(0,220,229,0.06)] backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#121358]/80 p-6 shadow-[0_0_60px_rgba(54,173,163,0.06)] backdrop-blur-xl">
               {/* Card header */}
               <div className="mb-6 flex items-center gap-3">
-                <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#00DCE5]/20 to-[#00DCE5]/[0.05] text-[#00DCE5]">
+                <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#36ADA3]/20 to-[#36ADA3]/[0.05] text-[#36ADA3]">
                   <Sparkles size={20} />
-                  <span className="absolute -right-1 -top-1 size-2.5 animate-pulse rounded-full bg-[#00DCE5]" />
+                  <span className="absolute -right-1 -top-1 size-2.5 animate-pulse rounded-full bg-[#36ADA3]" />
                 </div>
                 <div className="min-w-0">
                   <p className="font-semibold text-white">AI Insight</p>
-                  <p className="text-xs text-[#9AA3AF]">Based on your spending</p>
+                  <p className="text-xs text-[#A9B4CF]">Based on your spending</p>
                 </div>
                 <span className="ml-auto flex items-center gap-1.5 rounded-full border border-[#22C55E]/20 bg-[#22C55E]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#22C55E]">
                   <span className="size-1 animate-pulse rounded-full bg-[#22C55E]" />
@@ -740,8 +740,8 @@ function AISection() {
               </div>
 
               {/* Insight body */}
-              <div className="rounded-xl border-l-2 border-[#00DCE5] bg-white/[0.03] p-4">
-                <p className="text-sm leading-relaxed text-[#C7CDD6]">
+              <div className="rounded-xl border-l-2 border-[#36ADA3] bg-white/[0.03] p-4">
+                <p className="text-sm leading-relaxed text-[#D3DBEB]">
                   Your food expenses increased by{" "}
                   <span className="font-semibold text-[#F5A623]">15%</span> this
                   month. Consider setting a budget of{" "}
@@ -756,8 +756,8 @@ function AISection() {
                 >
                   <defs>
                     <linearGradient id="aiSparkFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00DCE5" stopOpacity="0.35" />
-                      <stop offset="100%" stopColor="#00DCE5" stopOpacity="0" />
+                      <stop offset="0%" stopColor="#36ADA3" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#36ADA3" stopOpacity="0" />
                     </linearGradient>
                   </defs>
                   <path
@@ -766,7 +766,7 @@ function AISection() {
                   />
                   <path
                     d="M0 40 L25 36 L50 39 L75 30 L100 33 L125 24 L150 28 L175 16 L200 20"
-                    stroke="#00DCE5"
+                    stroke="#36ADA3"
                     strokeWidth="1.5"
                   />
                 </svg>
@@ -779,17 +779,17 @@ function AISection() {
                     <Wallet size={13} /> Potential Savings
                   </div>
                   <p className="mt-1.5 text-2xl font-bold text-white">₹2,400</p>
-                  <p className="mt-0.5 text-[11px] text-[#9AA3AF]">
+                  <p className="mt-0.5 text-[11px] text-[#A9B4CF]">
                     18% of monthly spend
                   </p>
                 </div>
-                <div className="rounded-xl border border-[#8B5CF6]/15 bg-[#8B5CF6]/[0.06] p-4">
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-[#C4B5FD]">
+                <div className="rounded-xl border border-[#3D4AA0]/15 bg-[#3D4AA0]/[0.06] p-4">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-[#7FA9DD]">
                     <Target size={13} /> Confidence
                   </div>
                   <p className="mt-1.5 text-2xl font-bold text-white">94%</p>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full w-[94%] rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#00DCE5]" />
+                    <div className="h-full w-[94%] rounded-full bg-gradient-to-r from-[#3D4AA0] to-[#36ADA3]" />
                   </div>
                 </div>
               </div>
@@ -843,7 +843,7 @@ function FAQSection() {
     <section className="relative isolate border-b border-border/50 bg-surface py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#00DCE5]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#36ADA3]">
             FAQ
           </span>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -859,20 +859,20 @@ function FAQSection() {
                 <div
                   className={`rounded-xl border transition-colors ${
                     isOpen
-                      ? "border-[#00DCE5]/30 bg-[#00DCE5]/[0.05]"
+                      ? "border-[#36ADA3]/30 bg-[#36ADA3]/[0.05]"
                       : "border-white/[0.06] bg-surface"
                   }`}
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:text-[#00DCE5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#00DCE5]/70"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:text-[#36ADA3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#36ADA3]/70"
                     aria-expanded={isOpen}
                   >
                     {faq.q}
                     <ChevronDown
                       size={16}
-                      className={`shrink-0 text-[#9AA3AF] transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#00DCE5]" : ""
+                      className={`shrink-0 text-[#A9B4CF] transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-[#36ADA3]" : ""
                       }`}
                     />
                   </button>
@@ -904,42 +904,42 @@ function FAQSection() {
 
 function CTASection() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative isolate overflow-hidden bg-[#121358] py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-1/2 h-[460px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.07] blur-[150px]" />
-        <div className="absolute -bottom-40 right-[-5%] size-[340px] rounded-full bg-[#A855F7]/[0.07] blur-[130px]" />
+        <div className="absolute left-1/2 top-1/2 h-[460px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#36ADA3]/[0.07] blur-[150px]" />
+        <div className="absolute -bottom-40 right-[-5%] size-[340px] rounded-full bg-[#2F578A]/[0.07] blur-[130px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <AnimateInView>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-[#00DCE5]/[0.06] px-6 py-14 text-center shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-12 sm:py-16">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00DCE5]/60 to-transparent" />
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.09] px-4 py-1.5 text-xs font-semibold text-[#00DCE5]">
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-[#36ADA3]/[0.06] px-6 py-14 text-center shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-12 sm:py-16">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#36ADA3]/60 to-transparent" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#36ADA3]/20 bg-[#36ADA3]/[0.09] px-4 py-1.5 text-xs font-semibold text-[#36ADA3]">
               <Sparkles size={14} />
               Your next money habit starts here
             </span>
             <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Build a calmer relationship with money.
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#9AA3AF]">
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#A9B4CF]">
               Start with the habits you already have. Expense AI helps make each one easier to understand and act on.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/sign-up"
-                className="group flex h-12 items-center gap-2 rounded-xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_28px_rgba(0,220,229,0.36)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
+                className="group flex h-12 items-center gap-2 rounded-xl bg-[#36ADA3] px-6 text-sm font-semibold text-[#121358] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_28px_rgba(54,173,163,0.36)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358] active:scale-[0.98]"
               >
                 Get started for free
                 <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/features"
-                className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.2] hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
+                className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.2] hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36ADA3]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#121358] active:scale-[0.98]"
               >
                 Explore features
               </Link>
             </div>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-[#9AA3AF]">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-[#A9B4CF]">
               {["Free to start", "No credit card required", "Your data stays yours"].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
                   <Check size={14} className="text-[#22C55E]" strokeWidth={3} />
