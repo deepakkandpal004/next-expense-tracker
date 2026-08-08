@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Inter, Outfit, Viga } from 'next/font/google';
+import { Manrope, Outfit, Viga } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
@@ -11,10 +11,9 @@ import {
 } from '@/lib/preferences/preferences';
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ 
-  subsets: ['latin'], 
-  variable: '--font-inter',
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
   display: 'swap',
 });
 
@@ -59,7 +58,7 @@ export default async function RootLayout({
       data-appearance-preference='dark'
       data-density={initialDensity}
       suppressHydrationWarning
-      className={cn("dark", inter.variable, outfit.variable, viga.variable)}
+      className={cn("dark", manrope.variable, outfit.variable, viga.variable)}
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.dark} />
@@ -75,7 +74,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}
         />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${manrope.variable} font-sans antialiased`}>
         <a
           className='sr-only fixed left-4 top-4 z-50 rounded-control bg-primary px-4 py-2 font-semibold text-primary-foreground focus:not-sr-only focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus'
           href='#main-content'

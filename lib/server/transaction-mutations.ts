@@ -4,7 +4,7 @@ import type { TransactionCommand } from "@/lib/domain/transaction-command";
 export interface IdempotentMutation<T> { readonly value: T; readonly replayed: boolean }
 export class MutationInProgressError extends Error { constructor() { super("The matching request is still processing."); } }
 export class RecordNotFoundError extends Error { constructor() { super("The requested record was not found."); } }
-const operation = { create: "transaction-create", remove: "transaction-delete" } as const;
+const operation = { create: "transaction-create", remove: "transaction-delete", removeMany: "transaction-delete-many" } as const;
 const uniqueViolation = (error: unknown) => error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
 
 async function existingCreate(db: PrismaClient, userId: string, requestId: string) {
@@ -47,5 +47,26 @@ export async function deleteRecordOnce(db: PrismaClient, userId: string, request
     const request = await db.mutationRequest.findFirst({ where: { userId, requestId, operation: operation.remove } });
     if (!request) throw new MutationInProgressError();
     return { value: { id: request.recordId ?? recordId }, replayed: true };
+  }
+}
+
+export async function deleteManyRecordsOnce(
+  db: PrismaClient,
+  userId: string,
+  requestId: string,
+  recordIds: readonly string[],
+): Promise<IdempotentMutation<number>> {
+  const uniqueIds = [...new Set(recordIds)];
+  try {
+    const [removed] = await db.$transaction([
+      db.record.deleteMany({ where: { id: { in: uniqueIds }, userId } }),
+      db.mutationRequest.create({ data: { userId, requestId, operation: operation.removeMany, recordId: uniqueIds.join(",") } }),
+    ]);
+    return { value: removed.count, replayed: false };
+  } catch (error) {
+    if (!uniqueViolation(error)) throw error;
+    const request = await db.mutationRequest.findFirst({ where: { userId, requestId, operation: operation.removeMany } });
+    if (!request) throw new MutationInProgressError();
+    return { value: request.recordId ? request.recordId.split(",").length : uniqueIds.length, replayed: true };
   }
 }

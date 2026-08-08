@@ -1,12 +1,13 @@
 "use client";
 
-import { Download, RefreshCw, Upload, CheckCircle2 } from "lucide-react";
+import { Download, RefreshCw, Upload, CheckCircle2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { deleteTransactionRecord } from "@/app/actions/deleteRecord";
 import { getForecastSnapshot } from "@/app/actions/getForecastSnapshot";
 import {
   Alert,
+  AlertDialog,
   Button,
   Dialog,
   useToast,
@@ -56,11 +57,15 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   const [importOpen, setImportOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
   const [importPending, setImportPending] = useState(false);
-  const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
+  const [importResult, setImportResult] = useState<{ imported: number; skipped: number; duplicates: number; errors: string[] } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
   const [anomalyIds, setAnomalyIds] = useState<ReadonlySet<string> | undefined>();
+  const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [bulkPending, setBulkPending] = useState(false);
+  const [bulkError, setBulkError] = useState<string | undefined>();
 
   // Keep local rows in sync with the server-rendered payload: useState only
   // initializes once, so after router.refresh() delivers new records the table
@@ -68,6 +73,16 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   useEffect(() => {
     setItems(records);
   }, [records]);
+
+  // Drop selections whose records are no longer present (deleted or refreshed).
+  useEffect(() => {
+    setSelectedIds((current) => {
+      if (current.size === 0) return current;
+      const valid = new Set(items.map((item) => item.id));
+      const next = new Set([...current].filter((id) => valid.has(id)));
+      return next.size === current.size ? current : next;
+    });
+  }, [items]);
 
   useEffect(() => {
     getForecastSnapshot(resolvedPeriod).then(r => {
@@ -160,6 +175,35 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
     }
   };
 
+  const runBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    setBulkPending(true);
+    setBulkError(undefined);
+    const requestId = `bulk-delete-${Date.now()}`;
+    try {
+      const { deleteTransactionRecords } = await import("@/app/actions/deleteRecords");
+      const res = await deleteTransactionRecords({ recordIds: [...selectedIds], requestId });
+      if (res.status === "success") {
+        const removed = new Set(res.data.recordIds);
+        const remaining = items.filter((item) => !removed.has(item.id));
+        setItems(remaining);
+        const maxPage = Math.max(1, Math.ceil(remaining.length / ITEMS_PER_PAGE));
+        if (currentPage > maxPage) setCurrentPage(maxPage);
+        setSelectedIds(new Set());
+        setBulkDeleteOpen(false);
+        toast({ description: res.message, tone: "success" });
+      } else {
+        setBulkError(res.message);
+        setBulkDeleteOpen(true);
+      }
+    } catch {
+      setBulkError("The transactions could not be deleted. Please retry.");
+      setBulkDeleteOpen(true);
+    } finally {
+      setBulkPending(false);
+    }
+  };
+
   const exportScope = useMemo(() => createExportScope({ period: resolvedPeriod, selection }), [resolvedPeriod, selection]);
 
   const runExport = async () => {
@@ -227,6 +271,27 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
         />
       </section>
 
+      {selectedIds.size > 0 ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-container border border-border-strong bg-surface px-4 py-3">
+          <p className="text-interface-sm font-medium text-foreground">
+            {selectedIds.size} transaction{selectedIds.size === 1 ? "" : "s"} selected
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              intent="secondary"
+              label="Clear selection"
+              onClick={() => setSelectedIds(new Set())}
+            />
+            <Button
+              icon={<Trash2 size={16} />}
+              intent="danger"
+              label={`Delete ${selectedIds.size === 1 ? "transaction" : `${selectedIds.size} transactions`}`}
+              onClick={() => { setBulkError(undefined); setBulkDeleteOpen(true); }}
+            />
+          </div>
+        </div>
+      ) : null}
+
       {deleteFailure ? (
         <Alert
           action={(
@@ -259,6 +324,8 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
             onDelete={handleDeleteFromTable}
             deletingId={deletingId}
             anomalyIds={anomalyIds}
+            onSelectionChange={setSelectedIds}
+            selectedIds={selectedIds}
           />
 
           <TransactionPagination
@@ -314,7 +381,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
               >
                 <Upload className="mb-2 size-8 text-muted-foreground" />
                 <p className="text-sm font-medium">{importFile ? importFile.name : "Click to select a CSV file"}</p>
-                <p className="text-xs text-muted-foreground mt-1">Format: Date, Description, Amount, Type, Category</p>
+                <p className="text-xs text-muted-foreground mt-1">Auto-detects columns. Date, Description, Amount, Type, Category — or a CSV exported from this app.</p>
                 <input id="csv-input" type="file" accept=".csv" className="hidden" onChange={(e) => setImportFile(e.target.files?.[0] ?? null)} />
               </div>
               {importFile && (
@@ -328,7 +395,12 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
             <div className="flex flex-col items-center gap-2 py-4">
               <CheckCircle2 className="size-10 text-success" />
               <p className="text-sm font-medium text-on-surface">Import complete</p>
-              <p className="text-xs text-muted-foreground">{importResult.imported} imported, {importResult.skipped} skipped</p>
+              <p className="text-xs text-muted-foreground">{importResult.imported} imported, {importResult.duplicates} duplicate(s) skipped, {importResult.skipped} skipped</p>
+              {importResult.errors.length > 0 && (
+                <ul className="mt-2 max-h-40 w-full space-y-1 overflow-y-auto rounded-container border border-white/5 bg-white/5 p-3 text-left text-xs text-danger-foreground">
+                  {importResult.errors.map((error, index) => <li key={index}>{error}</li>)}
+                </ul>
+              )}
             </div>
           )}
         </div>
@@ -342,7 +414,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
             const { importTransactionsFromCsv } = await import("@/app/actions/importTransactions");
             const res = await importTransactionsFromCsv(fd);
             if (res.status === "success") {
-              setImportResult({ imported: res.data.imported, skipped: res.data.skipped });
+              setImportResult({ imported: res.data.imported, skipped: res.data.skipped, duplicates: res.data.duplicates, errors: res.data.errors });
               toast({ description: `Imported ${res.data.imported} transactions.`, tone: "success" });
             } else {
               toast({ description: res.message, tone: "error" });
@@ -351,6 +423,23 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
           }} />
         </div>
       </Dialog>
+
+      <AlertDialog
+        action={{ label: `Delete ${selectedIds.size} transaction(s)`, loading: bulkPending, onSelect: () => void runBulkDelete() }}
+        cancel={{ label: "Cancel", disabled: bulkPending, onSelect: () => setBulkDeleteOpen(false) }}
+        description={`This will permanently remove ${selectedIds.size} selected transaction${selectedIds.size === 1 ? "" : "s"} from every report and dashboard. This action cannot be undone.`}
+        onOpenChange={(open) => { setBulkDeleteOpen(open); if (!open && !bulkPending) setBulkError(undefined); }}
+        open={bulkDeleteOpen}
+        title={`Delete ${selectedIds.size === 1 ? "transaction" : `${selectedIds.size} transactions`}?`}
+      >
+        {bulkError ? (
+          <Alert description={bulkError} title="Delete failed" tone="danger" />
+        ) : (
+          <p className="text-interface-sm text-foreground-secondary">
+            The selected transactions will be removed from your history, dashboard, and reports.
+          </p>
+        )}
+      </AlertDialog>
     </div>
   );
 }

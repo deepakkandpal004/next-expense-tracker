@@ -174,11 +174,11 @@ body {
   overflow-x: clip;
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   font-size: var(--font-size-body);
-  font-weight: 400;
+  font-weight: 500;
   line-height: var(--line-height-body);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -196,24 +196,24 @@ textarea {
 label,
 nav,
 .font-sans {
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-family: Manrope, system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .font-light {
   font-weight: 300;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
 
 .font-normal {
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .font-medium {
   font-weight: 500;
-  letter-spacing: -0.015em;
+  letter-spacing: 0;
 }
 
 .font-semibold {
@@ -228,7 +228,7 @@ nav,
 
 .font-extrabold {
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
 }
 
 .font-black {
@@ -249,19 +249,19 @@ nav,
 }
 
 .font-heading {
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: Manrope, system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
 h1,
 .font-sora,
 .product-mark {
-  font-family: Inter;
+  font-family: Manrope;
 }
 
 .font-display {
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: Manrope, system-ui, -apple-system, sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
 }
@@ -272,10 +272,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  font-weight: 600;
+  font-family: Manrope, system-ui, -apple-system, sans-serif;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 h1 {
@@ -284,32 +284,32 @@ h1 {
 }
 
 h2 {
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.025em;
 }
 
 h3 {
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 h4 {
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 h5 {
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 h6 {
   font-weight: 500;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
 
 .font-manrope {
-  font-family: Inter;
+  font-family: Manrope;
 }
 
 h1,
@@ -918,72 +918,76 @@ p {
    ──────────────────────────────────────────────────────────── */
 
 .text-display-hero {
-  font-family: 'Viga', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 400;
+  font-weight: 800;
   line-height: 1.1;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.04em;
 }
 
 .text-display-xl {
-  font-family: 'Viga', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(2rem, 3.5vw, 3.5rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.15;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.03em;
 }
 
 .text-display-lg {
-  font-family: 'Viga', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.025em;
 }
 
 .text-display-md {
-  font-family: 'Viga', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(1.5rem, 2.5vw, 2rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.25;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
 }
 
 .text-display-sm {
-  font-family: 'Viga', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(1.25rem, 2vw, 1.5rem);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.3;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
 }
 
 .text-lead {
   font-size: var(--font-size-lead);
   line-height: var(--line-height-lead);
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .text-body {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+  font-weight: 500;
 }
 
 .text-label {
   font-size: var(--font-size-label);
   line-height: var(--line-height-label);
   font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .text-caption {
   font-size: 0.8125rem;
   line-height: 1.25rem;
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .text-caption-strong {
   font-size: 0.8125rem;
   line-height: 1.25rem;
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 /* ────────────────────────────────────────────────────────────
@@ -2009,7 +2013,7 @@ p {
 
 /* ─── Pulse logo glow ─── */
 .pulse-logo {
-  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-family: var(--font-manrope), 'Manrope', sans-serif;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #63f7ff;

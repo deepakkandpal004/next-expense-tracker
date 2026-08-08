@@ -876,46 +876,41 @@ function FAQSection() {
 
 function CTASection() {
   return (
-    <section className="relative isolate overflow-hidden bg-black py-24 sm:py-32">
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-1/2 h-[460px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.07] blur-[150px]" />
-        <div className="absolute -bottom-40 right-[-5%] size-[340px] rounded-full bg-[#A855F7]/[0.07] blur-[130px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <section className="relative isolate bg-black py-24 sm:py-28">
+      <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
         <AnimateInView>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-[#00DCE5]/[0.06] px-6 py-14 text-center shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-12 sm:py-16">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00DCE5]/60 to-transparent" />
-            <SectionPill>Your next money habit starts here</SectionPill>
-            <h2 className="font-bold tracking-tight mx-auto mt-6 max-w-3xl text-4xl text-white sm:text-5xl lg:text-6xl">
-              Build a calmer relationship with money.
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#9AA3AF]">
-              Start with the habits you already have. Expense AI helps make each one easier to understand and act on.
-            </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href="/sign-up"
-                className="group flex h-12 items-center gap-2 rounded-xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_28px_rgba(0,220,229,0.36)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
-              >
-                Get started for free
-                <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/features"
-                className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.2] hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.98]"
-              >
-                Explore features
-              </Link>
-            </div>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-[#9AA3AF]">
-              {["Free to start", "No credit card required", "Your data stays yours"].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <Check size={14} className="text-[#22C55E]" strokeWidth={3} />
-                  {item}
-                </span>
-              ))}
-            </div>
+          <span className="font-semibold text-xs tracking-widest uppercase text-[#00DCE5]">
+            Start today
+          </span>
+          <h2 className="font-bold tracking-tight mt-5 text-4xl text-white sm:text-5xl lg:text-6xl">
+            Take control of your money.
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg font-medium leading-relaxed text-[#9AA3AF]">
+            Free expense tracking with AI that actually works. No cards, no fees, no catch.
+          </p>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/sign-up"
+              className="flex h-12 items-center gap-2 rounded-xl bg-[#00DCE5] px-7 text-sm font-semibold text-[#0B0F14] transition-all duration-200 hover:bg-[#00DCE5]/90 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]"
+            >
+              Get started for free
+              <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="/features"
+              className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.15] px-7 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.25] hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]"
+            >
+              See how it works
+            </Link>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-4 text-xs font-medium text-[#9AA3AF]">
+            <span>Free to start</span>
+            <span className="h-3 w-px bg-white/10" />
+            <span>No credit card</span>
+            <span className="h-3 w-px bg-white/10" />
+            <span>Your data stays yours</span>
           </div>
         </AnimateInView>
       </div>
