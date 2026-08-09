@@ -26,6 +26,7 @@ export default async function AiInsightsPage({ searchParams }: AiInsightsPagePro
       initialData={result.status === 'success' ? result.data : null}
       period={periodInput}
       resolvedPeriod={resolvedPeriod}
+      currency={user.currency ?? 'INR'}
       error={result.status !== 'success' ? result.message : undefined}
     />
   );

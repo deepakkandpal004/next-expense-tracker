@@ -6,6 +6,7 @@ import { SummaryKpiRow } from "./ai-insights/summary-kpi-row";
 import { TopInsights } from "./ai-insights/top-insights";
 import { GenerateButton } from "./ai-insights/generate-button";
 import { ConfidencePanel } from "./ai-insights/confidence-panel";
+import { MoneyLeakDetectorCard } from "@/components/patterns/money-leak-detector-card";
 import { MonthSwitcher } from "@/components/patterns/month-switcher";
 import { ErrorState, LinkButton, useToast } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ interface AiInsightsViewProps {
   initialData: AiFinancialInsightsData | null;
   period: ReportingPeriod;
   resolvedPeriod: ResolvedPeriod;
+  currency: string;
   error?: string;
 }
 
@@ -86,7 +88,7 @@ function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
   );
 }
 
-export function AiInsightsView({ initialData, period, resolvedPeriod, error: initialError }: AiInsightsViewProps) {
+export function AiInsightsView({ initialData, period, resolvedPeriod, currency, error: initialError }: AiInsightsViewProps) {
   const [data, setData] = useState<AiFinancialInsightsData | null>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(initialError);
@@ -183,6 +185,12 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, error: ini
             potentialSavings={{ label: "Potential Savings", ...data.summaryMetrics.potentialSavings }}
             topCategory={data.summaryMetrics.topCategory}
             financialHealth={data.summaryMetrics.financialHealth}
+          />
+
+          <MoneyLeakDetectorCard
+            report={data.moneyLeaks}
+            currency={currency}
+            period={period}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">

@@ -3,11 +3,17 @@
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
+import { CashFlowForecastCard } from "@/components/patterns/cash-flow-forecast-card";
 import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
 import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
 import { RecentTransactionsCard } from "@/components/patterns/recent-transactions-card";
+import { SafeToSpendCard } from "@/components/patterns/safe-to-spend-card";
+import { SmartAlertCard } from "@/components/patterns/smart-alert-card";
 import { SpendingOverviewPanel } from "@/components/patterns/spending-overview-panel";
+import type { CashFlowProjection } from "@/lib/domain/cash-flow";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
+import type { SafeToSpendBreakdown } from "@/lib/domain/safe-to-spend";
+import type { SmartPacingReport } from "@/lib/domain/smart-alerts";
 import { appPeriodHref } from "@/lib/domain/reporting-period";
 import { MonthSwitcher } from "@/components/patterns/month-switcher";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
@@ -21,6 +27,9 @@ export interface DashboardUser {
 export interface DashboardViewProps {
   dashboard: DashboardDTO;
   period: ReportingPeriod;
+  safeToSpend: SafeToSpendBreakdown;
+  cashFlow: CashFlowProjection;
+  smartPacing: SmartPacingReport;
   user?: DashboardUser;
 }
 
@@ -108,7 +117,7 @@ function generateDashboardAIInsight(dashboard: DashboardDTO): NonNullable<Parame
   };
 }
 
-export function DashboardView({ dashboard, period }: DashboardViewProps) {
+export function DashboardView({ dashboard, period, safeToSpend, cashFlow, smartPacing }: DashboardViewProps) {
   const router = useRouter();
   const currentDashboard = dashboard;
   const insightsHref = appPeriodHref("ai-insights", period) ?? "/ai-insights";
@@ -130,6 +139,13 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
         variants={listContainerVariants}
       >
         <motion.div variants={listItemVariants}>
+          <SafeToSpendCard
+            period={period}
+            initialBreakdown={safeToSpend}
+          />
+        </motion.div>
+
+        <motion.div variants={listItemVariants}>
           <HeroKpiCard
             currency={currentDashboard.currency}
             balance={currentDashboard.insights.balance}
@@ -146,6 +162,18 @@ export function DashboardView({ dashboard, period }: DashboardViewProps) {
               secondaryActionHref: insightsHref,
             } : undefined}
           />
+        </motion.div>
+
+        <motion.div variants={listItemVariants}>
+          <SmartAlertCard
+            currency={currentDashboard.currency}
+            period={period}
+            report={smartPacing}
+          />
+        </motion.div>
+
+        <motion.div variants={listItemVariants}>
+          <CashFlowForecastCard projection={cashFlow} />
         </motion.div>
 
         <div

@@ -3,9 +3,11 @@
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { getDashboardData } from '@/lib/data/dashboard';
+import { getMoneyLeakReport } from '@/lib/data/money-leaks';
 import type { Prisma } from '@prisma/client';
 import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
 import type { ActionResult, ReportingPeriod } from '@/lib/domain/types';
+import type { MoneyLeakReport } from '@/lib/domain/money-leaks';
 import { formatCurrency } from '@/lib/formatters/locale';
 import { generateExpenseInsights, type AIInsight } from '@/lib/ai';
 import type { AiProviderPayload } from '@/lib/domain/ai';
@@ -29,6 +31,8 @@ export interface AiFinancialInsightsData {
   };
   insights: AiInsightCard[];
   aiInsights: AIInsight[];
+  /** Deterministic money-leak scan (DESIGN rule 1: derived from the user's data). */
+  moneyLeaks: MoneyLeakReport;
   confidence: {
     score: number;
     label: string;
@@ -81,6 +85,11 @@ export async function getAiFinancialInsights(
   try {
     const dashboard = await getDashboardData(user.id, normalized.period, user.currency);
 
+    // Deterministic money-leak scan — replaces the old "5% of spending" guess with
+    // figures derived from the user's own trailing-month median (DESIGN rule 1).
+    const moneyLeaks = await getMoneyLeakReport(user.id, normalized.period);
+    const computedLeakSavings = moneyLeaks.totalMonthlySavingsMinor;
+
     const spendingTrend = dashboard.insights.spending.trend;
     const incomeTrend = dashboard.insights.income.trend;
     const savingsRate = dashboard.snapshot.savingsRate;
@@ -99,7 +108,7 @@ export async function getAiFinancialInsights(
       ? Math.round(((dashboard.insights.spending.currentMinor - previousSpending) / previousSpending) * 100)
       : 0;
 
-    const potentialSavings = Math.round(dashboard.insights.spending.currentMinor * 0.05);
+    const potentialSavings = computedLeakSavings;
     const previousSavings = incomeTrend?.previousMinor ?? dashboard.insights.income.currentMinor;
     const savingsChangePercent = previousSavings > 0
       ? Math.round(((dashboard.insights.income.currentMinor - potentialSavings - previousSavings) / previousSavings) * 100)
@@ -284,6 +293,7 @@ export async function getAiFinancialInsights(
       },
       insights: insights.slice(0, 3),
       aiInsights,
+      moneyLeaks,
       confidence: {
         score: Math.min(95, 70 + Math.round(dashboard.snapshot.transactionCount / 10)),
         label: dashboard.snapshot.transactionCount > 100 ? 'High confidence' : 'Moderate confidence',

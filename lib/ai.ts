@@ -1,6 +1,11 @@
 import OpenAI from "openai";
 
-import type { AiProviderPayload } from "./domain/ai";
+import type {
+  AiProviderPayload,
+  CanAffordProviderPayload,
+  GoalPlanProviderPayload,
+  SafeToSpendProviderPayload,
+} from "./domain/ai";
 import type { AiInsightKind } from "./domain/types";
 
 interface RawInsight {
@@ -263,6 +268,42 @@ export async function categorizeExpense(description: string): Promise<string> {
   return validCategories.includes(response.trim()) ? response.trim() : "Other";
 }
 
+/**
+ * Generates a plain-language narration of an app-computed goal plan. The prompt
+ * receives only the disclosed numeric summary; it can explain the required
+ * monthly amount, the gap, and the selected levers, but never alter them.
+ * Returns the narration text, or null when no provider key is configured.
+ */
+export async function generateGoalPlanNarration(
+  payload: GoalPlanProviderPayload,
+): Promise<string | null> {
+  if (!process.env.OPENROUTER_API_KEY && !process.env.OPENAI_API_KEY) {
+    return null;
+  }
+
+  const prompt = `Given this disclosed savings-goal plan summary, write one short paragraph (maximum 4 sentences). Use the exact values provided. If the goal is already funded or on track, say so plainly. Otherwise explain the required monthly contribution, the gap versus the current monthly contribution, and list the selected levers (for example Reduce Food, Reduce Shopping, Cancel unused plans) with their amounts. If the levers do not fully cover the gap, note the remaining shortfall. Never present professional financial advice, never invent figures, and do not name merchants or transaction details.
+Goal plan summary data:
+${JSON.stringify(payload, null, 2)}
+Return only the narration text.`;
+
+  const text = await requestAiCompletion({
+    model: "openai/gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You narrate an already-computed savings goal plan in plain language. You only describe the supplied numbers; you never compute or recommend investments, and you never alter the plan.",
+      },
+      { role: "user", content: prompt },
+    ],
+    temperature: 0.7,
+    maxTokens: 200,
+  });
+
+  const trimmed = text.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 /** Answers a question from the same disclosed, period-scoped aggregate payload. */
 export async function generateAIAnswer(
   question: string,
@@ -283,4 +324,81 @@ Disclosed period-scoped data:\n${JSON.stringify(payload, null, 2)}\nReturn only 
     temperature: 0.7,
     maxTokens: 200,
   });
+}
+
+/**
+ * Generates a plain-language explanation of an already-computed Safe-to-Spend
+ * figure. The prompt receives only the disclosed, post-calculation summary; it
+ * can describe the number and its context but never alter it. Returns the
+ * explanation text matched by a "Safe to spend" disclosure flow, or null when
+ * no provider key is configured.
+ */
+export async function generateSafeToSpendExplanation(
+  payload: SafeToSpendProviderPayload,
+): Promise<string | null> {
+  if (!process.env.OPENROUTER_API_KEY && !process.env.OPENAI_API_KEY) {
+    return null;
+  }
+
+  if (payload.isDeficit) {
+    return null;
+  }
+
+  const prompt = `Given this disclosed Safe-to-Spend summary, write one short paragraph (maximum 3 sentences) that explains the number in plain, encouraging, non-professional language. Never present financial advice. Explain it as a running cash guideline based on recorded balance less upcoming bills, goal contributions and an estimated allowance for remaining expenses. Do not invent figures; use the exact values provided.
+Safety summary data:
+${JSON.stringify(payload, null, 2)}
+Return only the explanation text.`;
+
+  const text = await requestAiCompletion({
+    model: "openai/gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content: "You explain a calculated financial figure in everyday language. Never compute or recommend; you only narrate what was passed in.",
+      },
+      { role: "user", content: prompt },
+    ],
+    temperature: 0.7,
+    maxTokens: 200,
+  });
+
+  const trimmed = text.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * Generates a plain-language verdict on a single planned purchase from the
+ * already-computed affordability breakdown. The prompt receives only the
+ * disclosed, post-calculation summary; it can explain the numbers and give an
+ * opinion but never alter them. Returns the verdict text, or null when no
+ * provider key is configured.
+ */
+export async function generateCanAffordVerdict(
+  payload: CanAffordProviderPayload,
+): Promise<string | null> {
+  if (!process.env.OPENROUTER_API_KEY && !process.env.OPENAI_API_KEY) {
+    return null;
+  }
+
+  const prompt = `Given this disclosed affordability summary for a planned purchase, write one short paragraph (maximum 3 sentences) that gives a plain-language verdict on the purchase. Use the exact values provided (price, safe to spend, after-purchase balance, months of goal savings displaced, emergency buffer status). If the after-purchase balance is negative, recommend reconsidering or delaying the purchase. If it is positive and the emergency buffer is on track, you may say the purchase fits, while noting the goal impact in months when present. Never use figures not provided, never present professional financial advice, and do not invent transaction detail.
+Affordability summary data:
+${JSON.stringify(payload, null, 2)}
+Return only the verdict text.`;
+
+  const text = await requestAiCompletion({
+    model: "openai/gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You give a friendly, honest verdict on a purchase using only the supplied summary figures. You never compute or recommend investments, and you only narrate what was passed in.",
+      },
+      { role: "user", content: prompt },
+    ],
+    temperature: 0.7,
+    maxTokens: 200,
+  });
+
+  const trimmed = text.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }

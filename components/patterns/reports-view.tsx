@@ -3,8 +3,11 @@
 import { FileBarChart, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getReportData, type ReportData } from "@/app/actions/getReportData";
+import { getCashFlowForecast } from "@/app/actions/getCashFlowForecast";
+import { CashFlowForecastCard } from "@/components/patterns/cash-flow-forecast-card";
 import { formatCurrency } from "@/lib/formatters/locale";
 import { Button } from "@/components/ui";
+import type { CashFlowProjection } from "@/lib/domain/cash-flow";
 import type { ResolvedPeriod } from "@/lib/domain/types";
 
 function SparkBar({ value, max, color }: { value: number; max: number; color: string }) {
@@ -23,14 +26,21 @@ function SparkBar({ value, max, color }: { value: number; max: number; color: st
 
 export function ReportsView({ period, currency = "INR" }: { period: ResolvedPeriod; currency?: string }) {
   const [data, setData] = useState<ReportData | null>(null);
+  const [cashFlow, setCashFlow] = useState<CashFlowProjection | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    getReportData(period).then(result => {
-      setData(result);
-      setLoading(false);
-    });
+    setCashFlow(null);
+    Promise.all([getReportData(period), getCashFlowForecast(period)]).then(
+      ([reportResult, forecastResult]) => {
+        setData(reportResult);
+        if (forecastResult.status === "success") {
+          setCashFlow(forecastResult.data);
+        }
+        setLoading(false);
+      },
+    );
   }, [period]);
 
   const exportCsv = () => {
@@ -82,6 +92,8 @@ export function ReportsView({ period, currency = "INR" }: { period: ResolvedPeri
         </div>
         <Button icon={<Download size={16} />} label="Export CSV" onClick={exportCsv} />
       </header>
+
+      {cashFlow ? <CashFlowForecastCard projection={cashFlow} /> : null}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-border/50 bg-surface p-4">

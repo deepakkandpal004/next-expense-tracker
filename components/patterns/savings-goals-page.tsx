@@ -23,6 +23,7 @@ import { cn } from "@/lib/ui/cn";
 import { CurrencyText, useToast } from "@/components/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency, getCurrencySymbol } from "@/lib/formatters/locale";
+import { GoalPlanPanel } from "@/components/patterns/goal-plan-panel";
 
 /* ────────────────────────────────────────────────────────────
    TYPES
@@ -46,6 +47,7 @@ interface SavingsGoal {
   currentAmount: number;
   monthlyContribution: number;
   startDate: string;
+  deadline: string | null;
   milestones: Milestone[];
   category: "travel" | "vehicle" | "safety" | "property" | "education" | "other";
 }
@@ -111,6 +113,7 @@ function mapDbGoalToSavingsGoal(db: DbGoal): SavingsGoal {
     currentAmount: db.currentAmount,
     monthlyContribution: db.monthlyContribution,
     startDate: db.createdAt,
+    deadline: db.deadline ?? null,
     category: db.category as SavingsGoal["category"],
     milestones: [
       { id: "m1", label: "25% Saved", amount: db.targetAmount * 0.25, completed: db.currentAmount >= db.targetAmount * 0.25 },
@@ -637,6 +640,23 @@ function GoalDetailModal({
                 Estimated completion:{" "}
                 <span className="font-semibold text-foreground">{estimatedCompletion}</span>
               </span>
+            </div>
+          )}
+
+          {/* AI Goal Plan */}
+          {!isCompleted && (
+            <div className="mt-6">
+              <GoalPlanPanel
+                currency={currency}
+                goal={{
+                  id: goal.id,
+                  name: goal.name,
+                  targetAmount: goal.targetAmount,
+                  currentAmount: goal.currentAmount,
+                  monthlyContribution: goal.monthlyContribution,
+                  deadline: goal.deadline,
+                }}
+              />
             </div>
           )}
 
