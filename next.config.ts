@@ -26,9 +26,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Dev and production must never share a build directory: `next build` while
   // `next dev` is running was clobbering the live server's `.next` cache and
-  // producing 404 / text/plain asset errors. Dev uses `.next`; build + start
-  // use an isolated `.next-build` so the two cannot collide.
-  distDir: process.env.NODE_ENV === "development" ? ".next" : ".next-build",
+  // producing 404 / text/plain asset errors. Dev uses `.next`; local build +
+  // start use an isolated `.next-build` so the two cannot collide. On Vercel the
+  // platform expects the standard `.next` output (it looks for
+  // `.next/routes-manifest.json`), so we keep default `distDir` there — Vercel
+  // always sets `VERCEL=1` during builds.
+  distDir: process.env.VERCEL ? ".next" : process.env.NODE_ENV === "development" ? ".next" : ".next-build",
   async headers() {
     return [
       {
