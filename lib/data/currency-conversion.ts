@@ -1,5 +1,3 @@
-import type { Prisma } from '@prisma/client';
-
 import { db } from '../db';
 
 const RATE_TTL_MS = 6 * 60 * 60 * 1000;
@@ -73,66 +71,4 @@ export async function countStoredAmounts(userId: string): Promise<number> {
     db.budget.count({ where: { userId } }),
   ]);
   return records + recurring + goals + budgets;
-}
-
-/**
- * Converts every stored amount (records, recurring rules, goals, budgets) from
- * the old currency to the new one using `rate`. Runs atomically so a failure
- * mid-way can't leave half the account converted.
- *
- * Converted values are rounded to 6 decimal places instead of 2: with 2-decimal
- * rounding each switch silently lost value (e.g. 200 INR → $2.09 → 199.55 INR),
- * while 6 decimals keeps round trips lossless (200 INR → 2.094675 USD → 200.00 INR).
- * Display formatting still shows 2 decimals.
- */
-export async function convertUserAmounts(
-  tx: Prisma.TransactionClient,
-  userId: string,
-  to: string,
-  rate: number,
-): Promise<{ converted: number }> {
-  const convertAmount = (value: number) => Math.round(value * rate * 1e6) / 1e6;
-
-  let converted = 0;
-
-  const records = await tx.record.findMany({ where: { userId } });
-  if (records.length > 0) {
-    converted += records.length;
-    for (const record of records) {
-      await tx.record.update({ where: { id: record.id }, data: { amount: convertAmount(record.amount) } });
-    }
-  }
-
-  const recurring = await tx.recurringRecord.findMany({ where: { userId } });
-  if (recurring.length > 0) {
-    converted += recurring.length;
-    for (const record of recurring) {
-      await tx.recurringRecord.update({ where: { id: record.id }, data: { amount: convertAmount(record.amount) } });
-    }
-  }
-
-  const goals = await tx.goal.findMany({ where: { userId } });
-  if (goals.length > 0) {
-    converted += goals.length;
-    for (const goal of goals) {
-      await tx.goal.update({
-        where: { id: goal.id },
-        data: {
-          targetAmount: convertAmount(goal.targetAmount),
-          currentAmount: convertAmount(goal.currentAmount),
-          monthlyContribution: convertAmount(goal.monthlyContribution),
-        },
-      });
-    }
-  }
-
-  const budgets = await tx.budget.findMany({ where: { userId } });
-  if (budgets.length > 0) {
-    converted += budgets.length;
-    for (const budget of budgets) {
-      await tx.budget.update({ where: { id: budget.id }, data: { amount: convertAmount(budget.amount), currency: to } });
-    }
-  }
-
-  return { converted };
 }

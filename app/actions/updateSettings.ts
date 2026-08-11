@@ -2,11 +2,7 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import {
-  convertUserAmounts,
-  countStoredAmounts,
-  getExchangeRate,
-} from '@/lib/data/currency-conversion';
+import { countStoredAmounts, getExchangeRate } from '@/lib/data/currency-conversion';
 import type { ActionResult } from '@/lib/domain/types';
 
 export interface UserSettings {
@@ -71,32 +67,28 @@ export async function updateSettings(
 
       const storedAmounts = await countStoredAmounts(user.id);
       if (storedAmounts > 0) {
-        await db.$transaction(async (tx) => {
-          // Lock the user row so concurrent save requests serialize: a second
-          // request waits until the first commits and then sees the new
-          // currency, preventing the same amounts from being converted twice.
-          const rows = await tx.$queryRaw<{ currency: string | null }[]>`
-            SELECT "currency" FROM "User" WHERE "id" = ${user.id} FOR UPDATE
-          `;
-          const lockedCurrency = (rows[0]?.currency ?? 'INR').toUpperCase();
-
-          if (lockedCurrency === targetCurrency) {
-            currencyHandledInTransaction = true;
-            return;
-          }
-          if (lockedCurrency !== currentCurrency) {
-            // Currency changed underneath us; refuse to guess instead of
-            // corrupting amounts a second time.
-            return;
-          }
-
-          const { converted } = await convertUserAmounts(tx, user.id, targetCurrency, rate);
-          await tx.user.update({ where: { id: user.id }, data: { currency: targetCurrency } });
+        // Runs inside a Postgres function (convert_user_currency) so the lock,
+        // the conditional checks and every amount update commit atomically on a
+        // single backend connection, which works through the transaction pooler
+        // that carries the runtime traffic.
+        const [row] = await db.$queryRaw<{ result: string }[]>`
+          SELECT convert_user_currency(
+            ${user.id},
+            ${currentCurrency},
+            ${targetCurrency},
+            ${rate}
+          ) AS result
+        `;
+        const outcome = row?.result ?? '';
+        if (outcome === 'already' || outcome.startsWith('converted:')) {
           currencyHandledInTransaction = true;
+        }
+        if (outcome.startsWith('converted:')) {
+          const converted = Number(outcome.slice('converted:'.length));
           if (converted > 0) {
             conversionMessage = ` Converted ${converted} amount(s) at 1 ${currentCurrency} = ${rate.toFixed(6)} ${targetCurrency}.`;
           }
-        });
+        }
       }
     }
 
