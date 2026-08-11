@@ -18,26 +18,23 @@ export const getMonthlySpending = cache(async function getMonthlySpending(
 ): Promise<MonthlySpendingSummary[]> {
   const { start, end } = monthRange(monthsBack);
 
-  const monthlyData = await db.record.groupBy({
-    by: ["date"],
+  const records = await db.record.findMany({
     where: {
       userId,
       type: "expense",
       date: { gte: start, lt: end },
     },
-    _sum: { amount: true },
-    _count: true,
+    select: { amount: true, date: true },
     orderBy: { date: "asc" },
   });
 
   const monthMap = new Map<string, { total: number; count: number }>();
 
-  for (const item of monthlyData) {
-    const date = new Date(item.date);
-    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+  for (const record of records) {
+    const key = `${record.date.getUTCFullYear()}-${String(record.date.getUTCMonth() + 1).padStart(2, "0")}`;
     const entry = monthMap.get(key) ?? { total: 0, count: 0 };
-    entry.total += item._sum.amount ?? 0;
-    entry.count += item._count;
+    entry.total += record.amount;
+    entry.count += 1;
     monthMap.set(key, entry);
   }
 
