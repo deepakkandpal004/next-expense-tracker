@@ -52,7 +52,7 @@ function AnimateInView({
 
 function SectionPill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="relative inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
+    <span className="rainbow inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
       <span className="inline-flex items-center gap-2.5 rounded-full bg-black/70 px-4 py-1.5 font-semibold text-xs tracking-wider backdrop-blur-md">
         <span className="text-white">{children}</span>
       </span>
@@ -95,7 +95,7 @@ function HeroSection() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="relative inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
+              <span className="rainbow inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
                 <span className="inline-flex items-center gap-2.5 rounded-full bg-black/70 px-4 py-1.5 font-semibold text-xs tracking-wider backdrop-blur-md">
                   <span className="text-white">AI-Powered</span>
                   <span className="h-3 w-px bg-white/15" />

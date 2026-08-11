@@ -862,6 +862,44 @@ p {
               linear-gradient(135deg, var(--color-danger), var(--color-kpi-expense)) border-box;
 }
 
+/* Rainbow rotating border glow */
+@keyframes rainbow-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.rainbow {
+  position: relative;
+}
+
+.rainbow::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+  background-size: 50% 30%;
+  filter: blur(6px);
+  background-image: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff8800,
+    #ffee00,
+    #22c55e,
+    #00dce5,
+    #3b82f6,
+    #a855f7,
+    #ec4899,
+    #ff0000
+  );
+  animation: rainbow-rotate 4s linear infinite;
+}
+
 /* ────────────────────────────────────────────────────────────
    PREMIUM SHADOWS & ELEVATION
    ──────────────────────────────────────────────────────────── */
