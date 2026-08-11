@@ -19,6 +19,7 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
+import { RainbowStyles } from "./rainbow-animation";
 
 /* ────────────────────────────────────────────────────────────
    ANIMATION WRAPPER
@@ -50,15 +51,15 @@ function AnimateInView({
    SECTION PILL — polished eyebrow chip (hero badge style)
    ──────────────────────────────────────────────────────────── */
 
-function SectionPill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rainbow inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
-      <span className="inline-flex items-center gap-2.5 rounded-full bg-black/70 px-4 py-1.5 font-semibold text-xs tracking-wider backdrop-blur-md">
-        <span className="text-white">{children}</span>
-      </span>
-    </span>
-  );
-}
+   function SectionPill({ children }: { children: React.ReactNode }) {
+     return (
+       <span className="rainbow relative isolate inline-flex overflow-hidden rounded-full p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
+                <span className="relative z-10 inline-flex items-center gap-3 rounded-full bg-black/70 px-5 py-2 font-semibold text-sm tracking-wider backdrop-blur-md">
+           <span className="text-white">{children}</span>
+         </span>
+       </span>
+     );
+   }
 
 /* ────────────────────────────────────────────────────────────
    ANIMATED SVG SHAPES
@@ -95,10 +96,12 @@ function HeroSection() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="rainbow inline-flex rounded-full bg-gradient-to-r from-[#22D3EE]/50 via-white/10 to-[#38BDF8]/50 p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
-                <span className="inline-flex items-center gap-2.5 rounded-full bg-black/70 px-4 py-1.5 font-semibold text-xs tracking-wider backdrop-blur-md">
+              <span className="rainbow relative isolate inline-flex overflow-hidden rounded-full p-px shadow-[0_0_24px_rgba(34,211,238,0.18)]">
+         <span className="relative z-10 inline-flex items-center gap-3 rounded-full bg-black/70 px-5 py-2 font-semibold text-sm tracking-wider backdrop-blur-md">
                   <span className="text-white">AI-Powered</span>
-                  <span className="h-3 w-px bg-white/15" />
+
+                  <span className="h-4 w-px bg-white/10" />
+
                   <span className="text-[#9AA3AF]">Expense Tracking</span>
                 </span>
               </span>
@@ -139,20 +142,20 @@ function HeroSection() {
             >
               <Link
                 href="/sign-up"
-                className="group relative flex h-12 items-center gap-2.5 rounded-2xl bg-[#00DCE5] px-6 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+                className="group relative flex h-14 items-center gap-2.5 rounded-2xl bg-[#00DCE5] px-8 text-base font-semibold text-[#0B0F14] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight
-                  size={16}
+                  size={18}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </Link>
               <Link
                 href="/features"
-                className="group flex h-12 items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+                className="group flex h-14 items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-8 text-base font-semibold text-white transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
               >
-                <span className="flex size-6 items-center justify-center rounded-full bg-white/10 transition-all duration-300 group-hover:bg-white/15">
-                  <Play size={12} className="ml-0.5" />
+                <span className="flex size-7 items-center justify-center rounded-full bg-white/10 transition-all duration-300 group-hover:bg-white/15">
+                  <Play size={14} className="ml-0.5" />
                 </span>
                 See how it works
               </Link>
@@ -815,9 +818,7 @@ function FAQSection() {
     <section className="relative isolate border-b border-white/[0.06] bg-black py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="font-semibold text-xs tracking-widest uppercase text-[#00DCE5]">
-            FAQ
-          </span>
+          <SectionPill>FAQ</SectionPill>
           <h2 className="font-bold tracking-tight mt-3 text-4xl text-white sm:text-5xl">
             Frequently asked questions
           </h2>
@@ -879,9 +880,7 @@ function CTASection() {
     <section className="relative isolate bg-black py-24 sm:py-28">
       <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
         <AnimateInView>
-          <span className="font-semibold text-xs tracking-widest uppercase text-[#00DCE5]">
-            Start today
-          </span>
+          <SectionPill>Start today</SectionPill>
           <h2 className="font-bold tracking-tight mt-5 text-4xl text-white sm:text-5xl lg:text-6xl">
             Take control of your money.
           </h2>
@@ -925,6 +924,7 @@ function CTASection() {
 export function WorldClassLandingPage() {
   return (
     <main className="landing-page">
+      <RainbowStyles />
       <HeroSection />
       <HowItWorksSection />
       <FeaturesSection />
