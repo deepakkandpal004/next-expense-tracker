@@ -93,11 +93,16 @@ OPENROUTER_API_KEY="your-openrouter-api-key"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-4. Initialize the database:
+4. Initialize the database with the committed migrations:
 ```bash
 npx prisma generate
-npx prisma db push
+npx prisma migrate deploy
 ```
+
+Vercel automatically uses the `vercel-build` package script, which applies
+pending production migrations before building the Next.js application. Keep
+schema changes in `prisma/migrations` so application code and the production
+database are deployed together.
 
 5. Start the development server:
 ```bash
@@ -165,6 +170,7 @@ The AI insights page provides personalized financial analysis using OpenAI model
 ```bash
 npm run dev          # Start development server
 npm run build        # Build for production
+npm run vercel-build # Apply migrations and build on Vercel
 npm run start        # Start production server
 npm run lint         # Run ESLint
 npm run typecheck    # Run TypeScript checks
