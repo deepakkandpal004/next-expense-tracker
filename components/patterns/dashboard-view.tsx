@@ -1,15 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { BudgetOverviewCard } from "@/components/patterns/budget-overview-card";
-import { CashFlowForecastCard } from "@/components/patterns/cash-flow-forecast-card";
-import { CategoryBreakdownPanel } from "@/components/patterns/category-breakdown-panel";
 import { HeroKpiCard } from "@/components/patterns/hero-kpi-card";
 import { RecentTransactionsCard } from "@/components/patterns/recent-transactions-card";
 import { SafeToSpendCard } from "@/components/patterns/safe-to-spend-card";
 import { SmartAlertCard } from "@/components/patterns/smart-alert-card";
-import { SpendingOverviewPanel } from "@/components/patterns/spending-overview-panel";
 import type { CashFlowProjection } from "@/lib/domain/cash-flow";
 import type { DashboardDTO } from "@/lib/domain/dashboard";
 import type { SafeToSpendBreakdown } from "@/lib/domain/safe-to-spend";
@@ -19,6 +17,21 @@ import { MonthSwitcher } from "@/components/patterns/month-switcher";
 import { listContainerVariants, listItemVariants } from "@/lib/ui/motion";
 import type { ReportingPeriod } from "@/lib/domain/types";
 import { formatCurrency, formatPercentage } from "@/lib/formatters/locale";
+
+const CashFlowForecastCard = dynamic(
+  () => import("@/components/patterns/cash-flow-forecast-card").then((mod) => ({ default: mod.CashFlowForecastCard })),
+  { ssr: false }
+);
+
+const CategoryBreakdownPanel = dynamic(
+  () => import("@/components/patterns/category-breakdown-panel").then((mod) => ({ default: mod.CategoryBreakdownPanel })),
+  { ssr: false }
+);
+
+const SpendingOverviewPanel = dynamic(
+  () => import("@/components/patterns/spending-overview-panel").then((mod) => ({ default: mod.SpendingOverviewPanel })),
+  { ssr: false }
+);
 
 export interface DashboardUser {
   name: string | null;

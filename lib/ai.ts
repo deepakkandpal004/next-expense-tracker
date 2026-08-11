@@ -1,5 +1,3 @@
-import OpenAI from "openai";
-
 import type {
   AiProviderPayload,
   CanAffordProviderPayload,
@@ -52,20 +50,31 @@ export class AiProviderUnavailableError extends Error {
   }
 }
 
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  // A placeholder keeps DTO/prompt normalization importable in environments where the provider is intentionally not configured; requests still fail at the provider boundary.
-  apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || "provider-not-configured",
-  defaultHeaders: {
-    "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-    "X-Title": "Expense AI",
-  },
-  // The server action never executes in a browser. Vitest uses jsdom, so test mode must permit importing the provider client without making a request.
-  dangerouslyAllowBrowser: process.env.NODE_ENV === "test",
-});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let openaiInstance: any = null;
+
+async function getOpenAI() {
+  if (!openaiInstance) {
+    // Dynamic import to reduce initial bundle size
+    const OpenAI = (await import("openai")).default;
+    openaiInstance = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      // A placeholder keeps DTO/prompt normalization importable in environments where the provider is intentionally not configured; requests still fail at the provider boundary.
+      apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || "provider-not-configured",
+      defaultHeaders: {
+        "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+        "X-Title": "Expense AI",
+      },
+      // The server action never executes in a browser. Vitest uses jsdom, so test mode must permit importing the provider client without making a request.
+      dangerouslyAllowBrowser: process.env.NODE_ENV === "test",
+    });
+  }
+  return openaiInstance;
+}
 
 const liveAiCompletionProvider: AiCompletionProvider = {
   async complete(request, signal) {
+    const openai = await getOpenAI();
     const completion = await openai.chat.completions.create({
       model: request.model,
       messages: request.messages,

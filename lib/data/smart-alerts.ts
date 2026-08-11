@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { db } from "../db";
 import {
   computeSmartPacingAlerts,
@@ -39,7 +40,7 @@ function trailingMonths(now: Date, count: number): string[] {
  * per category and a trailing window of per-category monthly totals (the
  * "normal pace" baseline). A period that has already ended yields no alerts.
  */
-export async function getSmartPacingReport(
+export const getSmartPacingReport = cache(async function getSmartPacingReport(
   userId: string,
   period: ResolvedPeriod,
 ): Promise<SmartPacingReport> {
@@ -107,4 +108,4 @@ export async function getSmartPacingReport(
     spendToDateByCategory,
     historyMonthlyTotals,
   });
-}
+});

@@ -117,6 +117,7 @@ model Record {
   createdAt   DateTime         @default(now())
 
   @@index([userId])
+  @@index([userId, type, date])
 }
 
 model RecurringRecord {

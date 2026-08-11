@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { db } from "../db";
 import type {
   MonthlySpendingSummary,
@@ -11,29 +12,32 @@ function monthRange(monthsBack: number): { start: Date; end: Date } {
   return { start, end };
 }
 
-export async function getMonthlySpending(
+export const getMonthlySpending = cache(async function getMonthlySpending(
   userId: string,
   monthsBack: number = 6,
 ): Promise<MonthlySpendingSummary[]> {
   const { start, end } = monthRange(monthsBack);
 
-  const records = await db.record.findMany({
+  const monthlyData = await db.record.groupBy({
+    by: ["date"],
     where: {
       userId,
       type: "expense",
       date: { gte: start, lt: end },
     },
-    select: { amount: true, date: true },
+    _sum: { amount: true },
+    _count: true,
     orderBy: { date: "asc" },
   });
 
   const monthMap = new Map<string, { total: number; count: number }>();
 
-  for (const record of records) {
-    const key = `${record.date.getUTCFullYear()}-${String(record.date.getUTCMonth() + 1).padStart(2, "0")}`;
+  for (const item of monthlyData) {
+    const date = new Date(item.date);
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
     const entry = monthMap.get(key) ?? { total: 0, count: 0 };
-    entry.total += record.amount;
-    entry.count += 1;
+    entry.total += item._sum.amount ?? 0;
+    entry.count += item._count;
     monthMap.set(key, entry);
   }
 
@@ -44,9 +48,9 @@ export async function getMonthlySpending(
       transactionCount: data.count,
     }))
     .sort((a, b) => a.month.localeCompare(b.month));
-}
+});
 
-export async function getCategoryMonthlySpending(
+export const getCategoryMonthlySpending = cache(async function getCategoryMonthlySpending(
   userId: string,
   monthsBack: number = 6,
 ): Promise<CategoryMonthlySpending[]> {
@@ -68,4 +72,4 @@ export async function getCategoryMonthlySpending(
     month: `${r.date.getUTCFullYear()}-${String(r.date.getUTCMonth() + 1).padStart(2, "0")}`,
     totalMinor: Math.round(r.amount * 100),
   }));
-}
+});

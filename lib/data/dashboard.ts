@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { db } from "../db";
 import {
   aggregateDashboard,
@@ -235,4 +236,4 @@ const prismaDashboardQuerySource: DashboardQuerySource = {
  * Loads one authorized, inclusive period snapshot. KPIs, charts, recent records, and AI fact
  * inputs are all derived from this result; slower generated AI content is intentionally excluded.
  */
-export const getDashboardData = createDashboardQueryService(prismaDashboardQuerySource);
+export const getDashboardData = cache(createDashboardQueryService(prismaDashboardQuerySource));
