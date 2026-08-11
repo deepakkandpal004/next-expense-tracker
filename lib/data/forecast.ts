@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { db } from "../db";
 import type {
   MonthlySpendingSummary,
@@ -12,7 +11,7 @@ function monthRange(monthsBack: number): { start: Date; end: Date } {
   return { start, end };
 }
 
-export const getMonthlySpending = cache(async function getMonthlySpending(
+export async function getMonthlySpending(
   userId: string,
   monthsBack: number = 6,
 ): Promise<MonthlySpendingSummary[]> {
@@ -45,9 +44,9 @@ export const getMonthlySpending = cache(async function getMonthlySpending(
       transactionCount: data.count,
     }))
     .sort((a, b) => a.month.localeCompare(b.month));
-});
+}
 
-export const getCategoryMonthlySpending = cache(async function getCategoryMonthlySpending(
+export async function getCategoryMonthlySpending(
   userId: string,
   monthsBack: number = 6,
 ): Promise<CategoryMonthlySpending[]> {
@@ -69,4 +68,4 @@ export const getCategoryMonthlySpending = cache(async function getCategoryMonthl
     month: `${r.date.getUTCFullYear()}-${String(r.date.getUTCMonth() + 1).padStart(2, "0")}`,
     totalMinor: Math.round(r.amount * 100),
   }));
-});
+}

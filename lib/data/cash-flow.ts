@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { db } from "../db";
 import { computeCategoryAverages, computeSpendingForecast } from "../domain/forecast";
 import {
@@ -109,7 +108,7 @@ export function buildScheduledEvents(
  * - A fully elapsed period returns `state: "ended"` with the realized
  *   month-end balance and no forward-looking data.
  */
-export const getCashFlowProjection = cache(async function getCashFlowProjection(
+export async function getCashFlowProjection(
   userId: string,
   period: ResolvedPeriod,
   currency: string = CASH_FLOW_DEFAULT_CURRENCY,
@@ -217,7 +216,7 @@ export const getCashFlowProjection = cache(async function getCashFlowProjection(
     projectedSpendMinor: projection.actualSpendMinor,
     alerts: [],
   };
-});
+}
 
 interface RecordRow {
   amount: number;

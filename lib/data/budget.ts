@@ -1,4 +1,3 @@
-import { cache } from "react";
 import type { Budget as PrismaBudget } from "@prisma/client";
 
 import { db } from "../db";
@@ -38,7 +37,7 @@ export function toDomainBudget(budget: PrismaBudget): Budget {
   };
 }
 
-export const getBudgetForUser = cache(async function getBudgetForUser(
+export async function getBudgetForUser(
   userId: string,
   period: ResolvedPeriod,
 ): Promise<Budget | null> {
@@ -47,7 +46,7 @@ export const getBudgetForUser = cache(async function getBudgetForUser(
     orderBy: { effectiveFrom: "desc" },
   });
   return budget ? toDomainBudget(budget) : null;
-});
+}
 
 export async function saveBudgetForUser(
   userId: string,
