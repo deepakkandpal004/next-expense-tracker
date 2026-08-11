@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { db } from "../db";
 import { computeSafeToSpend } from "../domain/safe-to-spend";
 import type { SafeToSpendBreakdown } from "../domain/safe-to-spend";
@@ -141,7 +142,7 @@ export function recurringMonthlyExpenseMinor(
 }
 
 /** Loads the deterministic Safe-to-Spend breakdown for an authorized period. */
-export async function getSafeToSpendData(
+export const getSafeToSpendData = cache(async function getSafeToSpendData(
   userId: string,
   period: ResolvedPeriod,
   currency: string = SAFE_TO_SPEND_DEFAULT_CURRENCY,
@@ -203,4 +204,4 @@ export async function getSafeToSpendData(
     expectedRemainingExpensesMinor: expectedExpensesMinor,
     remainingDays,
   });
-}
+});

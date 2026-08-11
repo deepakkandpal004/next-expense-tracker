@@ -2,8 +2,6 @@ import { redirect } from 'next/navigation';
 import { AuthenticatedAppShell, type SafeUser } from '@/components/patterns/authenticated-app-shell';
 import { getAuthUser } from '@/lib/auth';
 
-export const dynamic = 'force-dynamic';
-
 export default async function AuthenticatedAppLayout({
   children,
 }: Readonly<{

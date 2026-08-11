@@ -21,10 +21,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
-  const dashboard = await getDashboardData(user.id, period, user.currency);
-  const safeToSpend = await getSafeToSpendData(user.id, period, user.currency);
-  const cashFlow = await getCashFlowProjection(user.id, period, user.currency);
-  const smartPacing = await getSmartPacingReport(user.id, period);
+
+  const [dashboard, safeToSpend, cashFlow, smartPacing] = await Promise.all([
+    getDashboardData(user.id, period, user.currency),
+    getSafeToSpendData(user.id, period, user.currency),
+    getCashFlowProjection(user.id, period, user.currency),
+    getSmartPacingReport(user.id, period),
+  ]);
 
   return (
     <DashboardView
