@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
 import { RecurringView } from '@/components/patterns/recurring-view';
 
-export const metadata: Metadata = { title: 'Recurring Transactions – Expense AI' };
+export const metadata: Metadata = { title: 'Recurring Transactions – Expense Tracker AI' };
 
 export default async function RecurringRoute() {
   const user = await getAuthUser();

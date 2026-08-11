@@ -5,7 +5,7 @@ import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
 import { toSearchParams } from "@/lib/domain/search-params";
 import { ReportsView } from "@/components/patterns/reports-view";
 
-export const metadata: Metadata = { title: "Reports – Expense AI" };
+export const metadata: Metadata = { title: "Reports – Expense Tracker AI" };
 
 interface ReportsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

@@ -166,7 +166,7 @@ export function AppSidebar({
       )}
     >
       {/* Logo */}
-      <Link href="/" aria-label="Expense AI home" className={cn(
+      <Link href="/" aria-label="Expense Tracker AI home" className={cn(
         "flex items-center shrink-0 transition-colors",
         expanded ? "px-5 py-5 gap-3" : "justify-center px-0 py-5 gap-0",
       )}>
@@ -178,7 +178,7 @@ export function AppSidebar({
           "pulse-logo text-xl font-extrabold leading-none whitespace-nowrap transition-all duration-300",
           expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
         )}>
-          <span className="text-white">Expense </span>
+          <span className="text-white">Expense Tracker </span>
           <span className="text-[#00DCE5]">AI</span>
         </span>
       </Link>

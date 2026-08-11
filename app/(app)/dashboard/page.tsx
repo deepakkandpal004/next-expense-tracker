@@ -9,7 +9,7 @@ import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
 import { toSearchParams } from '@/lib/domain/search-params';
 import { DashboardView } from '@/components/patterns/dashboard-view';
 
-export const metadata: Metadata = { title: 'Dashboard – Expense AI' };
+export const metadata: Metadata = { title: 'Dashboard – Expense Tracker AI' };
 
 interface DashboardPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

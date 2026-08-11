@@ -128,7 +128,7 @@ function HeroSection() {
               transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mx-auto mt-5 max-w-xl text-base text-[#9AA3AF] sm:text-lg lg:mx-0"
             >
-              Expense AI auto-categorizes your transactions, tracks budgets and
+              Expense Tracker AI auto-categorizes your transactions, tracks budgets and
               savings goals, and predicts what&apos;s coming — so you always
               know where your money goes.
             </motion.p>
@@ -226,7 +226,7 @@ function HeroSection() {
                   <div className="h-3 w-3 rounded-full bg-[#28CA41]" />
                 </div>
                 <span className="ml-4 text-xs font-medium text-[#9AA3AF]/60">
-                  Expense AI Dashboard
+                  Expense Tracker AI Dashboard
                 </span>
               </div>
 
@@ -382,7 +382,7 @@ const workflowSteps = [
 
 function HowItWorksSection() {
   return (
-    <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-black py-24 sm:py-28">
+    <section id="about" className="relative isolate overflow-hidden border-y border-white/[0.06] bg-black py-24 sm:py-28">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute left-[-12%] top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.045] blur-[130px]" />
         <div className="absolute right-[-10%] top-0 size-[340px] rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
@@ -395,7 +395,7 @@ function HowItWorksSection() {
             From a quick entry to a clearer plan.
           </h2>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-[#9AA3AF]">
-            Expense AI turns the small financial decisions you make every day into a picture you can actually use.
+            Expense Tracker AI turns the small financial decisions you make every day into a picture you can actually use.
           </p>
 
           <div className="mt-8 space-y-3">
@@ -513,7 +513,7 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section className="relative isolate overflow-hidden bg-black py-24 sm:py-32">
+    <section id="features" className="relative isolate overflow-hidden bg-black py-24 sm:py-32">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[120px]" />
@@ -782,11 +782,11 @@ function AISection() {
 
 const faqs = [
   {
-    q: "What is Expense AI?",
-    a: "Expense AI is a smart financial tracking app that helps you record transactions, understand spending patterns, and get AI-powered insights to manage your money better.",
+    q: "What is Expense Tracker AI?",
+    a: "Expense Tracker AI is a smart financial tracking app that helps you record transactions, understand spending patterns, and get AI-powered insights to manage your money better.",
   },
   {
-    q: "Is Expense AI free?",
+    q: "Is Expense Tracker AI free?",
     a: "Yes — completely free. There are no paid plans, no hidden charges, and no credit card required. Every feature, including AI insights, is available to everyone.",
   },
   {
@@ -803,7 +803,7 @@ const faqs = [
   },
   {
     q: "Can I use it on mobile?",
-    a: "Yes! Expense AI works perfectly on all devices — desktop, tablet, and mobile. Your data syncs instantly across all your devices.",
+    a: "Yes! Expense Tracker AI works perfectly on all devices — desktop, tablet, and mobile. Your data syncs instantly across all your devices.",
   },
   {
     q: "Can I export my data?",
@@ -923,7 +923,7 @@ function CTASection() {
 
 export function WorldClassLandingPage() {
   return (
-    <main className="landing-page">
+    <main id="home" className="landing-page">
       <RainbowStyles />
       <HeroSection />
       <HowItWorksSection />

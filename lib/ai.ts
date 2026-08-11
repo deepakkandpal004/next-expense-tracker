@@ -63,7 +63,7 @@ async function getOpenAI() {
       apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || "provider-not-configured",
       defaultHeaders: {
         "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-        "X-Title": "Expense AI",
+        "X-Title": "Expense Tracker AI",
       },
       // The server action never executes in a browser. Vitest uses jsdom, so test mode must permit importing the provider client without making a request.
       dangerouslyAllowBrowser: process.env.NODE_ENV === "test",

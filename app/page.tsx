@@ -5,8 +5,8 @@ import { PublicHeader } from '@/components/patterns/PublicHeader';
 import { getAuthUser } from '@/lib/auth';
 
 export const metadata: Metadata = {
-  title: 'Expense AI | Record and review your expenses',
-  description: 'Record transactions, review reporting periods, and use optional AI assistance in Expense AI.',
+  title: 'Expense Tracker AI | Record and review your expenses',
+  description: 'Record transactions, review reporting periods, and use optional AI assistance in Expense Tracker AI.',
 };
 
 /** `/` is the public landing page, accessible to all users. */

@@ -6,7 +6,7 @@ import { toSearchParams } from '@/lib/domain/search-params';
 import { getAiFinancialInsights } from '@/app/actions/getAiFinancialInsights';
 import { AiInsightsView } from '@/components/patterns/ai-insights-view';
 
-export const metadata: Metadata = { title: 'AI Financial Insights – Expense AI' };
+export const metadata: Metadata = { title: 'AI Financial Insights – Expense Tracker AI' };
 
 interface AiInsightsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

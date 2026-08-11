@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import { SettingsView } from "@/components/patterns/settings-view";
 
-export const metadata: Metadata = { title: "Settings – Expense AI" };
+export const metadata: Metadata = { title: "Settings – Expense Tracker AI" };
 
 export default async function SettingsRoute() {
   const user = await getAuthUser();

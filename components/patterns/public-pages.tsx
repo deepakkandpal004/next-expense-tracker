@@ -175,7 +175,7 @@ const faqs = [
   },
   {
     question: 'Can I track multiple currencies?',
-    answer: 'Absolutely. Expense AI supports 10+ currencies with automatic conversion based on real-time exchange rates.',
+    answer: 'Absolutely. Expense Tracker AI supports 10+ currencies with automatic conversion based on real-time exchange rates.',
   },
   {
     question: 'How does spending forecasting work?',
@@ -468,7 +468,7 @@ function CtaSection() {
             Start tracking smarter today
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-[#9AA3AF]">
-            Join thousands of users who understand their finances better with Expense AI.
+            Join thousands of users who understand their finances better with Expense Tracker AI.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
@@ -543,7 +543,7 @@ export function LandingPageContent() {
     <main>
       <section className="public-hero border-b border-border">
         <div className={pageClass}>
-          <PageIntro eyebrow="Expense AI" title="Understand the financial records you create.">
+          <PageIntro eyebrow="Expense Tracker AI" title="Understand the financial records you create.">
             <p>Record transactions, review reporting periods, and use optional AI assistance to explore patterns in your recorded data.</p>
           </PageIntro>
           <Actions />
@@ -590,7 +590,7 @@ export function AboutPageContent() {
               </span>
             </h1>
             <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#9AA3AF]">
-              Expense AI exists to make financial tracking simple, private, and accessible.
+              Expense Tracker AI exists to make financial tracking simple, private, and accessible.
               No complexity. No hidden agendas. Just clarity.
             </p>
           </AnimateInView>
@@ -637,7 +637,7 @@ export function AboutPageContent() {
                   insight, but simple enough to use every day.
                 </p>
                 <p>
-                  So we built Expense AI. A clean workspace where you record transactions,
+                  So we built Expense Tracker AI. A clean workspace where you record transactions,
                   and our AI handles the rest — categorizing, forecasting, and flagging
                   unusual patterns before they become problems.
                 </p>
@@ -761,7 +761,7 @@ export function AboutPageContent() {
               Start with clarity
             </h2>
             <p className="mx-auto mt-4 max-w-md text-[#9AA3AF]">
-              Join thousands who track smarter with Expense AI.
+              Join thousands who track smarter with Expense Tracker AI.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
@@ -892,7 +892,7 @@ export function ContactPageContent() {
               {
                 icon: HelpCircle,
                 title: 'FAQ',
-                description: 'Answers to common questions about Expense AI.',
+                description: 'Answers to common questions about Expense Tracker AI.',
                 href: '/features',
                 color: '#00DCE5',
               },
@@ -913,7 +913,7 @@ export function ContactPageContent() {
               {
                 icon: FileText,
                 title: 'Features',
-                description: 'Explore everything Expense AI can do.',
+                description: 'Explore everything Expense Tracker AI can do.',
                 href: '/features',
                 color: '#FBBF24',
               },
@@ -953,7 +953,7 @@ export function ContactPageContent() {
               Ready to get started?
             </h2>
             <p className="mx-auto mt-4 max-w-md text-[#9AA3AF]">
-              Join thousands who track smarter with Expense AI.
+              Join thousands who track smarter with Expense Tracker AI.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link

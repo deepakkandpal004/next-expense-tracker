@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AiTransparencyPageContent } from '@/components/patterns/public-pages';
 
-export const metadata: Metadata = { title: 'AI transparency | Expense AI', description: 'Disclosure about optional AI assistance in Expense AI.' };
+export const metadata: Metadata = { title: 'AI transparency | Expense Tracker AI', description: 'Disclosure about optional AI assistance in Expense Tracker AI.' };
 
 export default function AiTransparencyPage() {
   return <AiTransparencyPageContent />;

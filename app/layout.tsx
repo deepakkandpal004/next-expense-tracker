@@ -32,7 +32,7 @@ const viga = Viga({
 });
 
 export const metadata: Metadata = {
-  title: 'Expense AI - Smart Financial Tracker',
+  title: 'Expense Tracker AI - Smart Financial Tracker',
   description:
     'AI-powered expense tracking with intelligent insights, smart categorization, and personalized financial recommendations',
   icons: {
@@ -65,10 +65,10 @@ export default async function RootLayout({
         <link rel='manifest' href='/manifest.json' />
         <link rel='icon' type='image/png' sizes='512x512' href='/icon.png' />
         <link rel='apple-touch-icon' sizes='512x512' href='/apple-touch-icon.png' />
-        <meta name='application-name' content='Expense AI' />
+        <meta name='application-name' content='Expense Tracker AI' />
         <meta name='mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
-        <meta name='apple-mobile-web-app-title' content='Expense AI' />
+        <meta name='apple-mobile-web-app-title' content='Expense Tracker AI' />
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: PREFERENCES_BOOTSTRAP_SCRIPT }}
