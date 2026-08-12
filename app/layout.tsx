@@ -57,6 +57,7 @@ export default async function RootLayout({
       lang='en'
       data-appearance-preference='dark'
       data-density={initialDensity}
+      data-scroll-behavior='smooth'
       suppressHydrationWarning
       className={cn("dark", manrope.variable, outfit.variable, viga.variable)}
     >

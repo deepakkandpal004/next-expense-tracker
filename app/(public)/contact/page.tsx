@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ContactPageContent } from '@/components/patterns/public-pages';
+import { ContactPageContent } from '@/components/patterns/public-pages/contact-page';
 
 export const metadata: Metadata = { title: 'Contact | Expense Tracker AI', description: 'Contact Expense Tracker AI support.' };
 
