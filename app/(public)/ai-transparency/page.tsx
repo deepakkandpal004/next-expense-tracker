@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AiTransparencyPageContent } from '@/components/patterns/public-pages';
+import { AiTransparencyPageContent } from '@/components/patterns/public-pages/ai-transparency-page';
 
 export const metadata: Metadata = { title: 'AI transparency | Expense Tracker AI', description: 'Disclosure about optional AI assistance in Expense Tracker AI.' };
 

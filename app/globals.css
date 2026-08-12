@@ -330,6 +330,24 @@ p {
   font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 
+/* ────────────────────────────────────────────────────────────
+   HERO ASSET CROP FIX
+   Compensates for source PNGs where the artwork isn't centered
+   within its own canvas (empty padding baked into the asset).
+   ──────────────────────────────────────────────────────────── */
+
+   .hero-asset-frame {
+     position: relative;
+     width: 100%;
+     margin-inline: auto;
+     overflow: hidden;
+   }
+
+   .hero-asset-frame img {
+     object-fit: cover;           /* was "contain" — that was the bug */
+     object-position: right center;
+   }
+
 /* Touch-friendly interactive elements */
 @media (pointer: coarse) {
   button, a, input, select, textarea {
@@ -1611,19 +1629,34 @@ p {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%, 55% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
   background: linear-gradient(
     90deg,
-    var(--color-surface-subtle) 25%,
+    transparent,
     var(--color-surface-raised) 50%,
-    var(--color-surface-subtle) 75%
+    transparent
   );
-  background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .animate-shimmer::after {
+    animation: none;
+  }
 }
 
 @keyframes fade-in {
