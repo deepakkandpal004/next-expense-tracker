@@ -17,6 +17,7 @@ function createRedisClient(): Redis {
 
   const client = new Redis(url, {
     maxRetriesPerRequest: 3,
+    lazyConnect: true,
     enableOfflineQueue: true,
   });
   client.on("ready", () => {
