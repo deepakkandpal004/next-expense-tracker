@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { comparePassword, createSession } from '@/lib/auth';
 import { rateLimitLogin } from '@/lib/rate-limit';
+import { withApiLogging } from '@/lib/server/logger';
 
-export async function POST(request: Request) {
-  const limit = rateLimitLogin(request);
+export const POST = withApiLogging(async (request: Request) => {
+  const limit = await rateLimitLogin(request);
   if (!limit.allowed) {
     return NextResponse.json(
       { error: 'Too many login attempts. Please try again later.' },
@@ -43,9 +44,9 @@ export async function POST(request: Request) {
         email: user.email,
         imageUrl: user.imageUrl,
       },
-    });
+      });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});

@@ -1,16 +1,22 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { createSession, hashPassword } from '@/lib/auth';
-import { rateLimitRegister } from '@/lib/rate-limit';
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { createSession, hashPassword } from "@/lib/auth";
+import { rateLimitRegister } from "@/lib/rate-limit";
+import { withApiLogging } from "@/lib/server/logger";
 
 const MIN_PASSWORD_LENGTH = 8;
 
-export async function POST(request: Request) {
-  const limit = rateLimitRegister(request);
+export const POST = withApiLogging(async (request: Request) => {
+  const limit = await rateLimitRegister(request);
   if (!limit.allowed) {
     return NextResponse.json(
-      { error: 'Too many registration attempts. Please try again later.' },
-      { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.retryAfterMs / 1000)) } },
+      { error: "Too many registration attempts. Please try again later." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)),
+        },
+      },
     );
   }
 
@@ -18,12 +24,17 @@ export async function POST(request: Request) {
     const { email, password, name } = await request.json();
 
     if (!email || !password || !name) {
-      return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Name, email, and password are required" },
+        { status: 400 },
+      );
     }
 
-    if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+    if (typeof password !== "string" || password.length < MIN_PASSWORD_LENGTH) {
       return NextResponse.json(
-        { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` },
+        {
+          error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+        },
         { status: 400 },
       );
     }
@@ -34,7 +45,10 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: 'User with this email already exists' }, { status: 400 });
+      return NextResponse.json(
+        { error: "If this email is already registered, please sign in." },
+        { status: 400 },
+      );
     }
 
     // Hash password
@@ -65,10 +79,13 @@ export async function POST(request: Request) {
           imageUrl: newUser.imageUrl,
         },
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
-    console.error('Registration error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
-}
+});

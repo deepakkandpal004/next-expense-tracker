@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { SESSION_COOKIE_NAME } from '@/lib/auth';
+import { withApiLogging } from '@/lib/server/logger';
 
 /**
  * Clears stale session cookies for visitors whose cookie outlives its session
@@ -9,11 +9,11 @@ import { SESSION_COOKIE_NAME } from '@/lib/auth';
  * cookies, so an unauthenticated request is redirected here first; otherwise
  * middleware would bounce it back to /dashboard in an infinite redirect loop.
  */
-export async function GET(request: NextRequest) {
+export const GET = withApiLogging(async (request: Request) => {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
   cookieStore.delete('access_token');
   cookieStore.delete('refresh_token');
 
   return NextResponse.redirect(new URL('/sign-in', request.url));
-}
+});

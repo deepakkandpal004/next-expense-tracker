@@ -2,6 +2,7 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { generateCanAffordVerdict } from '@/lib/ai';
+import { rateLimitAiUser } from '@/lib/rate-limit';
 import {
   buildCanAffordProviderPayload,
   getCanAffordDisclosure,
@@ -27,6 +28,11 @@ export async function getCanAffordVerdict(
   const user = await getAuthUser();
   if (!user) {
     return { status: 'error', message: 'Sign in to continue.', retryable: false };
+  }
+
+  const limit = await rateLimitAiUser(user.id);
+  if (!limit.allowed) {
+    return { status: 'error', message: 'Too many AI requests. Please try again later.', retryable: true };
   }
 
   const disclosure = getCanAffordDisclosure();

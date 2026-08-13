@@ -11,6 +11,7 @@ import type { MoneyLeakReport } from '@/lib/domain/money-leaks';
 import { formatCurrency } from '@/lib/formatters/locale';
 import { generateExpenseInsights, type AIInsight } from '@/lib/ai';
 import type { AiProviderPayload } from '@/lib/domain/ai';
+import { rateLimitAiUser } from '@/lib/rate-limit';
 
 export interface AiInsightCard {
   id: string;
@@ -235,7 +236,10 @@ export async function getAiFinancialInsights(
     // Generate AI insights using OpenAI — only on demand, never during page
     // renders, since the provider call can take seconds and block navigation.
     if (options.generateAi !== false && (options.refreshCache === true || aiInsights.length === 0)) {
+        const limit = await rateLimitAiUser(user.id);
+        if (limit.allowed) {
       try {
+
         const providerPayload: AiProviderPayload = {
           period: {
             start: normalized.period.start,
@@ -264,6 +268,7 @@ export async function getAiFinancialInsights(
       } catch (aiError) {
         console.error('OpenAI insights generation failed, using fallback:', aiError);
         // Keep any cached insights when regeneration fails.
+      }
       }
     }
 

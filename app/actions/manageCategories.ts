@@ -4,6 +4,7 @@ import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import type { ActionResult } from '@/lib/domain/types';
 import { CATEGORY_DEFINITIONS } from '@/lib/domain/categories';
+import { CacheKey, deleteCache } from '@/lib/cache';
 
 export interface CategoryWithSpending {
   id: string;
@@ -90,6 +91,7 @@ export async function upsertCategory(
         color: data.color ?? '',
       },
     });
+    await deleteCache(CacheKey.categories(user.id));
     return { status: 'success', data: { categoryId }, message: 'Category saved.' };
   } catch (error) {
     console.error('Failed to save category', error);
@@ -117,6 +119,7 @@ export async function createCustomCategory(
         isCustom: true,
       },
     });
+    await deleteCache(CacheKey.categories(user.id));
     return { status: 'success', data: { categoryId }, message: 'Category created.' };
   } catch (error) {
     console.error('Failed to create category', error);
@@ -138,6 +141,7 @@ export async function deleteCustomCategory(
       return { status: 'error', message: 'Cannot delete a built-in category.', retryable: false };
     }
     await db.userCategory.delete({ where: { id: cat.id } });
+    await deleteCache(CacheKey.categories(user.id));
     return { status: 'success', data: { categoryId }, message: 'Category deleted.' };
   } catch (error) {
     console.error('Failed to delete category', error);

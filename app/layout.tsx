@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Manrope, Outfit, Viga } from 'next/font/google';
+import { Manrope, Outfit, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
@@ -24,10 +24,9 @@ const outfit = Outfit({
   display: 'swap',
 });
 
-const viga = Viga({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-viga',
-  weight: ['400'],
+  variable: '--font-space-grotesk',
   display: 'swap',
 });
 
@@ -59,7 +58,7 @@ export default async function RootLayout({
       data-density={initialDensity}
       data-scroll-behavior='smooth'
       suppressHydrationWarning
-      className={cn("dark", manrope.variable, outfit.variable, viga.variable)}
+      className={cn("dark", manrope.variable, outfit.variable, spaceGrotesk.variable)}
     >
       <head>
         <meta name='theme-color' content={THEME_COLORS.dark} />

@@ -1,6 +1,7 @@
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { db } from '@/lib/db';
 import { type TransactionCommand, type TransactionCommandField, type TransactionCommandInput, validateTransactionCommand } from '@/lib/domain/transaction-command';
 import type { ActionResult, FieldErrors } from '@/lib/domain/types';
@@ -26,7 +27,22 @@ function parseRequest(input: CreateTransactionRequest): ParseResult<{ requestId:
 const toRecordData = (record: Awaited<ReturnType<typeof createRecordOnce>>['value']): RecordData => ({ id: record.id, text: record.text, amount: record.amount, type: record.type === 'income' ? 'income' : 'expense', category: record.category, date: record.date.toISOString() });
 
 export async function createTransaction(input: CreateTransactionRequest): Promise<CreateTransactionResult> {
-  return run({ scope: 'transaction', input, parse: parseRequest, execute: async (actor, request): Promise<TransactionActionData> => { const mutation = await createRecordOnce(db, actor.userId, request.requestId, request.command); return { transaction: toRecordData(mutation.value), draft: input.command, replayed: mutation.replayed }; }, message: (data) => data.replayed ? 'Transaction already added.' : 'Transaction added.', revalidatePaths: ['/', '/dashboard', '/records', '/ai-insights'], preserve: (request): TransactionActionData => ({ draft: request.command }) });
+  return run({
+    scope: 'transaction',
+    input,
+    parse: parseRequest,
+    execute: async (actor, request): Promise<TransactionActionData> => {
+      const mutation = await createRecordOnce(db, actor.userId, request.requestId, request.command);
+      await Promise.all([
+        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
+        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
+      ]);
+      return { transaction: toRecordData(mutation.value), draft: input.command, replayed: mutation.replayed };
+    },
+    message: (data) => data.replayed ? 'Transaction already added.' : 'Transaction added.',
+    revalidatePaths: ['/', '/dashboard', '/records', '/ai-insights'],
+    preserve: (request): TransactionActionData => ({ draft: request.command }),
+  });
 }
 
 /** Compatibility adapter for the existing form; new workflows should call createTransaction with a stable requestId. */

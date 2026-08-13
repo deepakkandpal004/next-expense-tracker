@@ -50,3 +50,7 @@ next-env.d.ts
 .kiro
 .env*
 .aider*
+
+.vscode
+DESIGN.md
+PRD.md

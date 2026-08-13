@@ -13,6 +13,7 @@ import type {
   FieldErrors,
 } from '@/lib/domain/types';
 import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
+import { rateLimitAiUser } from '@/lib/rate-limit';
 
 const run = createActionBoundary({
   authenticate: getAuthUser,
@@ -46,20 +47,32 @@ export async function suggestCategoryResult(input: CategoryRequest): Promise<Cat
     scope: 'ai',
     input,
     parse: parseDescription,
-    execute: async (_actor, request): Promise<CategoryData> => {
-      if (request.disclosureVersion !== AI_DISCLOSURE_VERSION) {
-        return { state: 'disclosure-required', description: request.description, disclosure: getAiCategoryDisclosure() };
-      }
-      return {
-        state: 'ready',
-        description: request.description,
-        suggestion: {
-          categoryId: await categorizeExpense(request.description),
-          explanation: 'This category suggestion is AI-generated from the disclosed transaction description.',
-          source: 'ai-generated',
-        },
-      };
-    },
+    execute: async (actor, request): Promise<CategoryData> => {
+        if (request.disclosureVersion !== AI_DISCLOSURE_VERSION) {
+          return { state: 'disclosure-required', description: request.description, disclosure: getAiCategoryDisclosure() };
+        }
+        const limit = await rateLimitAiUser(actor.userId);
+        if (!limit.allowed) {
+          return {
+            state: 'ready',
+            description: request.description,
+            suggestion: {
+              categoryId: 'Other',
+              explanation: 'AI category suggestion is temporarily rate-limited.',
+              source: 'ai-generated',
+            },
+          };
+        }
+        return {
+          state: 'ready',
+          description: request.description,
+          suggestion: {
+            categoryId: await categorizeExpense(request.description),
+            explanation: 'This category suggestion is AI-generated from the disclosed transaction description.',
+            source: 'ai-generated',
+          },
+        };
+      },
     message: (data) => data.state === 'disclosure-required' ? 'Review the AI data-use disclosure before requesting a category suggestion.' : 'AI category suggestion generated.',
     preserve: (request) => ({
       state: 'disclosure-required',

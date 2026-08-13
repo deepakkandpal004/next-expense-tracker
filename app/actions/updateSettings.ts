@@ -4,6 +4,8 @@ import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { countStoredAmounts, getExchangeRate } from '@/lib/data/currency-conversion';
 import type { ActionResult } from '@/lib/domain/types';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
+
 
 export interface UserSettings {
   name: string;
@@ -100,6 +102,7 @@ export async function updateSettings(
       where: { id: user.id },
       data: updateData,
     });
+    await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
     return {
       status: 'success',
       data: { name: updated.name ?? '', email: updated.email, currency: updated.currency ?? 'INR' },

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
+import { withApiLogging } from '@/lib/server/logger';
 
-export async function GET() {
+export const GET = withApiLogging(async () => {
   try {
     const user = await getAuthUser();
     if (!user) {
@@ -19,4 +20,4 @@ export async function GET() {
     console.error('Get profile session error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});

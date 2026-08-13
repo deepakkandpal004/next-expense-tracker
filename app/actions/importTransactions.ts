@@ -5,6 +5,7 @@ import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import type { ActionResult } from '@/lib/domain/types';
 import { isCategoryId } from '@/lib/domain/categories';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 
 export interface ImportResult {
   imported: number;
@@ -320,6 +321,11 @@ export async function importTransactionsFromCsv(
     return { status: 'error', message: 'Please upload a valid CSV file.', retryable: false };
   }
 
+  const MAX_IMPORT_BYTES = 2 * 1024 * 1024; // 2 MB
+  if (file.size > MAX_IMPORT_BYTES) {
+    return { status: 'error', message: 'CSV file must be under 2 MB.', retryable: false };
+  }
+
   try {
     const rawText = (await file.text()).replace(/^\uFEFF/, '');
     // Normalize tab- and semicolon-delimited files so the parser can stay comma-based.
@@ -329,6 +335,10 @@ export async function importTransactionsFromCsv(
         ? rawText.split(';').join(',')
         : rawText;
     const lines = text.split(/\r?\n/);
+    const MAX_IMPORT_ROWS = 10_000;
+     if (lines.length > MAX_IMPORT_ROWS) {
+       return { status: 'error', message: `CSV file cannot have more than ${MAX_IMPORT_ROWS.toLocaleString()} rows.`, retryable: false };
+     }
 
     if (lines.length < 2) {
       return {
@@ -433,6 +443,10 @@ export async function importTransactionsFromCsv(
 
     revalidatePath('/records');
     revalidatePath('/dashboard');
+    await Promise.all([
+      deleteCacheByPattern(CacheKey.userDashboardPattern(user.id)),
+      deleteCacheByPattern(CacheKey.userRecordsPattern(user.id)),
+    ]);
 
     return {
       status: 'success',

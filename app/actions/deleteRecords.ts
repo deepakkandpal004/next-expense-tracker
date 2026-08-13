@@ -1,6 +1,7 @@
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { db } from '@/lib/db';
 import type { ActionResult, FieldErrors } from '@/lib/domain/types';
 import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
@@ -68,6 +69,10 @@ export async function deleteTransactionRecords(
         request.requestId,
         request.recordIds,
       );
+      await Promise.all([
+        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
+        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
+      ]);
       return {
         recordIds: request.recordIds,
         deletedCount: mutation.value,

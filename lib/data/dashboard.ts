@@ -19,6 +19,7 @@ import type {
   TransactionType,
 } from "../domain/types";
 import { getBudgetForUser } from "./budget";
+import { getCache, setCache, CacheKey } from "../cache";
 
 export const DEFAULT_CURRENCY = "INR";
 
@@ -235,4 +236,18 @@ const prismaDashboardQuerySource: DashboardQuerySource = {
  * Loads one authorized, inclusive period snapshot. KPIs, charts, recent records, and AI fact
  * inputs are all derived from this result; slower generated AI content is intentionally excluded.
  */
-export const getDashboardData = createDashboardQueryService(prismaDashboardQuerySource);
+export const getDashboardData = createDashboardQueryService(prismaDashboardQuerySource)
+
+export async function getCachedDashboardData(
+  userId: string,
+  period: ResolvedPeriod,
+  currency = DEFAULT_CURRENCY,
+): Promise<DashboardDTO> {
+  const key = CacheKey.dashboard(userId, `${period.start}_${period.end}`);
+  const cached = await getCache<DashboardDTO>(key);
+  if (cached) return cached;
+
+  const data = await getDashboardData(userId, period, currency);
+  await setCache(key, data, 60 * 5); // 5 min TTL
+  return data;
+}

@@ -5,6 +5,7 @@ import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import type { ActionResult } from '@/lib/domain/types';
 import { z } from 'zod';
+import { CacheKey, deleteCache } from '@/lib/cache';
 
 const FREQUENCIES = ['daily', 'weekly', 'monthly', 'yearly'] as const;
 
@@ -55,6 +56,8 @@ export async function createRecurringRecord(
     });
 
     revalidatePath('/recurring');
+    await deleteCache(CacheKey.recurringRecords(user.id));
+
     return { status: 'success', data: { id: record.id }, message: 'Recurring transaction created.' };
   } catch (error) {
     console.error('Failed to create recurring record', error);

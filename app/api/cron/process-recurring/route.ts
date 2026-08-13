@@ -2,17 +2,23 @@ import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
 import { processDueRecurringRecords } from '@/lib/data/recurring';
+import { timingSafeEqual } from 'node:crypto';
+import { withApiLogging } from '@/lib/server/logger';
 
 export const dynamic = 'force-dynamic';
 
 function isAuthorized(request: Request): boolean {
   const secret = process.env.CRON_SECRET;
   if (!secret) return false;
-  return request.headers.get('authorization') === `Bearer ${secret}`;
+  const provided = request.headers.get('authorization');
+  if (!provided?.startsWith('Bearer ')) return false;
+  const a = Buffer.from(provided.slice('Bearer '.length));
+  const b = Buffer.from(secret);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 /** Scheduled entry point that processes due recurring rules for every user. */
-export async function GET(request: Request): Promise<NextResponse> {
+export const GET = withApiLogging(async (request: Request): Promise<NextResponse> => {
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -35,4 +41,4 @@ export async function GET(request: Request): Promise<NextResponse> {
     console.error('Recurring cron failed', error);
     return NextResponse.json({ error: 'Cron failed' }, { status: 500 });
   }
-}
+});

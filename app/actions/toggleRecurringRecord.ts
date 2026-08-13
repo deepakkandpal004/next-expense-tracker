@@ -4,6 +4,7 @@ import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import type { ActionResult } from '@/lib/domain/types';
+import { CacheKey, deleteCache } from '@/lib/cache';
 
 export async function toggleRecurringRecord(
   recordId: string,
@@ -24,6 +25,7 @@ export async function toggleRecurringRecord(
     });
 
     revalidatePath('/recurring');
+    await deleteCache(CacheKey.recurringRecords(user.id));
     return { status: 'success', data: { id: recordId, active }, message: active ? 'Recurring transaction activated.' : 'Recurring transaction paused.' };
   } catch (error) {
     console.error('Failed to toggle recurring record', error);

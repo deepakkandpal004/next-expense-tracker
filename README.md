@@ -43,6 +43,7 @@ A modern, AI-powered expense tracking application built with Next.js that helps 
 - **Next.js Server Actions** - Type-safe server-side logic
 - **Prisma ORM** - Database toolkit and query builder
 - **PostgreSQL** - Robust relational database (via Neon)
+- **Redis (ioredis)** - Response caching and rate limiting
 - **Zod** - Runtime type validation
 
 ### AI Integration
@@ -52,7 +53,15 @@ A modern, AI-powered expense tracking application built with Next.js that helps 
 ### Authentication & Security
 - **Custom Auth** - Session-based authentication with secure cookies
 - **bcryptjs** - Password hashing
-- **CSRF Protection** - Built-in security measures
+- **Redis Rate Limiting** - Per-IP limits on login/register, per-user limits on AI calls
+- **Anti-Enumeration** - Generic auth responses (no user discovery)
+- **Timing-Safe Secrets** - `timingSafeEqual` verification of the cron secret
+- **Fail-Open Cache** - Redis outages never take down the app
+- **API Request Logging** - Colored, NestJS-style request logs for API routes
+
+### Infrastructure
+- **pnpm** - Fast, disk-efficient package manager
+- **pnpm-workspace.yaml overrides** - Pinned transitive dependency versions (zero audit vulnerabilities)
 
 ### Development Tools
 - **ESLint** - Code linting and quality
@@ -64,6 +73,7 @@ A modern, AI-powered expense tracking application built with Next.js that helps 
 ### Prerequisites
 - Node.js 18+ 
 - PostgreSQL database (or use Neon for serverless)
+- Redis (for caching and rate limiting)
 - OpenRouter API key (for AI features)
 
 ### Installation
@@ -89,9 +99,22 @@ cp .env.example .env
 Edit `.env` with your configuration:
 ```env
 DATABASE_URL="your-postgresql-connection-string"
+DIRECT_URL="your-postgresql-direct-connection-string"
+REDIS_URL="redis://localhost:6379"
 OPENROUTER_API_KEY="your-openrouter-api-key"
+OPENAI_API_KEY="your-openai-api-key"
+CRON_SECRET="a-long-random-secret"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
+
+Redis powers dashboard/records caching and login/register + AI rate limiting.
+Start it locally with:
+```bash
+brew install redis
+brew services start redis
+```
+Caching and rate limiting fail open — if Redis is down, the app keeps working
+(no caching, no rate limits).
 
 4. Initialize the database with the committed migrations:
 ```bash
@@ -131,6 +154,11 @@ next-expense-tracker/
 ├── lib/                   # Utility functions and configs
 │   ├── ai.ts             # AI integration
 │   ├── auth.ts           # Authentication logic
+│   ├── redis.ts          # Redis client (single shared connection)
+│   ├── cache.ts          # Cache helpers + key builders
+│   ├── rate-limit.ts     # Per-IP and per-user rate limiters
+│   ├── server/           # Server-only helpers
+│   │   └── logger.ts     # Colored API request logger
 │   └── domain/           # Business logic
 ├── prisma/                # Database schema
 └── public/               # Static assets
@@ -157,12 +185,39 @@ The AI insights page provides personalized financial analysis using OpenAI model
 - Set monthly contribution targets
 - Deadline management
 
+## Caching, Rate Limiting & Logging
+
+### Redis Caching
+Dashboard data is cached in Redis for 5 minutes and invalidated automatically
+on every mutation (adding/deleting records, setting budgets, updating settings,
+etc.) via `deleteCacheByPattern`. A cache miss computes from Postgres and writes
+back; Redis failures silently fall back to a direct database read.
+
+### Rate Limiting
+- **Login** - 5 requests/minute per IP
+- **Register** - 3 requests/10 minutes per IP
+- **AI provider calls** - 20 requests/minute per user (protects API costs)
+- Rate limits fail open when Redis is unavailable
+
+### API Request Logging
+Every API route (`/api/auth/*`, `/api/goals`, cron) is wrapped in
+`withApiLogging`, which prints NestJS-style colored logs with method, path,
+status code, and duration:
+```
+12:04:32 [API] POST /api/auth/login 200 240ms
+```
+Colors auto-disable when output is piped or in production.
+
 ## Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `DIRECT_URL` | Direct connection string (bypasses pooler for migrations) | Yes |
+| `REDIS_URL` | Redis connection string for caching/rate limiting | Yes |
 | `OPENROUTER_API_KEY` | OpenRouter API key for AI features | Yes |
+| `OPENAI_API_KEY` | OpenAI API key (fallback for OpenRouter) | No |
+| `CRON_SECRET` | Secret for authenticating the recurring cron endpoint | Yes |
 | `NEXT_PUBLIC_APP_URL` | Application URL | Yes |
 
 ## Scripts
@@ -172,6 +227,7 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run vercel-build # Apply migrations and build on Vercel
 npm run start        # Start production server
+npm run check        # Run typecheck + lint
 npm run lint         # Run ESLint
 npm run typecheck    # Run TypeScript checks
 ```

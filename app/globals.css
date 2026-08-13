@@ -243,10 +243,10 @@ nav,
   letter-spacing: -0.025em;
 }
 
-.font-viga {
-  font-family: 'Viga', system-ui, -apple-system, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.02em;
+.font-space-grotesk {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
 .font-heading {

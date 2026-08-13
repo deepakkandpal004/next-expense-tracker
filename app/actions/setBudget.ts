@@ -1,6 +1,7 @@
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
+import { CacheKey, deleteCache, deleteCacheByPattern } from '@/lib/cache';
 import { saveBudgetForUser } from '@/lib/data/budget';
 import type { ActionResult, Budget } from '@/lib/domain/types';
 import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
@@ -64,13 +65,19 @@ export async function setBudgetResult(input: SetBudgetRequest): Promise<SetBudge
     scope: 'budget',
     input,
     parse: parseRequest,
-    execute: async (actor, command): Promise<SetBudgetData> =>
-      saveBudgetForUser(actor.userId, {
+    execute: async (actor, command): Promise<SetBudgetData> => {
+      const result = await saveBudgetForUser(actor.userId, {
         amountMinor: command.amountMinor,
         cadence: 'monthly',
         effectiveFrom: command.effectiveFrom,
         currency: command.currency,
-      }),
+      });
+      await Promise.all([
+        deleteCache(CacheKey.budget(actor.userId)),
+        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
+      ]);
+      return result;
+    },
     message: 'Budget saved.',
     revalidatePaths: ['/', '/dashboard', '/budgets'],
   });

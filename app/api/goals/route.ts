@@ -1,78 +1,101 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { getAuthUser } from '@/lib/auth';
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/auth";
+import { withApiLogging } from "@/lib/server/logger";
+import z from "zod";
 
-export async function GET() {
+export const GET = withApiLogging(async () => {
   try {
     const user = await getAuthUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const goals = await db.goal.findMany({
       where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json({ goals });
   } catch (error) {
-    console.error('Goals fetch error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Goals fetch error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
-}
+});
 
-export async function DELETE(request: Request) {
+export const DELETE = withApiLogging(async (request: Request) => {
   try {
     const user = await getAuthUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await request.json();
 
-    if (!id || typeof id !== 'string') {
-      return NextResponse.json({ error: 'Goal id is required' }, { status: 400 });
+    if (!id || typeof id !== "string") {
+      return NextResponse.json(
+        { error: "Goal id is required" },
+        { status: 400 },
+      );
     }
 
     const goal = await db.goal.findFirst({
       where: { id, userId: user.id },
     });
     if (!goal) {
-      return NextResponse.json({ error: 'Goal not found' }, { status: 404 });
+      return NextResponse.json({ error: "Goal not found" }, { status: 404 });
     }
 
     await db.goal.delete({ where: { id } });
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
-    console.error('Goal delete error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Goal delete error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
-}
+});
 
-export async function POST(request: Request) {
+const goalInputSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100),
+  targetAmount: z.number().positive().max(999_999_999.99),
+  currentAmount: z.number().nonnegative().max(999_999_999.99).optional(),
+  monthlyContribution: z.number().nonnegative().max(999_999_999.99).optional(),
+  category: z.string().trim().min(1).max(50).optional(),
+  deadline: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Deadline must be a valid YYYY-MM-DD date")
+    .optional(),
+});
+
+export const POST = withApiLogging(async (request: Request) => {
   try {
     const user = await getAuthUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, targetAmount, currentAmount, monthlyContribution, category, deadline } =
-      await request.json();
-
-    if (!name || !targetAmount) {
+    const body = await request.json();
+    const parsed = goalInputSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Name and target amount are required' },
+        { error: parsed.error.issues[0]?.message ?? "Invalid input" },
         { status: 400 },
       );
     }
-
-    if (typeof targetAmount !== 'number' || targetAmount <= 0) {
-      return NextResponse.json(
-        { error: 'Target amount must be a positive number' },
-        { status: 400 },
-      );
-    }
+    const {
+      name,
+      targetAmount,
+      currentAmount,
+      monthlyContribution,
+      category,
+      deadline,
+    } = parsed.data;
 
     const goal = await db.goal.create({
       data: {
@@ -81,14 +104,17 @@ export async function POST(request: Request) {
         targetAmount,
         currentAmount: currentAmount ?? 0,
         monthlyContribution: monthlyContribution ?? 0,
-        category: category ?? 'other',
+        category: category ?? "other",
         deadline: deadline ? new Date(deadline) : null,
       },
     });
 
     return NextResponse.json({ goal }, { status: 201 });
   } catch (error) {
-    console.error('Goal create error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Goal create error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
-}
+});

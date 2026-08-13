@@ -1,6 +1,7 @@
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { db } from '@/lib/db';
 import type { ActionResult, FieldErrors } from '@/lib/domain/types';
 import { createActionBoundary, invalid, parsed, type ParseResult } from '@/lib/server/action-boundary';
@@ -21,7 +22,22 @@ function parseRequest(input: DeleteRecordRequest): ParseResult<DeleteRecordReque
 }
 
 export async function deleteTransactionRecord(input: DeleteRecordRequest): Promise<DeleteRecordResult> {
-  return run({ scope: 'record', input, parse: parseRequest, execute: async (actor, request): Promise<DeleteData> => { const mutation = await deleteRecordOnce(db, actor.userId, request.requestId, request.recordId); return { recordId: mutation.value.id, requestId: request.requestId, replayed: mutation.replayed }; }, message: (data) => data.replayed ? 'Transaction was already deleted.' : 'Transaction deleted.', revalidatePaths: ['/', '/dashboard', '/records', '/ai-insights'], preserve: (request): DeleteData => ({ recordId: request.recordId, requestId: request.requestId }) });
+  return run({
+    scope: 'record',
+    input,
+    parse: parseRequest,
+    execute: async (actor, request): Promise<DeleteData> => {
+      const mutation = await deleteRecordOnce(db, actor.userId, request.requestId, request.recordId);
+      await Promise.all([
+        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
+        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
+      ]);
+      return { recordId: mutation.value.id, requestId: request.requestId, replayed: mutation.replayed };
+    },
+    message: (data) => data.replayed ? 'Transaction was already deleted.' : 'Transaction deleted.',
+    revalidatePaths: ['/', '/dashboard', '/records', '/ai-insights'],
+    preserve: (request): DeleteData => ({ recordId: request.recordId, requestId: request.requestId }),
+  });
 }
 
 /** Compatibility adapter for the existing record card; new workflows must retain requestId for retries. */

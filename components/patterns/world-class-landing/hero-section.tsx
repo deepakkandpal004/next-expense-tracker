@@ -82,7 +82,7 @@ export function HeroSection() {
               delay: 0.2,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="font-viga mt-7 text-5xl leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[76px]"
+            className="font-space-grotesk mt-7 text-5xl leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[76px]"
           >
             Track every expense.
             <br />

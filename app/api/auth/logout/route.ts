@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { deleteCurrentSession } from '@/lib/auth';
+import { withApiLogging } from '@/lib/server/logger';
 
-export async function POST() {
+export const POST = withApiLogging(async () => {
   try {
     await deleteCurrentSession();
 
@@ -10,4 +11,4 @@ export async function POST() {
     console.error('Logout error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
+});
