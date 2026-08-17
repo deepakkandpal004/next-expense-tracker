@@ -6,6 +6,7 @@ export * from "./feedback";
 export * from "./forms";
 export * from "./overlays";
 export * from "./toast";
+export * from "./viewport-mount";
 export * from "@/lib/ui/primitive-registry";
 export * from "@/lib/ui/animations";
 

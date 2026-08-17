@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
 import { processDueRecurringRecords } from '@/lib/data/recurring';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { timingSafeEqual } from 'node:crypto';
 import { withApiLogging } from '@/lib/server/logger';
 
@@ -33,7 +34,10 @@ export const GET = withApiLogging(async (request: Request): Promise<NextResponse
     const results = [];
     for (const { userId } of users) {
       const created = await processDueRecurringRecords(userId);
-      if (created > 0) results.push({ userId, created });
+      if (created > 0) {
+        await deleteCacheByPattern(CacheKey.userAllPattern(userId));
+        results.push({ userId, created });
+      }
     }
 
     return NextResponse.json({ processed: users.length, created: results.reduce((sum, r) => sum + r.created, 0), results });

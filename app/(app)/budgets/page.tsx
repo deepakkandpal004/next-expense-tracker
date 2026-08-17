@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
-import { getDashboardData } from "@/lib/data/dashboard";
+import { getCachedDashboardData } from "@/lib/data/dashboard";
 import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
 import { toSearchParams } from "@/lib/domain/search-params";
 import { BudgetPage } from "@/components/patterns/budget-page";
@@ -18,7 +18,7 @@ export default async function BudgetRoute({ searchParams }: BudgetPageProps) {
 
   const query = await searchParams;
   const { period } = resolveValidReportingPeriod(toSearchParams(query));
-  const dashboard = await getDashboardData(user.id, period, user.currency);
+  const dashboard = await getCachedDashboardData(user.id, period, user.currency);
 
   return (
     <BudgetPage

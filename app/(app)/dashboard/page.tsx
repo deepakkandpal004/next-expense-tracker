@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/lib/auth';
 import { getCashFlowProjection } from '@/lib/data/cash-flow';
-import { getDashboardData } from '@/lib/data/dashboard';
+import { getCachedDashboardData } from '@/lib/data/dashboard';
 import { getSafeToSpendData } from '@/lib/data/safe-to-spend';
 import { getSmartPacingReport } from '@/lib/data/smart-alerts';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
@@ -23,7 +23,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
 
   const [dashboard, safeToSpend, cashFlow, smartPacing] = await Promise.all([
-    getDashboardData(user.id, period, user.currency),
+    getCachedDashboardData(user.id, period, user.currency),
     getSafeToSpendData(user.id, period, user.currency),
     getCashFlowProjection(user.id, period, user.currency),
     getSmartPacingReport(user.id, period),

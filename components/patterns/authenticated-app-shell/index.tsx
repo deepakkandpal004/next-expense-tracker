@@ -87,7 +87,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
 
   return (
     <div className="flex h-[100dvh] overflow-hidden bg-background text-foreground relative">
-      <div className="pulse-atmosphere" aria-hidden="true" />
+      <div className="app-atmosphere" aria-hidden="true" />
 
       <div className="hidden md:flex shrink-0 relative z-10">
         <AppSidebar

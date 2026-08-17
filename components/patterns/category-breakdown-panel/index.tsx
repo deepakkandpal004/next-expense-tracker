@@ -1,16 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Chart as ChartCanvas } from "react-chartjs-2";
-import { useTheme } from "@/contexts/ThemeContext";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+import { ViewportMount } from "@/components/ui";
 import { cn } from "@/lib/ui/cn";
 import { formatCurrency } from "@/lib/formatters/locale";
-import { buildDoughnutData, buildDoughnutOptions } from "./chart";
 import { CategoryRow } from "./category-row";
 import { EmptyState } from "./empty-state";
 import type { CategoryBreakdownPanelProps } from "./types";
 
 export { type CategoryBreakdownPanelProps } from "./types";
+
+const CategoryChartCanvas = dynamic(
+  () => import("./chart-canvas").then((mod) => mod.CategoryChartCanvas),
+  { ssr: false },
+);
 
 export function CategoryBreakdownPanel({
   breakdown,
@@ -18,17 +22,12 @@ export function CategoryBreakdownPanel({
   currency,
   period,
 }: CategoryBreakdownPanelProps) {
-  const { resolvedAppearance } = useTheme();
   const [viewAll, setViewAll] = useState(false);
 
   const visibleRows = viewAll ? breakdown : breakdown.slice(0, 5);
   const hasMore = breakdown.length > 5;
   const totalFormatted = formatCurrency({ minorValue: totalSpendingMinor, currency });
 
-  // resolvedAppearance triggers rebuild when theme changes so CSS variables resolve to correct colors
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const data = useMemo(() => (breakdown.length > 0 ? buildDoughnutData(breakdown) : null), [breakdown, resolvedAppearance]);
-  const options = useMemo(() => buildDoughnutOptions(currency), [currency]);
 
   return (
     <section
@@ -42,17 +41,12 @@ export function CategoryBreakdownPanel({
         <p className="mt-0.5 text-xs text-foreground-secondary">{period}</p>
       </div>
 
-      {data ? (
+      {breakdown.length > 0 ? (
         <div className="relative px-5 pb-4">
           <div className="relative mx-auto" style={{ height: 200, width: 200 }}>
-            <ChartCanvas
-              aria-label={`Spending by category doughnut chart for ${period}`}
-              data={data}
-              options={options}
-              role="img"
-              tabIndex={-1}
-              type="doughnut"
-            />
+            <ViewportMount className="absolute inset-0" fallback={<div className="h-full animate-pulse rounded-full bg-surface-subtle/60" />}>
+              <CategoryChartCanvas breakdown={breakdown} currency={currency} />
+            </ViewportMount>
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"

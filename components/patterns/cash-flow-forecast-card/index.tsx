@@ -1,18 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
-import { Chart as ChartCanvas } from "react-chartjs-2";
+import dynamic from "next/dynamic";
+import { ViewportMount } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters/locale";
-import { buildData, buildOptions, LINE_COLOR } from "./chart";
+import { LINE_COLOR } from "./chart";
 import { StatusBadge } from "./status-badge";
 import type { CashFlowForecastCardProps } from "./types";
 
 export { type CashFlowForecastCardProps } from "./types";
 
-export function CashFlowForecastCard({ projection }: CashFlowForecastCardProps) {
-  const data = useMemo(() => buildData(projection), [projection]);
-  const options = useMemo(() => buildOptions(projection.currency), [projection.currency]);
+const CashFlowChartCanvas = dynamic(
+  () => import("./chart-canvas").then((mod) => mod.CashFlowChartCanvas),
+  { ssr: false },
+);
 
+export function CashFlowForecastCard({ projection }: CashFlowForecastCardProps) {
   const isEnded = projection.state === "ended";
   const netMinor = projection.projectedIncomeMinor - projection.projectedSpendMinor;
   const netPositive = netMinor >= 0;
@@ -72,16 +74,9 @@ export function CashFlowForecastCard({ projection }: CashFlowForecastCardProps) 
       </div>
 
       <div className="relative px-5">
-        <div className="h-56 w-full sm:h-64">
-          <ChartCanvas
-            aria-label={`Day-by-day projected balance for ${projection.period.label}`}
-            data={data}
-            options={options}
-            role="img"
-            tabIndex={-1}
-            type="line"
-          />
-        </div>
+        <ViewportMount className="h-56 w-full sm:h-64" fallback={<div className="h-full animate-pulse rounded-lg bg-surface-subtle/60" />}>
+          <CashFlowChartCanvas projection={projection} />
+        </ViewportMount>
       </div>
 
       <div className="relative px-5 py-4">

@@ -1987,43 +1987,15 @@ p {
    THE PULSE — ATMOSPHERIC BACKGROUND
    ──────────────────────────────────────────────────────────── */
 
-.pulse-atmosphere {
+.app-atmosphere {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-}
-
-.pulse-atmosphere::before {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: -10%;
-  width: 60%;
-  height: 60%;
-  border-radius: 50%;
-  background: rgba(0, 220, 229, 0.04);
-  filter: blur(120px);
-  animation: pulse-glow-bg 8s ease-in-out infinite;
-}
-
-.pulse-atmosphere::after {
-  content: '';
-  position: absolute;
-  bottom: -10%;
-  right: -10%;
-  width: 50%;
-  height: 50%;
-  border-radius: 50%;
-  background: rgba(30, 30, 49, 0.04);
-  filter: blur(120px);
-  animation: pulse-glow-bg 8s ease-in-out infinite 2s;
-}
-
-@keyframes pulse-glow-bg {
-  0%, 100% { opacity: 0.6; filter: blur(120px); }
-  50% { opacity: 1; filter: blur(140px); }
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(0, 220, 229, 0.035), transparent 42%),
+    radial-gradient(ellipse at 82% 88%, rgba(30, 30, 49, 0.045), transparent 40%);
 }
 
 /* ─── Glass vessel card ─── */

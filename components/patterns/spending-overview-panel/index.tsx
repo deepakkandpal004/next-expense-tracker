@@ -1,45 +1,20 @@
 "use client";
 
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  type ChartData,
-} from "chart.js";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "motion/react";
 import { BarChart2, LineChart, TrendingDown } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Chart as ChartCanvas } from "react-chartjs-2";
-import { useTheme } from "@/contexts/ThemeContext";
-import { applyChartTheme, createChartTheme, type MutableChartLike } from "@/lib/charts/chartjs";
+import { useState } from "react";
+import { ViewportMount } from "@/components/ui";
 import { cn } from "@/lib/ui/cn";
-import { buildLineData, buildBarData } from "./chart-data";
-import { buildLineOptions, buildBarOptions } from "./chart-options";
 import { ChartLegend } from "./chart-legend";
 import type { ChartVisualization, SpendingOverviewPanelProps } from "./types";
 
-ChartJS.register(
-  BarController,
-  BarElement,
-  CategoryScale,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Tooltip,
-);
-
 export { type ChartVisualization, type SpendingOverviewPanelProps } from "./types";
+
+const SpendingChartCanvas = dynamic(
+  () => import("./chart-canvas").then((mod) => mod.SpendingChartCanvas),
+  { ssr: false },
+);
 
 export function SpendingOverviewPanel({
   trendModel,
@@ -47,16 +22,9 @@ export function SpendingOverviewPanel({
   period,
   currency,
 }: SpendingOverviewPanelProps) {
-  const { resolvedAppearance } = useTheme();
-  const chartRef = useRef<MutableChartLike | null>(null);
   const [vizType, setVizType] = useState<ChartVisualization>("line");
   const [hiddenSeries, setHiddenSeries] = useState<Set<string>>(new Set());
   const isReady = trendModel.state === "ready";
-
-  const lineData = useMemo(() => (isReady ? buildLineData(trendModel) : null), [isReady, trendModel]);
-  const barData = useMemo(() => (isReady ? buildBarData(trendModel) : null), [isReady, trendModel]);
-  const lineOptions = useMemo(() => buildLineOptions(currency), [currency]);
-  const barOptions = useMemo(() => buildBarOptions(currency), [currency]);
 
   // Toggle series visibility
   const toggleSeries = (key: string) => {
@@ -67,52 +35,6 @@ export function SpendingOverviewPanel({
       return next;
     });
   };
-
-  // Apply theme to chart
-  const applyThemeToChart = useCallback((chart: MutableChartLike | null) => {
-    if (!chart) return;
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    applyChartTheme(chart, createChartTheme({
-      appearance: resolvedAppearance,
-      reducedMotion: reduced,
-      styles: window.getComputedStyle(document.documentElement),
-    }));
-  }, [resolvedAppearance]);
-
-  // Store chart instance and apply theme
-  const setChartRef = (chart: ChartJS | null | undefined) => {
-    const instance = chart ?? null;
-    chartRef.current = instance as unknown as MutableChartLike | null;
-    if (instance) {
-      requestAnimationFrame(() => {
-        if (chartRef.current) {
-          applyThemeToChart(chartRef.current);
-        }
-      });
-    }
-  };
-
-  // Apply hidden series to chart data
-  const filteredLineData = useMemo<ChartData<"line"> | null>(() => {
-    if (!lineData) return null;
-    return {
-      ...lineData,
-      datasets: lineData.datasets.filter((ds) => !hiddenSeries.has(ds.label!)),
-    };
-  }, [lineData, hiddenSeries]);
-
-  const filteredBarData = useMemo<ChartData<"bar"> | null>(() => {
-    if (!barData) return null;
-    return {
-      ...barData,
-      datasets: barData.datasets.filter((ds) => !hiddenSeries.has(ds.label!)),
-    };
-  }, [barData, hiddenSeries]);
-
-  // Apply theme when appearance changes
-  useEffect(() => {
-    applyThemeToChart(chartRef.current);
-  }, [applyThemeToChart]);
 
   const spendingTrend = spendingInsight.trend;
   const showSuccessBanner = spendingTrend && spendingTrend.direction === "down" && spendingTrend.changePercent < -0.05;
@@ -183,7 +105,7 @@ export function SpendingOverviewPanel({
       {/* Chart */}
       <div className="relative px-5 pb-5">
         <div className="relative h-72 w-full sm:h-80">
-          {isReady && filteredLineData && filteredBarData ? (
+          {isReady ? (
             <AnimatePresence mode="wait">
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
@@ -193,27 +115,9 @@ export function SpendingOverviewPanel({
                 key={vizType}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
-                {vizType === "line" ? (
-                  <ChartCanvas
-                    aria-label={`${trendModel.title} area chart`}
-                    data={filteredLineData}
-                    options={lineOptions}
-                    ref={setChartRef}
-                    role="img"
-                    tabIndex={-1}
-                    type="line"
-                  />
-                ) : (
-                  <ChartCanvas
-                    aria-label={`${trendModel.title} bar chart`}
-                    data={filteredBarData}
-                    options={barOptions}
-                    ref={setChartRef}
-                    role="img"
-                    tabIndex={-1}
-                    type="bar"
-                  />
-                )}
+                <ViewportMount className="absolute inset-0" fallback={<div className="h-full animate-pulse rounded-lg bg-surface-subtle/60" />}>
+                  <SpendingChartCanvas currency={currency} hiddenSeries={hiddenSeries} trendModel={trendModel} visualization={vizType} />
+                </ViewportMount>
               </motion.div>
             </AnimatePresence>
           ) : (

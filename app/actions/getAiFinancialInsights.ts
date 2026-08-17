@@ -2,7 +2,7 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { getDashboardData } from '@/lib/data/dashboard';
+import { getCachedDashboardData } from '@/lib/data/dashboard';
 import { getMoneyLeakReport } from '@/lib/data/money-leaks';
 import type { Prisma } from '@prisma/client';
 import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
@@ -84,7 +84,7 @@ export async function getAiFinancialInsights(
   }
 
   try {
-    const dashboard = await getDashboardData(user.id, normalized.period, user.currency);
+    const dashboard = await getCachedDashboardData(user.id, normalized.period, user.currency);
 
     // Deterministic money-leak scan — replaces the old "5% of spending" guess with
     // figures derived from the user's own trailing-month median (DESIGN rule 1).

@@ -2,6 +2,7 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { processDueRecurringRecords } from '@/lib/data/recurring';
+import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { revalidatePath } from 'next/cache';
 import type { ActionResult } from '@/lib/domain/types';
 
@@ -13,6 +14,7 @@ export async function processRecurringRecords(): Promise<ActionResult<{ created:
     const created = await processDueRecurringRecords(user.id);
 
     if (created > 0) {
+      await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
       revalidatePath('/dashboard');
       revalidatePath('/records');
     }

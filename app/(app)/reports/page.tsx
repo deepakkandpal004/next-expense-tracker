@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
+import { getReportData } from "@/app/actions/getReportData";
+import { getCashFlowProjection } from "@/lib/data/cash-flow";
 import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
 import { toSearchParams } from "@/lib/domain/search-params";
 import { ReportsView } from "@/components/patterns/reports-view";
@@ -18,5 +20,17 @@ export default async function ReportsRoute({ searchParams }: ReportsPageProps) {
   const query = await searchParams;
   const { period } = resolveValidReportingPeriod(toSearchParams(query));
 
-  return <ReportsView period={period} currency={user.currency ?? "INR"} />;
+  const [initialData, initialCashFlow] = await Promise.all([
+    getReportData(period),
+    getCashFlowProjection(user.id, period, user.currency ?? "INR"),
+  ]);
+
+  return (
+    <ReportsView
+      currency={user.currency ?? "INR"}
+      initialCashFlow={initialCashFlow}
+      initialData={initialData}
+      period={period}
+    />
+  );
 }
