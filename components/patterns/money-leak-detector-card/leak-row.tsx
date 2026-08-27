@@ -27,7 +27,7 @@ export function LeakRow({
         </p>
       </div>
       <div className="text-right">
-        <p className="text-sm font-semibold tabular-nums text-[#22C55E]">
+        <p className="text-sm font-semibold tabular-nums text-success">
           −{formatCurrency({ minorValue: leak.potentialSavingsMinor, currency })}
         </p>
         <p className="mt-0.5 flex items-center justify-end gap-1 text-[11px] text-foreground-secondary/70">

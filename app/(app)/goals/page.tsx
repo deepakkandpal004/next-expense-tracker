@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth";
-import { SavingsGoalsPage } from "@/components/patterns/savings-goals-page";
+import { getAuthUser } from "@/src/modules/auth";
+import { SavingsGoalsPage } from "@/src/modules/goals/presentation";
 
 export const metadata: Metadata = { title: "Savings Goals – Expense Tracker AI" };
 

@@ -6,10 +6,10 @@ import { cn } from "@/lib/ui/cn";
 import type { AiInsight } from "./types";
 
 const AI_STYLES = {
-  positive: { icon: TrendingUp, chip: "bg-[#4ADE80]/15 text-[#4ADE80]" },
-  warning: { icon: Zap, chip: "bg-[#FF7AC6]/15 text-[#FF7AC6]" },
-  info: { icon: Brain, chip: "bg-[#00DCE5]/15 text-[#00DCE5]" },
-  celebration: { icon: Target, chip: "bg-[#A855F7]/15 text-[#A855F7]" },
+  positive: { icon: TrendingUp, chip: "bg-kpi-income-surface text-kpi-income" },
+  warning: { icon: Zap, chip: "bg-kpi-expense-surface text-kpi-expense" },
+  info: { icon: Brain, chip: "bg-kpi-balance-surface text-kpi-balance" },
+  celebration: { icon: Target, chip: "bg-kpi-savings-surface text-kpi-savings" },
 } as const;
 
 export function AIInsightStrip({ insight }: { insight: AiInsight }) {
@@ -42,7 +42,7 @@ export function AIInsightStrip({ insight }: { insight: AiInsight }) {
           {insight.actionLabel && insight.actionHref && (
             <a
               href={insight.actionHref}
-              className="inline-flex items-center gap-1 rounded-full bg-[#00DCE5]/15 px-3.5 py-1.5 text-xs font-semibold text-[#00DCE5] transition-colors hover:bg-[#00DCE5]/25"
+              className="inline-flex items-center gap-1 rounded-full bg-primary-muted px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/25"
             >
               {insight.actionLabel}
             </a>

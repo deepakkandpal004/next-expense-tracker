@@ -40,7 +40,7 @@ export function HeroKpiCard({
           invertPolarity={false}
           footer={
             streak >= 3 ? (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#FFB020]">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-warning">
                 <Flame size={10} strokeWidth={2.5} />
                 {streak}d
               </span>

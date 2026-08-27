@@ -1,4 +1,3 @@
-// lib/rate-limit.ts (Redis-backed)
 import { redis } from "./redis";
 
 function getClientIp(request: Request): string {
@@ -10,6 +9,8 @@ function getClientIp(request: Request): string {
 export interface RateLimitConfig {
   windowMs: number;
   maxRequests: number;
+  /** When true, deny the request if Redis is unreachable. Default: false (fail-open). */
+  failClosed?: boolean;
 }
 
 export async function rateLimit(
@@ -31,8 +32,7 @@ export async function rateLimit(
     }
     return { allowed: true, retryAfterMs: 0 };
   } catch {
-    // Redis down → fail open (allow request)
-    return { allowed: true, retryAfterMs: 0 };
+    return { allowed: !config.failClosed, retryAfterMs: config.failClosed ? config.windowMs : 0 };
   }
 }
 
@@ -54,17 +54,16 @@ export async function rateLimitByKey(
     }
     return { allowed: true, retryAfterMs: 0 };
   } catch {
-    // Redis down → fail open (allow request)
-    return { allowed: true, retryAfterMs: 0 };
+    return { allowed: !config.failClosed, retryAfterMs: config.failClosed ? config.windowMs : 0 };
   }
 }
 
 export function rateLimitLogin(request: Request) {
-  return rateLimit(request, "login", { windowMs: 60_000, maxRequests: 5 });
+  return rateLimit(request, "login", { windowMs: 60_000, maxRequests: 5, failClosed: true });
 }
 
 export function rateLimitRegister(request: Request) {
-  return rateLimit(request, "register", { windowMs: 600_000, maxRequests: 3 });
+  return rateLimit(request, "register", { windowMs: 600_000, maxRequests: 3, failClosed: true });
 }
 
 export function rateLimitAiUser(userId: string) {

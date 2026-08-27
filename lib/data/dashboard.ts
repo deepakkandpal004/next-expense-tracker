@@ -20,13 +20,16 @@ import type {
 } from "../domain/types";
 import { getBudgetForUser } from "./budget";
 import { getCache, setCache, CacheKey } from "../cache";
+import { boundaryAtStart, boundaryAtEnd } from "../utils/date-boundaries";
+
+import { Decimal } from "@prisma/client/runtime/library";
 
 export const DEFAULT_CURRENCY = "INR";
 
 export interface DashboardRecordRow {
   id: string;
   text: string;
-  amount: number;
+  amount: number | Decimal;
   type: string;
   category: string;
   date: Date;
@@ -44,14 +47,6 @@ export interface DashboardQuerySource {
   loadBudget(userId: string, period: ResolvedPeriod): Promise<Budget | null>;
 }
 
-function boundaryAtStart(date: string): Date {
-  return new Date(`${date}T00:00:00.000Z`);
-}
-
-function boundaryAtEnd(date: string): Date {
-  return new Date(`${date}T23:59:59.999Z`);
-}
-
 function toTransactionType(type: string): TransactionType {
   return type === "income" ? "income" : "expense";
 }
@@ -64,7 +59,7 @@ export function toDashboardTransactionDTO(
   return {
     id: record.id,
     description: record.text,
-    amountMinor: Math.round(record.amount * 100),
+    amountMinor: Math.round(Number(record.amount) * 100),
     currency,
     type: toTransactionType(record.type),
     categoryId: record.category,

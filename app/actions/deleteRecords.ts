@@ -69,10 +69,7 @@ export async function deleteTransactionRecords(
         request.requestId,
         request.recordIds,
       );
-      await Promise.all([
-        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
-        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
-      ]);
+      await deleteCacheByPattern(CacheKey.userAllPattern(actor.userId));
       return {
         recordIds: request.recordIds,
         deletedCount: mutation.value,

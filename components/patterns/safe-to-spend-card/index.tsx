@@ -60,7 +60,7 @@ export function SafeToSpendCard({
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <span
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#00DCE5]/15 text-[#00DCE5]"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-kpi-balance-surface text-kpi-balance"
             aria-hidden="true"
           >
             <Wallet size={17} strokeWidth={2.2} />
@@ -84,8 +84,8 @@ export function SafeToSpendCard({
       </div>
 
       {breakdown.isDeficit ? (
-        <div className="mt-5 rounded-xl bg-[#FF7AC6]/10 px-4 py-3">
-          <p className="text-sm font-semibold text-[#FF7AC6]">
+        <div className="mt-5 rounded-xl bg-kpi-expense-surface px-4 py-3">
+          <p className="text-sm font-semibold text-kpi-expense">
             Reserved amounts exceed your balance
           </p>
           <p className="mt-0.5 text-xs leading-relaxed text-on-surface-variant/70">
@@ -111,7 +111,7 @@ export function SafeToSpendCard({
               <AnimatedNumber
                 value={perDay / 100}
                 format={(v) => formatMinor(Math.round(v * 100), currency)}
-                className="text-base font-semibold tabular-nums text-[#4ADE80]"
+                className="text-base font-semibold tabular-nums text-kpi-income"
               />
               <p className="text-[11px] text-on-surface-variant/60">per day</p>
             </div>

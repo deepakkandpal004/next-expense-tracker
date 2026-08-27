@@ -25,13 +25,13 @@ export function MonthlyTable({
             {monthly.map(m => (
               <tr key={m.month} className="border-b border-border/30 last:border-0">
                 <td className="px-4 py-3 font-medium text-foreground">{m.month}</td>
-                <td className="px-4 py-3 text-right text-[#22C55E]">
+                <td className="px-4 py-3 text-right text-success">
                   {formatCurrency({ minorValue: m.incomeMinor, currency })}
                 </td>
-                <td className="px-4 py-3 text-right text-[#F04438]">
+                <td className="px-4 py-3 text-right text-danger">
                   {formatCurrency({ minorValue: m.expenseMinor, currency })}
                 </td>
-                <td className={`px-4 py-3 text-right font-semibold ${m.netMinor >= 0 ? "text-[#22C55E]" : "text-[#F04438]"}`}>
+                <td className={`px-4 py-3 text-right font-semibold ${m.netMinor >= 0 ? "text-success" : "text-danger"}`}>
                   {formatCurrency({ minorValue: m.netMinor, currency })}
                 </td>
                 <td className="px-4 py-3 text-right text-muted-foreground">{m.transactionCount}</td>

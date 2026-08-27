@@ -8,22 +8,23 @@
   color-scheme: dark;
 
   /* Expense AI Core Tokens */
-  --bg-base: #000000;
+  --bg-base: #090A0F;
   --bg-surface: #111318;
-  --bg-surface-2: #16181F;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.16);
+  --bg-surface-2: #181B24;
+  --border-subtle: #282D3A;
+  --border-hover: #3A4050;
 
-  --primary: #00DCE5;
-  --primary-muted: rgba(0, 220, 229, 0.12);
+  --primary: #7585F8;
+  --primary-hover: #8E9BFF;
+  --primary-muted: rgba(117, 133, 248, 0.14);
 
-  --text-primary: #F5F7FA;
-  --text-secondary: #9AA3AF;
-  --text-tertiary: #5B6472;
+  --text-primary: #F6F7FB;
+  --text-secondary: #A3AABD;
+  --text-tertiary: #697386;
 
-  --success: #22C55E;
-  --danger: #F04438;
-  --warning: #F5A623;
+  --success: #37C98C;
+  --danger: #F16F6F;
+  --warning: #F0B66A;
 
   /* Shared Semantic Mappings */
   --color-bg: var(--bg-base);
@@ -32,83 +33,83 @@
   --color-surface-raised: var(--bg-surface-2);
   --color-text: var(--text-primary);
   --color-text-muted: var(--text-secondary);
-  --color-text-inverse: #0A0B0D;
+  --color-text-inverse: #151923;
   --color-border: var(--border-subtle);
   --color-border-strong: var(--border-hover);
-  --color-focus: var(--primary);
+  --color-focus: #AEB7FF;
   --color-primary: var(--primary);
-  --color-on-primary: #0A0B0D;
+  --color-on-primary: #FFFFFF;
 
-  --color-info: #00DCE5;
-  --color-info-foreground: #00DCE5;
-  --color-info-surface: rgba(0, 220, 229, 0.12);
-  --color-info-border: rgba(0, 220, 229, 0.24);
+  --color-info: #78A6FF;
+  --color-info-foreground: #9EBEFF;
+  --color-info-surface: rgba(120, 166, 255, 0.14);
+  --color-info-border: rgba(120, 166, 255, 0.28);
 
   --color-success: var(--success);
-  --color-success-foreground: #22C55E;
-  --color-success-surface: rgba(34, 197, 94, 0.12);
-  --color-success-border: rgba(34, 197, 94, 0.24);
+  --color-success-foreground: #5DDBA6;
+  --color-success-surface: rgba(55, 201, 140, 0.14);
+  --color-success-border: rgba(55, 201, 140, 0.28);
 
   --color-warning: var(--warning);
-  --color-warning-foreground: #F5A623;
-  --color-warning-surface: rgba(245, 166, 35, 0.12);
-  --color-warning-border: rgba(245, 166, 35, 0.24);
+  --color-warning-foreground: #F6C987;
+  --color-warning-surface: rgba(240, 182, 106, 0.14);
+  --color-warning-border: rgba(240, 182, 106, 0.28);
 
   --color-danger: var(--danger);
-  --color-danger-foreground: #F04438;
-  --color-danger-surface: rgba(240, 68, 56, 0.12);
-  --color-danger-border: rgba(240, 68, 56, 0.24);
+  --color-danger-foreground: #F58C8C;
+  --color-danger-surface: rgba(241, 111, 111, 0.14);
+  --color-danger-border: rgba(241, 111, 111, 0.28);
 
   /* Category Roles */
-  --color-category-food: #00DCE5;
-  --color-category-transportation: #3B82F6;
-  --color-category-shopping: #F5A623;
-  --color-category-entertainment: #EC4899;
-  --color-category-bills: #8B5CF6;
-  --color-category-healthcare: #F04438;
-  --color-category-income: #22C55E;
-  --color-category-other: #9AA3AF;
+  --color-category-food: #78A6FF;
+  --color-category-transportation: #9D8CFF;
+  --color-category-shopping: #F0B66A;
+  --color-category-entertainment: #DE8FFF;
+  --color-category-bills: #6FC8D4;
+  --color-category-healthcare: #F16F6F;
+  --color-category-income: #37C98C;
+  --color-category-other: #A3AABD;
 
-  --color-accent: #00DCE5;
-  --color-accent-foreground: #0A0B0D;
-  --color-accent-surface: rgba(0, 220, 229, 0.12);
-  --color-accent-border: rgba(0, 220, 229, 0.24);
+  --color-accent: var(--primary);
+  --color-accent-foreground: var(--color-on-primary);
+  --color-accent-surface: var(--primary-muted);
+  --color-accent-border: rgba(117, 133, 248, 0.32);
 
   /* KPI Palettes */
-  --color-kpi-balance: #00DCE5;
-  --color-kpi-balance-surface: rgba(0, 220, 229, 0.12);
-  --color-kpi-balance-foreground: #00DCE5;
+  --color-kpi-balance: #78A6FF;
+  --color-kpi-balance-surface: rgba(120, 166, 255, 0.14);
+  --color-kpi-balance-foreground: #9EBEFF;
 
-  --color-kpi-income: #22C55E;
-  --color-kpi-income-surface: rgba(34, 197, 94, 0.12);
-  --color-kpi-income-foreground: #22C55E;
+  --color-kpi-income: var(--success);
+  --color-kpi-income-surface: var(--color-success-surface);
+  --color-kpi-income-foreground: var(--color-success-foreground);
 
-  --color-kpi-expense: #F04438;
-  --color-kpi-expense-surface: rgba(240, 68, 56, 0.12);
-  --color-kpi-expense-foreground: #F04438;
+  --color-kpi-expense: var(--danger);
+  --color-kpi-expense-surface: var(--color-danger-surface);
+  --color-kpi-expense-foreground: var(--color-danger-foreground);
 
-  --color-kpi-savings: #00DCE5;
-  --color-kpi-savings-surface: rgba(0, 220, 229, 0.12);
-  --color-kpi-savings-foreground: #00DCE5;
+  --color-kpi-savings: var(--primary);
+  --color-kpi-savings-surface: var(--primary-muted);
+  --color-kpi-savings-foreground: #AEB7FF;
 
   /* Trend directionals */
-  --color-trend-up: #22C55E;
-  --color-trend-up-foreground: #22C55E;
-  --color-trend-up-surface: rgba(34, 197, 94, 0.12);
+  --color-trend-up: var(--success);
+  --color-trend-up-foreground: var(--color-success-foreground);
+  --color-trend-up-surface: var(--color-success-surface);
 
-  --color-trend-down: #F04438;
-  --color-trend-down-foreground: #F04438;
-  --color-trend-down-surface: rgba(240, 68, 56, 0.12);
+  --color-trend-down: var(--danger);
+  --color-trend-down-foreground: var(--color-danger-foreground);
+  --color-trend-down-surface: var(--color-danger-surface);
 
   /* Sidebar palette */
-  --color-sidebar-bg: #000000;
+  --color-sidebar-bg: #0D0F16;
   --color-sidebar-bg-end: #111318;
-  --color-sidebar-foreground: #F5F7FA;
-  --color-sidebar-foreground-muted: #9AA3AF;
+  --color-sidebar-foreground: var(--text-primary);
+  --color-sidebar-foreground-muted: var(--text-secondary);
   --color-sidebar-item-hover: rgba(255, 255, 255, 0.06);
-  --color-sidebar-item-active-bg: rgba(0, 220, 229, 0.12);
-  --color-sidebar-item-active-foreground: #00DCE5;
-  --color-sidebar-border: rgba(255, 255, 255, 0.08);
+  --color-sidebar-item-active-bg: var(--primary-muted);
+  --color-sidebar-item-active-foreground: #AEB7FF;
+  --color-sidebar-border: var(--border-subtle);
 
   /* 4px Base Spacing Unit Scale */
   --space-0: 0;
@@ -134,7 +135,7 @@
   --font-size-label: 0.875rem;
   --line-height-label: 1.25rem;
   --font-size-body: 1rem;
-  --line-height-body: 1.4rem;
+  --line-height-body: 1.5rem;
   --font-size-lead: 1.125rem;
   --line-height-lead: 1.5rem;
   --font-size-heading-sm: 1.5rem;
@@ -144,8 +145,8 @@
   --font-size-heading-lg: 2.5rem;
   --line-height-heading-lg: 3rem;
 
-  --content-frame-max: 90rem;
-  --content-gutter: clamp(1rem, 3vw, 3rem);
+  --content-frame-max: 80rem;
+  --content-gutter: clamp(1rem, 2.5vw, 2rem);
   --shell-block-size: 5rem;
 
   --motion-duration-fast: 120ms;
@@ -153,6 +154,61 @@
   --motion-duration-slow: 300ms;
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.light,
+[data-theme='light'] {
+  color-scheme: light;
+  --bg-base: #F7F8FC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-2: #EFF1F7;
+  --border-subtle: #D9DEEA;
+  --border-hover: #BCC5D8;
+  --primary: #5D6BEE;
+  --primary-hover: #4D5BE0;
+  --primary-muted: rgba(93, 107, 238, 0.12);
+  --text-primary: #151923;
+  --text-secondary: #536076;
+  --text-tertiary: #727D91;
+  --success: #168357;
+  --danger: #C64040;
+  --warning: #A85F12;
+  --color-text-inverse: #FFFFFF;
+  --color-focus: #5D6BEE;
+  --color-on-primary: #FFFFFF;
+  --color-info: #3F6FD6;
+  --color-info-foreground: #315BB8;
+  --color-info-surface: #EAF0FF;
+  --color-info-border: #C9D8FF;
+  --color-success-foreground: #126A46;
+  --color-success-surface: #E6F7EF;
+  --color-success-border: #BDE8D2;
+  --color-warning-foreground: #8A4A08;
+  --color-warning-surface: #FFF3E3;
+  --color-warning-border: #F6D7AF;
+  --color-danger-foreground: #A63030;
+  --color-danger-surface: #FDECEC;
+  --color-danger-border: #F5C6C6;
+  --color-accent-border: rgba(93, 107, 238, 0.28);
+  --color-kpi-balance: #3F6FD6;
+  --color-kpi-balance-surface: #EAF0FF;
+  --color-kpi-balance-foreground: #315BB8;
+  --color-kpi-savings-foreground: #4D5BE0;
+  --color-category-food: #3F6FD6;
+  --color-category-transportation: #7057C8;
+  --color-category-shopping: #A85F12;
+  --color-category-entertainment: #A543B9;
+  --color-category-bills: #197A8C;
+  --color-category-healthcare: #C64040;
+  --color-category-income: #168357;
+  --color-category-other: #536076;
+  --color-sidebar-bg: #FFFFFF;
+  --color-sidebar-bg-end: #F7F8FC;
+  --color-sidebar-foreground: #151923;
+  --color-sidebar-foreground-muted: #536076;
+  --color-sidebar-item-hover: #EFF1F7;
+  --color-sidebar-item-active-foreground: #4D5BE0;
+  --color-sidebar-border: #D9DEEA;
 }
 
 *,
@@ -177,7 +233,7 @@ body {
   background: var(--color-bg);
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   font-size: var(--font-size-body);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--line-height-body);
   letter-spacing: 0;
   text-rendering: optimizeLegibility;
@@ -237,12 +293,6 @@ nav,
   letter-spacing: -0.035em;
 }
 
-.font-outfit {
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-}
-
 .font-space-grotesk {
   font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   font-weight: 500;
@@ -285,12 +335,12 @@ h1 {
 }
 
 h2 {
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.025em;
 }
 
 h3 {
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 

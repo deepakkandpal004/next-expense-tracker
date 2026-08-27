@@ -8,17 +8,17 @@ export function AiTransparencyPageContent() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#A855F7]/[0.04] blur-[120px]" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-kpi-savings/[0.04] blur-[120px]" />
         </div>
         <div className="content-frame relative py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#A855F7]/20 bg-[#A855F7]/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-[#A855F7] uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-kpi-savings/20 bg-kpi-savings/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-kpi-savings uppercase">
               AI Transparency
             </span>
             <h1 className="mt-6 text-[clamp(2.5rem,6vw,4rem)] font-semibold text-white tracking-tight leading-[1.1]">
               How AI uses your data.
             </h1>
-            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+            <p className="mt-5 text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
               AI features are optional. When enabled, we send only aggregated totals — never raw descriptions or IDs.
             </p>
           </div>
@@ -52,8 +52,8 @@ export function AiTransparencyPageContent() {
           <h2 className="text-xl font-semibold text-white mb-8 text-center">Data disclosure</h2>
           <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
             <div className="grid grid-cols-2 border-b border-white/[0.06] bg-white/[0.02]">
-              <div className="px-5 py-3 text-[11px] font-medium text-[#9AA3AF] uppercase tracking-wider">Field</div>
-              <div className="px-5 py-3 text-[11px] font-medium text-[#9AA3AF] uppercase tracking-wider">Status</div>
+              <div className="px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Field</div>
+              <div className="px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</div>
             </div>
             <DisclosureRow field="Period dates" included />
             <DisclosureRow field="Currency" included />
@@ -70,7 +70,7 @@ export function AiTransparencyPageContent() {
       {/* Disclaimer */}
       <section className="content-frame border-t border-white/5 py-12 sm:py-16">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-[#9AA3AF] leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             AI-generated insights are informational only and are not professional financial advice. Provider retention behavior has not been verified.
           </p>
         </div>
@@ -82,12 +82,12 @@ export function AiTransparencyPageContent() {
 function AiItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#A855F7] border border-white/[0.06]">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-kpi-savings border border-white/[0.06]">
         {icon}
       </div>
       <div>
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -99,13 +99,13 @@ function DisclosureRow({ field, included }: { field: string; included: boolean }
       <div className="px-5 py-3.5 text-sm text-white">{field}</div>
       <div className="px-5 py-3.5">
         {included ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#22C55E]/10 px-2.5 py-1 text-[11px] font-medium text-[#22C55E]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">
+            <span className="h-1.5 w-1.5 rounded-full bg-success" />
             Included
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F04438]/10 px-2.5 py-1 text-[11px] font-medium text-[#F04438]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#F04438]" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-danger/10 px-2.5 py-1 text-[11px] font-medium text-danger">
+            <span className="h-1.5 w-1.5 rounded-full bg-danger" />
             Excluded
           </span>
         )}

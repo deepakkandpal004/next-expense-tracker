@@ -31,14 +31,17 @@ export const GET = withApiLogging(async (request: Request): Promise<NextResponse
       select: { userId: true },
     });
 
-    const results = [];
-    for (const { userId } of users) {
-      const created = await processDueRecurringRecords(userId);
-      if (created > 0) {
-        await deleteCacheByPattern(CacheKey.userAllPattern(userId));
-        results.push({ userId, created });
-      }
-    }
+    // Parallelize per-user processing (was sequential — 50 users = 50x latency)
+    const results = await Promise.all(
+      users.map(async ({ userId }) => {
+        const created = await processDueRecurringRecords(userId);
+        if (created > 0) {
+          await deleteCacheByPattern(CacheKey.userAllPattern(userId));
+          return { userId, created };
+        }
+        return null;
+      }),
+    ).then((all) => all.filter((r): r is { userId: string; created: number } => r !== null));
 
     return NextResponse.json({ processed: users.length, created: results.reduce((sum, r) => sum + r.created, 0), results });
   } catch (error) {

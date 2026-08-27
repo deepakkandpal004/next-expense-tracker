@@ -73,7 +73,7 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
   return (
     <div className="rounded-xl border border-border/60 bg-surface-subtle/50 p-4">
       <div className="flex items-center gap-2">
-        <Wallet size={15} className="text-[#00DCE5]" aria-hidden="true" />
+        <Wallet size={15} className="text-primary" aria-hidden="true" />
         <h4 className="text-sm font-semibold text-foreground">Goal plan</h4>
       </div>
 
@@ -84,15 +84,15 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
         </p>
       )}
 
-      {error && <p className="mt-3 text-xs text-[#F04438]">{error}</p>}
+      {error && <p className="mt-3 text-xs text-danger">{error}</p>}
 
       {!loading && !error && plan && (
         <div className="mt-3 grid gap-3">
           {plan.status === "completed" && (
-            <p className="flex items-center gap-2 rounded-lg bg-[#22C55E]/10 px-3 py-2 text-sm text-[#22C55E]">
-              <CheckCircle2 size={15} aria-hidden="true" />
-              Target reached — your plan is fully funded.
-            </p>
+              <p className="flex items-center gap-2 rounded-lg bg-success-surface px-3 py-2 text-sm text-success">
+                <CheckCircle2 size={15} aria-hidden="true" />
+                Your current contribution already covers it.
+              </p>
           )}
 
           {plan.status === "no-deadline" && (
@@ -108,7 +108,7 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
                 This deadline has passed — update it to replan the monthly pace.
               </p>
               {plan.requiredMonthlyMinor !== null && (
-                <p className="rounded-lg bg-[#F04438]/10 px-3 py-2 text-sm text-[#F04438]">
+                <p className="rounded-lg bg-danger-surface px-3 py-2 text-sm text-danger">
                   A lump sum of{" "}
                   <CurrencyText currency={currency} minorValue={plan.requiredMonthlyMinor} /> is still
                   needed to reach the target.
@@ -123,7 +123,7 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
                 label="Monthly pace needed"
                 value={<CurrencyText currency={currency} minorValue={plan.requiredMonthlyMinor} />}
               />
-              <p className="flex items-center gap-2 rounded-lg bg-[#22C55E]/10 px-3 py-2 text-sm text-[#22C55E]">
+            <p className="flex items-center gap-2 rounded-lg bg-success-surface px-3 py-2 text-sm text-success">
                 <CheckCircle2 size={15} aria-hidden="true" />
                 Your current contribution already covers it.
               </p>
@@ -163,7 +163,7 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
 
               <div className="mt-1 border-t border-white/10 pt-3">
                 <p className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                  <Sparkles size={13} className="text-[#00DCE5]" aria-hidden="true" />
+                  <Sparkles size={13} className="text-primary" aria-hidden="true" />
                   Ways to close the gap
                 </p>
                 <div className="mt-2 space-y-2">
@@ -181,18 +181,18 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
                 <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-foreground-secondary">
                   <span>
                     Selected levers free up{" "}
-                    <span className="font-semibold text-[#22C55E]">
+                    <span className="font-semibold text-success">
                       <CurrencyText currency={currency} minorValue={plan.totalSelectedMinor} />
                     </span>
                     /mo
                   </span>
                   {plan.isGapCovered ? (
-                    <span className="flex items-center gap-1 font-medium text-[#22C55E]">
+                    <span className="flex items-center gap-1 font-medium text-success">
                       <CheckCircle2 size={13} aria-hidden="true" />
                       gap covered
                     </span>
                   ) : (
-                    <span className="text-[#F5A623]">
+                    <span className="text-warning">
                       · <CurrencyText currency={currency} minorValue={plan.gapRemainingMinor} />/mo short
                     </span>
                   )}
@@ -204,7 +204,7 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
                   <button
                     type="button"
                     onClick={() => void askNarration()}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#00DCE5]/25 bg-[#00DCE5]/[0.06] px-3 py-2 text-xs font-semibold text-[#D8FBFD] transition-colors hover:bg-[#00DCE5]/[0.12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/25 bg-primary/[0.06] px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/[0.12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                   >
                     <Sparkles size={13} aria-hidden="true" />
                     Explain with AI
@@ -217,9 +217,9 @@ export function GoalPlanPanel({ goal, currency }: GoalPlanPanelProps) {
                   </p>
                 )}
                 {narration !== undefined && narration !== null && (
-                  <div className="rounded-xl bg-[#00DCE5]/[0.08] px-4 py-3">
-                    <p className="text-sm leading-relaxed text-[#D8FBFD]">{narration}</p>
-                    <p className="mt-2 flex items-center gap-1 text-[11px] leading-relaxed text-[#00DCE5]/70">
+                  <div className="rounded-xl bg-primary/[0.08] px-4 py-3">
+                    <p className="text-sm leading-relaxed text-primary">{narration}</p>
+                    <p className="mt-2 flex items-center gap-1 text-[11px] leading-relaxed text-primary/70">
                       <ShieldCheck size={12} className="shrink-0" aria-hidden="true" />
                       Summaries only — the AI sees these computed plan figures, never your
                       transactions. It never changes the numbers.

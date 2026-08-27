@@ -1,26 +1,21 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Manrope, Outfit, Space_Grotesk } from 'next/font/google';
+import { Manrope, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { RootProviders } from '@/app/providers';
 import {
   DENSITY_COOKIE_NAME,
+  APPEARANCE_COOKIE_NAME,
   PREFERENCES_BOOTSTRAP_SCRIPT,
   THEME_COLORS,
   isContentDensity,
+  isResolvedAppearance,
 } from '@/lib/preferences/preferences';
 import { cn } from "@/lib/utils";
 
 const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-manrope',
-  display: 'swap',
-});
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-outfit',
-  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
@@ -47,21 +42,25 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const densityCookie = cookieStore.get(DENSITY_COOKIE_NAME)?.value;
+  const appearanceCookie = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value;
   const initialDensity = isContentDensity(densityCookie)
     ? densityCookie
     : 'comfortable';
+  const initialAppearance = isResolvedAppearance(appearanceCookie)
+    ? appearanceCookie
+    : 'dark';
 
   return (
     <html
       lang='en'
-      data-appearance-preference='dark'
+      data-appearance-preference={initialAppearance}
       data-density={initialDensity}
       data-scroll-behavior='smooth'
       suppressHydrationWarning
-      className={cn("dark", manrope.variable, outfit.variable, spaceGrotesk.variable)}
+      className={cn(initialAppearance, manrope.variable, spaceGrotesk.variable)}
     >
       <head>
-        <meta name='theme-color' content={THEME_COLORS.dark} />
+        <meta name='theme-color' content={THEME_COLORS[initialAppearance]} />
         <link rel='manifest' href='/manifest.json' />
         <link rel='icon' type='image/png' sizes='512x512' href='/icon.png' />
         <link rel='apple-touch-icon' sizes='512x512' href='/apple-touch-icon.png' />
@@ -83,6 +82,7 @@ export default async function RootLayout({
         </a>
         <RootProviders
           initialDensity={initialDensity}
+          initialAppearance={initialAppearance}
         >
           <main id='main-content' tabIndex={-1}>
             {children}
@@ -92,4 +92,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

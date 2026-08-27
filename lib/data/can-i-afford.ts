@@ -18,7 +18,7 @@ export async function getEmergencyBalanceMinor(userId: string): Promise<number> 
     where: { userId, category: CAN_AFFORD_EMERGENCY_CATEGORY },
     select: { currentAmount: true },
   });
-  return goals.reduce((acc, goal) => acc + Math.round(goal.currentAmount * 100), 0);
+  return goals.reduce((acc, goal) => acc + Math.round(Number(goal.currentAmount) * 100), 0);
 }
 
 /** Sum of monthly contributions for still-funding goals, in minor units. */
@@ -37,9 +37,9 @@ export async function getTotalGoalContributionMinor(userId: string): Promise<num
   let total = 0;
   for (const goal of goals) {
     if (goal.monthlyContribution == null) continue;
-    if (goal.currentAmount >= goal.targetAmount && goal.targetAmount > 0) continue;
+    if (Number(goal.currentAmount) >= Number(goal.targetAmount) && Number(goal.targetAmount) > 0) continue;
     if (goal.deadline && goal.deadline.getTime() < now.getTime()) continue;
-    total += Math.round(goal.monthlyContribution * 100);
+    total += Math.round(Number(goal.monthlyContribution) * 100);
   }
   return total;
 }

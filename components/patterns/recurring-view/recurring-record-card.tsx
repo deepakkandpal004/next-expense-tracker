@@ -23,7 +23,7 @@ export function RecurringRecordCard({
     const def = CATEGORY_DEFINITIONS.find(d => d.id === id);
     return def?.label || id;
   };
-  const amountColor = record.type === "income" ? "text-[#22C55E]" : "text-[#F04438]";
+  const amountColor = record.type === "income" ? "text-success" : "text-danger";
 
   return (
     <Card>
@@ -54,7 +54,7 @@ export function RecurringRecordCard({
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <span className={`text-sm font-semibold ${amountColor}`}>
-            {formatCurrency({ minorValue: Math.round(record.amount * 100), currency })}
+            {formatCurrency({ minorValue: Math.round(Number(record.amount) * 100), currency })}
           </span>
           <button
             type="button"

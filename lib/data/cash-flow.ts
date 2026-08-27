@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { db } from "../db";
 import { computeCategoryAverages, computeSpendingForecast } from "../domain/forecast";
 import {
@@ -8,15 +9,17 @@ import {
 } from "../domain/cash-flow";
 import { daysInResolvedPeriod } from "../domain/reporting-period";
 import type { ResolvedPeriod, TransactionType } from "../domain/types";
-import { getCategoryMonthlySpending, getMonthlySpending } from "./forecast";
+import { getForecastSummaries } from "./forecast";
 import { getBudgetForUser } from "./budget";
 import { goalReservationMinor, recurringMonthlyExpenseMinor } from "./safe-to-spend";
+import { boundaryAtStart, boundaryAtEnd, toIsoDate, nextRecurrenceOccurrence } from "../utils/date-boundaries";
+import { getCache, setCache, CacheKey } from "../cache";
 
 export const CASH_FLOW_DEFAULT_CURRENCY = "INR";
 
 interface RecurringRuleRow {
   id: string;
-  amount: number;
+  amount: number | Decimal;
   type: string;
   frequency: string;
   interval: number;
@@ -26,36 +29,9 @@ interface RecurringRuleRow {
   active: boolean;
 }
 
-function boundaryAtStart(date: string): Date {
-  return new Date(`${date}T00:00:00.000Z`);
-}
 
-function boundaryAtEnd(date: string): Date {
-  return new Date(`${date}T23:59:59.999Z`);
-}
 
-function toIsoDate(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-function nextOccurrence(base: Date, frequency: string, interval: number): Date {
-  const next = new Date(base);
-  switch (frequency) {
-    case "daily":
-      next.setDate(next.getDate() + interval);
-      break;
-    case "weekly":
-      next.setDate(next.getDate() + 7 * interval);
-      break;
-    case "monthly":
-      next.setMonth(next.getMonth() + interval);
-      break;
-    case "yearly":
-      next.setFullYear(next.getFullYear() + interval);
-      break;
-  }
-  return next;
-}
+const nextOccurrence = nextRecurrenceOccurrence;
 
 /**
  * Expands active recurring rules into scheduled events landing strictly after
@@ -90,7 +66,7 @@ export function buildScheduledEvents(
       events.push({
         date: toIsoDate(next),
         type: rule.type === "income" ? "income" : "expense",
-        amountMinor: Math.round(rule.amount * 100),
+        amountMinor: Math.round(Number(rule.amount) * 100),
         sourceId: rule.id,
       });
     }
@@ -117,7 +93,7 @@ export async function getCashFlowProjection(
   const today = toIsoDate(now);
   const periodEnded = now.getTime() > boundaryAtEnd(period.end).getTime();
 
-  const [records, recurring, goals, monthlySummaries, categoryMonthly, budget] =
+  const [records, recurring, goals, forecastData, budget] =
     await Promise.all([
       db.record.findMany({
         where: {
@@ -149,10 +125,11 @@ export async function getCashFlowProjection(
           deadline: true,
         },
       }),
-      getMonthlySpending(userId, 6),
-      getCategoryMonthlySpending(userId, 6),
+      getForecastSummaries(userId, 6),
       getBudgetForUser(userId, period),
     ]);
+  const monthlySummaries = forecastData.monthly;
+  const categoryMonthly = forecastData.byCategory;
 
   const events = buildScheduledEvents(recurring, period.end);
 
@@ -175,7 +152,7 @@ export async function getCashFlowProjection(
   const spendByCategory = new Map<string, number>();
   for (const record of records) {
     if (record.type !== "expense") continue;
-    const minor = Math.round(record.amount * 100);
+    const minor = Math.round(Number(record.amount) * 100);
     spendByCategory.set(record.category, (spendByCategory.get(record.category) ?? 0) + minor);
   }
 
@@ -218,8 +195,21 @@ export async function getCashFlowProjection(
   };
 }
 
+export async function getCachedCashFlowProjection(
+  userId: string,
+  period: ResolvedPeriod,
+  currency: string = CASH_FLOW_DEFAULT_CURRENCY,
+): Promise<CashFlowProjection> {
+  const key = CacheKey.cashFlow(userId, `${period.start}_${period.end}`);
+  const cached = await getCache<CashFlowProjection>(key);
+  if (cached) return cached;
+  const data = await getCashFlowProjection(userId, period, currency);
+  await setCache(key, data, 60 * 5);
+  return data;
+}
+
 interface RecordRow {
-  amount: number;
+  amount: number | Decimal;
   type: string;
   date: Date;
   category: string | null;
@@ -231,6 +221,6 @@ export function recordsToInputs(
   return records.map((record) => ({
     date: toIsoDate(record.date),
     type: (record.type === "income" ? "income" : "expense") as TransactionType,
-    amountMinor: Math.round(record.amount * 100),
+    amountMinor: Math.round(Number(record.amount) * 100),
   }));
 }

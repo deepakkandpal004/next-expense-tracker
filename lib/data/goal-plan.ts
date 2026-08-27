@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { db } from "../db";
 import { computeGoalPlan, type ContributionCandidate, type GoalPlan } from "../domain/goal-plan";
 import { appPeriodHref, normalizeReportingPeriod } from "../domain/reporting-period";
@@ -47,14 +48,14 @@ function makeCategoryCandidates(
 
 function planCandidate(
   goalId: string,
-  plan: { id: string; text: string; amount: number; frequency: string; interval: number },
+  plan: { id: string; text: string; amount: number | Decimal; frequency: string; interval: number },
 ): ContributionCandidate {
   return {
     id: `${goalId}:plan:${plan.id}`,
     kind: "subscription-cancel" as const,
     label: `Cancel ${plan.text}`,
     detail: "Recurring plan with no recent usage",
-    amountMinor: Math.round(plan.amount * 100 * cadenceFactor(plan.frequency, plan.interval)),
+    amountMinor: Math.round(Number(plan.amount) * 100 * cadenceFactor(plan.frequency, plan.interval)),
     href: "/recurring",
   };
 }
@@ -99,9 +100,9 @@ export async function getGoalPlan(
     goalId: goal.id,
     goalName: goal.name,
     currency,
-    targetMinor: Math.round(goal.targetAmount * 100),
-    currentMinor: Math.round(goal.currentAmount * 100),
-    monthlyContributionMinor: Math.round(goal.monthlyContribution * 100),
+    targetMinor: Math.round(Number(goal.targetAmount) * 100),
+    currentMinor: Math.round(Number(goal.currentAmount) * 100),
+    monthlyContributionMinor: Math.round(Number(goal.monthlyContribution) * 100),
     deadline: goal.deadline ? goal.deadline.toISOString().slice(0, 10) : null,
     candidates,
   });

@@ -1,22 +1,23 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { db } from "../db";
 import { computeSafeToSpend } from "../domain/safe-to-spend";
 import type { SafeToSpendBreakdown } from "../domain/safe-to-spend";
 import type { ResolvedPeriod } from "../domain/types";
 import { computeSpendingForecast } from "../domain/forecast";
 import { getMonthlySpending } from "./forecast";
+import {
+  boundaryAtStart,
+  boundaryAtEnd,
+  periodDays,
+  remainingDaysFromTomorrow,
+  nextRecurrenceOccurrence,
+} from "../utils/date-boundaries";
+import { getCache, setCache, CacheKey } from "../cache";
 
 export const SAFE_TO_SPEND_DEFAULT_CURRENCY = "INR";
 
-function boundaryAtStart(date: string): Date {
-  return new Date(`${date}T00:00:00.000Z`);
-}
-
-function boundaryAtEnd(date: string): Date {
-  return new Date(`${date}T23:59:59.999Z`);
-}
-
 export interface RecurringRule {
-  amount: number;
+  amount: number | Decimal;
   type: string;
   frequency: string;
   interval: number;
@@ -27,52 +28,13 @@ export interface RecurringRule {
 }
 
 export interface GoalReservationRow {
-  monthlyContribution: number | null;
-  currentAmount: number;
-  targetAmount: number;
+  monthlyContribution: number | Decimal | null;
+  currentAmount: number | Decimal;
+  targetAmount: number | Decimal;
   deadline: Date | null;
 }
 
-/** Equal to the inclusive day count between the provided ISO dates (UTC). */
-export function periodDays(start: string, end: string): number {
-  const startMs = boundaryAtStart(start).getTime();
-  const endMs = boundaryAtEnd(end).getTime();
-  return Math.max(1, Math.round((endMs - startMs) / (24 * 60 * 60 * 1000)) + 1);
-}
-
-/** Inclusive days remaining from tomorrow through the period end (0 when the period has ended). */
-export function remainingDaysFromTomorrow(periodEnd: string): number {
-  const now = new Date();
-  const dayMs = 24 * 60 * 60 * 1000;
-  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  const tomorrowStart = todayStart + dayMs;
-  const endMs = boundaryAtEnd(periodEnd).getTime();
-  if (endMs < tomorrowStart) return 0;
-  return Math.floor((endMs - tomorrowStart) / dayMs) + 1;
-}
-
-function nextOccurrence(
-  base: Date,
-  frequency: string,
-  interval: number,
-): Date {
-  const next = new Date(base);
-  switch (frequency) {
-    case "daily":
-      next.setDate(next.getDate() + interval);
-      break;
-    case "weekly":
-      next.setDate(next.getDate() + 7 * interval);
-      break;
-    case "monthly":
-      next.setMonth(next.getMonth() + interval);
-      break;
-    case "yearly":
-      next.setFullYear(next.getFullYear() + interval);
-      break;
-  }
-  return next;
-}
+const nextOccurrence = nextRecurrenceOccurrence;
 
 /**
  * Sum of expense-rule occurrences paid on or after today and at or before the
@@ -103,7 +65,7 @@ export function computeUpcomingBillsMinor(
       if (rule.endDate && next.getTime() > rule.endDate.getTime()) break;
       if (next.getTime() <= cutoff) continue;
 
-      if (rule.type === "expense") total += Math.round(rule.amount * 100);
+      if (rule.type === "expense") total += Math.round(Number(rule.amount) * 100);
     }
   }
   return total;
@@ -115,9 +77,9 @@ export function goalReservationMinor(
   now: Date = new Date(),
 ): number {
   if (goal.monthlyContribution == null) return 0;
-  if (goal.currentAmount >= goal.targetAmount && goal.targetAmount > 0) return 0;
+  if (Number(goal.currentAmount) >= Number(goal.targetAmount) && Number(goal.targetAmount) > 0) return 0;
   if (goal.deadline && goal.deadline.getTime() < now.getTime()) return 0;
-  return Math.max(0, Math.round(goal.monthlyContribution * 100));
+  return Math.max(0, Math.round(Number(goal.monthlyContribution) * 100));
 }
 
 /** Monthly-equivalent spend of all recurring expense rules, in minor units. */
@@ -127,14 +89,15 @@ export function recurringMonthlyExpenseMinor(
   let total = 0;
   for (const rule of rules) {
     if (!rule.active || rule.type !== "expense") continue;
+    const amt = Number(rule.amount);
     const cost =
       rule.frequency === "weekly"
-        ? (rule.amount * 52) / 12
+        ? (amt * 52) / 12
         : rule.frequency === "daily"
-          ? (rule.amount * 365) / 12
+          ? (amt * 365) / 12
           : rule.frequency === "yearly"
-            ? rule.amount / 12
-            : rule.amount;
+            ? amt / 12
+            : amt;
     total += cost;
   }
   return Math.round(total * 100);
@@ -175,7 +138,7 @@ export async function getSafeToSpendData(
   ]);
 
   const balanceMinor = records.reduce((acc, record) => {
-    const minor = Math.round(record.amount * 100);
+    const minor = Math.round(Number(record.amount) * 100);
     return record.type === "income" ? acc + minor : acc - minor;
   }, 0);
 
@@ -203,4 +166,17 @@ export async function getSafeToSpendData(
     expectedRemainingExpensesMinor: expectedExpensesMinor,
     remainingDays,
   });
+}
+
+export async function getCachedSafeToSpendData(
+  userId: string,
+  period: ResolvedPeriod,
+  currency: string = SAFE_TO_SPEND_DEFAULT_CURRENCY,
+): Promise<SafeToSpendBreakdown> {
+  const key = CacheKey.safeToSpend(userId, `${period.start}_${period.end}`);
+  const cached = await getCache<SafeToSpendBreakdown>(key);
+  if (cached) return cached;
+  const data = await getSafeToSpendData(userId, period, currency);
+  await setCache(key, data, 60 * 5);
+  return data;
 }

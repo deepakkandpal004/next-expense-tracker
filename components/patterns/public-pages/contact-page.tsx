@@ -15,18 +15,18 @@ import { AnimateInView } from './shared';
 
 export function ContactPageContent() {
   return (
-    <main className="min-h-screen bg-[#0B0F14]">
+    <main className="min-h-screen bg-foreground-inverse">
       {/* Hero */}
       <section className="relative overflow-hidden py-32 sm:py-40">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[150px]" />
+          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.03] blur-[150px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
             <h1 className="text-6xl font-semibold tracking-tight text-white sm:text-7xl md:text-8xl">
               Get in touch
             </h1>
-            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-[#9AA3AF]">
+            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Have a question, need support, or want to share feedback?
               We&apos;d love to hear from you.
             </p>
@@ -35,7 +35,7 @@ export function ContactPageContent() {
       </section>
 
       {/* Contact Options */}
-      <section className="relative border-y border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+      <section className="relative border-y border-white/[0.06] bg-bg-base py-24 sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -85,7 +85,7 @@ export function ContactPageContent() {
                       <item.icon size={24} style={{ color: item.color }} />
                     </div>
                     <h3 className="mt-5 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-sm text-[#9AA3AF]">{item.description}</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
                     <a
                       href={item.href}
                       className="mt-4 inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 hover:opacity-80"
@@ -103,13 +103,13 @@ export function ContactPageContent() {
       </section>
 
       {/* Quick Links */}
-      <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+      <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#A855F7]/[0.03] blur-[100px]" />
+          <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-kpi-savings/[0.03] blur-[100px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <AnimateInView className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#A855F7]/60">Resources</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-kpi-savings/60">Resources</p>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
               Find answers fast
             </h2>
@@ -158,10 +158,10 @@ export function ContactPageContent() {
                     <item.icon size={20} style={{ color: item.color }} />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white group-hover:text-[#00DCE5] transition-colors duration-200">
+                    <h3 className="text-base font-semibold text-white group-hover:text-primary transition-colors duration-200">
                       {item.title}
                     </h3>
-                    <p className="mt-1 text-sm text-[#9AA3AF]">{item.description}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
                   </div>
                 </Link>
               </AnimateInView>
@@ -171,22 +171,22 @@ export function ContactPageContent() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#080C10] py-32">
+      <section className="relative overflow-hidden border-t border-white/[0.06] bg-bg-base py-32">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
         </div>
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
             <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">
               Ready to get started?
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-[#9AA3AF]">
+            <p className="mx-auto mt-4 max-w-md text-muted-foreground">
               Join thousands who track smarter with Expense Tracker AI.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/sign-up"
-                className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-8 py-4 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+                className="group flex items-center gap-2.5 rounded-xl bg-primary px-8 py-4 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
               >
                 Get started free
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />

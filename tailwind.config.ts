@@ -12,12 +12,8 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-manrope)', 'Manrope', 'system-ui', '-apple-system', 'sans-serif'],
         inter: ['var(--font-manrope)', 'Manrope', 'system-ui', '-apple-system', 'sans-serif'],
-        outfit: ['var(--font-outfit)', 'Outfit', 'system-ui', '-apple-system', 'sans-serif'],
         'space-grotesk': ['var(--font-space-grotesk)', 'Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
-        'space-grotesk-bold': ['var(--font-space-grotesk)', 'Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
-        'space-grotesk-black': ['var(--font-space-grotesk)', 'Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
         manrope: ['var(--font-manrope)', 'Manrope', 'system-ui', '-apple-system', 'sans-serif'],
-        sora: ['var(--font-manrope)', 'Manrope', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         // shadcn/ui semantic aliases

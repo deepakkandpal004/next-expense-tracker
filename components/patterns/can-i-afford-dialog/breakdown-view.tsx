@@ -78,9 +78,9 @@ export function BreakdownView({
           </p>
         )}
         {verdict !== undefined && verdict && (
-          <div className="rounded-xl bg-[#00DCE5]/[0.08] px-4 py-3">
-            <p className="text-sm leading-relaxed text-[#D8FBFD]">{verdict}</p>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#00DCE5]/70">
+          <div className="rounded-xl bg-primary/[0.08] px-4 py-3">
+            <p className="text-sm leading-relaxed text-primary">{verdict}</p>
+            <p className="mt-2 text-[11px] leading-relaxed text-primary/70">
               <ShieldCheck className="mr-1 inline size-3" aria-hidden="true" />
               Summaries only — the AI sees these computed figures, never your transactions. It never changes the numbers.
             </p>
@@ -96,7 +96,7 @@ export function BreakdownView({
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
         <a
           aria-label="View the underlying records for this period"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#00DCE5] transition-colors hover:text-[#00DCE5]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-primary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           href={recordsHref}
         >
           <Calculator size={14} aria-hidden="true" />

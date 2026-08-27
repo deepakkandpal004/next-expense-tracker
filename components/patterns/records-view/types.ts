@@ -6,4 +6,10 @@ export interface RecordsViewProps {
   records: readonly Transaction[];
   period: ReportingPeriod;
   resolvedPeriod: ResolvedPeriod;
+  pagination?: {
+    total: number;
+    page: number;
+    hasMore: boolean;
+    take: number;
+  };
 }

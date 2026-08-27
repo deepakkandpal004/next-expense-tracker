@@ -32,8 +32,8 @@ export function ResultRow({
       <span
         className={cn(
           "font-medium tabular-nums",
-          tone === "negative" && "text-[#FF7AC6]",
-          tone === "positive" && "text-[#4ADE80]",
+          tone === "negative" && "text-kpi-expense",
+          tone === "positive" && "text-kpi-income",
           tone === "default" && "text-on-surface",
         )}
       >

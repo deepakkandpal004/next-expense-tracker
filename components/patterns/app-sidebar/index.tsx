@@ -43,7 +43,7 @@ export function AppSidebar({
           expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
         )}>
           <span className="text-white">Expense Tracker </span>
-          <span className="text-[#00DCE5]">AI</span>
+          <span className="text-primary">AI</span>
         </span>
       </Link>
 
@@ -52,7 +52,7 @@ export function AppSidebar({
           <ul className="flex flex-col gap-5">
             {NAV_SECTIONS.map((section) => (
               <li key={section.title}>
-                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#5B6472]">
+                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-wider text-text-tertiary">
                   {section.title}
                 </p>
                 <ul className="flex flex-col gap-0.5">
@@ -108,7 +108,7 @@ export function AppSidebar({
         <button
           onClick={() => onNewRecord?.()}
           className={cn(
-            "flex items-center justify-center rounded-xl bg-[#00DCE5] font-semibold text-[#0B0F14] transition-all duration-200 hover:bg-[#00DCE5]/90 hover:shadow-[0_0_20px_rgba(0,220,229,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]",
+            "flex items-center justify-center rounded-xl bg-primary font-semibold text-color-text-inverse transition-all duration-200 hover:bg-primary/90 hover:shadow-[0_0_20px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]",
             expanded ? "h-12 w-full gap-2 px-4" : "mx-auto size-11",
           )}
         >
@@ -128,7 +128,7 @@ export function AppSidebar({
             title={expanded ? "Collapse sidebar" : "Expand sidebar"}
             onClick={onToggleCollapsed}
             className={cn(
-              "mt-2 flex items-center justify-center rounded-xl text-[#5B6472] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+              "mt-2 flex items-center justify-center rounded-xl text-text-tertiary transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
               expanded ? "h-10 w-full" : "mx-auto size-11",
             )}
           >

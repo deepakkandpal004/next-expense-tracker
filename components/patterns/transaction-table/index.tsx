@@ -146,7 +146,7 @@ export function TransactionTable({
                             {row.description}
                           </span>
                           {anomalyIds?.has(row.id) && (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-[#F04438]/20 bg-[#F04438]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#F04438]">
+                            <span className="inline-flex items-center gap-1 rounded-full border border-danger/20 bg-danger-surface px-1.5 py-0.5 text-[10px] font-medium text-danger">
                               <AlertTriangle size={10} />
                               Unusual
                             </span>
@@ -172,14 +172,14 @@ export function TransactionTable({
                       {categoryDef?.label ?? row.categoryId}
                     </span>
                   </td>
-                  <td className="hidden px-4 py-3 align-middle text-sm text-[#9AA3AF] font-manrope sm:table-cell">
+                  <td className="hidden px-4 py-3 align-middle text-sm text-muted-foreground font-manrope sm:table-cell">
                     <DateText value={row.occurredOn} />
                   </td>
                   <td className="px-4 py-3 text-right align-middle">
                     <span
                       className={cn(
                         "text-sm font-bold tabular-nums font-manrope",
-                        isIncome ? "text-[#22C55E]" : "text-[#F04438]",
+                        isIncome ? "text-success" : "text-danger",
                       )}
                     >
                       {isIncome ? (

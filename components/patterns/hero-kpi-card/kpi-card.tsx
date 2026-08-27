@@ -14,26 +14,26 @@ const KPI_STYLES = {
   balance: {
     label: "Balance",
     icon: Wallet,
-    chip: "bg-[#00DCE5]/15 text-[#00DCE5]",
-    spark: "#00DCE5",
+    chip: "bg-kpi-balance-surface text-kpi-balance",
+    spark: "var(--color-kpi-balance)",
   },
   income: {
     label: "Income",
     icon: TrendingUp,
-    chip: "bg-[#4ADE80]/15 text-[#4ADE80]",
-    spark: "#4ADE80",
+    chip: "bg-kpi-income-surface text-kpi-income",
+    spark: "var(--color-kpi-income)",
   },
   expense: {
     label: "Expenses",
     icon: TrendingDown,
-    chip: "bg-[#FF7AC6]/15 text-[#FF7AC6]",
-    spark: "#FF7AC6",
+    chip: "bg-kpi-expense-surface text-kpi-expense",
+    spark: "var(--color-kpi-expense)",
   },
   savings: {
     label: "Savings",
     icon: PiggyBank,
-    chip: "bg-[#A855F7]/15 text-[#A855F7]",
-    spark: "#A855F7",
+    chip: "bg-kpi-savings-surface text-kpi-savings",
+    spark: "var(--color-kpi-savings)",
   },
 } as const;
 

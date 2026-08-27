@@ -20,7 +20,7 @@ export function ExplainSection({
           type="button"
           onClick={onExplain}
           disabled={isExplaining}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#A855F7]/15 px-4 py-2 text-xs font-semibold text-[#A855F7] transition-colors hover:bg-[#A855F7]/25 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-kpi-savings-surface px-4 py-2 text-xs font-semibold text-kpi-savings transition-colors hover:bg-kpi-savings/25 disabled:opacity-50"
         >
           {isExplaining ? (
             <Loader2 size={14} strokeWidth={2.5} className="animate-spin" />

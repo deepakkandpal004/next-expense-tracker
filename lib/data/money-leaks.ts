@@ -2,33 +2,17 @@ import { db } from "../db";
 import { computeMoneyLeaks, type MoneyLeakReport } from "../domain/money-leaks";
 import { daysInResolvedPeriod } from "../domain/reporting-period";
 import type { ResolvedPeriod } from "../domain/types";
+import {
+  boundaryAtStart,
+  boundaryAtEnd,
+  monthKeyUtc,
+  trailingMonths,
+} from "../utils/date-boundaries";
+import { getCache, setCache } from "../cache";
 
 export const MONEY_LEAK_HISTORY_MONTHS = 6;
 
-function boundaryAtStart(date: string): Date {
-  return new Date(`${date}T00:00:00.000Z`);
-}
-
-function boundaryAtEnd(date: string): Date {
-  return new Date(`${date}T23:59:59.999Z`);
-}
-
-/** Trailing window of calendar months (YYYY-MM) that precede the current one. */
-function trailingMonths(now: Date, count: number): string[] {
-  const months: string[] = [];
-  const cursor = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
-  for (let index = 0; index < count; index += 1) {
-    cursor.setUTCMonth(cursor.getUTCMonth() - 1);
-    months.push(
-      `${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, "0")}`,
-    );
-  }
-  return months;
-}
-
-function monthKey(date: Date): string {
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
-}
+const monthKey = monthKeyUtc;
 
 /**
  * Deterministic money-leak report for a period.
@@ -59,7 +43,7 @@ export async function getMoneyLeakReport(
   for (const record of periodRecords) {
     spendByCategory.set(
       record.category,
-      (spendByCategory.get(record.category) ?? 0) + Math.round(record.amount * 100),
+      (spendByCategory.get(record.category) ?? 0) + Math.round(Number(record.amount) * 100),
     );
   }
 
@@ -108,7 +92,7 @@ export async function getMoneyLeakReport(
     const key = monthKey(record.date);
     const byMonth = totalsByCategory.get(record.category);
     if (!byMonth) continue;
-    byMonth.set(key, (byMonth.get(key) ?? 0) + Math.round(record.amount * 100));
+    byMonth.set(key, (byMonth.get(key) ?? 0) + Math.round(Number(record.amount) * 100));
   }
 
   const historyMonthlyTotals: { categoryId: string; month: string; totalMinor: number }[] = [];
@@ -123,4 +107,16 @@ export async function getMoneyLeakReport(
     historyMonthlyTotals,
     period,
   });
+}
+
+export async function getCachedMoneyLeakReport(
+  userId: string,
+  period: ResolvedPeriod,
+): Promise<MoneyLeakReport> {
+  const key = `app:money-leaks:${userId}:${period.start}_${period.end}`;
+  const cached = await getCache<MoneyLeakReport>(key);
+  if (cached) return cached;
+  const data = await getMoneyLeakReport(userId, period);
+  await setCache(key, data, 60 * 5);
+  return data;
 }

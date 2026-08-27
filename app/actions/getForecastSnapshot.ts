@@ -10,7 +10,8 @@ import {
   type SpendingForecast,
   type TransactionAnomaly,
 } from '@/lib/domain/forecast';
-import { getMonthlySpending, getCategoryMonthlySpending } from '@/lib/data/forecast';
+import { getForecastSummaries } from '@/lib/data/forecast';
+import { getCache, setCache } from '@/lib/cache';
 
 export interface ForecastSnapshot {
   forecast: SpendingForecast;
@@ -24,10 +25,15 @@ export async function getForecastSnapshot(
   const user = await getAuthUser();
   if (!user) return { status: 'error', message: 'Sign in to continue.', retryable: false };
 
+  const cacheKey = `app:forecast:${user.id}:${period.start}_${period.end}`;
+  const cached = await getCache<ForecastSnapshot>(cacheKey);
+  if (cached) {
+    return { status: 'success', data: cached, message: 'Forecast generated.' };
+  }
+
   try {
-    const [monthlySummaries, categoryMonthly, currentRecords] = await Promise.all([
-      getMonthlySpending(user.id),
-      getCategoryMonthlySpending(user.id),
+    const [forecastData, currentRecords] = await Promise.all([
+      getForecastSummaries(user.id, 6),
       db.record.findMany({
         where: {
           userId: user.id,
@@ -41,23 +47,26 @@ export async function getForecastSnapshot(
       }),
     ]);
 
-    const forecast = computeSpendingForecast(monthlySummaries);
-    const categoryAverages = computeCategoryAverages(categoryMonthly);
+    const forecast = computeSpendingForecast(forecastData.monthly);
+    const categoryAverages = computeCategoryAverages(forecastData.byCategory);
 
     const anomalies = detectAnomalies(
       currentRecords.map(r => ({
         id: r.id,
         description: r.text,
-        amountMinor: Math.round(r.amount * 100),
+        amountMinor: Math.round(Number(r.amount) * 100),
         categoryId: r.category,
         occurredOn: r.date.toISOString(),
       })),
       categoryAverages,
     );
 
+    const snapshot: ForecastSnapshot = { forecast, anomalies, anomalyCount: anomalies.length };
+    await setCache(cacheKey, snapshot, 60 * 5);
+
     return {
       status: 'success',
-      data: { forecast, anomalies, anomalyCount: anomalies.length },
+      data: snapshot,
       message: 'Forecast generated.',
     };
   } catch (error) {

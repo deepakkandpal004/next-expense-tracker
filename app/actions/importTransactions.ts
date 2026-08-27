@@ -360,7 +360,7 @@ export async function importTransactionsFromCsv(
       existingRows.map((row) =>
         recordKey({
           text: row.text,
-          amount: row.amount,
+          amount: Number(row.amount),
           type: row.type,
           category: row.category,
           date: row.date,
@@ -369,10 +369,10 @@ export async function importTransactionsFromCsv(
     );
     const seenInFile = new Set<string>();
 
-    let imported = 0;
     let skipped = 0;
     let duplicates = 0;
     const errors: string[] = [];
+    const toCreate: Array<{ text: string; amount: number; type: string; category: string; date: Date; userId: string }> = [];
 
     for (let i = startIndex; i < lines.length; i++) {
       const lineNo = i + 1;
@@ -413,20 +413,17 @@ export async function importTransactionsFromCsv(
             continue;
           }
 
-          await db.record.create({
-            data: {
-              text: description,
-              amount: finalAmount,
-              type,
-              category,
-              date,
-              userId: user.id,
-            },
+          toCreate.push({
+            text: description,
+            amount: finalAmount,
+            type,
+            category,
+            date,
+            userId: user.id,
           });
 
           seenInFile.add(key);
           existingKeys.add(key);
-          imported++;
           continue;
         }
       }
@@ -437,16 +434,24 @@ export async function importTransactionsFromCsv(
       }
     }
 
+    let imported = 0;
+    if (toCreate.length > 0) {
+      // Batch in chunks of 500 to stay within DB limits and avoid large payloads
+      const BATCH = 500;
+      for (let i = 0; i < toCreate.length; i += BATCH) {
+        const chunk = toCreate.slice(i, i + BATCH);
+        const res = await db.record.createMany({ data: chunk });
+        imported += res.count;
+      }
+    }
+
     if (skipped > errors.length) {
       errors.push(`...and ${skipped - errors.length} more row(s) skipped.`);
     }
 
     revalidatePath('/records');
     revalidatePath('/dashboard');
-    await Promise.all([
-      deleteCacheByPattern(CacheKey.userDashboardPattern(user.id)),
-      deleteCacheByPattern(CacheKey.userRecordsPattern(user.id)),
-    ]);
+    await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
 
     return {
       status: 'success',

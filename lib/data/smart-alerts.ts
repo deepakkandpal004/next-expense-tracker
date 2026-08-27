@@ -5,31 +5,17 @@ import {
   type SmartPacingReport,
 } from "../domain/smart-alerts";
 import type { ResolvedPeriod } from "../domain/types";
+import {
+  boundaryAtStart,
+  boundaryAtEnd,
+  monthKeyUtc,
+  trailingMonths,
+} from "../utils/date-boundaries";
+import { getCache, setCache, CacheKey } from "../cache";
 
 export const SMART_ALERT_HISTORY_MONTHS = 6;
 
-function boundaryAtStart(date: string): Date {
-  return new Date(`${date}T00:00:00.000Z`);
-}
-
-function boundaryAtEnd(date: string): Date {
-  return new Date(`${date}T23:59:59.999Z`);
-}
-
-function monthKey(date: Date): string {
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
-}
-
-/** Trailing window of calendar months (YYYY-MM) that precede the current one. */
-function trailingMonths(now: Date, count: number): string[] {
-  const months: string[] = [];
-  const cursor = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
-  for (let index = 0; index < count; index += 1) {
-    cursor.setUTCMonth(cursor.getUTCMonth() - 1);
-    months.push(`${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, "0")}`);
-  }
-  return months;
-}
+const monthKey = monthKeyUtc;
 
 /**
  * Deterministic smart-pacing report for the period (DESIGN.md rule 1: every
@@ -74,7 +60,7 @@ export async function getSmartPacingReport(
   for (const record of periodRecords) {
     if (!record.category) continue;
     spendToDateByCategory[record.category] =
-      (spendToDateByCategory[record.category] ?? 0) + Math.round(record.amount * 100);
+      (spendToDateByCategory[record.category] ?? 0) + Math.round(Number(record.amount) * 100);
   }
 
   // Trailing window, zero-padded per month so a category with no activity in a
@@ -92,7 +78,7 @@ export async function getSmartPacingReport(
       const bucket = byCategory.get(record.category);
       if (!bucket) continue;
       const key = monthKey(record.date);
-      bucket.set(key, (bucket.get(key) ?? 0) + Math.round(record.amount * 100));
+      bucket.set(key, (bucket.get(key) ?? 0) + Math.round(Number(record.amount) * 100));
     }
     for (const [categoryId, monthly] of byCategory) {
       for (const [month, totalMinor] of monthly) {
@@ -107,4 +93,16 @@ export async function getSmartPacingReport(
     spendToDateByCategory,
     historyMonthlyTotals,
   });
+}
+
+export async function getCachedSmartPacingReport(
+  userId: string,
+  period: ResolvedPeriod,
+): Promise<SmartPacingReport> {
+  const key = CacheKey.smartAlerts(userId, `${period.start}_${period.end}`);
+  const cached = await getCache<SmartPacingReport>(key);
+  if (cached) return cached;
+  const data = await getSmartPacingReport(userId, period);
+  await setCache(key, data, 60 * 5);
+  return data;
 }

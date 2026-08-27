@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
-
-export const db = globalForPrisma.prisma ?? new PrismaClient();
-globalForPrisma.prisma = db;
+/**
+ * Legacy re-export — database client now lives in src/database.
+ * @deprecated Use `@/src/database/client` instead.
+ */
+export * from "@/src/database/client";
+export { db } from "@/src/database/client";

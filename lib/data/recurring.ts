@@ -1,4 +1,6 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { db } from "../db";
+import { nextRecurrenceOccurrence } from "../utils/date-boundaries";
 
 /**
  * Generates a Record row for every due recurring rule belonging to the user,
@@ -10,42 +12,40 @@ export async function processDueRecurringRecords(userId: string): Promise<number
     where: { userId, active: true },
   });
 
-  let created = 0;
   const now = new Date();
+  const toCreate: Array<{ text: string; amount: number | Decimal; type: string; category: string; date: Date; userId: string; recurringId: string }> = [];
+  const toUpdate: Array<{ id: string; lastProcessed: Date }> = [];
 
   for (const record of recurringRecords) {
     const base = record.lastProcessed || record.startDate;
-    const nextDue = new Date(base);
-
-    switch (record.frequency) {
-      case 'daily': nextDue.setDate(nextDue.getDate() + record.interval); break;
-      case 'weekly': nextDue.setDate(nextDue.getDate() + 7 * record.interval); break;
-      case 'monthly': nextDue.setMonth(nextDue.getMonth() + record.interval); break;
-      case 'yearly': nextDue.setFullYear(nextDue.getFullYear() + record.interval); break;
-    }
+    const nextDue = nextRecurrenceOccurrence(base, record.frequency, record.interval);
 
     if (nextDue > now) continue;
     if (record.endDate && nextDue > record.endDate) continue;
 
-    await db.record.create({
-      data: {
-        text: record.text,
-        amount: record.amount,
-        type: record.type,
-        category: record.category,
-        date: nextDue,
-        userId,
-        recurringId: record.id,
-      },
+    toCreate.push({
+      text: record.text,
+      amount: record.amount,
+      type: record.type,
+      category: record.category,
+      date: nextDue,
+      userId,
+      recurringId: record.id,
     });
-
-    await db.recurringRecord.update({
-      where: { id: record.id },
-      data: { lastProcessed: nextDue },
-    });
-
-    created += 1;
+    toUpdate.push({ id: record.id, lastProcessed: nextDue });
   }
 
-  return created;
+  if (toCreate.length === 0) return 0;
+
+  // Batch in a transaction — single round-trip instead of 2*N sequential queries
+  await db.$transaction(async (tx) => {
+    if (toCreate.length > 0) {
+      await tx.record.createMany({ data: toCreate });
+    }
+    await Promise.all(
+      toUpdate.map((u) => tx.recurringRecord.update({ where: { id: u.id }, data: { lastProcessed: u.lastProcessed } })),
+    );
+  });
+
+  return toCreate.length;
 }

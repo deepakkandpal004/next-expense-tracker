@@ -31,3 +31,36 @@ function createRedisClient(): Redis {
 
 export const redis = globalForRedis.redis ?? createRedisClient();
 globalForRedis.redis = redis;
+
+export interface RedisHealth {
+  configured: boolean;
+  connected: boolean;
+  latencyMs?: number;
+  error?: string;
+  host?: string;
+  port?: number;
+}
+
+export async function checkRedisHealth(): Promise<RedisHealth> {
+  if (!process.env.REDIS_URL) {
+    return { configured: false, connected: false, error: "REDIS_URL not set" };
+  }
+  const start = Date.now();
+  try {
+    const pong = await redis.ping();
+    const latencyMs = Date.now() - start;
+    const opts = (redis as unknown as { options?: { host?: string; port?: number } }).options;
+    if (pong !== "PONG") {
+      return { configured: true, connected: false, latencyMs, error: `Unexpected PING response: ${pong}`, host: opts?.host, port: opts?.port };
+    }
+    return { configured: true, connected: true, latencyMs, host: opts?.host, port: opts?.port };
+  } catch (e) {
+    const latencyMs = Date.now() - start;
+    return { configured: true, connected: false, latencyMs, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+export async function isRedisConnected(): Promise<boolean> {
+  const h = await checkRedisHealth();
+  return h.connected;
+}

@@ -26,7 +26,6 @@ model User {
   Records          Record[]
   Budgets          Budget[]
   Sessions         Session[]
-  PasswordResetTokens PasswordResetToken[]
   AiInsightCache   AiInsightCache[]
   Goals            Goal[]
   recurringRecords RecurringRecord[]
@@ -53,9 +52,9 @@ model Goal {
   id                  String    @id @default(uuid())
   userId              String
   name                String
-  targetAmount        Float
-  currentAmount       Float     @default(0)
-  monthlyContribution Float     @default(0)
+  targetAmount        Decimal   @db.Decimal(15, 2)
+  currentAmount       Decimal   @default(0) @db.Decimal(15, 2)
+  monthlyContribution Decimal   @default(0) @db.Decimal(15, 2)
   category            String    @default("other")
   deadline            DateTime?
   createdAt           DateTime  @default(now())
@@ -77,22 +76,10 @@ model Session {
   @@index([expiresAt])
 }
 
-model PasswordResetToken {
-  id        String   @id @default(uuid())
-  userId    String
-  tokenHash String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([expiresAt])
-}
-
 model Budget {
   id            String   @id @default(uuid())
   userId        String
-  amount        Float
+  amount        Decimal  @db.Decimal(15, 2)
   cadence       String   @default("monthly")
   effectiveFrom DateTime
   currency      String   @default("INR")
@@ -107,7 +94,7 @@ model Budget {
 model Record {
   id          String           @id @default(uuid())
   text        String
-  amount      Float
+  amount      Decimal  @db.Decimal(15, 2)
   type        String           @default("expense")
   category    String           @default("other")
   date        DateTime         @default(now())
@@ -118,14 +105,16 @@ model Record {
   createdAt   DateTime         @default(now())
 
   @@index([userId])
+  @@index([userId, date])
   @@index([userId, type, date])
+  @@index([userId, category, date])
 }
 
 model RecurringRecord {
   id            String    @id @default(uuid())
   userId        String
   text          String
-  amount        Float
+  amount        Decimal  @db.Decimal(15, 2)
   type          String    @default("expense")
   category      String    @default("other")
   frequency     String    @default("monthly")

@@ -52,7 +52,7 @@ export async function getRecurringRecords(): Promise<ActionResult<{ records: Rec
     const records: RecurringRecordDTO[] = rows.map(row => ({
       id: row.id,
       text: row.text,
-      amount: row.amount,
+      amount: Number(row.amount),
       type: row.type as 'income' | 'expense',
       category: row.category,
       frequency: row.frequency,

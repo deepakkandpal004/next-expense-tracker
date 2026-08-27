@@ -1,4 +1,3 @@
-// lib/cache.ts
 import { redis } from "./redis";
 
 const DEFAULT_TTL = 60 * 5; // 5 minutes
@@ -9,7 +8,7 @@ export async function getCache<T>(key: string): Promise<T | null> {
     if (!raw) return null;
     return JSON.parse(raw) as T;
   } catch {
-    return null; // Redis failure should never break the app
+    return null;
   }
 }
 
@@ -21,7 +20,6 @@ export async function setCache<T>(
   try {
     await redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
   } catch {
-    // silently fail; app continues without cache
   }
 }
 
@@ -33,12 +31,23 @@ export async function deleteCache(...keys: string[]): Promise<void> {
 
 export async function deleteCacheByPattern(pattern: string): Promise<void> {
   try {
-    const keys = await redis.keys(pattern); // safe at this scale
-    if (keys.length > 0) await redis.del(...keys);
+    // Use SCAN instead of KEYS to avoid blocking Redis at scale
+    // KEYS is O(N) and blocks; SCAN is incremental
+    let cursor = "0";
+    const keysToDelete: string[] = [];
+    do {
+      const [nextCursor, keys] = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
+      cursor = nextCursor;
+      if (keys.length > 0) keysToDelete.push(...keys);
+      // Pipeline delete in batches of 100 to avoid large DEL payloads
+      if (keysToDelete.length >= 100) {
+        await redis.del(...keysToDelete.splice(0, 100));
+      }
+    } while (cursor !== "0");
+    if (keysToDelete.length > 0) await redis.del(...keysToDelete);
   } catch { /* silent */ }
 }
 
-// Key builders — centralized so invalidation is consistent
 export const CacheKey = {
   dashboard: (userId: string, period: string) =>
     `app:dashboard:${userId}:${period}`,
@@ -54,6 +63,16 @@ export const CacheKey = {
     `app:categories:${userId}`,
   recurringRecords: (userId: string) =>
     `app:recurring-records:${userId}`,
+  safeToSpend: (userId: string, period: string) =>
+    `app:safe-to-spend:${userId}:${period}`,
+  cashFlow: (userId: string, period: string) =>
+    `app:cash-flow:${userId}:${period}`,
+  smartAlerts: (userId: string, period: string) =>
+    `app:smart-alerts:${userId}:${period}`,
+  report: (userId: string, monthsBack: number) =>
+    `app:report:${userId}:${monthsBack}`,
+  session: (tokenHash: string) =>
+    `app:session:${tokenHash}`,
   userDashboardPattern: (userId: string) =>
     `app:dashboard:${userId}:*`,
   userRecordsPattern: (userId: string) =>

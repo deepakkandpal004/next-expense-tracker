@@ -15,8 +15,8 @@ export function Row({
       <span
         className={cn(
           "font-medium tabular-nums",
-          tone === "negative" && "text-[#F04438]",
-          tone === "positive" && "text-[#22C55E]",
+          tone === "negative" && "text-danger",
+          tone === "positive" && "text-success",
           tone === "default" && "text-foreground",
         )}
       >

@@ -28,10 +28,7 @@ export async function deleteTransactionRecord(input: DeleteRecordRequest): Promi
     parse: parseRequest,
     execute: async (actor, request): Promise<DeleteData> => {
       const mutation = await deleteRecordOnce(db, actor.userId, request.requestId, request.recordId);
-      await Promise.all([
-        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
-        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
-      ]);
+      await deleteCacheByPattern(CacheKey.userAllPattern(actor.userId));
       return { recordId: mutation.value.id, requestId: request.requestId, replayed: mutation.replayed };
     },
     message: (data) => data.replayed ? 'Transaction was already deleted.' : 'Transaction deleted.',

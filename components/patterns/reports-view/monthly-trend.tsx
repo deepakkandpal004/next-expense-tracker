@@ -25,8 +25,8 @@ export function MonthlyTrend({
           ))}
         </div>
         <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#22C55E]" /> Income</span>
-          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#F04438]" /> Expenses</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-success" /> Income</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-danger" /> Expenses</span>
         </div>
       </div>
     </section>

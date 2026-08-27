@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSettings, updateSettings, type UserSettings } from "@/app/actions/updateSettings";
+import { getSettings, updateSettings, type UserSettings } from "@/src/modules/settings";
 import { Button, useToast } from "@/components/ui";
 import { CurrencyField } from "./currency-field";
 import { MessageBanner, type SettingsMessage } from "./message-banner";
 import { ProfileForm } from "./profile-form";
+import { ThemeToggle } from "./theme-toggle";
 
 export function SettingsView() {
   const { toast } = useToast();
@@ -67,6 +68,8 @@ export function SettingsView() {
       <ProfileForm name={name} email={settings?.email ?? ""} onNameChange={setName} />
 
       <CurrencyField value={currency} onChange={setCurrency} />
+
+      <ThemeToggle />
 
       <div className="flex justify-end">
         <Button label="Save" onClick={handleSave} loading={saving} />

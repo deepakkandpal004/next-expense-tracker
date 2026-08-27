@@ -24,7 +24,7 @@ function parseRequest(input: CreateTransactionRequest): ParseResult<{ requestId:
   if (!result.success) return invalid(result.fieldErrors, 'Correct the highlighted transaction fields.');
   return parsed({ requestId: input.requestId, command: result.data });
 }
-const toRecordData = (record: Awaited<ReturnType<typeof createRecordOnce>>['value']): RecordData => ({ id: record.id, text: record.text, amount: record.amount, type: record.type === 'income' ? 'income' : 'expense', category: record.category, date: record.date.toISOString() });
+const toRecordData = (record: Awaited<ReturnType<typeof createRecordOnce>>['value']): RecordData => ({ id: record.id, text: record.text, amount: Number(record.amount), type: record.type === 'income' ? 'income' : 'expense', category: record.category, date: record.date.toISOString() });
 
 export async function createTransaction(input: CreateTransactionRequest): Promise<CreateTransactionResult> {
   return run({
@@ -33,10 +33,7 @@ export async function createTransaction(input: CreateTransactionRequest): Promis
     parse: parseRequest,
     execute: async (actor, request): Promise<TransactionActionData> => {
       const mutation = await createRecordOnce(db, actor.userId, request.requestId, request.command);
-      await Promise.all([
-        deleteCacheByPattern(CacheKey.userDashboardPattern(actor.userId)),
-        deleteCacheByPattern(CacheKey.userRecordsPattern(actor.userId)),
-      ]);
+      await deleteCacheByPattern(CacheKey.userAllPattern(actor.userId));
       return { transaction: toRecordData(mutation.value), draft: input.command, replayed: mutation.replayed };
     },
     message: (data) => data.replayed ? 'Transaction already added.' : 'Transaction added.',

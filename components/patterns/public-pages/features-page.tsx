@@ -162,25 +162,25 @@ const faqs = [
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.03] blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.03] blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-[#00DCE5]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-primary">
             Features
           </span>
           <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl md:text-7xl">
             Everything you need to
             <br />
-            <span className="bg-gradient-to-r from-[#00DCE5] via-[#A855F7] to-[#22C55E] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-kpi-savings to-success bg-clip-text text-transparent">
               master your finances
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
             Powerful tools designed to give you clarity and control over your money.
             Track smarter, spend wiser.
           </p>
@@ -194,7 +194,7 @@ function HeroSection() {
         >
           <Link
             href="/sign-up"
-            className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-7 py-3.5 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+            className="group flex items-center gap-2.5 rounded-xl bg-primary px-7 py-3.5 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
           >
             Get started free
             <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -217,16 +217,16 @@ function HeroSection() {
 
 function CoreFeaturesSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#A855F7]/20 bg-[#A855F7]/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-[#A855F7]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-kpi-savings/20 bg-kpi-savings/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-kpi-savings">
             Core Features
           </span>
           <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             Built for what matters
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             Essential tools for tracking, analyzing, and understanding your finances.
           </p>
         </AnimateInView>
@@ -253,19 +253,19 @@ function CoreFeaturesSection() {
                   </div>
 
                   <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-[#9AA3AF]">{feature.description}</p>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
 
                   {feature.featured && (
                     <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                      <div className="flex items-center justify-between text-xs text-[#9AA3AF]/60">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground/60">
                         <span>This month</span>
-                        <span className="text-[#00DCE5]">+24% savings</span>
+                        <span className="text-primary">+24% savings</span>
                       </div>
                       <div className="mt-3 flex items-end gap-1 h-12">
                         {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
                           <div
                             key={i}
-                            className="flex-1 rounded-t-sm bg-gradient-to-t from-[#00DCE5]/20 to-[#00DCE5]/60"
+                            className="flex-1 rounded-t-sm bg-gradient-to-t from-primary/20 to-primary/60"
                             style={{ height: `${h}%` }}
                           />
                         ))}
@@ -288,20 +288,20 @@ function CoreFeaturesSection() {
 
 function DetailedFeaturesSection() {
   return (
-    <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+    <section className="relative overflow-hidden border-y border-white/[0.06] bg-bg-base py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-[#A855F7]/[0.03] blur-[100px]" />
+        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-kpi-savings/[0.03] blur-[100px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/20 bg-[#22C55E]/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-[#22C55E]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-success/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-success">
             Advanced Tools
           </span>
           <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             Go beyond basic tracking
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             Advanced features that help you understand, predict, and optimize your finances.
           </p>
         </AnimateInView>
@@ -321,7 +321,7 @@ function DetailedFeaturesSection() {
                   <feature.icon size={24} style={{ color: feature.color }} />
                 </div>
                 <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#9AA3AF]">{feature.description}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
               </motion.div>
             </AnimateInView>
           ))}
@@ -337,14 +337,14 @@ function DetailedFeaturesSection() {
 
 function StatsSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-20">
+    <section className="relative overflow-hidden bg-foreground-inverse py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <AnimateInView key={stat.label} delay={index * 0.1}>
               <div className="text-center">
                 <p className="text-4xl font-bold text-white">{stat.value}</p>
-                <p className="mt-2 text-sm text-[#9AA3AF]">{stat.label}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
               </div>
             </AnimateInView>
           ))}
@@ -363,14 +363,14 @@ function FaqSection() {
   const baseId = useId();
 
   return (
-    <section className="relative overflow-hidden bg-[#0B0F14] py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 bottom-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.02] blur-[100px]" />
+        <div className="absolute left-1/2 bottom-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-primary/[0.02] blur-[100px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 font-medium text-xs tracking-wider text-[#9AA3AF]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 font-medium text-xs tracking-wider text-muted-foreground">
             FAQ
           </span>
           <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
@@ -396,7 +396,7 @@ function FaqSection() {
                       {faq.question}
                       <ChevronDown
                         size={18}
-                        className={`shrink-0 text-[#9AA3AF] transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+                        className={`shrink-0 text-muted-foreground transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
                       />
                     </button>
                   </h3>
@@ -406,7 +406,7 @@ function FaqSection() {
                     aria-labelledby={`faq-${index}`}
                     className={`overflow-hidden transition-all duration-300 ${expanded ? 'max-h-40' : 'max-h-0'}`}
                   >
-                    <p className="px-6 pb-4 text-sm leading-relaxed text-[#9AA3AF]">
+                    <p className="px-6 pb-4 text-sm leading-relaxed text-muted-foreground">
                       {faq.answer}
                     </p>
                   </div>
@@ -426,9 +426,9 @@ function FaqSection() {
 
 function CtaSection() {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#080C10] py-24 sm:py-32">
+    <section className="relative overflow-hidden border-t border-white/[0.06] bg-bg-base py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
@@ -436,13 +436,13 @@ function CtaSection() {
           <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             Start tracking smarter today
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-[#9AA3AF]">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
             Join thousands of users who understand their finances better with Expense Tracker AI.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/sign-up"
-              className="group flex items-center gap-2.5 rounded-xl bg-[#00DCE5] px-8 py-4 text-sm font-semibold text-[#0B0F14] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+              className="group flex items-center gap-2.5 rounded-xl bg-primary px-8 py-4 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
             >
               Get started free
               <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -454,7 +454,7 @@ function CtaSection() {
               Back to home
             </Link>
           </div>
-          <p className="mt-6 text-xs text-[#9AA3AF]/60">No credit card required. Free forever.</p>
+          <p className="mt-6 text-xs text-muted-foreground/60">No credit card required. Free forever.</p>
         </AnimateInView>
       </div>
     </section>
@@ -467,7 +467,7 @@ function CtaSection() {
 
 export function FeaturesPageContent() {
   return (
-    <main className="min-h-screen bg-[#0B0F14]">
+    <main className="min-h-screen bg-foreground-inverse">
       <HeroSection />
       <CoreFeaturesSection />
       <DetailedFeaturesSection />

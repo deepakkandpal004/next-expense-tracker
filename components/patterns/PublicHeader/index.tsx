@@ -54,7 +54,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/[0.12] bg-white/[0.06] px-6 py-3 text-white shadow-[0_8px_32px_rgba(0,0,0,0.36),inset_0_1px_0_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
         <Link
           aria-label="Expense Tracker AI home"
-          className="flex shrink-0 items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70"
+          className="flex shrink-0 items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
           href="/"
         >
           <span className="relative grid size-9 place-items-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-110 sm:size-10">
@@ -63,7 +63,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
           </span>
           <span className="hidden font-extrabold text-lg tracking-wider sm:block">
             <span className="text-white">Expense Tracker </span>
-            <span className="text-[#00DCE5]">AI</span>
+            <span className="text-primary">AI</span>
           </span>
         </Link>
 
@@ -74,8 +74,8 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
               <Link
                 aria-current={current ? "page" : undefined}
                 className={cn(
-                  "group relative h-6 overflow-hidden text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70",
-                  current ? "text-[#00DCE5]" : "text-white/80 hover:text-white"
+                   "group relative h-6 overflow-hidden text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+                   current ? "text-primary" : "text-white/80 hover:text-white"
                 )}
                 href={item.href}
                 key={item.id}
@@ -96,7 +96,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
           {isAuthenticated ? (
             <Link
               href="/dashboard"
-              className="hidden h-10 items-center gap-2 rounded-full bg-[#00DCE5] px-4 text-sm font-semibold text-[#071014] shadow-[0_0_16px_rgba(0,220,229,0.18)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(0,220,229,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
+               className="hidden h-10 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-foreground-inverse shadow-[0_0_16px_var(--primary-muted)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
             >
               <LayoutDashboard size={14} strokeWidth={2.25} />
               Dashboard
@@ -105,14 +105,14 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
             <>
               <Link
                 href="/sign-in"
-                className="hidden h-10 items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-4 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:border-white/[0.24] hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:flex"
+                className="hidden h-10 items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-4 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:border-white/[0.24] hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:flex"
               >
                 <LogIn size={14} strokeWidth={2.25} />
                 Sign in
               </Link>
               <Link
                 href="/sign-up"
-                className="group hidden h-10 items-center gap-1.5 rounded-full bg-[#00DCE5] px-4 text-sm font-semibold text-[#071014] shadow-[0_0_16px_rgba(0,220,229,0.18)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(0,220,229,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
+                className="group hidden h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-foreground-inverse shadow-[0_0_16px_var(--primary-muted)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
               >
                 Get Started
                 <ArrowRight
@@ -128,7 +128,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="inline-flex size-10 items-center justify-center rounded-full text-white/80 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-full text-white/80 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 md:hidden"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -144,8 +144,8 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
                 <Link
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "text-base transition-colors hover:text-[#00DCE5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70",
-                    current ? "text-[#00DCE5]" : "text-white/80"
+                    "text-base transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+                    current ? "text-primary" : "text-white/80"
                   )}
                   href={item.href}
                   key={item.id}
@@ -169,7 +169,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
               {!isAuthenticated && (
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#00DCE5] px-4 py-2 text-sm font-semibold text-[#071014] shadow-[0_0_16px_rgba(0,220,229,0.18)] transition-all duration-300 active:scale-[0.97]"
+                   className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-foreground-inverse shadow-[0_0_16px_var(--primary-muted)] transition-all duration-300 active:scale-[0.97]"
                   onClick={() => setMobileOpen(false)}
                 >
                   Get Started

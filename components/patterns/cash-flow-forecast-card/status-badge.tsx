@@ -22,8 +22,8 @@ export function StatusBadge({ state, netPositive }: { state: string; netPositive
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold",
         netPositive
-          ? "bg-[#4ADE80]/10 text-[#4ADE80]"
-          : "bg-[#F5A524]/10 text-[#F5A524]",
+          ? "bg-kpi-income-surface text-kpi-income"
+          : "bg-warning-surface text-warning",
       )}
     >
       {netPositive ? (

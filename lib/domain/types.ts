@@ -4,7 +4,7 @@ export type CurrencyCode = string;
 export type MinorUnitAmount = number;
 
 export type AppearancePreference = "dark";
-export type ResolvedAppearance = "dark";
+export type ResolvedAppearance = "dark" | "light";
 export type ContentDensity = "comfortable" | "compact";
 
 export type TransactionType = "income" | "expense";

@@ -287,7 +287,7 @@ export default function AddNewRecord({
               onClick={() => changeType("expense")}
               className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 draft.type === "expense"
-                  ? "bg-[#F04438]/10 text-[#F04438] shadow-sm"
+                  ? "bg-danger-surface text-danger shadow-sm"
                   : "text-foreground-secondary hover:text-foreground"
               }`}
             >
@@ -299,7 +299,7 @@ export default function AddNewRecord({
               onClick={() => changeType("income")}
               className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 draft.type === "income"
-                  ? "bg-[#22C55E]/10 text-[#22C55E] shadow-sm"
+                  ? "bg-success-surface text-success shadow-sm"
                   : "text-foreground-secondary hover:text-foreground"
               }`}
             >
@@ -358,9 +358,9 @@ export default function AddNewRecord({
                   value={draft.category}
                 />
                 {draft.categorySource === "ai-suggested" ? (
-                  <div className="rounded-xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-3">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/10">
+              <div className="rounded-xl border border-info/20 bg-info/[0.04] p-3">
+                <div className="flex items-center gap-2">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-info/10">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
@@ -377,7 +377,7 @@ export default function AddNewRecord({
                           disabled={pending}
                           onChange={(event) => { updateDraft({ categoryConfirmed: event.target.checked }); clearFieldError("category"); }}
                           type="checkbox"
-                          className="h-4 w-4 rounded border-border accent-[#00DCE5]"
+                           className="h-4 w-4 rounded border-border accent-primary"
                         />
                         <span className="text-xs text-foreground-secondary">Confirm</span>
                       </label>
@@ -388,7 +388,7 @@ export default function AddNewRecord({
                   type="button"
                   disabled={pending || aiPending}
                   onClick={() => void requestSuggestion()}
-                  className="flex items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground-secondary transition-colors hover:border-[#00DCE5]/30 hover:bg-[#00DCE5]/[0.04] hover:text-[#00DCE5] disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-foreground-secondary transition-colors hover:border-primary/30 hover:bg-primary/[0.04] hover:text-primary disabled:opacity-50"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
@@ -397,9 +397,9 @@ export default function AddNewRecord({
                 </button>
               </div>
             ) : (
-              <div className="rounded-xl border border-[#22C55E]/20 bg-[#22C55E]/[0.04] p-3">
+              <div className="rounded-xl border border-success/20 bg-success/[0.04] p-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E]/10">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-success/10">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
@@ -413,9 +413,9 @@ export default function AddNewRecord({
             )}
 
             {submissionFailure ? (
-              <div className="rounded-xl border border-[#F04438]/20 bg-[#F04438]/[0.04] p-3">
+              <div className="rounded-xl border border-danger/20 bg-danger/[0.04] p-3">
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F04438]/10">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-danger/10">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F04438" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
@@ -431,7 +431,7 @@ export default function AddNewRecord({
                       type="button"
                       disabled={pending}
                       onClick={() => void retry()}
-                      className="text-xs font-medium text-[#00DCE5] hover:underline"
+                      className="text-xs font-medium text-primary hover:underline"
                     >
                       Retry
                     </button>

@@ -22,7 +22,7 @@ export function MoneyLeakDetectorCard({
     >
       <div className="relative flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-4">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#00DCE5]/10 text-[#00DCE5]">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Droplets size={15} aria-hidden="true" />
           </span>
           <div>
@@ -36,7 +36,7 @@ export function MoneyLeakDetectorCard({
           </div>
         </div>
         {report.hasLeaks && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F5A623]/10 px-3 py-1 text-[11px] font-semibold text-[#F5A623]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-warning-surface px-3 py-1 text-[11px] font-semibold text-warning">
             <Timer size={12} aria-hidden="true" />
             {report.leaks.length} leak{report.leaks.length === 1 ? "" : "s"} found
           </span>
@@ -56,7 +56,7 @@ export function MoneyLeakDetectorCard({
       {report.status === "available" && !report.hasLeaks && (
         <div className="relative px-5 pb-5">
           <p className="flex items-center gap-2 text-sm text-foreground-secondary">
-            <Sparkles className="size-4 text-[#00DCE5]" aria-hidden="true" />
+            <Sparkles className="size-4 text-primary" aria-hidden="true" />
             No leaks detected — your discretionary spending is in line with your
             usual months.
           </p>
@@ -91,7 +91,7 @@ export function MoneyLeakDetectorCard({
                 <Timer size={13} aria-hidden="true" />
                 Potential annual savings
               </p>
-              <p className="text-lg font-bold tabular-nums text-[#22C55E]">
+              <p className="text-lg font-bold tabular-nums text-success">
                 {formatCurrency({ minorValue: report.totalAnnualSavingsMinor, currency })}
               </p>
             </div>

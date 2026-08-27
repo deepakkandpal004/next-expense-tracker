@@ -6,14 +6,14 @@ export function LeverRow({ lever, currency }: { lever: ContributionCandidate; cu
   return (
     <a
       aria-label={`Open ${lever.label}`}
-      className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3.5 py-3 transition-colors duration-150 hover:border-[#00DCE5]/30 hover:bg-[#00DCE5]/[0.04]"
+      className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3.5 py-3 transition-colors duration-150 hover:border-primary/30 hover:bg-primary/[0.04]"
       href={lever.href}
     >
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/[0.04]">
         {lever.kind === "subscription-cancel" ? (
-          <Calendar size={14} className="text-[#F5A623]" aria-hidden="true" />
+          <Calendar size={14} className="text-warning" aria-hidden="true" />
         ) : (
-          <TrendingDown size={14} className="text-[#22C55E]" aria-hidden="true" />
+          <TrendingDown size={14} className="text-success" aria-hidden="true" />
         )}
       </span>
       <div className="min-w-0 flex-1">
@@ -23,7 +23,7 @@ export function LeverRow({ lever, currency }: { lever: ContributionCandidate; cu
         )}
       </div>
       <div className="shrink-0 text-right">
-        <p className="text-sm font-semibold tabular-nums text-[#22C55E]">
+        <p className="text-sm font-semibold tabular-nums text-success">
           +<CurrencyText currency={currency} minorValue={lever.amountMinor} />
         </p>
         <p className="mt-0.5 flex items-center justify-end gap-1 text-[11px] text-foreground-secondary/70">

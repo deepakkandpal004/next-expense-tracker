@@ -1,13 +1,10 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
-import { getCashFlowProjection } from '@/lib/data/cash-flow';
-import { getCachedDashboardData } from '@/lib/data/dashboard';
-import { getSafeToSpendData } from '@/lib/data/safe-to-spend';
-import { getSmartPacingReport } from '@/lib/data/smart-alerts';
+import { getAuthUser } from '@/src/modules/auth';
+import { getDashboardBundle } from '@/src/modules/dashboard';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
 import { toSearchParams } from '@/lib/domain/search-params';
-import { DashboardView } from '@/components/patterns/dashboard-view';
+import { DashboardView } from '@/src/modules/dashboard/presentation';
 
 export const metadata: Metadata = { title: 'Dashboard – Expense Tracker AI' };
 
@@ -22,12 +19,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const query = await searchParams;
   const { input: periodInput, period } = resolveValidReportingPeriod(toSearchParams(query));
 
-  const [dashboard, safeToSpend, cashFlow, smartPacing] = await Promise.all([
-    getCachedDashboardData(user.id, period, user.currency),
-    getSafeToSpendData(user.id, period, user.currency),
-    getCashFlowProjection(user.id, period, user.currency),
-    getSmartPacingReport(user.id, period),
-  ]);
+  const { dashboard, safeToSpend, cashFlow, smartPacing } = await getDashboardBundle(
+    user.id,
+    period,
+    user.currency,
+  );
 
   return (
     <DashboardView

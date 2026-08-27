@@ -14,6 +14,7 @@ import {
   clearRecordFilters,
   createExportScope,
   selectRecords,
+  type RecordSelection,
 } from "@/lib/domain/record-selection";
 import { withReportingPeriodSearchParams } from "@/lib/domain/reporting-period";
 import type { Transaction, TransactionQuery, TransactionType } from "@/lib/domain/types";
@@ -30,7 +31,7 @@ import { ITEMS_PER_PAGE, type RecordsViewProps } from "./types";
 
 export { type RecordsViewProps } from "./types";
 
-export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProps) {
+export function RecordsView({ records, period, resolvedPeriod, pagination }: RecordsViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -40,7 +41,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   const [importOpen, setImportOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteFailure, setDeleteFailure] = useState<{ message: string; record: Transaction; requestId: string } | undefined>();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pagination?.page ?? 1);
   const [anomalyIds, setAnomalyIds] = useState<ReadonlySet<string> | undefined>();
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
@@ -65,13 +66,19 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
   }, [items]);
 
   useEffect(() => {
-    getForecastSnapshot(resolvedPeriod).then(r => {
-      if (r.status === "success" && r.data.anomalies.length > 0) {
-        setAnomalyIds(new Set(r.data.anomalies.map(a => a.transactionId)));
-      } else {
-        setAnomalyIds(undefined);
-      }
-    });
+    // Debounce forecast fetch — avoids firing on rapid period switches (300ms)
+    // Server now caches for 5min, so repeated calls are cheap, but debouncing
+    // still prevents main-thread jank on filter typing.
+    const timer = setTimeout(() => {
+      getForecastSnapshot(resolvedPeriod).then(r => {
+        if (r.status === "success" && r.data.anomalies.length > 0) {
+          setAnomalyIds(new Set(r.data.anomalies.map(a => a.transactionId)));
+        } else {
+          setAnomalyIds(undefined);
+        }
+      });
+    }, 300);
+    return () => clearTimeout(timer);
   }, [resolvedPeriod]);
 
   const query: TransactionQuery = useMemo(() => ({
@@ -82,13 +89,29 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
     sort: parseSort(searchParams.get("sort")),
   }), [period, searchParams]);
 
-  const selection = useMemo(() => selectRecords(items, query), [items, query]);
+  const isServerPaginated = !!pagination;
 
-  const totalPages = Math.ceil(selection.records.length / ITEMS_PER_PAGE);
+  const selection = useMemo(() => {
+    if (isServerPaginated) {
+      // Server already filtered + sorted + paginated; just expose for UI
+      return {
+        records: items,
+        activeFilters: selectRecords(items, query).activeFilters,
+        activeFilterCount: selectRecords(items, query).activeFilterCount,
+      } as RecordSelection;
+    }
+    return selectRecords(items, query);
+  }, [items, query, isServerPaginated]);
+
+  const totalPages = isServerPaginated
+    ? Math.ceil((pagination?.total ?? 0) / (pagination?.take ?? ITEMS_PER_PAGE))
+    : Math.ceil(selection.records.length / ITEMS_PER_PAGE);
+
   const paginatedRecords = useMemo(() => {
+    if (isServerPaginated) return selection.records;
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return selection.records.slice(start, start + ITEMS_PER_PAGE);
-  }, [selection.records, currentPage]);
+  }, [selection.records, currentPage, isServerPaginated]);
 
   const updateParams = useCallback((patch: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -96,8 +119,29 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
       if (value === null || value === "") params.delete(key);
       else params.set(key, value);
     }
+    // Reset to page 1 when filters change and server pagination is active
+    if (isServerPaginated && (patch.search !== undefined || patch.type !== undefined || patch.category !== undefined || patch.sort !== undefined)) {
+      params.set("page", "1");
+    }
     router.push(`${pathname}?${params.toString()}`);
-  }, [pathname, router, searchParams]);
+  }, [pathname, router, searchParams, isServerPaginated]);
+
+  const handlePageChange = useCallback((page: number) => {
+    if (isServerPaginated) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(page));
+      router.push(`${pathname}?${params.toString()}`);
+    } else {
+      setCurrentPage(page);
+    }
+  }, [isServerPaginated, pathname, router, searchParams]);
+
+  // Keep currentPage in sync with server page
+  useEffect(() => {
+    if (isServerPaginated && pagination?.page && pagination.page !== currentPage) {
+      setCurrentPage(pagination.page);
+    }
+  }, [pagination?.page, isServerPaginated, currentPage]);
 
   const clearFilters = () => {
     const cleared = clearRecordFilters(query);
@@ -140,10 +184,14 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
     try {
       const result = await deleteTransactionRecord({ recordId: record.id, requestId });
       if (result.status === "success") {
-        setItems((current) => current.filter((item) => item.id !== record.id));
         toast({ description: result.message, tone: "success" });
-        if (paginatedRecords.length === 1 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
+        if (isServerPaginated) {
+          router.refresh();
+        } else {
+          setItems((current) => current.filter((item) => item.id !== record.id));
+          if (paginatedRecords.length === 1 && currentPage > 1) {
+            handlePageChange(currentPage - 1);
+          }
         }
       } else {
         setDeleteFailure({ message: result.message, record, requestId });
@@ -164,14 +212,18 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
       const { deleteTransactionRecords } = await import("@/app/actions/deleteRecords");
       const res = await deleteTransactionRecords({ recordIds: [...selectedIds], requestId });
       if (res.status === "success") {
-        const removed = new Set(res.data.recordIds);
-        const remaining = items.filter((item) => !removed.has(item.id));
-        setItems(remaining);
-        const maxPage = Math.max(1, Math.ceil(remaining.length / ITEMS_PER_PAGE));
-        if (currentPage > maxPage) setCurrentPage(maxPage);
+        toast({ description: res.message, tone: "success" });
+        if (isServerPaginated) {
+          router.refresh();
+        } else {
+          const removed = new Set(res.data.recordIds);
+          const remaining = items.filter((item) => !removed.has(item.id));
+          setItems(remaining);
+          const maxPage = Math.max(1, Math.ceil(remaining.length / ITEMS_PER_PAGE));
+          if (currentPage > maxPage) handlePageChange(maxPage);
+        }
         setSelectedIds(new Set());
         setBulkDeleteOpen(false);
-        toast({ description: res.message, tone: "success" });
       } else {
         setBulkError(res.message);
         setBulkDeleteOpen(true);
@@ -213,7 +265,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
           type={query.types[0] ?? ""}
           category={query.categories[0] ?? ""}
           sort={sortValue(query.sort)}
-          recordCount={selection.records.length}
+          recordCount={isServerPaginated ? (pagination?.total ?? 0) : selection.records.length}
           activeFilters={selection.activeFilters}
           onSearchChange={handleSearchChange}
           onTypeChange={handleTypeChange}
@@ -264,7 +316,7 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
         />
       ) : null}
 
-      {selection.records.length === 0 ? (
+      {(isServerPaginated ? (pagination?.total ?? 0) === 0 : selection.records.length === 0) ? (
         <TransactionEmptyState
           hasFilters={selection.activeFilterCount > 0}
           onClearFilters={clearFilters}
@@ -284,9 +336,9 @@ export function RecordsView({ records, period, resolvedPeriod }: RecordsViewProp
           <TransactionPagination
             currentPage={currentPage}
             totalPages={totalPages}
-            totalItems={selection.records.length}
-            itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={setCurrentPage}
+            totalItems={isServerPaginated ? (pagination?.total ?? 0) : selection.records.length}
+            itemsPerPage={pagination?.take ?? ITEMS_PER_PAGE}
+            onPageChange={handlePageChange}
           />
         </div>
       )}

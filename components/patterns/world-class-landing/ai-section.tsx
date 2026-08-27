@@ -26,8 +26,8 @@ export function AISection() {
     <section className="relative isolate overflow-hidden border-b border-white/[0.06] bg-black py-14 sm:py-16">
       {/* Background: dot grid + soft glows */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-[-10%] top-[-20%] h-[500px] w-[500px] rounded-full bg-[#00DCE5]/[0.04] blur-[130px]" />
-        <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-[#A855F7]/[0.035] blur-[120px]" />
+        <div className="absolute left-[-10%] top-[-20%] h-[500px] w-[500px] rounded-full bg-primary/[0.04] blur-[130px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full bg-kpi-savings/[0.035] blur-[120px]" />
         <div
           className="absolute inset-0"
           style={{
@@ -46,7 +46,7 @@ export function AISection() {
             <h2 className="font-bold mt-6 text-5xl tracking-tight text-white sm:text-6xl">
               Intelligence that works for you
             </h2>
-            <p className="mx-auto mt-5 max-w-3xl text-lg text-[#9AA3AF]">
+            <p className="mx-auto mt-5 max-w-3xl text-lg text-muted-foreground">
               Our AI understands your spending patterns and provides actionable
               insights to help you save more and spend smarter.
             </p>
@@ -60,14 +60,14 @@ export function AISection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="group flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-center transition-all duration-300 hover:border-[#00DCE5]/20 hover:bg-[#00DCE5]/[0.04]"
+                   className="group flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-center transition-all duration-300 hover:border-primary/20 hover:bg-primary/[0.04]"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#00DCE5]/[0.1] transition-transform duration-300 group-hover:scale-105">
-                    <item.icon size={18} className="text-[#00DCE5]" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/[0.1] transition-transform duration-300 group-hover:scale-105">
+                    <item.icon size={18} className="text-primary" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-semibold text-base text-white">{item.title}</h3>
-                    <p className="mt-0.5 text-sm text-[#9AA3AF]">{item.desc}</p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{item.desc}</p>
                   </div>
                 </motion.div>
               ))}

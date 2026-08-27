@@ -313,28 +313,6 @@ Return only the narration text.`;
   return trimmed.length > 0 ? trimmed : null;
 }
 
-/** Answers a question from the same disclosed, period-scoped aggregate payload. */
-export async function generateAIAnswer(
-  question: string,
-  payload: AiProviderPayload,
-): Promise<string> {
-  const prompt = `Answer this question using only the disclosed recorded-data summary for the selected reporting period. Be concise, identify uncertainty when relevant, and do not give professional financial advice.
-Question: ${question}
-Disclosed period-scoped data:\n${JSON.stringify(payload, null, 2)}\nReturn only answer text.`;
-  return requestAiCompletion({
-    model: "openai/gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: "You provide informational spending analysis from supplied data, not professional financial advice.",
-      },
-      { role: "user", content: prompt },
-    ],
-    temperature: 0.7,
-    maxTokens: 200,
-  });
-}
-
 /**
  * Generates a plain-language explanation of an already-computed Safe-to-Spend
  * figure. The prompt receives only the disclosed, post-calculation summary; it

@@ -56,20 +56,20 @@ export function FAQSection() {
                 <div
                   className={`rounded-xl border transition-colors ${
                     isOpen
-                      ? "border-[#00DCE5]/30 bg-[#00DCE5]/[0.05]"
+                      ? "border-primary/30 bg-primary/[0.05]"
                       : "border-white/[0.06] bg-white/[0.02]"
                   }`}
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium text-sm tracking-wide text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#00DCE5]/70"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium text-sm tracking-wide text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/70"
                     aria-expanded={isOpen}
                   >
                     {faq.q}
                     <ChevronDown
                       size={16}
-                      className={`shrink-0 text-[#9AA3AF] transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#00DCE5]" : ""
+                      className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-primary" : ""
                       }`}
                     />
                   </button>
@@ -80,7 +80,7 @@ export function FAQSection() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <p className="px-5 pb-4 text-sm text-[#9AA3AF]">
+                      <p className="px-5 pb-4 text-sm text-muted-foreground">
                         {faq.a}
                       </p>
                     </motion.div>

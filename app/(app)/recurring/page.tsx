@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
-import { RecurringView } from '@/components/patterns/recurring-view';
+import { getAuthUser } from '@/src/modules/auth';
+import { RecurringView } from '@/src/modules/recurring/presentation';
 
 export const metadata: Metadata = { title: 'Recurring Transactions – Expense Tracker AI' };
 

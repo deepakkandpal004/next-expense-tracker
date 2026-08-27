@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth";
-import { SettingsView } from "@/components/patterns/settings-view";
+import { getAuthUser } from "@/src/modules/auth";
+import { SettingsView } from "@/src/modules/settings/presentation";
 
 export const metadata: Metadata = { title: "Settings – Expense Tracker AI" };
 

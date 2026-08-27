@@ -46,7 +46,7 @@ export function PasswordField({
           aria-pressed={visible}
           disabled={disabled}
           onClick={() => setVisible((c) => !c)}
-          className="absolute right-2 top-[34px] h-11 w-11 flex items-center justify-center rounded-lg text-[#9AA3AF] hover:text-white hover:bg-white/5 transition-all"
+          className="absolute right-2 top-[34px] h-11 w-11 flex items-center justify-center rounded-lg text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
         >
           {visible ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>

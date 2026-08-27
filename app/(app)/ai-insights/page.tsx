@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthUser } from '@/src/modules/auth';
 import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
 import { toSearchParams } from '@/lib/domain/search-params';
 import { getAiFinancialInsights } from '@/app/actions/getAiFinancialInsights';

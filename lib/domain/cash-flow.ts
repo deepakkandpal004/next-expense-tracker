@@ -240,6 +240,6 @@ export function safeRecordForProjection(record: {
   return {
     date: record.date.toISOString().slice(0, 10),
     type: record.type === "income" ? "income" : "expense",
-    amountMinor: Math.round(record.amount * 100),
+    amountMinor: Math.round(Number(record.amount) * 100),
   };
 }

@@ -17,8 +17,11 @@ import type {
 import {
   DENSITY_COOKIE_NAME,
   DENSITY_STORAGE_KEY,
+  APPEARANCE_COOKIE_NAME,
+  APPEARANCE_STORAGE_KEY,
   THEME_COLORS,
   isContentDensity,
+  isResolvedAppearance,
   readPreferenceCookie,
   serializePreferenceCookie,
 } from '@/lib/preferences/preferences';
@@ -28,11 +31,13 @@ interface ThemeContextType {
   density: ContentDensity;
   setDensity: (density: ContentDensity) => void;
   theme: ResolvedAppearance;
+  setTheme: (theme: ResolvedAppearance) => void;
 }
 
 interface ThemeProviderProps {
   children: ReactNode;
   initialDensity?: ContentDensity;
+  initialAppearance?: ResolvedAppearance;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -57,14 +62,14 @@ function updateBrowserDensity(density: ContentDensity) {
   }
 }
 
-function applyDarkAppearance() {
+function applyAppearance(appearance: ResolvedAppearance) {
   try {
     const root = document.documentElement;
-    root.classList.remove('light');
-    root.classList.add('dark');
-    root.dataset.appearancePreference = 'dark';
-    root.dataset.theme = 'dark';
-    root.style.colorScheme = 'dark';
+    root.classList.remove('dark', 'light');
+    root.classList.add(appearance);
+    root.dataset.appearancePreference = appearance;
+    root.dataset.theme = appearance;
+    root.style.colorScheme = appearance;
 
     let metadata = Array.from(
       document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
@@ -76,7 +81,7 @@ function applyDarkAppearance() {
       metadata = [meta];
     }
     metadata.forEach((meta) => {
-      meta.content = THEME_COLORS.dark;
+      meta.content = THEME_COLORS[appearance];
     });
   } catch {
     // Presentation failures must never prevent app rendering.
@@ -86,13 +91,25 @@ function applyDarkAppearance() {
 function ThemeState({
   children,
   initialDensity,
+  initialAppearance,
 }: Required<ThemeProviderProps>) {
   const [density, setDensityState] = useState<ContentDensity>(initialDensity);
+  const [appearance, setAppearanceState] = useState<ResolvedAppearance>(initialAppearance);
   const hasHydratedDensity = useRef(false);
 
   useEffect(() => {
-    applyDarkAppearance();
-  }, []);
+    const cookieAppearance = readPreferenceCookie(document.cookie, APPEARANCE_COOKIE_NAME);
+    const storedAppearance = (() => {
+      try { return localStorage.getItem(APPEARANCE_STORAGE_KEY); } catch { return null; }
+    })();
+    const resolved = isResolvedAppearance(cookieAppearance)
+      ? cookieAppearance
+      : isResolvedAppearance(storedAppearance)
+        ? storedAppearance
+        : initialAppearance;
+    setAppearanceState(resolved);
+    applyAppearance(resolved);
+  }, [initialAppearance]);
 
   useEffect(() => {
     if (hasHydratedDensity.current) return;
@@ -131,14 +148,22 @@ function ThemeState({
     persistPreference(DENSITY_COOKIE_NAME, nextDensity, DENSITY_STORAGE_KEY);
   }, []);
 
+  const setTheme = useCallback((nextAppearance: ResolvedAppearance) => {
+    if (!isResolvedAppearance(nextAppearance)) return;
+    setAppearanceState(nextAppearance);
+    applyAppearance(nextAppearance);
+    persistPreference(APPEARANCE_COOKIE_NAME, nextAppearance, APPEARANCE_STORAGE_KEY);
+  }, []);
+
   const value = useMemo<ThemeContextType>(
     () => ({
-      resolvedAppearance: 'dark',
+      resolvedAppearance: appearance,
       density,
       setDensity,
-      theme: 'dark',
+      theme: appearance,
+      setTheme,
     }),
-    [density, setDensity],
+    [appearance, density, setDensity, setTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -147,8 +172,9 @@ function ThemeState({
 export function ThemeProvider({
   children,
   initialDensity = 'comfortable',
+  initialAppearance = 'dark',
 }: ThemeProviderProps) {
-  return <ThemeState initialDensity={initialDensity}>{children}</ThemeState>;
+  return <ThemeState initialAppearance={initialAppearance} initialDensity={initialDensity}>{children}</ThemeState>;
 }
 
 export function useTheme() {

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth";
-import { getCachedDashboardData } from "@/lib/data/dashboard";
+import { getAuthUser } from "@/src/modules/auth";
+import { getCachedDashboardData } from "@/src/modules/dashboard";
 import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
 import { toSearchParams } from "@/lib/domain/search-params";
-import { BudgetPage } from "@/components/patterns/budget-page";
+import { BudgetPage } from "@/src/modules/budgets/presentation";
 
 export const metadata: Metadata = { title: "Budget – Expense Tracker AI" };
 

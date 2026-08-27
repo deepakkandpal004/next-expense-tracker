@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth";
-import { CategoriesView } from "@/components/patterns/categories-view";
+import { getAuthUser } from "@/src/modules/auth";
+import { CategoriesView } from "@/src/modules/categories/presentation";
 
 export const metadata: Metadata = { title: "Categories – Expense Tracker AI" };
 

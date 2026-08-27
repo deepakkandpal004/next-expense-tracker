@@ -46,7 +46,7 @@ export function MonthSwitcher({ period }: MonthSwitcherProps) {
     <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.02] p-1">
       <button
         aria-label="Previous month"
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8B95A5] transition-colors hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
         onClick={() => {
           const next = shiftMonth(-1);
           if (next) navigateTo(next);
@@ -60,7 +60,7 @@ export function MonthSwitcher({ period }: MonthSwitcherProps) {
       </span>
       <button
         aria-label="Next month"
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8B95A5] transition-colors hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
         disabled={isCurrentMonth}
         onClick={() => {
           const next = shiftMonth(1);
@@ -72,7 +72,7 @@ export function MonthSwitcher({ period }: MonthSwitcherProps) {
       </button>
       {!isCurrentMonth && currentMonthPeriod ? (
         <button
-          className="ml-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#00DCE5] transition-colors hover:bg-[#00DCE5]/10"
+          className="ml-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
           onClick={() => navigateTo(currentMonthPeriod)}
           type="button"
         >

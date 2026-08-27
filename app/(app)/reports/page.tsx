@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthUser } from "@/lib/auth";
-import { getReportData } from "@/app/actions/getReportData";
-import { getCashFlowProjection } from "@/lib/data/cash-flow";
+import { getAuthUser } from "@/src/modules/auth";
+import { getCachedReportData } from "@/src/modules/reports";
+import { getCachedCashFlowProjection } from "@/src/modules/reports";
 import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
 import { toSearchParams } from "@/lib/domain/search-params";
-import { ReportsView } from "@/components/patterns/reports-view";
+import { ReportsView } from "@/src/modules/reports/presentation";
 
 export const metadata: Metadata = { title: "Reports – Expense Tracker AI" };
 
@@ -21,8 +21,8 @@ export default async function ReportsRoute({ searchParams }: ReportsPageProps) {
   const { period } = resolveValidReportingPeriod(toSearchParams(query));
 
   const [initialData, initialCashFlow] = await Promise.all([
-    getReportData(period),
-    getCashFlowProjection(user.id, period, user.currency ?? "INR"),
+    getCachedReportData(user.id),
+    getCachedCashFlowProjection(user.id, period, user.currency ?? "INR"),
   ]);
 
   return (

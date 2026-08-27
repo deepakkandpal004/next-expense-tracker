@@ -26,7 +26,7 @@ export function Checkbox({
           type="checkbox"
         />
         {showMark ? (
-          <span aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center text-[#0A0B0D]">
+           <span aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center text-foreground-inverse">
             {indeterminate ? <Minus size={10} strokeWidth={3.5} /> : <Check size={10} strokeWidth={3} />}
           </span>
         ) : null}

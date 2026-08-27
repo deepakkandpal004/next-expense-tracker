@@ -8,17 +8,17 @@ export function PrivacyPageContent() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#00DCE5]/[0.04] blur-[120px]" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/[0.04] blur-[120px]" />
         </div>
         <div className="content-frame relative py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00DCE5]/20 bg-[#00DCE5]/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-[#00DCE5] uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-primary uppercase">
               Privacy
             </span>
             <h1 className="mt-6 text-[clamp(2.5rem,6vw,4rem)] font-semibold text-white tracking-tight leading-[1.1]">
               Your data stays yours.
             </h1>
-            <p className="mt-5 text-lg text-[#9AA3AF] max-w-lg mx-auto leading-relaxed">
+            <p className="mt-5 text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
               We collect only what&apos;s needed to power your expense tracking. Nothing more.
             </p>
           </div>
@@ -67,9 +67,9 @@ export function PrivacyPageContent() {
       {/* Footer note */}
       <section className="content-frame border-t border-white/5 py-12 sm:py-16">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-[#9AA3AF]">
+          <p className="text-sm text-muted-foreground">
             Questions? Contact us at{' '}
-            <span className="text-[#00DCE5]">privacy@expenseai.app</span>
+            <span className="text-primary">privacy@expenseai.app</span>
           </p>
         </div>
       </section>
@@ -80,12 +80,12 @@ export function PrivacyPageContent() {
 function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-[#00DCE5] border border-white/[0.06]">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-primary border border-white/[0.06]">
         {icon}
       </div>
       <div>
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-[#9AA3AF] leading-relaxed">{description}</p>
+        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -94,11 +94,11 @@ function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; titl
 function DataCard({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
-      <p className="text-[11px] font-medium text-[#00DCE5] uppercase tracking-wider mb-3">{label}</p>
+      <p className="text-[11px] font-medium text-primary uppercase tracking-wider mb-3">{label}</p>
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-center gap-2 text-sm text-[#9AA3AF]">
-            <span className="h-1 w-1 rounded-full bg-[#9AA3AF]/40" />
+          <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
             {item}
           </li>
         ))}

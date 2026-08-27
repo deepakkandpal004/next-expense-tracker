@@ -14,7 +14,7 @@ import { FloatingShapes } from "./shared";
 
 export function HeroSection() {
   return (
-    <section className="relative isolate -mt-[76px] overflow-hidden bg-[#0B0F14]">
+    <section className="relative isolate -mt-[76px] overflow-hidden bg-bg-base">
       {/* =========================
           BACKGROUND
       ========================== */}
@@ -22,10 +22,10 @@ export function HeroSection() {
         <FloatingShapes />
 
         {/* Main hero glow */}
-        <div className="absolute left-1/2 top-[18%] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[#00DCE5]/[0.055] blur-[140px]" />
+        <div className="absolute left-1/2 top-[18%] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-primary/[0.055] blur-[140px]" />
 
         {/* Dashboard glow */}
-        <div className="absolute left-1/2 top-[65%] h-[400px] w-[900px] -translate-x-1/2 rounded-full bg-[#A855F7]/[0.035] blur-[160px]" />
+        <div className="absolute left-1/2 top-[65%] h-[400px] w-[900px] -translate-x-1/2 rounded-full bg-kpi-savings/[0.035] blur-[160px]" />
       </div>
 
       <div className="relative z-10 pt-[160px] sm:pt-[185px] lg:pt-[210px]">
@@ -53,14 +53,14 @@ export function HeroSection() {
             className="flex justify-center"
           >
             <span className="rainbow relative isolate inline-flex overflow-hidden rounded-full p-px shadow-[0_0_30px_rgba(34,211,238,0.14)]">
-              <span className="relative z-10 inline-flex items-center gap-3 rounded-full bg-[#0B0F14]/90 px-5 py-2 text-sm font-medium tracking-wide backdrop-blur-xl">
+              <span className="relative z-10 inline-flex items-center gap-3 rounded-full bg-bg-base/90 px-5 py-2 text-sm font-medium tracking-wide backdrop-blur-xl">
                 <span className="text-white">
                   AI-Powered
                 </span>
 
                 <span className="h-4 w-px bg-white/10" />
 
-                <span className="text-[#9AA3AF]">
+                <span className="text-muted-foreground">
                   Expense Tracking
                 </span>
               </span>
@@ -87,7 +87,7 @@ export function HeroSection() {
             Track every expense.
             <br />
 
-            <span className="bg-gradient-to-r from-[#00DCE5] via-[#A855F7] to-[#22C55E] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-kpi-savings to-success bg-clip-text text-transparent">
               Master every month.
             </span>
           </motion.h1>
@@ -107,7 +107,7 @@ export function HeroSection() {
               delay: 0.35,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#9AA3AF] sm:text-lg sm:leading-8"
+            className="mx-auto mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
             Expense Tracker AI automatically categorizes your
             transactions, keeps your budgets on track, and
@@ -137,7 +137,7 @@ export function HeroSection() {
             {/* Primary CTA */}
             <Link
               href="/sign-up"
-              className="group relative flex h-14 items-center gap-2.5 rounded-2xl bg-[#00DCE5] px-8 text-base font-semibold text-[#071014] shadow-[0_0_25px_rgba(0,220,229,0.15)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(0,220,229,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+              className="group relative flex h-14 items-center gap-2.5 rounded-2xl bg-primary px-8 text-base font-semibold text-foreground-inverse shadow-[0_0_25px_var(--primary-muted)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_35px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base active:scale-[0.97]"
             >
               Get started free
 
@@ -150,7 +150,7 @@ export function HeroSection() {
             {/* Secondary CTA */}
             <Link
               href="/features"
-              className="group flex h-14 items-center gap-2.5 rounded-2xl border border-white/[0.12] bg-white/[0.035] px-7 text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/[0.2] hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F14] active:scale-[0.97]"
+              className="group flex h-14 items-center gap-2.5 rounded-2xl border border-white/[0.12] bg-white/[0.035] px-7 text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/[0.2] hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base active:scale-[0.97]"
             >
               <span className="flex size-7 items-center justify-center rounded-full bg-white/[0.08] transition-all duration-300 group-hover:bg-white/[0.14]">
                 <Play
@@ -201,12 +201,12 @@ export function HeroSection() {
               return (
                 <span
                   key={item.label}
-                  className="flex items-center gap-2 text-sm font-medium text-[#8B95A1]"
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
                 >
-                  <span className="flex size-6 items-center justify-center rounded-full border border-[#00DCE5]/10 bg-[#00DCE5]/[0.08]">
+                  <span className="flex size-6 items-center justify-center rounded-full border border-primary/10 bg-primary/[0.08]">
                     <Icon
                       size={12}
-                      className="text-[#00DCE5]"
+                      className="text-primary"
                     />
                   </span>
 
@@ -226,7 +226,7 @@ export function HeroSection() {
           transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className="relative mt-12 flex w-full justify-center px-6 sm:px-8"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[45%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00DCE5]/[0.07] blur-[120px]" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[45%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.07] blur-[120px]" />
 
           <Image
             src="/hero.png"

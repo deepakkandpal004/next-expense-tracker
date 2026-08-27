@@ -8,6 +8,7 @@ import { SearchInput } from "./search-input";
 import { UserAvatar } from "./user-avatar";
 import { useCommandKShortcut } from "./use-command-k";
 import type { AppHeaderProps } from "./types";
+import { RedisHealthBadge } from "@/components/patterns/redis-health-badge";
 
 export { type AppHeaderProps } from "./types";
 
@@ -26,7 +27,7 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
       <div className="flex h-[56px] w-full items-center gap-3 px-4 sm:px-6 md:gap-5 lg:px-8">
         <button
           aria-label="Open navigation"
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.04] text-on-surface-variant/80 transition-all duration-200 hover:border-[#00DCE5]/30 hover:bg-[#00DCE5]/10 hover:text-[#00DCE5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 md:hidden"
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.04] text-on-surface-variant/80 transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 md:hidden"
           onClick={onMobileMenuOpen}
           type="button"
         >
@@ -38,10 +39,13 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <div className="hidden lg:flex">
+            <RedisHealthBadge />
+          </div>
           <Link
             href="/dashboard"
             aria-label="Go to dashboard"
-            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-transparent px-3 text-xs font-semibold text-on-surface-variant/75 transition-all duration-200 hover:border-[#00DCE5]/30 hover:bg-[#00DCE5]/10 hover:text-[#00DCE5] hover:shadow-[0_0_14px_rgba(0,220,229,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-transparent px-3 text-xs font-semibold text-on-surface-variant/75 transition-all duration-200 hover:border-primary/30 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_14px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
           >
             <LayoutDashboard size={16} strokeWidth={2} />
             <span className="hidden sm:inline">Dashboard</span>

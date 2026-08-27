@@ -68,7 +68,7 @@ export function SpendingOverviewPanel({
               className={cn(
                 "inline-flex min-h-[34px] items-center gap-1.5 px-3 text-xs font-medium transition-colors duration-150",
                 vizType === type
-                  ? "bg-[#00DCE5] text-[#0B0F14]"
+                  ? "bg-primary text-foreground-inverse"
                   : "bg-transparent text-foreground-secondary hover:bg-white/5",
               )}
               key={type}
@@ -94,7 +94,7 @@ export function SpendingOverviewPanel({
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#4ADE80]/10 px-3 py-1 text-[11px] font-semibold text-[#4ADE80]"
+            className="inline-flex items-center gap-1.5 rounded-full bg-kpi-income-surface px-3 py-1 text-[11px] font-semibold text-kpi-income"
           >
             <TrendingDown aria-hidden="true" size={12} />
             {Math.abs(spendingTrend!.changePercent * 100).toFixed(0)}% this period

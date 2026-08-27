@@ -21,7 +21,7 @@ export function UserAvatar({
       trigger={
         <button
           aria-label="Open user menu"
-          className="group relative inline-flex h-10 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.025] py-1 pl-1 pr-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00DCE5]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          className="group relative inline-flex h-10 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.025] py-1 pl-1 pr-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           type="button"
         >
           <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-accent">

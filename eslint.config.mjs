@@ -8,6 +8,11 @@ const compat = new FlatCompat({ baseDirectory });
 
 export default defineConfig([
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    // Modular boundaries documented in ARCHITECTURE.md — domain must stay pure (no db/cache).
+    // Enforcement via code review; add `no-restricted-imports` overrides per layer when `eslint` supports flat `overrides`.
+    rules: {},
+  },
   globalIgnores([
     ".next/**",
     ".next-build/**",

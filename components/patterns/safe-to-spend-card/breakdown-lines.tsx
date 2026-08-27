@@ -22,7 +22,7 @@ export function BreakdownLines({
             <span
               className={cn(
                 "font-medium tabular-nums",
-                line.subtracts ? "text-[#FF7AC6]" : "text-on-surface",
+                line.subtracts ? "text-kpi-expense" : "text-on-surface",
               )}
             >
               {line.subtracts ? "−" : ""}

@@ -35,8 +35,8 @@ export function TrendPill({
         isFlat
           ? "bg-white/5 text-on-surface-variant/50"
           : isFavourable
-            ? "bg-[#4ADE80]/15 text-[#4ADE80]"
-            : "bg-[#FF7AC6]/15 text-[#FF7AC6]",
+            ? "bg-kpi-income-surface text-kpi-income"
+            : "bg-kpi-expense-surface text-kpi-expense",
       )}
     >
       <Icon size={10} strokeWidth={2.5} />

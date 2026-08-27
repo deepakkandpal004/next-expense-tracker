@@ -5,6 +5,8 @@ import type {
 
 export const DENSITY_STORAGE_KEY = "expense-ai-density";
 export const DENSITY_COOKIE_NAME = "expense-ai-density";
+export const APPEARANCE_STORAGE_KEY = "expense-ai-appearance";
+export const APPEARANCE_COOKIE_NAME = "expense-ai-appearance";
 export const PREFERENCE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export const CONTENT_DENSITIES = [
@@ -53,21 +55,30 @@ export function serializePreferenceCookie(
 }
 
 export const THEME_COLORS: Readonly<Record<ResolvedAppearance, string>> = {
-  dark: "#000000",
+  dark: "#090A0F",
+  light: "#F7F8FC",
 };
 
+export function isResolvedAppearance(value: unknown): value is ResolvedAppearance {
+  return value === "dark" || value === "light";
+}
+
 // Runs in <head> before visible content. It deliberately has no dependencies so
-// storage/cookie failures still resolve to a safe density. Appearance is
-// always dark and never resolved client-side.
+// storage/cookie failures still resolve to a safe dark appearance and density.
 export const PREFERENCES_BOOTSTRAP_SCRIPT = String.raw`(function(){
   var root=document.documentElement;
   var validDensity=function(value){return value==='comfortable'||value==='compact'};
+  var validAppearance=function(value){return value==='dark'||value==='light'};
   var cookie=function(name){try{var parts=document.cookie.split(';');for(var index=0;index<parts.length;index++){var part=parts[index].trim();if(part.slice(0,name.length+1)===name+'=')return decodeURIComponent(part.slice(name.length+1))}return null}catch(error){return null}};
   var stored=function(key){try{return localStorage.getItem(key)}catch(error){return null}};
   var mirror=function(key,value){try{if(stored(key)!==value)localStorage.setItem(key,value)}catch(error){}};
-  root.classList.remove('light');root.classList.add('dark');
-  root.setAttribute('data-theme','dark');root.setAttribute('data-appearance-preference','dark');
-  root.style.colorScheme='dark';
+  var appearanceCookie=cookie('${APPEARANCE_COOKIE_NAME}');
+  var appearanceStored=stored('${APPEARANCE_STORAGE_KEY}');
+  var appearance=validAppearance(appearanceCookie)?appearanceCookie:(validAppearance(appearanceStored)?appearanceStored:'dark');
+  mirror('${APPEARANCE_STORAGE_KEY}',appearance);
+  root.classList.remove('dark','light');root.classList.add(appearance);
+  root.setAttribute('data-theme',appearance);root.setAttribute('data-appearance-preference',appearance);
+  root.style.colorScheme=appearance;
   var densityCookie=cookie('${DENSITY_COOKIE_NAME}');
   var densityStored=stored('${DENSITY_STORAGE_KEY}');
   /* Density follows the same cookie-first contract for SSR-stable geometry. */
@@ -75,5 +86,5 @@ export const PREFERENCES_BOOTSTRAP_SCRIPT = String.raw`(function(){
   mirror('${DENSITY_STORAGE_KEY}',density);
   root.setAttribute('data-density',density);
   var meta=document.querySelector('meta[name="theme-color"]');
-  if(meta)meta.setAttribute('content','${THEME_COLORS.dark}');
+  if(meta)meta.setAttribute('content',appearance==='light'?'${THEME_COLORS.light}':'${THEME_COLORS.dark}');
 })();`;

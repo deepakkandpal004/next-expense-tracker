@@ -9,7 +9,7 @@ import {
   createCustomCategory,
   deleteCustomCategory,
   type CategoryWithSpending,
-} from "@/app/actions/manageCategories";
+} from "@/src/modules/categories";
 import { Button, useToast } from "@/components/ui";
 import { listContainerVariants } from "@/lib/ui/motion";
 import { CategoryCard } from "./category-card";
