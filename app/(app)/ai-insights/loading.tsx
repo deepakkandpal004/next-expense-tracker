@@ -1,4 +1,4 @@
-import { AiInsightsSkeleton } from '@/components/ui/skeletons';
+import { AiInsightsSkeleton } from '@/src/common/ui/skeletons';
 
 export default function AiInsightsLoading() {
   return (

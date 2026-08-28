@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { SESSION_COOKIE_NAME } from '@/lib/auth';
-import { withApiLogging } from '@/lib/server/logger';
+import { withApiLogging } from '@/src/common/server/logger';
 
 /**
  * Clears stale session cookies for visitors whose cookie outlives its session

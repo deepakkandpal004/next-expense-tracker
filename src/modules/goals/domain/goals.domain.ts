@@ -8,4 +8,4 @@ export {
   type GoalPlanInput,
   type ContributionCandidate,
   type GoalPlanLeverKind,
-} from "@/lib/domain/goal-plan";
+} from "@/src/common/domain/goal-plan";

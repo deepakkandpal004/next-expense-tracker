@@ -3,7 +3,7 @@
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import type { ActionResult } from '@/lib/domain/types';
+import type { ActionResult } from '@/src/common/domain/types';
 import { CacheKey, deleteCache } from '@/lib/cache';
 
 export async function toggleRecurringRecord(

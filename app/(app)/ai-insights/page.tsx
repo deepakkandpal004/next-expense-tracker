@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/src/modules/auth';
-import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
-import { toSearchParams } from '@/lib/domain/search-params';
-import { getAiFinancialInsights } from '@/app/actions/getAiFinancialInsights';
-import { AiInsightsView } from '@/components/patterns/ai-insights-view';
+import { resolveValidReportingPeriod } from '@/src/common/domain/reporting-period';
+import { toSearchParams } from '@/src/common/domain/search-params';
+import { getAiFinancialInsights } from '@/src/modules/ai/application/insights.service';
+import { AiInsightsView } from '@/src/common/ui/patterns/ai-insights-view';
 
 export const metadata: Metadata = { title: 'AI Financial Insights – Expense Tracker AI' };
 

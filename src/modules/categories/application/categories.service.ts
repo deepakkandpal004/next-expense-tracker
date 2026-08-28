@@ -2,7 +2,7 @@
 
 import { getAuthUser } from "@/src/modules/auth";
 import * as repo from "@/src/modules/categories/infrastructure/categories.repository";
-import type { ActionResult } from "@/lib/domain/types";
+import type { ActionResult } from "@/src/common/domain/types";
 import { CATEGORY_DEFINITIONS } from "@/src/modules/categories/domain/categories.domain";
 import { CacheKey, deleteCache } from "@/src/common/cache";
 

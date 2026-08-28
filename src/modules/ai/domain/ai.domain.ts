@@ -9,4 +9,4 @@ export {
   buildGoalPlanProviderPayload,
   buildSafeToSpendProviderPayload,
   buildCanAffordProviderPayload,
-} from "@/lib/domain/ai";
+} from "@/src/common/domain/ai";

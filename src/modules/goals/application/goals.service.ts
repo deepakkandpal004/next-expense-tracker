@@ -3,9 +3,9 @@
 import { getAuthUser } from "@/src/modules/auth";
 import { getGoalPlan } from "@/src/modules/goals/infrastructure/goals.repository";
 import { generateGoalPlanNarration } from "@/src/integrations/openai";
-import { buildGoalPlanProviderPayload, getGoalPlanDisclosure } from "@/lib/domain/ai";
-import type { ActionResult } from "@/lib/domain/types";
-import type { GoalPlan } from "@/lib/domain/goal-plan";
+import { buildGoalPlanProviderPayload, getGoalPlanDisclosure } from "@/src/common/domain/ai";
+import type { ActionResult } from "@/src/common/domain/types";
+import type { GoalPlan } from "@/src/common/domain/goal-plan";
 
 export async function getGoalPlanAction(goalId: string): Promise<ActionResult<GoalPlan, never>> {
   const user = await getAuthUser();

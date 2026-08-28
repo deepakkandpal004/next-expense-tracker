@@ -1,4 +1,4 @@
-import { RecordsPageSkeleton } from '@/components/ui/skeletons';
+import { RecordsPageSkeleton } from '@/src/common/ui/skeletons';
 
 export default function RecordsLoading() {
   return (

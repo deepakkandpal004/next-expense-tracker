@@ -1,1 +1,1 @@
-export { cn } from "@/lib/ui/cn";
+export { cn } from "@/src/common/ui/cn";

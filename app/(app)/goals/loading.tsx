@@ -1,4 +1,4 @@
-import { GoalsPageSkeleton } from '@/components/ui/skeletons';
+import { GoalsPageSkeleton } from '@/src/common/ui/skeletons';
 
 export default function GoalsLoading() {
   return (

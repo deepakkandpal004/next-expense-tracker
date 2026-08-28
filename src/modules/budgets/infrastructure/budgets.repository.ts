@@ -1,6 +1,6 @@
 import type { Budget as PrismaBudget } from "@prisma/client";
 import { db } from "@/src/database/client";
-import type { Budget, CurrencyCode, ResolvedPeriod } from "@/lib/domain/types";
+import type { Budget, CurrencyCode, ResolvedPeriod } from "@/src/common/domain/types";
 import { startOfUtcDay, endOfUtcDay } from "@/src/common/utils/date";
 import { fromMinorUnits, toMinorUnits } from "@/src/modules/budgets/domain/budgets.domain";
 

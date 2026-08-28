@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/src/modules/auth';
 import { getDashboardBundle } from '@/src/modules/dashboard';
-import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
-import { toSearchParams } from '@/lib/domain/search-params';
+import { resolveValidReportingPeriod } from '@/src/common/domain/reporting-period';
+import { toSearchParams } from '@/src/common/domain/search-params';
 import { DashboardView } from '@/src/modules/dashboard/presentation';
 
 export const metadata: Metadata = { title: 'Dashboard – Expense Tracker AI' };

@@ -1,4 +1,4 @@
-import { BudgetsPageSkeleton } from '@/components/ui/skeletons';
+import { BudgetsPageSkeleton } from '@/src/common/ui/skeletons';
 
 export default function BudgetsLoading() {
   return (

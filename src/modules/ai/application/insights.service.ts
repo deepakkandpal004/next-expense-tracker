@@ -3,15 +3,15 @@
 import { getAuthUser } from '@/src/modules/auth';
 import { db } from '@/src/database/client';
 import { getCachedDashboardData } from '@/src/modules/dashboard';
-import { getCachedMoneyLeakReport } from '@/lib/data/money-leaks';
+import { getCachedMoneyLeakReport } from '@/src/modules/reports/infrastructure/money-leaks.repository';
 import type { Prisma } from '@prisma/client';
-import { normalizeReportingPeriod } from '@/lib/domain/reporting-period';
-import type { ActionResult, ReportingPeriod } from '@/lib/domain/types';
-import type { MoneyLeakReport } from '@/lib/domain/money-leaks';
-import { formatCurrency } from '@/lib/formatters/locale';
+import { normalizeReportingPeriod } from '@/src/common/domain/reporting-period';
+import type { ActionResult, ReportingPeriod } from '@/src/common/domain/types';
+import type { MoneyLeakReport } from '@/src/common/domain/money-leaks';
+import { formatCurrency } from '@/src/common/formatters/locale';
 import { generateExpenseInsights, type AIInsight } from '@/src/integrations/openai';
-import type { AiProviderPayload } from '@/lib/domain/ai';
-import { rateLimitAiUser } from '@/lib/rate-limit';
+import type { AiProviderPayload } from '@/src/common/domain/ai';
+import { rateLimitAiUser } from '@/src/common/rate-limit';
 
 export interface AiInsightCard {
   id: string;
@@ -241,7 +241,7 @@ export async function getAiFinancialInsights(
           incomeMinor: dashboard.insights.income.currentMinor,
           spendingMinor: dashboard.insights.spending.currentMinor,
           balanceMinor: dashboard.insights.balance.currentMinor,
-          categorySpending: dashboard.categoryBreakdown.map(cat => ({
+          categorySpending: dashboard.categoryBreakdown.map((cat: { label: string; amountMinor: number }) => ({
             categoryId: cat.label,
             amountMinor: cat.amountMinor,
           })),

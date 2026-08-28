@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { WorldClassLandingPage } from '@/components/patterns/world-class-landing';
-import { PublicFooter } from '@/components/patterns/PublicFooter';
-import { PublicHeader } from '@/components/patterns/PublicHeader';
+import { WorldClassLandingPage } from '@/src/common/ui/patterns/world-class-landing';
+import { PublicFooter } from '@/src/common/ui/patterns/PublicFooter';
+import { PublicHeader } from '@/src/common/ui/patterns/PublicHeader';
 import { getAuthUser } from '@/lib/auth';
 
 export const metadata: Metadata = {

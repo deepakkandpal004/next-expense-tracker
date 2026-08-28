@@ -1,4 +1,4 @@
 /**
  * Goals presentation
  */
-export { SavingsGoalsPage } from "@/components/patterns/savings-goals-page";
+export { SavingsGoalsPage } from "@/src/common/ui/patterns/savings-goals-page";

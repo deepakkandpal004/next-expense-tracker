@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAuthUser } from "@/lib/auth";
-import { withApiLogging } from "@/lib/server/logger";
+import { withApiLogging } from "@/src/common/server/logger";
 import z from "zod";
 
 export const GET = withApiLogging(async () => {

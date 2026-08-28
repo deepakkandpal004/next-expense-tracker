@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { AuthenticatedAppShell, type SafeUser } from '@/components/patterns/authenticated-app-shell';
+import { AuthenticatedAppShell, type SafeUser } from '@/src/common/ui/patterns/authenticated-app-shell';
 import { getAuthUser } from '@/src/modules/auth';
 
 export const dynamic = 'force-dynamic';

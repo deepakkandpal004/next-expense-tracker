@@ -7,13 +7,13 @@ export {
   type TransactionCommand,
   type TransactionCommandInput,
   type TransactionCommandField,
-} from "@/lib/domain/transaction-command";
+} from "@/src/common/domain/transaction-command";
 
 export {
   filterRecords as selectRecords,
   type RecordSelection,
   type ActiveRecordFilter,
-} from "@/lib/domain/record-selection";
+} from "@/src/common/domain/record-selection";
 
-export type { Transaction } from "@/lib/domain/types";
-export { isCategoryId, CATEGORY_DEFINITIONS } from "@/lib/domain/categories";
+export type { Transaction } from "@/src/common/domain/types";
+export { isCategoryId, CATEGORY_DEFINITIONS } from "@/src/common/domain/categories";

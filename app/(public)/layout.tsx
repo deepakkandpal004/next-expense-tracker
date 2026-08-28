@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { PublicFooter } from '@/components/patterns/PublicFooter';
-import { PublicHeader } from '@/components/patterns/PublicHeader';
+import { PublicFooter } from '@/src/common/ui/patterns/PublicFooter';
+import { PublicHeader } from '@/src/common/ui/patterns/PublicHeader';
 
 export default function PublicLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (

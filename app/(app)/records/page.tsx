@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAuthUser } from '@/src/modules/auth';
 import { getRecordsView } from '@/src/modules/records';
-import { resolveValidReportingPeriod } from '@/lib/domain/reporting-period';
-import { toSearchParams } from '@/lib/domain/search-params';
+import { resolveValidReportingPeriod } from '@/src/common/domain/reporting-period';
+import { toSearchParams } from '@/src/common/domain/search-params';
 import { RecordsView } from '@/src/modules/records/presentation';
 
 export const metadata: Metadata = { title: 'Records – Expense Tracker AI' };

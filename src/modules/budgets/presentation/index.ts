@@ -1,4 +1,4 @@
 /**
  * Budgets presentation
  */
-export { BudgetPage } from "@/components/patterns/budget-page";
+export { BudgetPage } from "@/src/common/ui/patterns/budget-page";

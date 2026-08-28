@@ -2,8 +2,8 @@
 
 import { getAuthUser } from "@/src/modules/auth";
 import { db } from "@/src/database/client";
-import { countStoredAmounts, getExchangeRate } from "@/lib/data/currency-conversion";
-import type { ActionResult } from "@/lib/domain/types";
+import { countStoredAmounts, getExchangeRate } from "@/src/modules/settings/infrastructure/currency-conversion.repository";
+import type { ActionResult } from "@/src/common/domain/types";
 import { CacheKey, deleteCacheByPattern } from "@/src/common/cache";
 
 export interface UserSettings {

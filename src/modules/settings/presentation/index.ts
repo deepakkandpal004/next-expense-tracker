@@ -1,4 +1,4 @@
 /**
  * Settings presentation — re-exports UI.
  */
-export { SettingsView } from "@/components/patterns/settings-view";
+export { SettingsView } from "@/src/common/ui/patterns/settings-view";

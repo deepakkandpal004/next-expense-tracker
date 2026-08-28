@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Field, useToast } from '@/components/ui';
+import { Button, Field, useToast } from '@/src/common/ui';
 import {
   AuthTaskLinks,
   AuthenticationForm,
@@ -11,7 +11,7 @@ import {
   getEmailError,
   PasswordField,
   type AuthFieldErrors,
-} from '@/components/patterns/authentication-form';
+} from '@/src/common/ui/patterns/authentication-form';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');

@@ -1,9 +1,14 @@
+/**
+ * @deprecated Use `@/src/modules/recurring` in server components instead.
+ * This file stays as a standalone server action because client components
+ * cannot import from modules (pulls in Prisma/Redis into the client bundle).
+ */
 'use server';
 
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import type { ActionResult } from '@/lib/domain/types';
+import type { ActionResult } from '@/src/common/domain/types';
 import { z } from 'zod';
 import { CacheKey, deleteCache } from '@/lib/cache';
 

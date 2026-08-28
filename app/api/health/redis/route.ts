@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { checkRedisHealth } from "@/lib/redis";
 import { getCache, setCache } from "@/lib/cache";
-import { withApiLogging } from "@/lib/server/logger";
+import { withApiLogging } from "@/src/common/server/logger";
 
 export const dynamic = "force-dynamic";
 
 export const GET = withApiLogging(async () => {
   const health = await checkRedisHealth();
 
-  // Live read/write probe when configured — proves cache path works, not just PING
   let cacheProbe: { ok: boolean; latencyMs?: number; error?: string } | undefined;
   if (health.connected) {
     const probeKey = `app:health:probe:${Date.now()}`;

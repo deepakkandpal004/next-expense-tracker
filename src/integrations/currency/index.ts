@@ -1,4 +1,4 @@
 /**
  * Integration — currency conversion (open.er-api.com).
  */
-export * from "@/lib/data/currency-conversion";
+export { getExchangeRate, countStoredAmounts } from "@/src/modules/settings/infrastructure/currency-conversion.repository";

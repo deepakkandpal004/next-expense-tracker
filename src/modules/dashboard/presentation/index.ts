@@ -1,4 +1,4 @@
 /**
  * Dashboard presentation — re-exports UI.
  */
-export { DashboardView } from "@/components/patterns/dashboard-view";
+export { DashboardView } from "@/src/common/ui/patterns/dashboard-view";

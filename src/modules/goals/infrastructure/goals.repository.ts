@@ -2,7 +2,7 @@
  * Goals repository — Prisma gateway.
  * Was lib/data/goal-plan.ts inline queries; now isolated.
  */
-export { getGoalPlan, GOAL_PLAN_UNUSED_PLAN_WINDOW_DAYS } from "@/lib/data/goal-plan";
+export { getGoalPlan, GOAL_PLAN_UNUSED_PLAN_WINDOW_DAYS } from "@/src/modules/goals/infrastructure/goal-plan.repository";
 import { db } from "@/src/database/client";
 
 export async function findGoalsByUser(userId: string) {

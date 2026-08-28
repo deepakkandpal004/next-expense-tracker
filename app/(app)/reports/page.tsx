@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/src/modules/auth";
 import { getCachedReportData } from "@/src/modules/reports";
 import { getCachedCashFlowProjection } from "@/src/modules/reports";
-import { resolveValidReportingPeriod } from "@/lib/domain/reporting-period";
-import { toSearchParams } from "@/lib/domain/search-params";
+import { resolveValidReportingPeriod } from "@/src/common/domain/reporting-period";
+import { toSearchParams } from "@/src/common/domain/search-params";
 import { ReportsView } from "@/src/modules/reports/presentation";
 
 export const metadata: Metadata = { title: "Reports – Expense Tracker AI" };

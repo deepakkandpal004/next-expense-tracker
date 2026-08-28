@@ -2,9 +2,9 @@
 
 import type { ReactNode } from 'react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { ToastProvider } from '@/components/ui/toast';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import type { ContentDensity, ResolvedAppearance } from '@/lib/domain/types';
+import { ToastProvider } from '@/src/common/ui/toast';
+import { TooltipProvider } from '@/src/common/ui/tooltip';
+import type { ContentDensity, ResolvedAppearance } from '@/src/common/domain/types';
 
 interface RootProvidersProps {
   children: ReactNode;
@@ -12,7 +12,6 @@ interface RootProvidersProps {
   initialAppearance: ResolvedAppearance;
 }
 
-/** Keeps the root provider boundary small and seeds SSR-visible preferences. */
 export function RootProviders({
   children,
   initialDensity,

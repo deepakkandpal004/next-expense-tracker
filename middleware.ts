@@ -8,10 +8,6 @@ function matchesRouteBoundary(pathname: string, routes: readonly string[]) {
   return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
-/**
- * Cookie presence only determines navigation flow. Server layouts, actions, and
- * queries remain responsible for authenticating and authorizing every request.
- */
 function hasSessionHint(request: NextRequest) {
   return Boolean(request.cookies.get('session_token')?.value);
 }
@@ -20,12 +16,9 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthenticated = hasSessionHint(request);
 
-  // Redirect unauthenticated users to sign-in for protected routes
   if (matchesRouteBoundary(pathname, APP_ROUTES) && !isAuthenticated) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
-
-  // Redirect authenticated users away from auth pages to dashboard
   if (matchesRouteBoundary(pathname, AUTH_ROUTES) && isAuthenticated) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }

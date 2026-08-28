@@ -1,6 +1,6 @@
 import { db } from "@/src/database/client";
 import { boundaryAtStart, boundaryAtEnd } from "@/src/common/utils/date";
-import type { ResolvedPeriod } from "@/lib/domain/types";
+import type { ResolvedPeriod } from "@/src/common/domain/types";
 import type { Prisma } from "@prisma/client";
 
 /**

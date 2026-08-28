@@ -1,8 +1,3 @@
-/**
- * Shared error types — consistent shape across modules.
- * Mirrors lib/domain/types.ts ActionResult but as classes for service layer.
- */
-
 export class AppError extends Error {
   constructor(
     message: string,

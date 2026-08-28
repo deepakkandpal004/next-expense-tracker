@@ -10,7 +10,7 @@ import {
   THEME_COLORS,
   isContentDensity,
   isResolvedAppearance,
-} from '@/lib/preferences/preferences';
+} from '@/src/common/preferences/preferences';
 import { cn } from "@/lib/utils";
 
 const manrope = Manrope({

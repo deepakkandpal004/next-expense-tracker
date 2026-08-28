@@ -13,3 +13,4 @@ export * as DashboardModule from "./dashboard";
 export * as ReportsModule from "./reports";
 export * as AiModule from "./ai";
 export * as CategoriesModule from "./categories";
+export * as SettingsModule from "./settings";

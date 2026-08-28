@@ -1,7 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-/** Compose finite primitive variants without allowing duplicate Tailwind utilities. */
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
-}
+/**
+ * @deprecated Import from `@/src/common/ui/cn` instead.
+ */
+export * from "@/src/common/ui/cn";

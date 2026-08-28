@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { processDueRecurringRecords } from '@/lib/data/recurring';
 import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
 import { timingSafeEqual } from 'node:crypto';
-import { withApiLogging } from '@/lib/server/logger';
+import { withApiLogging } from '@/src/common/server/logger';
 
 export const dynamic = 'force-dynamic';
 

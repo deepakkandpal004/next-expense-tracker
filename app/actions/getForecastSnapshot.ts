@@ -2,14 +2,14 @@
 
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import type { ActionResult, ResolvedPeriod } from '@/lib/domain/types';
+import type { ActionResult, ResolvedPeriod } from '@/src/common/domain/types';
 import {
   computeSpendingForecast,
   computeCategoryAverages,
   detectAnomalies,
   type SpendingForecast,
   type TransactionAnomaly,
-} from '@/lib/domain/forecast';
+} from '@/src/common/domain/forecast';
 import { getForecastSummaries } from '@/lib/data/forecast';
 import { getCache, setCache } from '@/lib/cache';
 

@@ -1,6 +1,6 @@
 import * as repo from "@/src/modules/records/infrastructure/records.repository";
-import { toDashboardTransactionDTO, DEFAULT_CURRENCY } from "@/lib/data/dashboard";
-import type { ResolvedPeriod, Transaction } from "@/lib/domain/types";
+import { toDashboardTransactionDTO, DEFAULT_CURRENCY } from "@/src/modules/dashboard";
+import type { ResolvedPeriod, Transaction } from "@/src/common/domain/types";
 import { getCache, setCache, CacheKey } from "@/src/common/cache";
 
 /**

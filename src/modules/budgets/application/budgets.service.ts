@@ -3,8 +3,8 @@
 import { getAuthUser } from "@/src/modules/auth";
 import { CacheKey, deleteCache, deleteCacheByPattern } from "@/src/common/cache";
 import { saveBudgetForUser } from "@/src/modules/budgets/infrastructure/budgets.repository";
-import type { ActionResult, Budget } from "@/lib/domain/types";
-import { createActionBoundary, invalid, parsed, type ParseResult } from "@/lib/server/action-boundary";
+import type { ActionResult, Budget } from "@/src/common/domain/types";
+import { createActionBoundary, invalid, parsed, type ParseResult } from "@/src/common/server/action-boundary";
 import { revalidatePath } from "next/cache";
 
 const BUDGET_AMOUNT_MAX = 999_999_999.99;

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createSession, hashPassword } from "@/lib/auth";
 import { rateLimitRegister } from "@/lib/rate-limit";
-import { withApiLogging } from "@/lib/server/logger";
+import { withApiLogging } from "@/src/common/server/logger";
 
 const MIN_PASSWORD_LENGTH = 8;
 

@@ -57,9 +57,7 @@ function persistPreference(name: string, value: string, storageKey: string) {
 function updateBrowserDensity(density: ContentDensity) {
   try {
     document.documentElement.dataset.density = density;
-  } catch {
-    // Keep the in-memory fallback when browser APIs are unavailable.
-  }
+  } catch {}
 }
 
 function applyAppearance(appearance: ResolvedAppearance) {
@@ -83,9 +81,7 @@ function applyAppearance(appearance: ResolvedAppearance) {
     metadata.forEach((meta) => {
       meta.content = THEME_COLORS[appearance];
     });
-  } catch {
-    // Presentation failures must never prevent app rendering.
-  }
+  } catch {}
 }
 
 function ThemeState({
