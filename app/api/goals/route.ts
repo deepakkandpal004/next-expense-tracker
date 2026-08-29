@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/auth";
+import { db } from "@/src/database/client";
+import { getAuthUser } from "@/src/modules/auth";
 import { withApiLogging } from "@/src/common/server/logger";
 import z from "zod";
 

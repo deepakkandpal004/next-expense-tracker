@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
-import { db } from '@/lib/db';
-import { processDueRecurringRecords } from '@/lib/data/recurring';
-import { CacheKey, deleteCacheByPattern } from '@/lib/cache';
+import { db } from '@/src/database/client';
+import { processDueRecurringRecords } from '@/src/modules/recurring';
+import { CacheKey, deleteCacheByPattern } from '@/src/common/cache';
 import { timingSafeEqual } from 'node:crypto';
 import { withApiLogging } from '@/src/common/server/logger';
 

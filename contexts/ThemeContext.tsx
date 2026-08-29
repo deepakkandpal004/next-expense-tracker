@@ -13,7 +13,7 @@ import {
 import type {
   ContentDensity,
   ResolvedAppearance,
-} from '@/lib/domain/types';
+} from '@/src/common/domain/types';
 import {
   DENSITY_COOKIE_NAME,
   DENSITY_STORAGE_KEY,
@@ -24,7 +24,7 @@ import {
   isResolvedAppearance,
   readPreferenceCookie,
   serializePreferenceCookie,
-} from '@/lib/preferences/preferences';
+} from '@/src/common/preferences/preferences';
 
 interface ThemeContextType {
   resolvedAppearance: ResolvedAppearance;
@@ -134,8 +134,7 @@ function ThemeState({
     setDensityState(hydratedDensity);
     updateBrowserDensity(hydratedDensity);
     persistPreference(DENSITY_COOKIE_NAME, hydratedDensity, DENSITY_STORAGE_KEY);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialDensity]);
 
   const setDensity = useCallback((nextDensity: ContentDensity) => {
     if (!isContentDensity(nextDensity)) return;

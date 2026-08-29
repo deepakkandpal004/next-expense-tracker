@@ -1,249 +1,178 @@
-# Expense AI - Smart Financial Tracker
+# Expense AI — Smart Financial Management Platform
 
-A modern, AI-powered expense tracking application built with Next.js that helps users manage their finances with intelligent insights, smart categorization, and personalized financial recommendations.
+An intelligent, full-stack personal finance and expense tracking application built with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **Prisma ORM**, **PostgreSQL**, and **Redis**. Features privacy-first AI financial insights, automated recurring billing, budgeting, cash flow forecasting, and a modular monolith architecture.
+
+---
 
 ## Live Demo
 
-[https://next-expense-tracker-rsdeepakg.vercel.app/](https://next-expense-tracker-rsdeepakg.vercel.app/)
+- **Application URL:** [https://next-expense-tracker-rsdeepakg.vercel.app/](https://next-expense-tracker-rsdeepakg.vercel.app/)
 
-## Features
+---
 
-### Core Features
-- **Dashboard** - Overview of financial health with KPIs, spending trends, and quick actions
-- **Transaction Management** - Add, edit, and delete income/expense transactions
-- **Budget Tracking** - Set and monitor monthly budgets with alerts
-- **Financial Goals** - Create and track savings goals with progress visualization
-- **Category Management** - Organize transactions by categories
+## Key Features
 
-### AI-Powered Features
-- **AI Financial Insights** - Personalized spending analysis powered by OpenAI via OpenRouter
-- **AI Financial Coach** - Smart recommendations based on spending patterns
-- **AI Expense Categorization** - Automatic transaction categorization using AI
-- **Spending Pattern Analysis** - Detect unusual spending and trends
+### 1. Financial Management & Transactions
+- **Interactive Dashboard:** Real-time KPI summaries (Net Balance, Monthly Spending, Income, "Safe to Spend" runway calculations).
+- **Transaction Records:** Fast CRUD operations, cursor-based pagination (`take: 50`), full-text search, and multi-filter criteria (date range, type, category).
+- **Batch Processing:** Support for multi-record operations and CSV transaction import/export.
+- **Smart Categorization:** Default and custom user categories with custom icons and color pickers.
 
-### User Experience
-- **Dark Mode** - Beautiful dark theme optimized for extended use
-- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
-- **Command Palette** - Quick navigation with Cmd/Ctrl+K
-- **Real-time Updates** - Instant feedback on all actions
+### 2. Budgets & Goal Tracking
+- **Category Budgets:** Real-time tracking with dynamic threshold alerts (75%, 90%, 100% capacity).
+- **Savings Goals:** Visual progress tracking, target dates, and monthly contribution calculators.
+- **Recurring Transactions:** Automated recurring scheduler (Daily, Weekly, Monthly, Yearly) processed via cron jobs.
+
+### 3. Privacy-First AI Insights
+- **Aggregated Summaries:** Model only receives high-level category totals and counts—never raw transaction descriptions or merchant data.
+- **Narrative Analysis:** On-demand AI observations explaining trends, spend spikes, and money leaks.
+- **Citation Proof Chips:** Interactive links connecting AI narrative claims directly to filtered transaction queries in `/records`.
+
+### 4. High-Performance Architecture
+- **Modular Monolith (`src/modules/*`):** Domain-driven separation (Domain, Application, Infrastructure, Presentation).
+- **Redis Caching (`ioredis`):** Cached dashboard bundles and session lookups with automatic pattern-based invalidation (`SCAN`).
+- **Resilient Fallbacks:** Fail-open cache architecture ensures the application remains fully functional even if Redis is unreachable.
+- **Rate Limiting:** Per-IP brute-force protection on authentication and per-user limits on AI endpoints.
+
+---
 
 ## Tech Stack
 
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **React 19** - Latest React with Server Components
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Smooth animations and transitions
-- **Lucide React** - Beautiful, consistent icons
-- **Chart.js** - Data visualization
-- **Recharts** - Advanced charting library
+| Layer | Technologies |
+|---|---|
+| **Framework** | Next.js 15 (App Router), React 19 (Server & Client Components) |
+| **Language** | TypeScript (Strict mode) |
+| **Styling & UI** | Tailwind CSS, Motion, Lucide React, Base UI |
+| **Data Visualization** | Chart.js, React-Chartjs-2 |
+| **Database & ORM** | PostgreSQL (Neon serverless compatible), Prisma ORM |
+| **Caching & Rate Limiting** | Redis (ioredis) with SCAN invalidation |
+| **Authentication** | Custom secure cookie sessions, SHA-256 token hashing, bcryptjs |
+| **AI Integration** | OpenAI API / OpenRouter gateway |
+| **Validation & Logging** | Zod runtime schema validation, formatted request logger |
 
-### Backend
-- **Next.js Server Actions** - Type-safe server-side logic
-- **Prisma ORM** - Database toolkit and query builder
-- **PostgreSQL** - Robust relational database (via Neon)
-- **Redis (ioredis)** - Response caching and rate limiting
-- **Zod** - Runtime type validation
-
-### AI Integration
-- **OpenAI API** - GPT models for insights and categorization
-- **OpenRouter** - AI provider gateway for flexible model access
-
-### Authentication & Security
-- **Custom Auth** - Session-based authentication with secure cookies
-- **bcryptjs** - Password hashing
-- **Redis Rate Limiting** - Per-IP limits on login/register, per-user limits on AI calls
-- **Anti-Enumeration** - Generic auth responses (no user discovery)
-- **Timing-Safe Secrets** - `timingSafeEqual` verification of the cron secret
-- **Fail-Open Cache** - Redis outages never take down the app
-- **API Request Logging** - Colored, NestJS-style request logs for API routes
-
-### Infrastructure
-- **pnpm** - Fast, disk-efficient package manager
-- **pnpm-workspace.yaml overrides** - Pinned transitive dependency versions (zero audit vulnerabilities)
-
-### Development Tools
-- **ESLint** - Code linting and quality
-- **PostCSS** - CSS processing
-- **Prisma Studio** - Database management GUI
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+ 
-- PostgreSQL database (or use Neon for serverless)
-- Redis (for caching and rate limiting)
-- OpenRouter API key (for AI features)
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/next-expense-tracker.git
-cd next-expense-tracker
-```
-
-2. Install dependencies:
-```bash
-npm install
-# or
-pnpm install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your configuration:
-```env
-DATABASE_URL="your-postgresql-connection-string"
-DIRECT_URL="your-postgresql-direct-connection-string"
-REDIS_URL="redis://localhost:6379"
-OPENROUTER_API_KEY="your-openrouter-api-key"
-OPENAI_API_KEY="your-openai-api-key"
-CRON_SECRET="a-long-random-secret"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-
-Redis powers dashboard/records caching and login/register + AI rate limiting.
-Start it locally with:
-```bash
-brew install redis
-brew services start redis
-```
-Caching and rate limiting fail open — if Redis is down, the app keeps working
-(no caching, no rate limits).
-
-4. Initialize the database with the committed migrations:
-```bash
-npx prisma generate
-npx prisma migrate deploy
-```
-
-Vercel automatically uses the `vercel-build` package script, which applies
-pending production migrations before building the Next.js application. Keep
-schema changes in `prisma/migrations` so application code and the production
-database are deployed together.
-
-5. Start the development server:
-```bash
-npm run dev
-```
-
-6. Open [http://localhost:3000](http://localhost:3000)
+---
 
 ## Project Structure
 
 ```
 next-expense-tracker/
-├── app/                    # Next.js App Router
-│   ├── (app)/             # Authenticated routes
-│   │   ├── dashboard/     # Main dashboard
-│   │   ├── records/       # Transaction management
-│   │   ├── budgets/       # Budget tracking
-│   │   ├── goals/         # Savings goals
-│   │   └── ai-insights/   # AI-powered insights
-│   ├── (public)/          # Public pages (login, register)
-│   └── actions/           # Server actions
-├── components/            # React components
-│   ├── patterns/          # Feature-specific components
-│   └── ui/                # Reusable UI components
-├── contexts/              # React contexts
-├── lib/                   # Utility functions and configs
-│   ├── ai.ts             # AI integration
-│   ├── auth.ts           # Authentication logic
-│   ├── redis.ts          # Redis client (single shared connection)
-│   ├── cache.ts          # Cache helpers + key builders
-│   ├── rate-limit.ts     # Per-IP and per-user rate limiters
-│   ├── server/           # Server-only helpers
-│   │   └── logger.ts     # Colored API request logger
-│   └── domain/           # Business logic
-├── prisma/                # Database schema
-└── public/               # Static assets
+├── app/                          # Next.js App Router (Routes & Layouts)
+│   ├── (app)/                   # Authenticated application routes
+│   │   ├── dashboard/           # Main financial dashboard
+│   │   ├── records/             # Transaction records & filtering
+│   │   ├── budgets/             # Budget planning & gauges
+│   │   ├── goals/               # Savings goals & milestones
+│   │   ├── recurring/           # Recurring schedules
+│   │   ├── reports/             # Analytical charts & breakdowns
+│   │   ├── categories/          # Category management
+│   │   ├── ai-insights/         # AI narrative insights
+│   │   └── settings/            # User preferences & sessions
+│   ├── (auth)/                  # Auth routes (sign-in, sign-up)
+│   ├── (public)/                # Landing pages & legal (about, privacy, ai-transparency)
+│   └── api/                     # REST API endpoints & cron handlers
+├── src/                         # Modular Monolith Architecture
+│   ├── config/                  # Validated environment configurations
+│   ├── database/                # Prisma client with connection pooling
+│   ├── common/                  # Shared kernel (cache, UI components, types, formatters)
+│   └── modules/                 # Feature-based domain modules
+│       ├── auth/                # Auth domain, application services & repositories
+│       ├── records/             # Record domain, pagination & mutations
+│       ├── budgets/             # Budget logic & tracking
+│       ├── goals/               # Savings goal calculators
+│       ├── recurring/           # Recurrence rules & scheduler
+│       ├── categories/          # User category definitions
+│       ├── dashboard/           # Aggregated bundle loaders & safe-to-spend
+│       ├── reports/             # Cash flow & spending reports
+│       └── ai/                  # Summary payload builder & AI connector
+├── prisma/                      # Database schema & migrations
+└── public/                      # Static assets & icons
 ```
 
-## Key Features Explained
+---
 
-### AI Financial Insights
-The AI insights page provides personalized financial analysis using OpenAI models:
-- Spending trend analysis
-- Savings opportunities identification
-- Budget recommendations
-- Unusual activity detection
+## Getting Started
 
-### Smart Budgeting
-- Set monthly budgets per category
-- Real-time tracking against limits
-- Visual progress indicators
-- Alerts when approaching or exceeding limits
+### Prerequisites
+- **Node.js**: v18.18.0 or higher
+- **Package Manager**: `pnpm` (recommended) or `npm`
+- **PostgreSQL**: Local instance or cloud database (e.g. Neon, Supabase)
+- **Redis**: Local instance (`brew install redis`) or managed Redis (e.g. Upstash)
 
-### Goal Tracking
-- Create multiple savings goals
-- Track progress with visual indicators
-- Set monthly contribution targets
-- Deadline management
-
-## Caching, Rate Limiting & Logging
-
-### Redis Caching
-Dashboard data is cached in Redis for 5 minutes and invalidated automatically
-on every mutation (adding/deleting records, setting budgets, updating settings,
-etc.) via `deleteCacheByPattern`. A cache miss computes from Postgres and writes
-back; Redis failures silently fall back to a direct database read.
-
-### Rate Limiting
-- **Login** - 5 requests/minute per IP
-- **Register** - 3 requests/10 minutes per IP
-- **AI provider calls** - 20 requests/minute per user (protects API costs)
-- Rate limits fail open when Redis is unavailable
-
-### API Request Logging
-Every API route (`/api/auth/*`, `/api/goals`, cron) is wrapped in
-`withApiLogging`, which prints NestJS-style colored logs with method, path,
-status code, and duration:
-```
-12:04:32 [API] POST /api/auth/login 200 240ms
-```
-Colors auto-disable when output is piped or in production.
-
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `DIRECT_URL` | Direct connection string (bypasses pooler for migrations) | Yes |
-| `REDIS_URL` | Redis connection string for caching/rate limiting | Yes |
-| `OPENROUTER_API_KEY` | OpenRouter API key for AI features | Yes |
-| `OPENAI_API_KEY` | OpenAI API key (fallback for OpenRouter) | No |
-| `CRON_SECRET` | Secret for authenticating the recurring cron endpoint | Yes |
-| `NEXT_PUBLIC_APP_URL` | Application URL | Yes |
-
-## Scripts
-
+### 1. Clone & Install Dependencies
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run vercel-build # Apply migrations and build on Vercel
-npm run start        # Start production server
-npm run check        # Run typecheck + lint
-npm run lint         # Run ESLint
-npm run typecheck    # Run TypeScript checks
+git clone https://github.com/yourusername/next-expense-tracker.git
+cd next-expense-tracker
+pnpm install
 ```
 
-## Contributing
+### 2. Environment Configuration
+Create a `.env` file in the root directory:
+```bash
+cp .env.example .env
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Configure your environment variables:
+```env
+# Database (PostgreSQL)
+DATABASE_URL="postgresql://user:password@localhost:5432/expense_tracker?schema=public"
+DIRECT_URL="postgresql://user:password@localhost:5432/expense_tracker?schema=public"
+
+# Redis Cache & Rate Limiting
+REDIS_URL="redis://localhost:6379"
+
+# AI Gateway (OpenRouter or OpenAI)
+OPENROUTER_API_KEY="your-openrouter-key"
+OPENAI_API_KEY="your-openai-key"
+
+# Background Cron & Security
+CRON_SECRET="generate-a-strong-random-secret"
+
+# App URL
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
+
+### 3. Database Initialization
+Generate the Prisma client and apply database migrations:
+```bash
+npx prisma generate
+npx prisma migrate deploy
+```
+
+### 4. Run Development Server
+```bash
+pnpm dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Background Cron Jobs
+
+The application includes an automated recurring transaction processor located at `/api/cron/process-recurring`. It scans for active `RecurringRecord` items that are due and creates corresponding `Record` entries inside a Prisma transaction.
+
+To execute the cron job safely:
+```bash
+curl -X POST http://localhost:3000/api/cron/process-recurring \
+  -H "Authorization: Bearer <CRON_SECRET>"
+```
+
+---
+
+## Available Scripts
+
+| Command | Description |
+|---|---|
+| `pnpm dev` | Starts the Next.js development server |
+| `pnpm build` | Generates Prisma client and builds for production |
+| `pnpm start` | Starts the production server |
+| `pnpm check` | Runs TypeScript typechecks and ESLint checks |
+| `pnpm typecheck` | Validates TypeScript types across the codebase |
+| `pnpm lint` | Runs ESLint analysis |
+| `pnpm vercel-build` | Applies database migrations and triggers production build on Vercel |
+
+---
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support, email your-email@example.com or create an issue in the repository.
+This project is licensed under the [MIT License](LICENSE).

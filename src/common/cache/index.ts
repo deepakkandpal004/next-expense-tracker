@@ -1,4 +1,6 @@
-import { redis } from "@/src/integrations/redis";
+import { redis, checkRedisHealth, isRedisConnected } from "@/src/integrations/redis";
+
+export { checkRedisHealth, isRedisConnected, redis };
 
 const DEFAULT_TTL = 60 * 5;
 

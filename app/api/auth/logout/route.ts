@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { deleteCurrentSession } from '@/lib/auth';
+import { deleteCurrentSession } from '@/src/modules/auth';
 import { withApiLogging } from '@/src/common/server/logger';
 
 export const POST = withApiLogging(async () => {

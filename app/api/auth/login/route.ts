@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { comparePassword, createSession } from '@/lib/auth';
-import { rateLimitLogin } from '@/lib/rate-limit';
+import { db } from '@/src/database/client';
+import { comparePassword, createSession } from '@/src/modules/auth';
+import { rateLimitLogin } from '@/src/common/rate-limit';
 import { withApiLogging } from '@/src/common/server/logger';
 
 export const POST = withApiLogging(async (request: Request) => {

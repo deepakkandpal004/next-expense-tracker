@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { WorldClassLandingPage } from '@/src/common/ui/patterns/world-class-landing';
 import { PublicFooter } from '@/src/common/ui/patterns/PublicFooter';
 import { PublicHeader } from '@/src/common/ui/patterns/PublicHeader';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthUser } from '@/src/modules/auth';
 
 export const metadata: Metadata = {
   title: 'Expense Tracker AI | Record and review your expenses',

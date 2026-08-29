@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkRedisHealth } from "@/lib/redis";
-import { getCache, setCache } from "@/lib/cache";
+import { checkRedisHealth, getCache, setCache } from "@/src/common/cache";
 import { withApiLogging } from "@/src/common/server/logger";
 
 export const dynamic = "force-dynamic";

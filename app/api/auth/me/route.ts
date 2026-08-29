@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthUser } from '@/src/modules/auth';
 import { withApiLogging } from '@/src/common/server/logger';
 
 export const GET = withApiLogging(async () => {
