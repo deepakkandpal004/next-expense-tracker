@@ -224,7 +224,6 @@ export function AISection() {
               desc: "Fast responses powered by Redis with automatic cache invalidation whenever you record an entry.",
             },
           ].map((item) => {
-            const Icon = item.icon;
             return (
               <div
                 key={item.title}
