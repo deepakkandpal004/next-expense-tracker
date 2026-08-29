@@ -6,9 +6,11 @@ import { useState, useEffect, type RefObject } from "react";
 export function SearchInput({
   inputRef,
   onSubmit,
+  onClick,
 }: {
   inputRef: RefObject<HTMLInputElement | null>;
   onSubmit: (query: string) => void;
+  onClick?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -46,8 +48,18 @@ export function SearchInput({
           }`}
           onBlur={() => setIsFocused(false)}
           onChange={(event) => setQuery(event.target.value)}
-          onFocus={() => setIsFocused(true)}
-          placeholder="Search transactions..."
+          onFocus={(event) => {
+            if (onClick) {
+              event.target.blur();
+              onClick();
+            } else {
+              setIsFocused(true);
+            }
+          }}
+          onClick={() => {
+            if (onClick) onClick();
+          }}
+          placeholder="Search transactions, pages, or quick-add (⌘K)..."
           ref={inputRef}
           type="search"
           value={query}

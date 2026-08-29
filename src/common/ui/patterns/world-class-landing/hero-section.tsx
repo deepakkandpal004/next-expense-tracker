@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { FloatingShapes } from "./shared";
+import { DashboardPreview } from "./dashboard-preview";
 
 export function HeroSection() {
   return (
@@ -183,9 +184,10 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 50, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mt-12 flex w-full justify-center px-6 sm:px-8"
+          className="relative mt-14 flex w-full justify-center px-4 sm:px-6 lg:px-8"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[45%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.07] blur-[120px]" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[55%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.09] blur-[140px]" />
+          <DashboardPreview />
         </motion.div>
         <div className="h-12 sm:h-16 lg:h-20" />
       </div>

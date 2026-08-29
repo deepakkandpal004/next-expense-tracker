@@ -12,11 +12,24 @@ import { RedisHealthBadge } from "@/src/common/ui/patterns/redis-health-badge";
 
 export { type AppHeaderProps } from "./types";
 
-export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accountError }: AppHeaderProps) {
+export function AppHeader({
+  user,
+  onMobileMenuOpen,
+  onOpenCommandPalette,
+  onSignOut,
+  signingOut,
+  accountError,
+}: AppHeaderProps) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
 
-  useCommandKShortcut(() => searchRef.current?.focus());
+  useCommandKShortcut(() => {
+    if (onOpenCommandPalette) {
+      onOpenCommandPalette();
+    } else {
+      searchRef.current?.focus();
+    }
+  });
 
   const submitSearch = (query: string) => {
     router.push(`/records?search=${encodeURIComponent(query)}`);
@@ -35,7 +48,11 @@ export function AppHeader({ user, onMobileMenuOpen, onSignOut, signingOut, accou
         </button>
 
         <div className="flex min-w-0 flex-1 justify-center md:justify-start">
-          <SearchInput inputRef={searchRef} onSubmit={submitSearch} />
+          <SearchInput
+            inputRef={searchRef}
+            onSubmit={submitSearch}
+            onClick={onOpenCommandPalette}
+          />
         </div>
 
         <div className="flex shrink-0 items-center gap-2">

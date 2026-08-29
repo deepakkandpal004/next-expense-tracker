@@ -1,62 +1,96 @@
-import { Sparkles } from "lucide-react";
+"use client";
+
+import { Sparkles, ShieldCheck, ArrowUpRight, AlertTriangle, Lightbulb } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/src/common/ui/cn";
 import type { AIInsight } from "@/src/integrations/openai";
 
 export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
   return (
-    <section className="rounded-xl border border-border/50 bg-surface p-4 space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10 text-primary">
-          <Sparkles size={12} />
+    <section className="rounded-2xl border border-white/[0.08] bg-surface p-5 sm:p-6 space-y-5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Sparkles size={15} />
+          </span>
+          <div>
+            <h2 className="text-sm font-bold text-foreground">AI Intelligence Observations</h2>
+            <p className="text-[11px] text-foreground-secondary">Derived from summary aggregate figures</p>
+          </div>
+        </div>
+
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400 font-mono">
+          <ShieldCheck size={12} />
+          <span className="hidden sm:inline">Summary Only</span>
         </span>
-        <h2 className="text-sm font-semibold text-foreground">AI Insights Timeline</h2>
       </div>
 
       {insights.length === 0 && (
-        <p className="text-sm text-muted-foreground">
-          No AI insights yet for this period. Click Generate to create them.
-        </p>
+        <div className="rounded-xl border border-dashed border-border/60 p-8 text-center">
+          <Lightbulb size={24} className="mx-auto text-primary/60 mb-2" />
+          <p className="text-sm text-foreground font-medium">No AI observations generated yet for this period</p>
+          <p className="text-xs text-foreground-secondary mt-1">Click &ldquo;Generate AI narrative&rdquo; above to analyze spending patterns.</p>
+        </div>
       )}
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-3.5">
         {insights.map((insight) => {
-          const isUnusual =
+          const isWarning =
             insight.type === "warning" ||
             insight.title.toLowerCase().includes("unusual") ||
             insight.title.toLowerCase().includes("alert") ||
             insight.title.toLowerCase().includes("spike");
 
+          const isOpportunity =
+            insight.title.toLowerCase().includes("saving") ||
+            insight.title.toLowerCase().includes("cut") ||
+            insight.title.toLowerCase().includes("opportunity") ||
+            insight.title.toLowerCase().includes("budget");
+
           return (
             <div
               key={insight.id}
               className={cn(
-                "rounded-xl border p-4 transition-all",
-                isUnusual
-                  ? "border-danger/25 bg-danger/5"
-                  : "border-border/50 bg-surface hover:border-primary/30"
+                "rounded-xl border p-4.5 transition-all relative overflow-hidden group",
+                isWarning
+                  ? "border-danger/30 bg-danger/[0.04] hover:border-danger/50"
+                  : isOpportunity
+                  ? "border-primary/30 bg-primary/[0.03] hover:border-primary/50"
+                  : "border-white/[0.08] bg-surface-subtle hover:border-primary/30"
               )}
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className={cn("text-sm font-semibold", isUnusual ? "text-danger" : "text-foreground")}>
-                  {insight.title}
-                </h3>
+                <div className="flex items-center gap-2">
+                  {isWarning ? (
+                    <AlertTriangle size={15} className="text-danger shrink-0" />
+                  ) : (
+                    <Sparkles size={15} className="text-primary shrink-0" />
+                  )}
+                  <h3 className={cn("text-sm font-semibold tracking-tight", isWarning ? "text-danger" : "text-foreground")}>
+                    {insight.title}
+                  </h3>
+                </div>
+
                 {insight.confidence !== undefined && (
-                  <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                  <span className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[11px] font-mono font-semibold text-primary">
                     {Math.round(insight.confidence * 100)}% match
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-xs text-foreground-secondary leading-relaxed">
+
+              <p className="mt-2 text-xs sm:text-sm text-foreground-secondary leading-relaxed pl-5 sm:pl-6">
                 {insight.message}
               </p>
+
               {insight.action && (
-                <div className="mt-3">
-                  <a
-                    href={insight.action.startsWith("/") ? insight.action : "/budgets"}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline underline-offset-4"
+                <div className="mt-3.5 pl-5 sm:pl-6 flex items-center gap-3">
+                  <Link
+                    href={insight.action.startsWith("/") ? insight.action : "/records"}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover hover:underline underline-offset-4"
                   >
-                    <span>{insight.action.startsWith("/") ? "View Action" : insight.action}</span>
-                  </a>
+                    <span>{insight.action.startsWith("/") ? "Drill into details" : insight.action}</span>
+                    <ArrowUpRight size={13} />
+                  </Link>
                 </div>
               )}
             </div>

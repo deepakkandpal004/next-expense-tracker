@@ -14,6 +14,7 @@ import { Sheet } from "@/src/common/ui";
 import type { TransactionType } from "@/src/common/domain/types";
 import { AppHeader } from "../app-header";
 import { AppSidebar } from "../app-sidebar";
+import { CommandPaletteModal } from "../command-palette";
 import { currentDestinationId, hrefFor } from "./navigation";
 import type { AuthenticatedAppShellProps } from "./types";
 
@@ -29,11 +30,23 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [addTransactionOpen, setAddTransactionOpen] = useState(false);
   const [addTransactionPreset, setAddTransactionPreset] = useState<TransactionType>("expense");
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 
   const handleNewRecord = (type?: TransactionType) => {
     setAddTransactionPreset(type ?? "expense");
     setAddTransactionOpen(true);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -104,6 +117,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
           <AppHeader
             accountError={accountError}
             onMobileMenuOpen={() => setMobileNavOpen(true)}
+            onOpenCommandPalette={() => setCommandPaletteOpen(true)}
             onSignOut={signOut}
             signingOut={signingOut}
             user={user}
@@ -144,6 +158,11 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
         onOpenChange={setAddTransactionOpen}
         open={addTransactionOpen}
         submitTransaction={submitTransaction}
+      />
+
+      <CommandPaletteModal
+        open={commandPaletteOpen}
+        onOpenChange={setCommandPaletteOpen}
       />
     </div>
   );
