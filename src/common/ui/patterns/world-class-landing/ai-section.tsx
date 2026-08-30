@@ -89,7 +89,7 @@ export function AISection() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto">
           <AnimateInView>
-            <div className="inline-flex px-5 py-2 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold tracking-normal text-primary">
+            <div className="inline-flex px-5 py-2 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 text-xs font-semibold tracking-normal text-primary">
               <span>Summary-Only Financial Copilot</span>
             </div>
             <h2 className="font-space-grotesk mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">

@@ -9,21 +9,27 @@ import { MoneyLeakDetectorCard } from "@/src/common/ui/patterns/money-leak-detec
 import { MonthSwitcher } from "@/src/common/ui/patterns/month-switcher";
 import { ErrorState, LinkButton, useToast } from "@/src/common/ui";
 import { AiInsightsSkeleton } from "@/src/common/ui/skeletons";
-import { getAiFinancialInsights, type AiFinancialInsightsData } from "@/app/actions/getAiFinancialInsights";
+import {
+  getAiFinancialInsights,
+  type AiFinancialInsightsData,
+} from "@/app/actions/getAiFinancialInsights";
 import { AiGeneratedInsights } from "./generated-insights";
 import type { AiInsightsViewProps } from "./types";
 
 export { type AiInsightsViewProps } from "./types";
 
-export function AiInsightsView({ initialData, period, resolvedPeriod, currency, error: initialError }: AiInsightsViewProps) {
+export function AiInsightsView({
+  initialData,
+  period,
+  resolvedPeriod,
+  currency,
+  error: initialError,
+}: AiInsightsViewProps) {
   const [data, setData] = useState<AiFinancialInsightsData | null>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(initialError);
   const { toast } = useToast();
 
-  // Keep local state in sync with the server-rendered payload: useState only
-  // initializes once, so after switching periods delivers a new initialData
-  // the page would otherwise keep showing the previous month's insights.
   useEffect(() => {
     setData(initialData);
     setError(initialError);
@@ -39,8 +45,10 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
     setError(undefined);
     const requestedPeriod = period;
     try {
-      const result = await getAiFinancialInsights(requestedPeriod, { generateAi: true, refreshCache: true });
-      // Ignore results for a period the user has already navigated away from.
+      const result = await getAiFinancialInsights(requestedPeriod, {
+        generateAi: true,
+        refreshCache: true,
+      });
       if (latestPeriodRef.current !== requestedPeriod) return;
       if (result.status === "success") {
         setData(result.data);
@@ -55,7 +63,10 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
       if (latestPeriodRef.current === requestedPeriod) {
         setError("Failed to generate insights. Please try again.");
         if (data) {
-          toast({ description: "Failed to generate insights. Please try again.", tone: "error" });
+          toast({
+            description: "Failed to generate insights. Please try again.",
+            tone: "error",
+          });
         }
       }
     } finally {
@@ -97,10 +108,7 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
       </header>
 
       {error && !data ? (
-        <ErrorState
-          title="Insights unavailable"
-          description={error}
-        />
+        <ErrorState title="Insights unavailable" description={error} />
       ) : null}
 
       {loading && !data ? (
@@ -108,8 +116,14 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
       ) : data ? (
         <>
           <SummaryKpiRow
-            totalSpending={{ label: "Total Spending", ...data.summaryMetrics.totalSpending }}
-            potentialSavings={{ label: "Potential Savings", ...data.summaryMetrics.potentialSavings }}
+            totalSpending={{
+              label: "Total Spending",
+              ...data.summaryMetrics.totalSpending,
+            }}
+            potentialSavings={{
+              label: "Potential Savings",
+              ...data.summaryMetrics.potentialSavings,
+            }}
             topCategory={data.summaryMetrics.topCategory}
             financialHealth={data.summaryMetrics.financialHealth}
           />
@@ -120,14 +134,12 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
             period={period}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-7 space-y-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
+            <div className="lg:col-span-6">
               <TopInsights insights={data.insights} />
-
-              <AiGeneratedInsights insights={data.aiInsights} />
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
+            <div className="grid h-full grid-rows-[7fr_3fr] gap-4 lg:col-span-6">
               <ConfidencePanel
                 score={data.confidence.score}
                 label={data.confidence.label}
@@ -138,9 +150,12 @@ export function AiInsightsView({ initialData, period, resolvedPeriod, currency, 
               <GenerateButton
                 onGenerate={() => void refresh()}
                 loading={loading}
+                className="h-full"
               />
             </div>
           </div>
+
+          <AiGeneratedInsights insights={data.aiInsights} />
         </>
       ) : null}
     </div>

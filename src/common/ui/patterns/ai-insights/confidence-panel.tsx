@@ -69,7 +69,7 @@ export function ConfidencePanel({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "rounded-xl border border-border/50 bg-surface p-4",
+        "h-full rounded-xl border border-border/50 bg-surface p-4",
         className,
       )}
     >

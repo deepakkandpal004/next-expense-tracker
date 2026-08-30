@@ -1,27 +1,24 @@
 "use client";
 
-import { Sparkles, ShieldCheck, ArrowUpRight, AlertTriangle, Lightbulb } from "lucide-react";
+import { ShieldCheck, ArrowUpRight, AlertTriangle, Lightbulb, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/src/common/ui/cn";
 import type { AIInsight } from "@/src/integrations/openai";
 
 export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
   return (
-    <section className="rounded-2xl border border-white/[0.08] bg-surface p-5 sm:p-6 space-y-5">
+    <section className="rounded-2xl w-full border border-white/[0.08] bg-surface p-5 sm:p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Sparkles size={15} />
-          </span>
           <div>
-            <h2 className="text-sm font-bold text-foreground">AI Intelligence Observations</h2>
+            <h2 className="text-sm font-bold text-foreground">AI-Generated Insights</h2>
             <p className="text-[11px] text-foreground-secondary">Derived from summary aggregate figures</p>
           </div>
         </div>
 
         <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400 font-mono">
           <ShieldCheck size={12} />
-          <span className="hidden sm:inline">Summary Only</span>
+          <span className="hidden sm:inline font-sans">Summary Only</span>
         </span>
       </div>
 
@@ -33,7 +30,7 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-3.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {insights.map((insight) => {
           const isWarning =
             insight.type === "warning" ||
@@ -59,12 +56,12 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
                   : "border-white/[0.08] bg-surface-subtle hover:border-primary/30"
               )}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex px-5 py-2 items-start justify-between gap-3">
                 <div className="flex items-center gap-2">
                   {isWarning ? (
                     <AlertTriangle size={15} className="text-danger shrink-0" />
                   ) : (
-                    <Sparkles size={15} className="text-primary shrink-0" />
+                    <SparklesIcon size={15} className="text-primary shrink-0" />
                   )}
                   <h3 className={cn("text-sm font-semibold tracking-tight", isWarning ? "text-danger" : "text-foreground")}>
                     {insight.title}
@@ -72,18 +69,18 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
                 </div>
 
                 {insight.confidence !== undefined && (
-                  <span className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[11px] font-mono font-semibold text-primary">
-                    {Math.round(insight.confidence * 100)}% match
+                  <span className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary sm:px-3 sm:text-[11px]">
+                    {Math.round(insight.confidence * 100)}% confidence
                   </span>
                 )}
               </div>
 
-              <p className="mt-2 text-xs sm:text-sm text-foreground-secondary leading-relaxed pl-5 sm:pl-6">
+              <p className="mt-2 text-xs mb-3 sm:text-sm text-foreground-secondary leading-relaxed pl-5 sm:pl-6">
                 {insight.message}
               </p>
 
               {insight.action && (
-                <div className="mt-3.5 pl-5 sm:pl-6 flex items-center gap-3">
+                <div className="mt-3.5 px-5 py-2 mb-2 pl-5 sm:pl-6 flex items-center gap-3">
                   <Link
                     href={insight.action.startsWith("/") ? insight.action : "/records"}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover hover:underline underline-offset-4"

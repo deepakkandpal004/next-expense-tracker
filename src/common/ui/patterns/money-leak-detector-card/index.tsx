@@ -22,9 +22,6 @@ export function MoneyLeakDetectorCard({
     >
       <div className="relative flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-4">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Droplets size={15} aria-hidden="true" />
-          </span>
           <div>
             <h2 className="text-sm font-semibold text-foreground" id="money-leak-title">
               Money leak detector

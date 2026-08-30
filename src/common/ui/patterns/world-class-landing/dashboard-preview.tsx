@@ -229,7 +229,7 @@ export function DashboardPreview() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white font-mono"
+                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white"
                 >
                   {stats.balance}
                 </motion.div>
@@ -254,7 +254,7 @@ export function DashboardPreview() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white font-mono"
+                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white"
                 >
                   {stats.spent}
                   <span className="text-sm font-normal text-white/40 ml-1">/ {stats.budget}</span>
@@ -284,7 +284,7 @@ export function DashboardPreview() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk px-5 py-2 text-2xl sm:text-3xl font-bold tracking-tight text-white font-mono"
+                  className="mt-2 font-space-grotesk px-5 py-2 text-2xl sm:text-3xl font-bold tracking-tight text-white"
                 >
                   {stats.safeToSpend}
                 </motion.div>

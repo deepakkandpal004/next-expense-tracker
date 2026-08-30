@@ -17,7 +17,7 @@ export function GenerateButton({ onGenerate, loading = false, className }: Gener
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "rounded-xl border border-border/50 bg-surface p-4 flex flex-col items-center gap-2",
+        "h-full rounded-xl border border-border/50 bg-surface p-4 flex flex-col items-center gap-2",
         className,
       )}
     >
@@ -25,7 +25,7 @@ export function GenerateButton({ onGenerate, loading = false, className }: Gener
         onClick={onGenerate}
         disabled={loading}
         className={cn(
-          "flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground transition-all duration-300",
+          "flex items-center justify-center gap-2 rounded-xl bg-primary px-16 py-7 text-lg font-bold text-primary-foreground transition-all duration-300",
           "hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(0,245,255,0.3)] hover:scale-[1.02]",
           "active:scale-[0.98]",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none",

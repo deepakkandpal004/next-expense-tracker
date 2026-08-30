@@ -61,11 +61,11 @@ function InsightCard({ insight }: { insight: AiInsightCard }) {
     <motion.article
       variants={listItemVariants}
       className={cn(
-        "relative overflow-hidden rounded-xl border bg-surface p-4 transition-all duration-300 hover:shadow-lg flex flex-col",
+        "relative overflow-hidden rounded-xl border bg-surface p-4 min-h-[180px] transition-all duration-300 hover:shadow-lg",
         config.cardBorder,
       )}
     >
-      <div className="flex items-start gap-3 mb-2">
+      <div className="flex items-start gap-3">
         <span
           className={cn(
             "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
@@ -83,14 +83,14 @@ function InsightCard({ insight }: { insight: AiInsightCard }) {
           <h3 className="mt-0.5 text-sm font-semibold text-foreground">{insight.title}</h3>
         </div>
       </div>
-      <p className="text-xs text-foreground-secondary leading-relaxed flex-1 pl-11">
+      <p className="text-xs text-foreground-secondary leading-relaxed pl-0 sm:pl-11">
         {insight.description}
       </p>
       {insight.actionLabel && insight.actionHref && (
         <a
           href={insight.actionHref}
-          className="mt-2 ml-11 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
-        >
+          className="mt-3 ml-0 inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80 sm:ml-11"
+          >
           {insight.actionLabel}
           <ArrowRight size={12} strokeWidth={2.5} />
         </a>
@@ -107,12 +107,10 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
       aria-labelledby="top-ai-insights-title"
       className={cn("", className)}
     >
+      <div className="rounded-2xl border border-border bg-surface p-5 transition-all duration-300 hover:shadow-lg flex flex-col">
       <div className="mb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10">
-            <span className="text-primary text-[10px]">✦</span>
-          </span>
-          <h2 className="text-sm font-semibold text-foreground" id="top-ai-insights-title">
+          <h2 className="text-lg font-semibold text-foreground" id="top-ai-insights-title">
             Top AI Insights
           </h2>
         </div>
@@ -121,12 +119,7 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
         </p>
       </div>
       <motion.div
-        className={cn(
-          "grid gap-3",
-          insights.length === 1 && "grid-cols-1",
-          insights.length === 2 && "grid-cols-1 sm:grid-cols-2",
-          insights.length >= 3 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-        )}
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2"
         initial="hidden"
         animate="visible"
         variants={{
@@ -138,6 +131,8 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
           <InsightCard key={insight.id} insight={insight} />
         ))}
       </motion.div>
+    </div>
     </section>
+
   );
 }
