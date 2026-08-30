@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Droplets, Sparkles, Timer } from "lucide-react";
+import { Sparkles, Timer } from "lucide-react";
 import { formatCurrency } from "@/src/common/formatters/locale";
 import { LeakRow } from "./leak-row";
 import type { MoneyLeakDetectorCardProps } from "./types";
