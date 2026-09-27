@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'motion/react';
 import {
   ArrowRight,
   Clock,
@@ -15,190 +14,143 @@ import { AnimateInView } from './shared';
 
 export function ContactPageContent() {
   return (
-    <main className="min-h-screen bg-foreground-inverse">
+    <main className="min-h-screen bg-bg-base">
       {/* Hero */}
-      <section className="relative overflow-hidden py-32 sm:py-40">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.03] blur-[150px]" />
-        </div>
+      <section className="relative overflow-hidden py-20 sm:py-28 border-b border-white/[0.06]">
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <AnimateInView>
-            <h1 className="text-6xl font-semibold tracking-tight text-white sm:text-7xl md:text-8xl">
-              Get in touch
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
+              Contact & Support
+            </span>
+            <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+              Get in touch with us.
             </h1>
-            <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Have a question, need support, or want to share feedback?
-              We&apos;d love to hear from you.
+            <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-text-secondary">
+              Have a technical question, bug report, or feature request? We respond directly to every message.
             </p>
           </AnimateInView>
         </div>
       </section>
 
       {/* Contact Options */}
-      <section className="relative border-y border-white/[0.06] bg-bg-base py-24 sm:py-32">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="relative bg-bg-base py-16 sm:py-20 border-b border-white/[0.06]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: Mail,
-                title: 'Email',
-                description: 'For account, product, or accessibility questions',
+                title: 'Technical Support & Inquiries',
+                description: 'Product support, account questions, and bugs',
                 action: 'deepakkandpal.tech@gmail.com',
                 href: 'mailto:deepakkandpal.tech@gmail.com',
-                color: '#00DCE5',
-                bgColor: 'rgba(0,220,229,0.08)',
+                color: '#7585F8',
+                bgColor: 'rgba(117,133,248,0.1)',
               },
               {
                 icon: Mail,
-                title: 'Email',
-                description: 'For partnerships or business inquiries',
+                title: 'Business & Partnerships',
+                description: 'Collaborations, integrations, and feedback',
                 action: 'deepakkandpal.work@gmail.com',
                 href: 'mailto:deepakkandpal.work@gmail.com',
-                color: '#A855F7',
-                bgColor: 'rgba(168,85,247,0.08)',
+                color: '#37C98C',
+                bgColor: 'rgba(55,201,140,0.1)',
               },
               {
                 icon: Clock,
-                title: 'Support Hours',
-                description: 'When our team is available',
-                action: 'Mon–Fri, 9AM–6PM PST',
-                href: '#',
-                color: '#22C55E',
-                bgColor: 'rgba(34,197,94,0.08)',
+                title: 'Response Timeline',
+                description: 'Direct replies within 24 business hours',
+                action: 'Mon–Fri · Regular updates',
+                href: 'mailto:deepakkandpal.tech@gmail.com',
+                color: '#F0B66A',
+                bgColor: 'rgba(240,182,106,0.1)',
               },
             ].map((item, index) => (
-              <AnimateInView key={item.action} delay={index * 0.1}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]"
+              <AnimateInView key={item.action} delay={index * 0.05}>
+                <div
+                  className="group relative flex h-full flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 transition-colors hover:border-white/[0.14]"
                 >
                   <div
-                    className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
+                    className="flex size-10 items-center justify-center rounded-lg border border-white/[0.08]"
                     style={{ backgroundColor: item.bgColor }}
-                  />
-                  <div className="relative z-10">
-                    <div
-                      className="flex size-12 items-center justify-center rounded-xl"
-                      style={{ backgroundColor: item.bgColor }}
-                    >
-                      <item.icon size={24} style={{ color: item.color }} />
-                    </div>
-                    <h3 className="mt-5 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-                    <a
-                      href={item.href}
-                      className="mt-4 inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200 hover:opacity-80"
-                      style={{ color: item.color }}
-                    >
-                      {item.action}
-                      <ArrowRight size={14} />
-                    </a>
+                  >
+                    <item.icon size={18} style={{ color: item.color }} />
                   </div>
-                </motion.div>
+                  <h3 className="mt-4 text-sm font-semibold text-white">{item.title}</h3>
+                  <p className="mt-1 flex-1 text-xs text-text-secondary leading-relaxed">{item.description}</p>
+                  <a
+                    href={item.href}
+                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-primary-hover"
+                  >
+                    {item.action}
+                    <ArrowRight size={13} />
+                  </a>
+                </div>
               </AnimateInView>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Quick Links */}
-      <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-kpi-savings/[0.03] blur-[100px]" />
-        </div>
+      {/* Quick Documentation Links */}
+      <section className="relative bg-bg-base py-16 sm:py-20 border-b border-white/[0.06]">
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <AnimateInView className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-kpi-savings/60">Resources</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              Find answers fast
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Documentation & Guides
             </h2>
           </AnimateInView>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <div className="mt-10 grid gap-3.5 sm:grid-cols-2">
             {[
               {
                 icon: HelpCircle,
                 title: 'FAQ',
-                description: 'Answers to common questions about Expense Tracker AI.',
+                description: 'Answers to common questions about features and calculations.',
                 href: '/features',
-                color: '#00DCE5',
+                color: '#7585F8',
               },
               {
                 icon: Shield,
                 title: 'AI Transparency',
-                description: 'Learn how our AI features use your data.',
+                description: 'Detailed explanation of summary-only data boundaries.',
                 href: '/ai-transparency',
                 color: '#A855F7',
               },
               {
                 icon: Lock,
                 title: 'Privacy Policy',
-                description: 'How we protect and handle your information.',
+                description: 'How data encryption and deletion are enforced.',
                 href: '/privacy',
-                color: '#22C55E',
+                color: '#37C98C',
               },
               {
                 icon: FileText,
-                title: 'Features',
-                description: 'Explore everything Expense Tracker AI can do.',
+                title: 'Core Features',
+                description: 'Explore the full architectural breakdown.',
                 href: '/features',
-                color: '#FBBF24',
+                color: '#F0B66A',
               },
             ].map((item, index) => (
-              <AnimateInView key={item.title} delay={index * 0.08}>
+              <AnimateInView key={item.title} delay={index * 0.04}>
                 <Link
                   href={item.href}
-                  className="group flex items-start gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]"
+                  className="group flex items-start gap-3.5 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4.5 transition-colors hover:border-white/[0.14]"
                 >
                   <div
-                    className="flex size-10 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: `${item.color}15` }}
+                    className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03]"
                   >
-                    <item.icon size={20} style={{ color: item.color }} />
+                    <item.icon size={16} style={{ color: item.color }} />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white group-hover:text-primary transition-colors duration-200">
+                    <h3 className="text-xs font-semibold text-white group-hover:text-primary transition-colors">
                       {item.title}
                     </h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                    <p className="mt-0.5 text-xs text-text-secondary leading-relaxed">{item.description}</p>
                   </div>
                 </Link>
               </AnimateInView>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative overflow-hidden border-t border-white/[0.06] bg-bg-base py-32">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
-        </div>
-        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <AnimateInView>
-            <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-              Ready to get started?
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-              Join thousands who track smarter with Expense Tracker AI.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/sign-up"
-                className="group flex items-center gap-2.5 rounded-xl bg-primary px-8 py-4 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
-              >
-                Get started free
-                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/"
-                className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.97]"
-              >
-                Back to home
-              </Link>
-            </div>
-          </AnimateInView>
         </div>
       </section>
     </main>

@@ -1,60 +1,59 @@
 "use client";
-import { motion } from "motion/react";
-import { BarChart3, Brain, Globe, Shield, Target, Zap } from "lucide-react";
+import { BarChart3, Bot, Globe, ShieldCheck, Target, Zap } from "lucide-react";
 import { AnimateInView } from "./shared";
 
 const features = [
   {
     icon: BarChart3,
-    title: "Smart Analytics",
-    description: "Beautiful charts and insights that help you understand where your money goes.",
-    color: "#00DCE5",
-    bgColor: "rgba(0,220,229,0.08)",
+    title: "Real-Time Runway Analytics",
+    description: "Dynamic safe-to-spend calculations, monthly burn rate pacing, and verified balance tracking.",
+    color: "#7585F8",
+    bgColor: "rgba(117,133,248,0.1)",
     span: "lg:col-span-2 lg:row-span-2",
     featured: true,
   },
   {
-    icon: Brain,
-    title: "AI Categorization",
-    description: "Automatically categorize transactions with AI-powered suggestions.",
+    icon: Bot,
+    title: "Smart Categorization",
+    description: "Automatic suggestions based on merchant rules and recurring transaction patterns.",
     color: "#A855F7",
-    bgColor: "rgba(168,85,247,0.08)",
+    bgColor: "rgba(168,85,247,0.1)",
     span: "lg:col-span-1",
     featured: false,
   },
   {
     icon: Target,
-    title: "Budget Tracking",
-    description: "Set budgets and track progress with real-time alerts.",
-    color: "#22C55E",
-    bgColor: "rgba(34,197,94,0.08)",
+    title: "Cadence Budgeting",
+    description: "Monthly and custom interval budget thresholds with visual utilization gauges.",
+    color: "#37C98C",
+    bgColor: "rgba(55,201,140,0.1)",
     span: "lg:col-span-1",
     featured: false,
   },
   {
-    icon: Shield,
-    title: "Bank-Grade Security",
-    description: "Your data is encrypted and secure. We never sell your information.",
+    icon: ShieldCheck,
+    title: "Privacy by Design",
+    description: "Zero raw merchant leakage. Only aggregated category summaries are analyzed on-demand.",
     color: "#3B82F6",
-    bgColor: "rgba(59,130,246,0.08)",
+    bgColor: "rgba(59,130,246,0.1)",
     span: "lg:col-span-1",
     featured: false,
   },
   {
     icon: Zap,
-    title: "Instant Sync",
-    description: "Real-time updates across all your devices. Always up to date.",
-    color: "#FBBF24",
-    bgColor: "rgba(251,191,36,0.08)",
+    title: "Instant Ledger Sync",
+    description: "Fast, optimistic mutations with server-side idempotency protection and Redis caching.",
+    color: "#F0B66A",
+    bgColor: "rgba(240,182,106,0.1)",
     span: "lg:col-span-1",
     featured: false,
   },
   {
     icon: Globe,
-    title: "Multi-Currency",
-    description: "Track expenses in multiple currencies with automatic conversion.",
-    color: "#F04438",
-    bgColor: "rgba(240,68,56,0.08)",
+    title: "Multi-Currency Support",
+    description: "Seamless support for major international currencies with localized decimal formatting.",
+    color: "#F16F6F",
+    bgColor: "rgba(241,111,111,0.1)",
     span: "lg:col-span-1",
     featured: false,
   },
@@ -62,79 +61,58 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="relative isolate overflow-hidden bg-black py-14 sm:py-16 scroll-mt-20">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.03] blur-[120px]" />
-      </div>
-
+    <section id="features" className="relative isolate overflow-hidden bg-bg-base py-16 sm:py-20 scroll-mt-20 border-t border-white/[0.06]">
       <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8">
         {/* Header */}
         <AnimateInView className="text-center">
-          <h2 className="font-bold tracking-tight mt-6 text-5xl text-white sm:text-6xl">
-            Everything you need
+          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            Engineered for financial control.
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Powerful tools designed to give you clarity and control over your money.
+          <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-text-secondary leading-relaxed">
+            Every feature is built for high information density, strict mathematical accuracy, and effortless day-to-day use.
           </p>
         </AnimateInView>
 
         {/* Bento Grid */}
-        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)] grid-flow-dense">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)] grid-flow-dense">
           {features.map((feature, index) => (
             <AnimateInView
               key={feature.title}
-              delay={index * 0.08}
+              delay={index * 0.05}
               className={feature.span}
             >
-              <motion.div
-                whileHover={{ y: -4, scale: 1.01 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(0,220,229,0.06)]"
+              <div
+                className="group relative flex h-full flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 transition-colors hover:border-white/[0.14] hover:bg-white/[0.03]"
               >
-                {/* Hover glow */}
-                <div
-                  className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ backgroundColor: feature.bgColor }}
-                />
-
-                <div className="relative z-10 flex h-full flex-col">
-                  {/* Icon */}
-                  <div
-                    className="flex size-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: feature.bgColor }}
-                  >
-                    <feature.icon size={24} style={{ color: feature.color }} />
-                  </div>
-
-                  {/* Content */}
-                  <h3 className="font-semibold tracking-wide mt-5 text-xl text-white">
-                    {feature.title}
-                  </h3>
-                   <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {feature.description}
-                  </p>
-
-                  {/* Featured card extra content */}
-                  {feature.featured && (
-                    <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground/60">
-                         <span>This month</span>
-                         <span className="text-primary">+24% savings</span>
-                      </div>
-                      <div className="mt-3 flex items-end gap-1 h-12">
-                        {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
-                          <div
-                            key={i}
-                            className="flex-1 rounded-t-sm bg-gradient-to-t from-primary/20 to-primary/60"
-                            style={{ height: `${h}%` }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                <div className="flex size-10 items-center justify-center rounded-lg border border-white/[0.08]" style={{ backgroundColor: feature.bgColor }}>
+                  <feature.icon size={20} style={{ color: feature.color }} />
                 </div>
-              </motion.div>
+
+                <h3 className="mt-4 text-base font-semibold text-white">
+                  {feature.title}
+                </h3>
+                <p className="mt-1.5 flex-1 text-xs leading-relaxed text-text-secondary">
+                  {feature.description}
+                </p>
+
+                {feature.featured && (
+                  <div className="mt-5 rounded-lg border border-white/[0.06] bg-black/40 p-3.5">
+                    <div className="flex items-center justify-between text-xs font-medium text-text-tertiary">
+                      <span>Pacing vs Target</span>
+                      <span className="text-emerald-400 font-semibold font-mono">+18.4% surplus</span>
+                    </div>
+                    <div className="mt-2.5 flex items-end gap-1.5 h-10">
+                      {[35, 45, 30, 60, 50, 70, 80, 65, 75, 90, 60, 95].map((h, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 rounded-t-sm bg-primary/40 hover:bg-primary transition-colors"
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </AnimateInView>
           ))}
         </div>

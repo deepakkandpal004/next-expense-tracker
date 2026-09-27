@@ -16,19 +16,19 @@ export function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex h-11 items-center rounded-xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-    expanded ? "w-full gap-3 px-3" : "mx-auto w-11 justify-center px-0",
+    "group relative flex h-9 items-center rounded-lg text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+    expanded ? "w-full gap-2.5 px-2.5" : "mx-auto w-9 justify-center px-0",
     isActive
-      ? "bg-primary-muted font-medium text-white hover:bg-primary/18"
-      : "text-muted-foreground hover:bg-white/[0.04] hover:text-on-surface-variant",
+      ? "bg-white/[0.08] text-white font-semibold"
+      : "text-text-secondary hover:bg-white/[0.04] hover:text-white",
     item.status === "coming-soon" && "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-text-tertiary",
   );
 
   const iconClass = cn(
-    "shrink-0 transition-colors duration-200",
+    "shrink-0 transition-colors duration-150",
     isActive
       ? "text-primary"
-      : "text-text-tertiary group-hover:text-on-surface-variant",
+      : "text-text-tertiary group-hover:text-text-secondary",
   );
 
   const content = (
@@ -38,7 +38,7 @@ export function NavRow({
       </span>
       <span
         className={cn(
-          "truncate text-sm font-medium whitespace-nowrap transition-all duration-200",
+          "truncate whitespace-nowrap transition-all duration-150",
           expanded
             ? "min-w-0 flex-1 opacity-100"
             : "w-0 flex-none overflow-hidden opacity-0",
@@ -47,7 +47,7 @@ export function NavRow({
         {item.label}
       </span>
       {isActive && expanded && (
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_6px_var(--primary)]" />
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
       )}
     </>
   );

@@ -72,39 +72,27 @@ export function AISection() {
   const [activeQuestion, setActiveQuestion] = useState<QuestionDemo>(AI_DEMO_QUESTIONS[0]);
 
   return (
-    <section className="relative isolate overflow-hidden border-b border-white/[0.08] bg-[#050608] py-20 sm:py-28">
-      {/* Background radial glows and grid */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/[0.06] blur-[150px]" />
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-      </div>
-
+    <section className="relative isolate overflow-hidden border-t border-white/[0.06] bg-bg-base py-16 sm:py-20">
       <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto">
           <AnimateInView>
-            <div className="inline-flex px-5 py-2 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 text-xs font-semibold tracking-normal text-primary">
-              <span>Summary-Only Financial Copilot</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
+              <span>Automated Spending Intelligence</span>
             </div>
-            <h2 className="font-space-grotesk mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-              Intelligence that explains the <span className="bg-gradient-to-r from-primary via-[#67e8f9] to-emerald-400 bg-clip-text text-transparent">story behind your numbers</span>
+            <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              The context behind your numbers.
             </h2>
-            <p className="mt-5 text-base sm:text-lg text-white/60 leading-relaxed">
-              No generic chatbot answers. Every insight is generated on-demand from aggregated period data and backed by exact citation chips linking to your ledger.
+            <p className="mt-3 text-sm sm:text-base text-text-secondary leading-relaxed">
+              Every insight is calculated directly from ledger entries with verified citation chips and actionable monthly suggestions.
             </p>
           </AnimateInView>
         </div>
 
-        {/* Interactive AI Playground Box */}
-        <div className="mt-14 max-w-4xl mx-auto">
-          {/* Question Prompt Selector Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 p-1.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl">
+        {/* Interactive Playground */}
+        <div className="mt-12 max-w-4xl mx-auto">
+          {/* Question Selector */}
+          <div className="flex flex-wrap items-center justify-center gap-2 p-1 rounded-xl border border-white/[0.08] bg-white/[0.02]">
             {AI_DEMO_QUESTIONS.map((item) => {
               const isSelected = activeQuestion.id === item.id;
               return (
@@ -112,89 +100,86 @@ export function AISection() {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveQuestion(item)}
-                  className={`relative rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors flex items-center gap-1.5 ${
                     isSelected
-                      ? "bg-primary text-black font-semibold shadow-lg shadow-primary/20"
-                      : "text-white/70 hover:text-white hover:bg-white/[0.05]"
+                      ? "bg-white/[0.08] text-white font-semibold"
+                      : "text-text-tertiary hover:text-white hover:bg-white/[0.03]"
                   }`}
                 >
-                  <MessageSquareQuote size={14} className={isSelected ? "text-black" : "text-primary"} />
+                  <MessageSquareQuote size={13} className={isSelected ? "text-primary" : "text-text-tertiary"} />
                   <span className="truncate">{item.question}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Interactive Response Container */}
-          <div className="mt-5 rounded-2xl border border-primary/20 bg-[#0d1017]/90 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-            {/* Top Bar inside Box */}
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="flex size-7 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                  <Brain size={16} />
+          {/* Response Container */}
+          <div className="mt-4 rounded-xl border border-white/[0.08] bg-[#0c0e14]/90 p-5 sm:p-6 shadow-xl relative overflow-hidden">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+              <div className="flex items-center gap-2">
+                <div className="flex size-6 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <Brain size={13} />
                 </div>
-                <div>
-                  <span className="text-xs font-semibold text-white">Expense AI Analysis</span>
-                  <span className="text-[11px] text-white/40 ml-2 font-mono">Confidence: 98%</span>
-                </div>
+                <span className="text-xs font-semibold text-text-primary">Ledger Analysis Report</span>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400 font-mono">
-                <ShieldCheck size={12} />
-                <span>Zero Raw Data Leakage</span>
+              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+                <ShieldCheck size={11} />
+                <span>Summary-Only Privacy Guarantee</span>
               </span>
             </div>
 
-            {/* Dynamic Content */}
+            {/* Content */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeQuestion.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="pt-6 space-y-5"
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="pt-4 space-y-4"
               >
                 {/* User Prompt Echo */}
-                <div className="flex items-center gap-2 text-xs font-mono text-white/50">
+                <div className="flex items-center gap-2 text-xs font-mono text-text-tertiary">
                   <span className="text-primary font-bold">Query:</span>
                   <span>&ldquo;{activeQuestion.question}&rdquo;</span>
                 </div>
 
-                {/* AI Narrative Body */}
-                <div className="rounded-xl border border-primary/15 bg-primary/[0.03] p-4.5">
-                  <p className="text-sm px-5 py-2 sm:text-base text-[#d8fbfd] leading-relaxed">
+                {/* Narrative Body */}
+                <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+                  <p className="text-xs sm:text-sm text-text-primary leading-relaxed">
                     {activeQuestion.response}
                   </p>
                 </div>
 
-                {/* Proof & Metrics Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                    <span className="text-[11px] text-white/40 block">Source Citation</span>
-                    <span className="text-xs font-medium text-primary mt-1 flex items-center gap-1">
-                      <CheckCircle2 size={13} />
+                {/* Proof & Metrics */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                    <span className="text-[10px] text-text-tertiary block">Source Citation</span>
+                    <span className="text-xs font-medium text-primary mt-0.5 flex items-center gap-1">
+                      <CheckCircle2 size={12} />
                       {activeQuestion.metrics.source}
                     </span>
                   </div>
 
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                    <span className="text-[11px] text-white/40 block">Total Figure</span>
-                    <span className="text-xs font-mono font-semibold text-white mt-1 block">
+                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                    <span className="text-[10px] text-text-tertiary block">Total Figure</span>
+                    <span className="text-xs font-mono font-semibold text-text-primary mt-0.5 block">
                       {activeQuestion.metrics.amount}
                     </span>
                   </div>
 
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                    <span className="text-[11px] text-white/40 block">Impact Delta</span>
-                    <span className="text-xs font-semibold text-emerald-400 mt-1 block">
+                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                    <span className="text-[10px] text-text-tertiary block">Impact Delta</span>
+                    <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">
                       {activeQuestion.metrics.trend}
                     </span>
                   </div>
                 </div>
 
                 {/* Action Recommendation */}
-                <div className="flex items-start gap-2.5 text-xs sm:text-sm text-white/70 bg-white/[0.02] border border-white/[0.06] rounded-xl p-3.5">
+                <div className="flex items-start gap-2 text-xs text-text-secondary bg-white/[0.02] border border-white/[0.06] rounded-lg p-3">
                   <div>
                     <span className="font-semibold text-white">Suggested Action: </span>
                     <span>{activeQuestion.recommendation}</span>
@@ -205,32 +190,33 @@ export function AISection() {
           </div>
         </div>
 
-        {/* 3 Privacy Guarantees Cards Below */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        {/* 3 Privacy Guarantees */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-4xl mx-auto">
           {[
             {
               icon: EyeOff,
-              title: "Summary-Only Architecture",
-              desc: "Only category sums and counts are sent. Transaction notes, IDs, and merchants are never transmitted.",
+              title: "Summary-Only Aggregation",
+              desc: "Only category sums and monthly totals are analyzed. Individual merchant names and notes remain strictly local.",
             },
             {
               icon: Lock,
-              title: "Full User Opt-in",
-              desc: "AI insights remain completely disabled until you explicitly generate them. Master toggle in settings.",
+              title: "Explicit Opt-In",
+              desc: "Analysis features remain entirely on-demand. Master control toggle available anytime in settings.",
             },
             {
               icon: DatabaseZap,
-              title: "Fail-Open & Invalidation",
-              desc: "Fast responses powered by Redis with automatic cache invalidation whenever you record an entry.",
+              title: "Instant Invalidation",
+              desc: "Cached summaries automatically invalidate the moment you create, edit, or delete any record.",
             },
           ].map((item) => {
             return (
               <div
                 key={item.title}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4.5 transition-colors hover:border-primary/20 hover:bg-primary/[0.02]"
+                className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-white/[0.14]"
               >
-                <h3 className="mt-3 font-semibold px-5 py-2 text-sm text-white">{item.title}</h3>
-                <p className="mt-1 px-5 py-2 text-xs text-white/50 leading-relaxed">{item.desc}</p>
+                <item.icon size={16} className="text-primary" />
+                <h3 className="mt-2 text-xs font-semibold text-white">{item.title}</h3>
+                <p className="mt-1 text-xs text-text-secondary leading-relaxed">{item.desc}</p>
               </div>
             );
           })}

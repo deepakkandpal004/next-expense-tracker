@@ -46,34 +46,27 @@ export function AuthenticationForm({
         </span>
       </Link>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
-        <p className="mt-3 text-sm text-muted-foreground">{description}</p>
-      </motion.div>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-white">{title}</h1>
+        <p className="mt-2 text-xs text-text-secondary">{description}</p>
+      </div>
 
-      <motion.form
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="mt-8 grid gap-5"
+      <form
+        className="mt-6 grid gap-4"
         noValidate
         onSubmit={onSubmit}
         ref={formRef}
       >
         {error ? (
-          <div className="rounded-xl border border-danger/20 bg-danger/[0.08] p-4">
-            <p className="text-sm text-danger">{error}</p>
-            {errorAction ? <div className="mt-3">{errorAction}</div> : null}
+          <div className="rounded-lg border border-danger/20 bg-danger/[0.08] p-3">
+            <p className="text-xs font-medium text-danger">{error}</p>
+            {errorAction ? <div className="mt-2">{errorAction}</div> : null}
           </div>
         ) : null}
 
         {success ? (
-          <div className="rounded-xl border border-success/20 bg-success/[0.08] p-4">
-            <p className="text-sm text-success">{success}</p>
+          <div className="rounded-lg border border-success/20 bg-success/[0.08] p-3">
+            <p className="text-xs font-medium text-success">{success}</p>
           </div>
         ) : null}
 
@@ -82,21 +75,21 @@ export function AuthenticationForm({
         <button
           type="submit"
           disabled={pending}
-          className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-glow-primary hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="group mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? (
             <>
-              <span className="size-4 animate-spin rounded-full border-2 border-foreground-inverse/30 border-t-foreground-inverse" />
+              <span className="size-3.5 animate-spin rounded-full border-2 border-foreground-inverse/30 border-t-foreground-inverse" />
               {pendingLabel}
             </>
           ) : (
             <>
               {submitLabel}
-              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </>
           )}
         </button>
-      </motion.form>
+      </form>
 
       {footer ? (
         <motion.footer

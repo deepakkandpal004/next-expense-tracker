@@ -108,13 +108,13 @@ export function AppSidebar({
         <button
           onClick={() => onNewRecord?.()}
           className={cn(
-            "flex items-center justify-center rounded-xl bg-primary font-semibold text-color-text-inverse transition-all duration-200 hover:bg-primary/90 hover:shadow-[0_0_20px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]",
-            expanded ? "h-12 w-full gap-2 px-4" : "mx-auto size-11",
+            "flex items-center justify-center rounded-lg bg-primary font-medium text-color-text-inverse transition-all duration-150 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]",
+            expanded ? "h-10 w-full gap-2 px-3 text-xs" : "mx-auto size-9",
           )}
         >
-          <Plus size={18} strokeWidth={2.5} className="shrink-0" />
+          <Plus size={16} strokeWidth={2.5} className="shrink-0" />
           <span className={cn(
-            "text-sm whitespace-nowrap transition-all duration-200",
+            "whitespace-nowrap transition-all duration-150",
             expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
           )}>
             New Record
@@ -128,11 +128,11 @@ export function AppSidebar({
             title={expanded ? "Collapse sidebar" : "Expand sidebar"}
             onClick={onToggleCollapsed}
             className={cn(
-              "mt-2 flex items-center justify-center rounded-xl text-text-tertiary transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-              expanded ? "h-10 w-full" : "mx-auto size-11",
+              "mt-2 flex items-center justify-center rounded-lg text-text-tertiary transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+              expanded ? "h-8 w-full" : "mx-auto size-8",
             )}
           >
-            {expanded ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+            {expanded ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
           </button>
         )}
       </div>

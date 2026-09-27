@@ -96,28 +96,28 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
           {isAuthenticated ? (
             <Link
               href="/dashboard"
-               className="hidden h-10 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-foreground-inverse shadow-[0_0_16px_var(--primary-muted)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
+              className="hidden h-9 items-center gap-2 rounded-lg bg-primary px-4 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
             >
-              <LayoutDashboard size={14} strokeWidth={2.25} />
+              <LayoutDashboard size={14} strokeWidth={2} />
               Dashboard
             </Link>
           ) : (
             <>
               <Link
                 href="/sign-in"
-                className="hidden h-10 items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-4 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:border-white/[0.24] hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:flex"
+                className="hidden h-9 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3.5 text-xs font-medium text-white transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:flex"
               >
-                <LogIn size={14} strokeWidth={2.25} />
+                <LogIn size={13} strokeWidth={2} />
                 Sign in
               </Link>
               <Link
                 href="/sign-up"
-                className="group hidden h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-foreground-inverse shadow-[0_0_16px_var(--primary-muted)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_24px_var(--primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] md:inline-flex"
+                className="group hidden h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
               >
                 Get Started
                 <ArrowRight
-                  size={14}
-                  className="transition-transform duration-300 group-hover:translate-x-0.5"
+                  size={13}
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
                 />
               </Link>
             </>
@@ -128,9 +128,9 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="inline-flex size-10 items-center justify-center rounded-full text-white/80 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 md:hidden"
+            className="inline-flex size-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-white transition-colors hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden"
           >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>

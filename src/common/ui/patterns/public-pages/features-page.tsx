@@ -1,17 +1,15 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { motion } from 'motion/react';
 import {
   BarChart3,
-  Bell,
-  Brain,
+  Bot,
   ChevronDown,
   Download,
   Globe,
   RefreshCw,
   Search,
-  Shield,
+  ShieldCheck,
   Target,
   TrendingUp,
   Zap,
@@ -20,62 +18,58 @@ import {
 import Link from 'next/link';
 import { AnimateInView } from './shared';
 
-/* ────────────────────────────────────────────────────────────
-   FEATURE DATA
-   ──────────────────────────────────────────────────────────── */
-
 const coreFeatures = [
   {
     icon: BarChart3,
-    title: 'Smart Analytics',
-    description: 'Beautiful charts and insights that help you understand where your money goes.',
-    color: '#00DCE5',
-    bgColor: 'rgba(0,220,229,0.08)',
+    title: 'Runway & Safe-to-Spend',
+    description: 'Dynamic calculation of how much money you can spend today without compromising upcoming obligations or monthly savings targets.',
+    color: '#7585F8',
+    bgColor: 'rgba(117,133,248,0.1)',
     span: 'lg:col-span-2 lg:row-span-2',
     featured: true,
   },
   {
-    icon: Brain,
-    title: 'AI Categorization',
-    description: 'Automatically categorize transactions with AI-powered suggestions.',
+    icon: Bot,
+    title: 'Smart Categorization',
+    description: 'Rule-based and inferred categories for fast, consistent transaction logging.',
     color: '#A855F7',
-    bgColor: 'rgba(168,85,247,0.08)',
+    bgColor: 'rgba(168,85,247,0.1)',
     span: 'lg:col-span-1',
     featured: false,
   },
   {
     icon: Target,
-    title: 'Budget Tracking',
-    description: 'Set budgets and track progress with real-time alerts.',
-    color: '#22C55E',
-    bgColor: 'rgba(34,197,94,0.08)',
+    title: 'Cadence Budgeting',
+    description: 'Set monthly limits with visual utilization gauges and threshold pacing alerts.',
+    color: '#37C98C',
+    bgColor: 'rgba(55,201,140,0.1)',
     span: 'lg:col-span-1',
     featured: false,
   },
   {
-    icon: Shield,
-    title: 'Bank-Grade Security',
-    description: 'Your data is encrypted and secure. We never sell your information.',
+    icon: ShieldCheck,
+    title: 'Privacy by Design',
+    description: 'Only period-level summaries are ever processed. Raw merchant descriptions remain private.',
     color: '#3B82F6',
-    bgColor: 'rgba(59,130,246,0.08)',
+    bgColor: 'rgba(59,130,246,0.1)',
     span: 'lg:col-span-1',
     featured: false,
   },
   {
     icon: Zap,
-    title: 'Instant Sync',
-    description: 'Real-time updates across all your devices. Always up to date.',
-    color: '#FBBF24',
-    bgColor: 'rgba(251,191,36,0.08)',
+    title: 'Optimistic Updates',
+    description: 'Instant UI feedback with server-side mutation tokens and automated replay prevention.',
+    color: '#F0B66A',
+    bgColor: 'rgba(240,182,106,0.1)',
     span: 'lg:col-span-1',
     featured: false,
   },
   {
     icon: Globe,
-    title: 'Multi-Currency',
-    description: 'Track expenses in multiple currencies with automatic conversion.',
-    color: '#F04438',
-    bgColor: 'rgba(240,68,56,0.08)',
+    title: 'Multi-Currency Support',
+    description: 'Configurable default currency preferences with strict tabular numeral formatting.',
+    color: '#F16F6F',
+    bgColor: 'rgba(241,111,111,0.1)',
     span: 'lg:col-span-2',
     featured: false,
   },
@@ -84,267 +78,142 @@ const coreFeatures = [
 const detailedFeatures = [
   {
     icon: TrendingUp,
-    title: 'Spending Forecasts',
-    description: 'AI predicts your monthly spending based on historical patterns, helping you plan ahead.',
-    color: '#00DCE5',
-    bgColor: 'rgba(0,220,229,0.08)',
-  },
-  {
-    icon: Bell,
-    title: 'Anomaly Detection',
-    description: 'Get alerted to unusual spending patterns before they become problems.',
-    color: '#A855F7',
-    bgColor: 'rgba(168,85,247,0.08)',
-  },
-  {
-    icon: Search,
-    title: 'Smart Search',
-    description: 'Find any transaction instantly with powerful filters and search.',
-    color: '#22C55E',
-    bgColor: 'rgba(34,197,94,0.08)',
-  },
-  {
-    icon: Download,
-    title: 'CSV Export',
-    description: 'Export your data anytime for accounting or personal records.',
-    color: '#3B82F6',
-    bgColor: 'rgba(59,130,246,0.08)',
+    title: 'Cash Flow Projection',
+    description: 'Forward-looking cash flow forecast evaluating income intervals against scheduled bills.',
+    color: '#7585F8',
+    bgColor: 'rgba(117,133,248,0.1)',
   },
   {
     icon: RefreshCw,
-    title: 'Recurring Transactions',
-    description: 'Automate regular income and expense tracking with recurring entries.',
-    color: '#FBBF24',
-    bgColor: 'rgba(251,191,36,0.08)',
+    title: 'Recurring Transaction Engine',
+    description: 'Schedule daily, weekly, monthly, or yearly items with automated cron processing.',
+    color: '#37C98C',
+    bgColor: 'rgba(55,201,140,0.1)',
+  },
+  {
+    icon: Search,
+    title: 'Command Palette & Filters',
+    description: 'Keyboard navigation with ⌘K palette, cursor pagination, and instant full-text search.',
+    color: '#A855F7',
+    bgColor: 'rgba(168,85,247,0.1)',
+  },
+  {
+    icon: Download,
+    title: 'CSV Import & Export',
+    description: 'Full data portability with column mapping previews and raw ledger exports.',
+    color: '#3B82F6',
+    bgColor: 'rgba(59,130,246,0.1)',
   },
   {
     icon: Target,
-    title: 'Savings Goals',
-    description: 'Set financial goals and track your progress with visual indicators.',
-    color: '#F04438',
-    bgColor: 'rgba(240,68,56,0.08)',
+    title: 'Savings Milestones',
+    description: 'Goal deadline countdowns with monthly contribution recommendations.',
+    color: '#F0B66A',
+    bgColor: 'rgba(240,182,106,0.1)',
   },
-];
-
-const stats = [
-  { value: '10K+', label: 'Transactions tracked' },
-  { value: '99.9%', label: 'Uptime' },
-  { value: '4.9/5', label: 'User rating' },
-  { value: '100%', label: 'Free to use' },
+  {
+    icon: ShieldCheck,
+    title: 'Session & Audit Security',
+    description: 'Server session hashing, bcrypt authentication, and secure HTTP cookies.',
+    color: '#F16F6F',
+    bgColor: 'rgba(241,111,111,0.1)',
+  },
 ];
 
 const faqs = [
   {
-    question: 'How does AI categorization work?',
-    answer: 'Our AI analyzes your transaction descriptions and automatically suggests the most relevant category. You can accept, modify, or override any suggestion.',
+    question: 'How is the Safe-to-Spend runway calculated?',
+    answer: 'It starts with your current balance, deducts remaining budget allocations, upcoming recurring bills, and goal contributions for the period, then divides the remainder across the remaining days.',
   },
   {
-    question: 'Is my financial data secure?',
-    answer: 'Yes. We use bank-grade encryption and never share your data with third parties. Your information is stored securely and only accessible by you.',
+    question: 'What data is shared with AI features?',
+    answer: 'Only anonymized, period-level numeric totals and category sums. Individual transaction notes, timestamps, and merchant names are never sent to external language models.',
   },
   {
-    question: 'Can I track multiple currencies?',
-    answer: 'Absolutely. Expense Tracker AI supports 10+ currencies with automatic conversion based on real-time exchange rates.',
+    question: 'Can I import existing records from other apps?',
+    answer: 'Yes. You can import standard CSV files directly from the Transactions page with an intuitive column mapping step.',
   },
   {
-    question: 'How does spending forecasting work?',
-    answer: 'Our AI analyzes your historical spending patterns and uses weighted moving averages to predict future expenses, helping you plan your budget.',
-  },
-  {
-    question: 'What happens if I exceed my budget?',
-    answer: 'You\'ll receive real-time alerts when you\'re approaching or exceeding your budget limits, giving you time to adjust your spending.',
+    question: 'Are my financial records private?',
+    answer: 'Yes. All data is scoped strictly to your authenticated account ID, secured with hashed session tokens and encrypted at rest in PostgreSQL.',
   },
 ];
 
-/* ────────────────────────────────────────────────────────────
-   HERO SECTION
-   ──────────────────────────────────────────────────────────── */
-
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.03] blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-primary">
-            Features
+    <section className="relative overflow-hidden bg-bg-base py-16 sm:py-24 border-b border-white/[0.06]">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+        <AnimateInView>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
+            Product Capabilities
           </span>
-          <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl md:text-7xl">
-            Everything you need to
-            <br />
-            <span className="bg-gradient-to-r from-primary via-kpi-savings to-success bg-clip-text text-transparent">
-              master your finances
-            </span>
+          <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+            Built for accuracy, speed, and privacy.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Powerful tools designed to give you clarity and control over your money.
-            Track smarter, spend wiser.
+          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-text-secondary leading-relaxed">
+            A comprehensive suite of tools designed to give you verifiable financial clarity with zero unnecessary complexity.
           </p>
         </AnimateInView>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/sign-up"
-            className="group flex items-center gap-2.5 rounded-xl bg-primary px-7 py-3.5 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
+            className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
           >
             Get started free
-            <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
           <Link
             href="/"
-            className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.97]"
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-5 text-xs font-medium text-white transition-colors hover:border-white/20 hover:bg-white/[0.06] active:scale-[0.99]"
           >
             Back to home
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
-
-/* ────────────────────────────────────────────────────────────
-   CORE FEATURES GRID
-   ──────────────────────────────────────────────────────────── */
 
 function CoreFeaturesSection() {
   return (
-    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-bg-base py-16 sm:py-20 border-b border-white/[0.06]">
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-kpi-savings/20 bg-kpi-savings/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-kpi-savings">
-            Core Features
-          </span>
-          <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Built for what matters
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Core Architecture
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Essential tools for tracking, analyzing, and understanding your finances.
+          <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-text-secondary">
+            Everyday ledger utilities engineered for precision.
           </p>
         </AnimateInView>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)]">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)]">
           {coreFeatures.map((feature, index) => (
-            <AnimateInView key={feature.title} delay={index * 0.08} className={feature.span}>
-              <motion.div
-                whileHover={{ y: -4, scale: 1.01 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(0,220,229,0.06)]"
-              >
+            <AnimateInView key={feature.title} delay={index * 0.05} className={feature.span}>
+              <div className="group relative flex h-full flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 transition-colors hover:border-white/[0.14]">
                 <div
-                  className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ backgroundColor: feature.bgColor }}
-                />
-
-                <div className="relative z-10 flex h-full flex-col">
-                  <div
-                    className="flex size-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: feature.bgColor }}
-                  >
-                    <feature.icon size={24} style={{ color: feature.color }} />
-                  </div>
-
-                  <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
-
-                  {feature.featured && (
-                    <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                      <div className="flex items-center justify-between text-xs text-muted-foreground/60">
-                        <span>This month</span>
-                        <span className="text-primary">+24% savings</span>
-                      </div>
-                      <div className="mt-3 flex items-end gap-1 h-12">
-                        {[30, 45, 35, 60, 50, 70, 85, 65, 75, 90, 55, 95].map((h, i) => (
-                          <div
-                            key={i}
-                            className="flex-1 rounded-t-sm bg-gradient-to-t from-primary/20 to-primary/60"
-                            style={{ height: `${h}%` }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </AnimateInView>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────
-   DETAILED FEATURES
-   ──────────────────────────────────────────────────────────── */
-
-function DetailedFeaturesSection() {
-  return (
-    <section className="relative overflow-hidden border-y border-white/[0.06] bg-bg-base py-24 sm:py-32">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-kpi-savings/[0.03] blur-[100px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-success/[0.08] px-4 py-1.5 font-medium text-xs tracking-wider text-success">
-            Advanced Tools
-          </span>
-          <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Go beyond basic tracking
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Advanced features that help you understand, predict, and optimize your finances.
-          </p>
-        </AnimateInView>
-
-        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {detailedFeatures.map((feature, index) => (
-            <AnimateInView key={feature.title} delay={index * 0.08}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-                className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]"
-              >
-                <div
-                  className="flex size-12 items-center justify-center rounded-xl"
+                  className="flex size-10 items-center justify-center rounded-lg border border-white/[0.08]"
                   style={{ backgroundColor: feature.bgColor }}
                 >
-                  <feature.icon size={24} style={{ color: feature.color }} />
+                  <feature.icon size={20} style={{ color: feature.color }} />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
-              </motion.div>
-            </AnimateInView>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-/* ────────────────────────────────────────────────────────────
-   STATS SECTION
-   ──────────────────────────────────────────────────────────── */
+                <h3 className="mt-4 text-base font-semibold text-white">{feature.title}</h3>
+                <p className="mt-1.5 flex-1 text-xs leading-relaxed text-text-secondary">{feature.description}</p>
 
-function StatsSection() {
-  return (
-    <section className="relative overflow-hidden bg-foreground-inverse py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {stats.map((stat, index) => (
-            <AnimateInView key={stat.label} delay={index * 0.1}>
-              <div className="text-center">
-                <p className="text-4xl font-bold text-white">{stat.value}</p>
-                <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
+                {feature.featured && (
+                  <div className="mt-5 rounded-lg border border-white/[0.06] bg-black/40 p-3.5">
+                    <div className="flex items-center justify-between text-xs font-medium text-text-tertiary">
+                      <span>Monthly Runway</span>
+                      <span className="text-emerald-400 font-semibold font-mono">₹16,790 safe</span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-text-tertiary">
+                      <span>Pacing Allowance</span>
+                      <span className="font-mono text-white">₹1,399 / day</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </AnimateInView>
           ))}
@@ -354,62 +223,82 @@ function StatsSection() {
   );
 }
 
-/* ────────────────────────────────────────────────────────────
-   FAQ SECTION
-   ──────────────────────────────────────────────────────────── */
+function DetailedFeaturesSection() {
+  return (
+    <section className="relative overflow-hidden bg-bg-base py-16 sm:py-20 border-b border-white/[0.06]">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <AnimateInView className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Advanced Tooling
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-text-secondary">
+            Deep analytics and workflow automations to stay ahead of your finances.
+          </p>
+        </AnimateInView>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {detailedFeatures.map((feature, index) => (
+            <AnimateInView key={feature.title} delay={index * 0.05}>
+              <div className="group rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-white/[0.14]">
+                <div
+                  className="flex size-10 items-center justify-center rounded-lg border border-white/[0.08]"
+                  style={{ backgroundColor: feature.bgColor }}
+                >
+                  <feature.icon size={20} style={{ color: feature.color }} />
+                </div>
+                <h3 className="mt-4 text-sm font-semibold text-white">{feature.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-text-secondary">{feature.description}</p>
+              </div>
+            </AnimateInView>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
   const baseId = useId();
 
   return (
-    <section className="relative overflow-hidden bg-foreground-inverse py-24 sm:py-32">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 bottom-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-primary/[0.02] blur-[100px]" />
-      </div>
-
+    <section className="relative overflow-hidden bg-bg-base py-16 sm:py-20">
       <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimateInView className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 font-medium text-xs tracking-wider text-muted-foreground">
-            FAQ
-          </span>
-          <h2 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Frequently asked questions
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Frequently Asked Questions
           </h2>
         </AnimateInView>
 
-        <div className="mt-12 space-y-3">
+        <div className="mt-10 space-y-3">
           {faqs.map((faq, index) => {
             const id = `${baseId}-${index}`;
             const expanded = open === index;
             return (
               <AnimateInView key={faq.question} delay={index * 0.05}>
-                <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02] transition-all duration-300 hover:border-white/[0.12]">
+                <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] transition-colors hover:border-white/[0.14]">
                   <h3>
                     <button
                       aria-controls={id}
                       aria-expanded={expanded}
-                      className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left text-sm font-semibold text-white transition-colors hover:bg-white/[0.02]"
+                      className="flex w-full items-center justify-between gap-4 px-5 py-3.5 text-left text-xs sm:text-sm font-semibold text-white transition-colors"
                       onClick={() => setOpen(expanded ? null : index)}
                       type="button"
                     >
                       {faq.question}
                       <ChevronDown
-                        size={18}
-                        className={`shrink-0 text-muted-foreground transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+                        size={16}
+                        className={`shrink-0 text-text-tertiary transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
                       />
                     </button>
                   </h3>
-                  <div
-                    id={id}
-                    role="region"
-                    aria-labelledby={`faq-${index}`}
-                    className={`overflow-hidden transition-all duration-300 ${expanded ? 'max-h-40' : 'max-h-0'}`}
-                  >
-                    <p className="px-6 pb-4 text-sm leading-relaxed text-muted-foreground">
-                      {faq.answer}
-                    </p>
-                  </div>
+                  {expanded && (
+                    <div id={id} className="border-t border-white/[0.04] px-5 py-3 bg-white/[0.01]">
+                      <p className="text-xs leading-relaxed text-text-secondary">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </AnimateInView>
             );
@@ -420,60 +309,13 @@ function FaqSection() {
   );
 }
 
-/* ────────────────────────────────────────────────────────────
-   CTA SECTION
-   ──────────────────────────────────────────────────────────── */
-
-function CtaSection() {
-  return (
-    <section className="relative overflow-hidden border-t border-white/[0.06] bg-bg-base py-24 sm:py-32">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <AnimateInView>
-          <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Start tracking smarter today
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Join thousands of users who understand their finances better with Expense Tracker AI.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href="/sign-up"
-              className="group flex items-center gap-2.5 rounded-xl bg-primary px-8 py-4 text-sm font-semibold text-foreground-inverse transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,220,229,0.4)] hover:scale-[1.03] active:scale-[0.97]"
-            >
-              Get started free
-              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-            <Link
-              href="/"
-              className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-8 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.97]"
-            >
-              Back to home
-            </Link>
-          </div>
-          <p className="mt-6 text-xs text-muted-foreground/60">No credit card required. Free forever.</p>
-        </AnimateInView>
-      </div>
-    </section>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────
-   MAIN PAGE
-   ──────────────────────────────────────────────────────────── */
-
 export function FeaturesPageContent() {
   return (
-    <main className="min-h-screen bg-foreground-inverse">
+    <main className="min-h-screen bg-bg-base">
       <HeroSection />
       <CoreFeaturesSection />
       <DetailedFeaturesSection />
-      <StatsSection />
       <FaqSection />
-      <CtaSection />
     </main>
   );
 }

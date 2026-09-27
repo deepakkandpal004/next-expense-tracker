@@ -60,13 +60,13 @@ export function TransactionTable({
   };
 
   return (
-    <div className="relative overflow-hidden glass-vessel">
+    <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0e14]/60">
       <div className="custom-scrollbar max-w-full overflow-x-auto">
-        <table className="w-full min-w-max border-collapse text-left text-interface-sm">
+        <table className="w-full min-w-max border-collapse text-left text-xs">
           <thead>
-            <tr className="sticky top-0 z-10 border-b border-white/5 bg-white/5/95 backdrop-blur-sm">
+            <tr className="sticky top-0 z-10 border-b border-white/[0.06] bg-[#0c0e14]/90 backdrop-blur-md">
               {selectable ? (
-                <th className="w-11 py-0 pl-4 pr-2 align-middle" scope="col">
+                <th className="w-10 py-0 pl-3 pr-2 align-middle" scope="col">
                   <Checkbox
                     checked={allPageSelected}
                     indeterminate={somePageSelected}
@@ -75,19 +75,19 @@ export function TransactionTable({
                   />
                 </th>
               ) : null}
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 align-middle" scope="col">
+              <th className="px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary align-middle" scope="col">
                 Transaction
               </th>
-              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 md:table-cell align-middle" scope="col">
+              <th className="hidden px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary md:table-cell align-middle" scope="col">
                 Category
               </th>
-              <th className="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 sm:table-cell align-middle" scope="col">
+              <th className="hidden px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary sm:table-cell align-middle" scope="col">
                 Date
               </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60 align-middle" scope="col">
+              <th className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-text-tertiary align-middle" scope="col">
                 Amount
               </th>
-              <th className="w-10 px-4 py-3 align-middle" scope="col">
+              <th className="w-9 px-3 py-2.5 align-middle" scope="col">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>

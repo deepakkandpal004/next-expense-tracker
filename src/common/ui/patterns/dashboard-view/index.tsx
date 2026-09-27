@@ -10,7 +10,6 @@ import { SafeToSpendCard } from "@/src/common/ui/patterns/safe-to-spend-card";
 import { SmartAlertCard } from "@/src/common/ui/patterns/smart-alert-card";
 import { appPeriodHref } from "@/src/common/domain/reporting-period";
 import { MonthSwitcher } from "@/src/common/ui/patterns/month-switcher";
-import { RedisHealthBadge } from "@/src/common/ui/patterns/redis-health-badge";
 import { listContainerVariants, listItemVariants } from "@/src/common/ui/motion";
 import { generateDashboardAIInsight } from "./insight";
 import type { DashboardViewProps } from "./types";
@@ -41,12 +40,9 @@ export function DashboardView({ dashboard, period, safeToSpend, cashFlow, smartP
 
   return (
     <div className="grid gap-6">
-      <header className="mb-6 flex min-w-0 items-center justify-between gap-3">
+      <header className="mb-2 flex min-w-0 items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-display-2xl font-bold tracking-tight text-primary-fixed">Dashboard</h1>
-          <span className="lg:hidden">
-            <RedisHealthBadge />
-          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Dashboard</h1>
         </div>
         <MonthSwitcher period={currentDashboard.period} />
       </header>

@@ -5,38 +5,38 @@ import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="relative isolate bg-black py-14 sm:py-16">
-      <div className="mx-auto max-w-6xl px-6 text-center sm:px-8">
+    <section className="relative isolate border-t border-white/[0.06] bg-bg-base py-16 sm:py-20">
+      <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
         <AnimateInView>
-          <h2 className="font-bold tracking-tight mt-5 text-4xl text-white sm:text-5xl lg:text-6xl">
-            Take control of your money.
+          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            Start tracking with clarity today.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg font-medium leading-relaxed text-muted-foreground">
-            Free expense tracking with AI that actually works. No cards, no fees, no catch.
+          <p className="mx-auto mt-3 max-w-lg text-sm sm:text-base text-text-secondary leading-relaxed">
+            No subscriptions, no hidden limits. Full control over your personal ledger from day one.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/sign-up"
-              className="flex h-12 items-center gap-2 rounded-xl bg-primary px-7 text-sm font-semibold text-foreground-inverse transition-all duration-200 hover:bg-primary/90 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]"
+              className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
             >
-              Get started for free
-              <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+              Create free account
+              <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/features"
-              className="flex h-12 items-center gap-2 rounded-xl border border-white/[0.15] px-7 text-sm font-semibold text-white transition-all duration-200 hover:border-white/[0.25] hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.98]"
+              className="inline-flex h-11 items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-5 text-xs font-medium text-white transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
             >
-              See how it works
+              Explore features
             </Link>
           </div>
 
-          <div className="mt-8 flex items-center justify-center gap-4 text-xs font-medium text-muted-foreground">
-            <span>Free to start</span>
-            <span className="h-3 w-px bg-white/10" />
-            <span>No credit card</span>
-            <span className="h-3 w-px bg-white/10" />
-            <span>Your data stays yours</span>
+          <div className="mt-6 flex items-center justify-center gap-3 text-xs text-text-tertiary">
+            <span>Free & open ledger</span>
+            <span className="h-2.5 w-px bg-white/10" />
+            <span>Encrypted data</span>
+            <span className="h-2.5 w-px bg-white/10" />
+            <span>CSV Export anytime</span>
           </div>
         </AnimateInView>
       </div>

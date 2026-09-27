@@ -1,4 +1,4 @@
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, HelpCircle } from "lucide-react";
 
 export function ExplainSection({
   showExplanation,
@@ -14,40 +14,40 @@ export function ExplainSection({
   onExplain: () => void;
 }) {
   return (
-    <div className="mt-5">
+    <div className="mt-4 border-t border-white/[0.06] pt-4">
       {!showExplanation ? (
         <button
           type="button"
           onClick={onExplain}
           disabled={isExplaining}
-          className="inline-flex items-center gap-2 rounded-xl bg-kpi-savings-surface px-4 py-2 text-xs font-semibold text-kpi-savings transition-colors hover:bg-kpi-savings/25 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:opacity-50"
         >
           {isExplaining ? (
-            <Loader2 size={14} strokeWidth={2.5} className="animate-spin" />
+            <Loader2 size={13} strokeWidth={2} className="animate-spin" />
           ) : (
-            <Sparkles size={14} strokeWidth={2.5} />
+            <HelpCircle size={13} strokeWidth={2} />
           )}
-          Explain with AI
+          How is this calculated?
         </button>
       ) : (
-        <div className="rounded-xl bg-white/5 px-4 py-3">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
           {isExplaining ? (
-            <p className="flex items-center gap-2 text-xs text-on-surface-variant/70">
-              <Loader2 size={13} strokeWidth={2.5} className="animate-spin" />
-              Explaining the safe-to-spend calculation…
+            <p className="flex items-center gap-2 text-xs text-text-secondary">
+              <Loader2 size={13} strokeWidth={2} className="animate-spin" />
+              Analyzing reserved commitments and cash runway…
             </p>
           ) : explanation ? (
             <>
-              <p className="text-xs leading-relaxed text-on-surface/90">{explanation}</p>
-              <p className="mt-2 text-[10px] text-on-surface-variant/50">
-                AI-narrated explanation of the calculated figure. It never changes the number.
+              <p className="text-xs leading-relaxed text-text-primary">{explanation}</p>
+              <p className="mt-2 text-[11px] text-text-tertiary">
+                Automated analysis derived directly from current period balances and scheduled obligations.
               </p>
             </>
           ) : (
-            <p className="text-xs leading-relaxed text-on-surface-variant/70">
+            <p className="text-xs leading-relaxed text-text-secondary">
               {explanationUnavailable
-                ? "AI narration is unavailable right now."
-                : "Safe to spend was calculated from your records; no narration is available."}
+                ? "Detailed explanation is temporarily unavailable."
+                : "Safe to spend calculated directly from your ledger entries."}
             </p>
           )}
         </div>

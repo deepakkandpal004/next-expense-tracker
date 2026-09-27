@@ -156,67 +156,65 @@ export function DashboardPreview() {
 
   return (
     <div className="relative mx-auto w-full max-w-5xl">
-      {/* Outer Glow frame */}
-      <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-primary/30 via-primary/5 to-transparent blur-xl opacity-60 pointer-events-none" />
-
-      {/* Main Glass Window Container */}
-      <div className="relative rounded-2xl border border-white/[0.12] bg-[#0c0e14]/90 backdrop-blur-2xl shadow-2xl overflow-hidden">
-        {/* App Titlebar */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3 bg-white/[0.02]">
-          <div className="flex items-center gap-2">
+      {/* Main Container Window */}
+      <div className="relative rounded-xl border border-white/[0.1] bg-[#0c0e14]/95 shadow-2xl overflow-hidden backdrop-blur-xl">
+        {/* Browser / App Header Bar */}
+        <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-2.5 bg-white/[0.02]">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="size-3 rounded-full bg-[#ff5f56]/80" />
-              <span className="size-3 rounded-full bg-[#ffbd2e]/80" />
-              <span className="size-3 rounded-full bg-[#27c93f]/80" />
+              <span className="size-2.5 rounded-full bg-white/20" />
+              <span className="size-2.5 rounded-full bg-white/20" />
+              <span className="size-2.5 rounded-full bg-white/20" />
             </div>
-            <span className="ml-3 hidden sm:inline-block text-xs font-mono text-white/40">
-              expense-tracker-ai/app/dashboard
-            </span>
+            <div className="hidden sm:flex items-center gap-1.5 rounded-md border border-white/[0.06] bg-black/40 px-2.5 py-0.5 text-[11px] font-mono text-text-tertiary">
+              <span className="text-emerald-400">https://</span>
+              <span>app.ledger.internal/dashboard</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Interactive Month Switcher in Demo */}
-            <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] p-0.5 text-xs">
+            {/* Interactive Month Switcher */}
+            <div className="flex items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] p-0.5 text-xs">
               <button
                 type="button"
                 onClick={() => setSelectedMonth("current")}
-                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 font-medium transition-all ${
+                className={`flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                   selectedMonth === "current"
-                    ? "bg-primary text-black font-semibold shadow"
-                    : "text-white/60 hover:text-white"
+                    ? "bg-white/[0.1] text-white"
+                    : "text-text-tertiary hover:text-white"
                 }`}
               >
-                <Calendar size={12} />
+                <Calendar size={11} />
                 <span>Oct 2026</span>
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedMonth("previous")}
-                className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 font-medium transition-all ${
+                className={`flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium transition-colors ${
                   selectedMonth === "previous"
-                    ? "bg-primary text-black font-semibold shadow"
-                    : "text-white/60 hover:text-white"
+                    ? "bg-white/[0.1] text-white"
+                    : "text-text-tertiary hover:text-white"
                 }`}
               >
-                <Calendar size={12} />
+                <Calendar size={11} />
                 <span>Sep 2026</span>
               </button>
             </div>
 
-            <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="hidden sm:flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+              <span className="size-1.5 rounded-full bg-emerald-400" />
               <span>Synced</span>
             </div>
           </div>
         </div>
 
-        {/* Interior Dashboard Body */}
-        <div className="p-5 sm:p-7 space-y-6">
-          {/* Top KPI Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Dashboard Content Body */}
+        <div className="p-4 sm:p-6 space-y-5">
+          {/* KPI Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             {/* KPI 1: Net Balance */}
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4.5 transition-colors hover:border-white/[0.14]">
-              <div className="flex items-center px-5 py-2 justify-between text-xs font-medium text-white/50">
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-white/[0.12]">
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
                 <span>Net Balance</span>
                 <span className="flex items-center text-emerald-400 font-semibold gap-0.5 text-[11px]">
                   <TrendingUp size={12} />
@@ -226,133 +224,127 @@ export function DashboardPreview() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={stats.balance}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white"
+                  exit={{ opacity: 0, y: -4 }}
+                  className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-white"
                 >
                   {stats.balance}
                 </motion.div>
               </AnimatePresence>
-              <div className="mt-2 flex px-5 py-2 items-center gap-1.5 text-xs text-white/40">
+              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-text-tertiary">
                 <ShieldCheck size={13} className="text-primary" />
-                <span>100% verified ledger</span>
+                <span>Verified ledger balance</span>
               </div>
             </div>
 
-            {/* KPI 2: Budget Utilization */}
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4.5 transition-colors hover:border-white/[0.14]">
-              <div className="flex items-center justify-between text-xs font-medium text-white/50">
-                <span className="px-5 py-2">Budget Spent</span>
-                <span className="font-mono text-xs px-5 py-2 font-semibold text-white/70">
+            {/* KPI 2: Budget Spent */}
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-white/[0.12]">
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
+                <span>Budget Spent</span>
+                <span className="font-mono text-xs font-semibold text-text-primary">
                   {stats.budgetPct}%
                 </span>
               </div>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={stats.spent}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk text-2xl px-5 py-2 sm:text-3xl font-bold tracking-tight text-white"
+                  exit={{ opacity: 0, y: -4 }}
+                  className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-white"
                 >
                   {stats.spent}
-                  <span className="text-sm font-normal text-white/40 ml-1">/ {stats.budget}</span>
+                  <span className="text-xs font-normal text-text-tertiary ml-1.5">/ {stats.budget}</span>
                 </motion.div>
               </AnimatePresence>
-              <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${stats.budgetPct}%` }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-400"
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="h-full rounded-full bg-primary"
                 />
               </div>
             </div>
 
             {/* KPI 3: Safe To Spend */}
-            <div className="rounded-xl border border-primary/20 bg-primary/[0.04] p-4.5 relative overflow-hidden transition-colors hover:border-primary/40">
-              <div className="flex items-center justify-between text-xs font-medium text-primary">
-                <span className="flex items-center px-5 py-2 gap-1.5 font-semibold">
-                  Safe to Spend
-                </span>
-                <span className="text-[11px] font-mono px-5 py-2 text-primary/70">{stats.dailyPacing}</span>
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-white/[0.12]">
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
+                <span>Safe to Spend</span>
+                <span className="text-[11px] font-mono text-text-tertiary">{stats.dailyPacing}</span>
               </div>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={stats.safeToSpend}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="mt-2 font-space-grotesk px-5 py-2 text-2xl sm:text-3xl font-bold tracking-tight text-white"
+                  exit={{ opacity: 0, y: -4 }}
+                  className="mt-2 text-2xl font-bold tabular-nums tracking-tight text-emerald-400"
                 >
                   {stats.safeToSpend}
                 </motion.div>
               </AnimatePresence>
-              <p className="mt-2 px-5 py-2 text-xs text-white/50">
-                Projected runway before month end
+              <p className="mt-2 text-[11px] text-text-tertiary">
+                Unallocated runway for this period
               </p>
             </div>
           </div>
 
-          {/* AI Narrative Observation Banner (Floating Layer) */}
-          <div className="relative rounded-xl border border-primary/25 bg-gradient-to-r from-primary/[0.09] via-white/[0.02] to-transparent p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-start">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold tracking-wider text-primary">
-                      AI Observation
-                    </span>
-                  </div>
-                  <AnimatePresence mode="wait">
-                    <motion.p
-                      key={stats.aiObservation}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="mt-1 text-sm text-[#d8fbfd] leading-relaxed"
-                    >
-                      {stats.aiObservation}
-                    </motion.p>
-                  </AnimatePresence>
-                </div>
+          {/* Monthly Intelligence Banner */}
+          <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="min-w-0">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-text-tertiary">
+                  Monthly Pacing Observation
+                </span>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={stats.aiObservation}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="mt-0.5 text-xs text-text-secondary leading-relaxed"
+                  >
+                    {stats.aiObservation}
+                  </motion.p>
+                </AnimatePresence>
               </div>
 
-              {/* Proof Chip */}
+              {/* Proof Tag */}
               <div className="shrink-0">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                  <CheckCircle2 size={13} />
+                <span className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-text-tertiary">
+                  <CheckCircle2 size={12} className="text-primary" />
                   <span>{stats.proofTag}</span>
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Bottom Grid: Category Breakdown + Recent Transactions */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1">
-            {/* Category Breakdown Progress */}
-            <div className="lg:col-span-5 rounded-xl px-5 py-2 pt-5 border border-white/[0.08] bg-white/[0.02] p-4.5 space-y-3.5">
-              <div className="flex items-center justify-between text-xs font-semibold text-white/70">
+          {/* Bottom Grid: Breakdown + Recent Transactions */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Category Breakdown */}
+            <div className="lg:col-span-5 rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold text-text-secondary">
                 <span className="flex items-center gap-1.5">
-                  <Layers size={14} className="text-primary" />
+                  <Layers size={13} className="text-primary" />
                   Category Breakdown
                 </span>
-                <span className="text-white/40 text-[11px]">Top Spend</span>
+                <span className="text-text-tertiary text-[11px]">Top Spend</span>
               </div>
 
-              <div className="space-y-8 pt-2">
+              <div className="space-y-3 pt-1">
                 {[
-                  { name: "Housing & Utilities", amount: "₹22,000", pct: 45, color: "bg-cyan-400" },
+                  { name: "Housing & Utilities", amount: "₹22,000", pct: 45, color: "bg-blue-400" },
                   { name: "Food & Dining", amount: "₹8,420", pct: 18, color: "bg-amber-400" },
                   { name: "Groceries", amount: "₹6,100", pct: 13, color: "bg-emerald-400" },
-                  { name: "Software & Subscriptions", amount: "₹5,200", pct: 11, color: "bg-blue-400" },
+                  { name: "Software & Tools", amount: "₹5,200", pct: 11, color: "bg-indigo-400" },
                   { name: "Transport & Fuel", amount: "₹3,490", pct: 8, color: "bg-purple-400" },
                 ].map((cat) => (
                   <div key={cat.name} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/80 font-medium">{cat.name}</span>
-                      <span className="font-mono text-white/60 text-[11px]">{cat.amount}</span>
+                      <span className="text-text-secondary font-medium">{cat.name}</span>
+                      <span className="font-mono text-text-tertiary text-[11px]">{cat.amount}</span>
                     </div>
                     <div className="h-1.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
                       <div
@@ -365,46 +357,46 @@ export function DashboardPreview() {
               </div>
             </div>
 
-            {/* Recent Verified Transactions */}
-            <div className="lg:col-span-7 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4.5 space-y-3">
-              <div className="flex items-center px-5 py-2 justify-between text-xs font-semibold text-white/70">
+            {/* Recent Transactions */}
+            <div className="lg:col-span-7 rounded-lg border border-white/[0.08] bg-white/[0.02] p-4 space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold text-text-secondary">
                 <span>Recent Transactions</span>
-                <span className="text-xs text-primary hover:underline cursor-pointer flex items-center gap-0.5">
-                  Live Feed <ArrowUpRight size={13} />
+                <span className="text-xs text-text-tertiary hover:text-white transition-colors cursor-pointer flex items-center gap-0.5">
+                  View all <ArrowUpRight size={12} />
                 </span>
               </div>
 
-              <div className="divide-y divide-white/[0.05]">
+              <div className="divide-y divide-white/[0.04]">
                 {txList.map((tx) => {
                   const Icon = tx.icon;
                   return (
                     <div
                       key={tx.id}
-                      className="flex items-center justify-between py-2.5 first:pt-1 last:pb-0 group transition-colors"
+                      className="flex items-center justify-between py-2 first:pt-1 last:pb-0 group transition-colors"
                     >
-                      <div className="flex items-center px-5 py-2 gap-3">
+                      <div className="flex items-center gap-2.5">
                         <div
-                          className="flex size-8.5 shrink-0 items-center justify-center rounded-lg"
+                          className="flex size-7 shrink-0 items-center justify-center rounded-md"
                           style={{ backgroundColor: tx.iconBg, color: tx.iconColor }}
                         >
-                          <Icon size={16}/>
+                          <Icon size={14}/>
                         </div>
                         <div>
-                          <p className="text-xs font-medium text-white group-hover:text-primary transition-colors">
+                          <p className="text-xs font-medium text-text-primary group-hover:text-white transition-colors">
                             {tx.name}
                           </p>
-                          <p className="text-[11px] text-white/40">
+                          <p className="text-[10px] text-text-tertiary">
                             {tx.category} • {tx.date}
                           </p>
                         </div>
                       </div>
 
                       <span
-                        className={`font-mono text-xs px-5 py-2 font-semibold ${
-                          tx.type === "income" ? "text-emerald-400" : "text-white/90"
+                        className={`font-mono text-xs tabular-nums font-semibold ${
+                          tx.type === "income" ? "text-emerald-400" : "text-text-primary"
                         }`}
                       >
-                        {tx.type === "income" ? "+" : "-"}₹{tx.amount.toLocaleString("en-IN")}
+                        {tx.type === "income" ? "+" : "−"}₹{tx.amount.toLocaleString("en-IN")}
                       </span>
                     </div>
                   );

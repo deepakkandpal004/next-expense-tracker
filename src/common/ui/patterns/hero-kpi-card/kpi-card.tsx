@@ -58,33 +58,33 @@ export function KpiCard({
   const Icon = style.icon;
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl glass-vessel p-5">
+    <div className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-[#0c0e14]/60 p-4 transition-colors hover:border-white/[0.14]">
       <div className="flex items-center justify-between">
         <span
-          className={cn("flex h-9 w-9 items-center justify-center rounded-xl", style.chip)}
+          className={cn("flex h-7 w-7 items-center justify-center rounded-md border", style.chip)}
           aria-hidden="true"
         >
-          <Icon size={17} strokeWidth={2.2} />
+          <Icon size={14} strokeWidth={2} />
         </span>
-        <span className="text-[11px] font-medium uppercase tracking-wider text-on-surface-variant/60">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
           {style.label}
         </span>
       </div>
 
-      <div className="flex items-end justify-between gap-2">
+      <div className="flex items-baseline justify-between gap-2">
         <AnimatedNumber
           value={minorToMajor(valueMinor)}
           format={(v) => formatCurrency({ minorValue: Math.round(v * 100), currency })}
-          className="text-2xl font-bold tabular-nums tracking-tight text-on-surface"
+          className="text-xl font-bold tabular-nums tracking-tight text-text-primary"
         />
         {sparkline && sparkline.length >= 2 && (
-          <span className="shrink-0 opacity-70">
+          <span className="shrink-0 opacity-80">
             <Sparkline data={sparkline} color={style.spark} />
           </span>
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pt-1 border-t border-white/[0.04]">
         <TrendPill trend={trend} invertPolarity={invertPolarity} />
         {footer}
       </div>
