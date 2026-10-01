@@ -13,7 +13,7 @@ import type { CategoryBreakdownRow } from "@/src/common/domain/types";
 ChartJS.register(ArcElement, DoughnutController, Legend, Tooltip);
 
 export function buildDoughnutData(rows: readonly CategoryBreakdownRow[]): ChartData<"doughnut"> {
-  const defaultColors = ["#00DCE5", "#A855F7", "#22C55E", "#FBBF24", "#F04438", "#3B82F6", "#EC4899", "#F97316"];
+  const defaultColors = ["#7585F8", "#A855F7", "#22C55E", "#FBBF24", "#F04438", "#3B82F6", "#EC4899", "#F97316"];
   const styles = typeof window !== "undefined" ? window.getComputedStyle(document.documentElement) : null;
   return {
     labels: rows.map((row) => row.label),

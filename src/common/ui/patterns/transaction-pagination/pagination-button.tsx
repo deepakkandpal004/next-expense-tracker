@@ -22,8 +22,8 @@ export function PaginationButton({
       className={cn(
         "flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150",
         disabled
-          ? "cursor-not-allowed text-on-surface-variant/30"
-          : "text-on-surface-variant/60 hover:bg-white/5 hover:text-on-surface",
+          ? "cursor-not-allowed text-muted-foreground"
+          : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
       )}
       type="button"
       aria-label={ariaLabel}

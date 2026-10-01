@@ -54,7 +54,7 @@ export function StatusRegion({ message, politeness = "polite", visible = false, 
       aria-atomic="true"
       aria-busy={busy || undefined}
       aria-live={politeness}
-      className={cn(!visible && "sr-only", visible && "text-interface-sm text-foreground-secondary", className)}
+      className={cn(!visible && "sr-only", visible && "text-interface-sm text-muted-foreground", className)}
       role={politeness === "assertive" ? "alert" : "status"}
       {...props}
     >
@@ -77,7 +77,7 @@ export function Skeleton({ label, minimumHeight = "8rem", lines = 3, className, 
       aria-label={label}
       aria-live="polite"
       className={cn(
-        "w-full overflow-hidden rounded-2xl border border-border/30 bg-surface p-5",
+        "w-full overflow-hidden rounded-2xl border border-border bg-surface p-5",
         className,
       )}
       data-feedback-state="loading"
@@ -92,7 +92,7 @@ export function Skeleton({ label, minimumHeight = "8rem", lines = 3, className, 
           <span className="block h-8 w-8 shrink-0 rounded-lg bg-surface-subtle animate-shimmer" />
           <div className="flex-1 space-y-2">
             <span className="block h-3.5 w-1/3 rounded-lg bg-surface-subtle animate-shimmer" />
-            <span className="block h-3 w-1/4 rounded-lg bg-surface-subtle/60 animate-shimmer" />
+            <span className="block h-3 w-1/4 rounded-lg bg-surface-subtle animate-shimmer" />
           </div>
         </div>
         {/* Content lines */}
@@ -129,10 +129,10 @@ export function EmptyState({ title, description, action, icon, scope, className,
   enforceSentenceCase(title, "Empty state title");
   return (
     <div className={cn("rounded-2xl border border-dashed border-border-strong bg-surface p-8 text-center", className)} {...props}>
-      {icon ? <div aria-hidden="true" className="mb-4 flex justify-center text-foreground-secondary">{icon}</div> : null}
+      {icon ? <div aria-hidden="true" className="mb-4 flex justify-center text-muted-foreground">{icon}</div> : null}
       <h3 className="text-interface-md font-semibold text-foreground">{title}</h3>
-      <div className="mx-auto mt-2 max-w-prose text-interface-sm text-foreground-secondary">{description}</div>
-      {scope ? <p className="mt-2 text-interface-xs text-foreground-secondary">{scope}</p> : null}
+      <div className="mx-auto mt-2 max-w-prose text-interface-sm text-muted-foreground">{description}</div>
+      {scope ? <p className="mt-2 text-interface-xs text-muted-foreground">{scope}</p> : null}
       {action ? <div className="mt-5 flex justify-center">{action}</div> : null}
     </div>
   );

@@ -7,7 +7,7 @@ import { cn } from "@/src/common/ui/cn";
 export function StatusBadge({ state, netPositive }: { state: string; netPositive: boolean }) {
   if (state === "ended") {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold text-foreground-secondary">
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-subtle px-3 py-1 text-[11px] font-semibold text-muted-foreground">
         <Clock size={12} aria-hidden="true" />
         Period ended
       </span>

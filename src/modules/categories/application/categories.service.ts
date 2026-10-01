@@ -4,7 +4,7 @@ import { getAuthUser } from "@/src/modules/auth";
 import * as repo from "@/src/modules/categories/infrastructure/categories.repository";
 import type { ActionResult } from "@/src/common/domain/types";
 import { CATEGORY_DEFINITIONS } from "@/src/modules/categories/domain/categories.domain";
-import { CacheKey, deleteCache } from "@/src/common/cache";
+import { CacheKey, deleteCache, getCache, setCache } from "@/src/common/cache";
 
 export interface CategoryWithSpending {
   id: string;
@@ -21,6 +21,10 @@ export async function getCategories(): Promise<ActionResult<CategoryWithSpending
   const user = await getAuthUser();
   if (!user) return { status: "error", message: "Sign in to continue.", retryable: false };
   try {
+    const cacheKey = CacheKey.categories(user.id);
+    const cached = await getCache<CategoryWithSpending[]>(cacheKey);
+    if (cached) return { status: "success", data: cached, message: "Categories loaded." };
+
     const [userCategories, spending] = await Promise.all([repo.findByUser(user.id), repo.groupSpendingByCategory(user.id)]);
     const catMap = new Map(userCategories.map((c) => [c.categoryId, c]));
     const spendMap = new Map(spending.map((s) => [s.category, { total: Number(s._sum.amount ?? 0) ?? 0, count: s._count }]));
@@ -52,6 +56,7 @@ export async function getCategories(): Promise<ActionResult<CategoryWithSpending
         });
       }
     }
+    await setCache(cacheKey, result, 300);
     return { status: "success", data: result, message: "Categories loaded." };
   } catch (error) {
     console.error("Failed to load categories", error);

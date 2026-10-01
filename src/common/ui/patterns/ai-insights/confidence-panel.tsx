@@ -69,17 +69,17 @@ export function ConfidencePanel({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "h-full rounded-xl border border-border/50 bg-surface p-4",
+        "h-full rounded-2xl border border-border bg-surface p-4",
         className,
       )}
     >
-      <h3 className="text-sm font-semibold text-foreground mb-3">AI Confidence</h3>
+      <h3 className="text-sm font-semibold text-foreground mb-3">AI confidence</h3>
 
       <div className="flex flex-col items-center gap-2">
         <ConfidenceRing score={score} />
         <div className="text-center">
           <p className="text-xs font-semibold text-success">{label}</p>
-          <p className="mt-0.5 text-[10px] text-foreground-secondary">
+          <p className="mt-0.5 text-[10px] text-muted-foreground">
             Based on {transactionCount} transactions from the last {daysAnalyzed} days.
           </p>
         </div>

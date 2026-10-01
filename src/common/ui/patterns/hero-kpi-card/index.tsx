@@ -72,8 +72,8 @@ export function HeroKpiCard({
           invertPolarity={false}
           footer={
             savingsRate > 0 ? (
-              <span className="text-[10px] font-medium text-on-surface-variant/60">
-                {formatPercentage(savingsRate / 100)} rate
+              <span className="text-[10px] font-medium text-muted-foreground">
+                {formatPercentage(savingsRate / 100)} saved
               </span>
             ) : undefined
           }

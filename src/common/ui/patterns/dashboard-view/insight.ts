@@ -11,40 +11,40 @@ export function generateDashboardAIInsight(
 
   if (expenseTrend && expenseTrend.direction === "up" && expenseTrend.changePercent > 0.2) {
     return {
-      title: "Spending Spike Detected",
-      description: `Your expenses increased ${(expenseTrend.changePercent * 100).toFixed(0)}% vs last period. Review your top categories to identify the cause.`,
+      title: "Spending went up",
+      description: `Your spending is up ${(expenseTrend.changePercent * 100).toFixed(0)}% from last month. See which categories grew.`,
       type: "warning",
-      actionLabel: "Analyze Categories",
+      actionLabel: "Analyze categories",
       actionHref: "/ai-insights?focus=categories",
     };
   }
 
   if (savingsRate >= 25) {
     return {
-      title: "Exceptional Savings Discipline",
-      description: `You're saving ${savingsRate.toFixed(0)}% of your income — well above the 20% benchmark. Consider investing the surplus for long-term growth.`,
+      title: "Saving well",
+      description: `You're saving ${savingsRate.toFixed(0)}% of your income — well above the usual 20% target.`,
       type: "celebration",
-      actionLabel: "Explore Investments",
+      actionLabel: "Explore investments",
       actionHref: "/goals",
     };
   }
 
   if (savingsRate > 0 && savingsRate < 10) {
     return {
-      title: "Savings Rate Below Target",
-      description: `You're saving only ${savingsRate.toFixed(0)}% of income. The 50/30/20 rule suggests 20% for savings. Small adjustments can make a big difference.`,
+      title: "Savings are low",
+      description: `You're saving only ${savingsRate.toFixed(0)}% of your income. Try to reach 20% if you can.`,
       type: "info",
-      actionLabel: "Set Savings Goal",
+      actionLabel: "Set savings goal",
       actionHref: "/goals",
     };
   }
 
   if (kpis.budget.status === "exceeded") {
     return {
-      title: "Budget Exceeded",
-      description: `You're over budget by ${formatCurrency({ minorValue: kpis.budget.excessMinor, currency: dashboard.currency })}. Consider adjusting spending or increasing your budget limit.`,
+      title: "Over budget",
+      description: `You're over budget by ${formatCurrency({ minorValue: kpis.budget.excessMinor, currency: dashboard.currency })}.`,
       type: "warning",
-      actionLabel: "Review Budget",
+      actionLabel: "Review budget",
       actionHref: "/budgets",
     };
   }
@@ -52,7 +52,7 @@ export function generateDashboardAIInsight(
   if (kpis.budget.status === "approaching") {
     const used = (kpis.budget.budgetMinor - kpis.budget.remainingMinor) / kpis.budget.budgetMinor;
     return {
-      title: "Approaching Budget Limit",
+      title: "Budget almost used",
       description: `You've used ${formatPercentage(used)} of your monthly budget. ${formatCurrency({ minorValue: kpis.budget.remainingMinor, currency: dashboard.currency })} remaining.`,
       type: "info",
     };
@@ -62,10 +62,10 @@ export function generateDashboardAIInsight(
     const topCategory = categoryBreakdown[0];
     if (topCategory.percentage > 0.4) {
       return {
-        title: `High ${topCategory.label} Concentration`,
-        description: `${topCategory.label} accounts for ${formatPercentage(topCategory.percentage)} of your spending. Diversifying categories can improve financial resilience.`,
+        title: `Top category: ${topCategory.label}`,
+        description: `${topCategory.label} is ${formatPercentage(topCategory.percentage)} of your spending this period.`,
         type: "info",
-        actionLabel: "Set Category Budget",
+        actionLabel: "Set category budget",
         actionHref: "/budgets",
       };
     }
@@ -73,17 +73,17 @@ export function generateDashboardAIInsight(
 
   if (snapshot.transactionCount === 0) {
     return {
-      title: "Start Tracking to Unlock Insights",
-      description: "Add your first transaction to see personalized AI insights and build your financial health score.",
+      title: "Add your first transaction",
+      description: "Add your first transaction to start seeing insights.",
       type: "info",
-      actionLabel: "Add Transaction",
+      actionLabel: "Add transaction",
       actionHref: "/records?addTransaction=1",
     };
   }
 
   return {
-    title: "Financial Health Looks Good",
-    description: "Your spending patterns are within healthy ranges. Keep tracking consistently to maintain this momentum.",
+    title: "Looking good",
+    description: "Your spending looks healthy this period.",
     type: "positive",
   };
 }

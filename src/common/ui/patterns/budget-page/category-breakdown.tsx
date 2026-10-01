@@ -1,11 +1,32 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Target } from "lucide-react";
+import {
+  Car,
+  CircleDollarSign,
+  Film,
+  HeartPulse,
+  Receipt,
+  Shapes,
+  ShoppingBag,
+  Target,
+  Utensils,
+} from "lucide-react";
 import { CurrencyText } from "@/src/common/ui";
 import { MOTION_DURATION, MOTION_EASE, listContainerVariants, listItemVariants } from "@/src/common/ui/motion";
-import { CATEGORY_REGISTRY } from "@/src/common/domain/categories";
+import { getCategoryDefinition } from "@/src/common/domain/categories";
 import type { CategoryBreakdownRow } from "@/src/common/domain/types";
+
+const ICONS = {
+  Utensils,
+  Car,
+  ShoppingBag,
+  Film,
+  Receipt,
+  HeartPulse,
+  CircleDollarSign,
+  Shapes,
+} as const;
 
 export function CategoryBreakdown({
   categoryBreakdown,
@@ -21,13 +42,13 @@ export function CategoryBreakdown({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION_DURATION.standard, ease: MOTION_EASE.emphasized, delay: 0.2 }}
-      className="rounded-2xl border border-border/60 bg-surface p-5 shadow-premium-sm"
+      className="rounded-2xl border border-border bg-surface p-5 shadow-premium-sm"
     >
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted">
           <Target size={16} className="text-accent" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground">Spending by Category</h3>
+        <h3 className="text-sm font-semibold text-foreground">Spending by category</h3>
       </div>
 
       <motion.div
@@ -37,8 +58,9 @@ export function CategoryBreakdown({
         className="space-y-2"
       >
         {categoryBreakdown.map((row, index) => {
-          const categoryDef = CATEGORY_REGISTRY[row.categoryId as keyof typeof CATEGORY_REGISTRY];
-          const color = `var(--color-${row.semanticToken})`;
+          const definition = getCategoryDefinition(row.categoryId);
+          const Icon = ICONS[definition.lucideIcon as keyof typeof ICONS] ?? Shapes;
+          const color = `var(--color-${definition.semanticToken})`;
           const percentage = Math.round(row.percentage * 100);
 
           return (
@@ -48,21 +70,20 @@ export function CategoryBreakdown({
               className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-surface-subtle"
             >
               <div
+                aria-hidden="true"
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
                 style={{
-                  backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
+                  backgroundColor: `color-mix(in srgb, ${color} 14%, transparent)`,
+                  color,
                 }}
               >
-                <span
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: color }}
-                />
+                <Icon size={18} />
               </div>
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground truncate">
-                    {categoryDef?.label ?? row.categoryId}
+                    {definition.label}
                   </span>
                   <span className="text-sm font-semibold text-foreground tabular-nums">
                     <CurrencyText currency={currency} minorValue={row.amountMinor} />
@@ -78,7 +99,7 @@ export function CategoryBreakdown({
                       transition={{ duration: 0.6, delay: index * 0.05 + 0.3, ease: [0.16, 1, 0.3, 1] }}
                     />
                   </div>
-                  <span className="text-xs text-foreground-secondary tabular-nums w-10 text-right">
+                  <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">
                     {percentage}%
                   </span>
                 </div>

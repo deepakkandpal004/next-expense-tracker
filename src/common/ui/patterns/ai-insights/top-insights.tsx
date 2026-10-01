@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { TrendingUp, Lightbulb, AlertTriangle, ArrowRight } from "lucide-react";
+import { TrendingUp, Lightbulb, AlertTriangle, ArrowRight, Wallet, Bell } from "lucide-react";
 import { cn } from "@/src/common/ui/cn";
 import { listItemVariants } from "@/src/common/ui/motion";
 import type { AiInsightCard } from "@/app/actions/getAiFinancialInsights";
@@ -13,44 +13,44 @@ interface TopInsightsProps {
 
 const INSIGHT_CONFIG = {
   "spending-trend": {
-    icon: <TrendingUp size={18} strokeWidth={2.2} />,
+    icon: <Wallet size={18} strokeWidth={2.2} />,
     iconBg: "bg-danger-surface",
     iconColor: "text-danger",
-    badge: "SPENDING TREND",
+    badge: "Spending trend",
     badgeColor: "text-danger",
-    cardBorder: "border-danger/20",
+    cardBorder: "border-danger-border",
   },
   "savings-opportunity": {
     icon: <Lightbulb size={18} strokeWidth={2.2} />,
     iconBg: "bg-warning-surface",
     iconColor: "text-warning",
-    badge: "SAVINGS OPPORTUNITY",
+    badge: "Savings opportunity",
     badgeColor: "text-warning",
-    cardBorder: "border-warning/20",
+    cardBorder: "border-warning-border",
   },
   "unusual-activity": {
     icon: <AlertTriangle size={18} strokeWidth={2.2} />,
     iconBg: "bg-danger-surface",
     iconColor: "text-danger",
-    badge: "UNUSUAL ACTIVITY",
+    badge: "Unusual activity",
     badgeColor: "text-danger",
-    cardBorder: "border-danger/20",
+    cardBorder: "border-danger-border",
   },
   "budget-alert": {
-    icon: <AlertTriangle size={18} strokeWidth={2.2} />,
+    icon: <Bell size={18} strokeWidth={2.2} />,
     iconBg: "bg-warning-surface",
     iconColor: "text-warning",
-    badge: "BUDGET ALERT",
+    badge: "Budget alert",
     badgeColor: "text-warning",
-    cardBorder: "border-warning/20",
+    cardBorder: "border-warning-border",
   },
   positive: {
     icon: <TrendingUp size={18} strokeWidth={2.2} />,
     iconBg: "bg-success-surface",
     iconColor: "text-success",
-    badge: "POSITIVE TREND",
+    badge: "Positive trend",
     badgeColor: "text-success",
-    cardBorder: "border-success/20",
+    cardBorder: "border-success-border",
   },
 };
 
@@ -61,14 +61,14 @@ function InsightCard({ insight }: { insight: AiInsightCard }) {
     <motion.article
       variants={listItemVariants}
       className={cn(
-        "relative overflow-hidden rounded-xl border bg-surface p-4 min-h-[180px] transition-all duration-300 hover:shadow-lg",
+        "relative overflow-hidden rounded-2xl border bg-surface p-4 min-h-[180px] transition-all duration-300 hover:shadow-lg",
         config.cardBorder,
       )}
     >
       <div className="flex items-start gap-3">
         <span
           className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
             config.iconBg,
             config.iconColor,
           )}
@@ -83,13 +83,13 @@ function InsightCard({ insight }: { insight: AiInsightCard }) {
           <h3 className="mt-0.5 text-sm font-semibold text-foreground">{insight.title}</h3>
         </div>
       </div>
-      <p className="text-xs text-foreground-secondary leading-relaxed pl-0 sm:pl-11">
+      <p className="text-xs text-muted-foreground leading-relaxed pl-0 sm:pl-11">
         {insight.description}
       </p>
       {insight.actionLabel && insight.actionHref && (
         <a
           href={insight.actionHref}
-          className="mt-3 ml-0 inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80 sm:ml-11"
+          className="mt-3 ml-0 inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors sm:ml-11"
           >
           {insight.actionLabel}
           <ArrowRight size={12} strokeWidth={2.5} />
@@ -111,11 +111,11 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
       <div className="mb-3">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold text-foreground" id="top-ai-insights-title">
-            Top AI Insights
+            Top insights
           </h2>
         </div>
-        <p className="mt-0.5 text-xs text-foreground-secondary">
-          Personalized insights based on your spending behavior.
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          Based on your spending in this period.
         </p>
       </div>
       <motion.div
@@ -133,6 +133,5 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
       </motion.div>
     </div>
     </section>
-
   );
 }

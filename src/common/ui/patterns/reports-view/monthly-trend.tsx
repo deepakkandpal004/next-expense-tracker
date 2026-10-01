@@ -10,15 +10,15 @@ export function MonthlyTrend({
   maxExpense: number;
 }) {
   return (
-    <section>
-      <h2 className="mb-4 text-sm font-semibold text-foreground">Monthly Trend</h2>
-      <div className="rounded-xl border border-border/50 bg-surface p-6">
+    <section className="space-y-3">
+      <h2 className="text-sm font-semibold text-foreground">Monthly trend</h2>
+      <div className="rounded-2xl border border-border bg-surface p-5">
         <div className="flex items-end justify-between gap-2" style={{ minHeight: 160 }}>
           {monthly.map(m => (
             <div key={m.month} className="flex flex-1 flex-col items-center gap-1">
               <div className="flex gap-0.5">
-                <SparkBar value={m.incomeMinor} max={maxIncome} color="#22C55E" />
-                <SparkBar value={m.expenseMinor} max={maxExpense} color="#F04438" />
+                <SparkBar value={m.incomeMinor} max={maxIncome} color="#37C98C" />
+                <SparkBar value={m.expenseMinor} max={maxExpense} color="#F16F6F" />
               </div>
               <span className="text-[10px] text-muted-foreground">{m.month.slice(5)}</span>
             </div>

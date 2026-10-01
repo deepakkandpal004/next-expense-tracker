@@ -33,7 +33,7 @@ interface ModalContentProps {
 }
 
 const closeButtonClassName =
-  "absolute right-4 top-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-foreground-secondary hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle";
+  "absolute right-4 top-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-muted-foreground hover:bg-surface-subtle hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-surface-subtle";
 
 function ModalHeading({
   title,
@@ -78,7 +78,7 @@ function ModalHeading({
         {title}
       </h2>
       {description ? (
-        <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
+        <p id={descriptionId} className="mt-2 text-interface-sm text-muted-foreground">
           {description}
         </p>
       ) : null}
@@ -125,7 +125,18 @@ function useDialog(
   onOpenChange: ((open: boolean) => void) | undefined,
   handleChange: (next: boolean, onOpenChange?: (open: boolean) => void) => void,
 ) {
+  // The Portal mounts the <dialog> into document.body one commit after first
+  // render (SSR-safe), so dialogRef.current is still null when this effect
+  // first runs. Without re-running after the portal mounts, a dialog that
+  // mounts already open (controlled `open`) never gets showModal() called
+  // and stays invisible.
+  const [portalMounted, setPortalMounted] = useState(false);
   useEffect(() => {
+    setPortalMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!portalMounted) return;
     const el = dialogRef.current;
     if (!el) return;
     if (isOpen && !el.open) {
@@ -133,7 +144,7 @@ function useDialog(
     } else if (!isOpen && el.open) {
       el.close();
     }
-  }, [isOpen, dialogRef]);
+  }, [isOpen, dialogRef, portalMounted]);
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -197,7 +208,7 @@ export function Dialog({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-black/60 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -205,7 +216,7 @@ export function Dialog({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl bg-surface p-6 shadow-overlay",
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl bg-surface p-6 shadow-overlay dialog-panel",
               className,
             )}
             role="dialog"
@@ -262,7 +273,7 @@ export function Sheet({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none bg-transparent p-0 open:flex backdrop:bg-black/60 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -270,7 +281,7 @@ export function Sheet({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay",
+              "fixed inset-y-0 z-50 flex h-[100dvh] w-full max-w-lg flex-col overflow-y-auto bg-surface p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-overlay dialog-panel",
               sideClassName,
               className,
             )}
@@ -339,7 +350,7 @@ export function AlertDialog({
       <Portal>
         <dialog
           ref={dialogRef}
-          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-foreground/45 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
+          className="fixed inset-0 z-50 m-0 hidden h-full max-h-none w-full max-w-none items-center justify-center bg-transparent p-0 open:flex backdrop:bg-black/60 backdrop:backdrop-blur-[2px] motion-reduce:backdrop:backdrop-blur-none"
           onClick={(e) => { if (e.target === dialogRef.current) close(); }}
         >
           <div
@@ -347,7 +358,7 @@ export function AlertDialog({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-container bg-surface p-6 shadow-overlay",
+              "relative mx-auto flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg flex-col overflow-y-auto rounded-2xl bg-surface p-6 shadow-overlay dialog-panel",
               className,
             )}
             role="alertdialog"
@@ -358,7 +369,7 @@ export function AlertDialog({
                   {title}
                 </h2>
                 {description ? (
-                  <p id={descriptionId} className="mt-2 text-interface-sm text-foreground-secondary">
+                  <p id={descriptionId} className="mt-2 text-interface-sm text-muted-foreground">
                     {description}
                   </p>
                 ) : null}
@@ -375,7 +386,7 @@ export function AlertDialog({
                 </button>
                 <button
                   aria-busy={action.loading || undefined}
-                  className="min-h-11 min-w-11 rounded-control border border-danger-border bg-danger-surface px-4 py-2 text-interface-sm font-semibold text-danger-foreground transition-[filter,background-color] hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="min-h-11 min-w-11 rounded-control border border-danger bg-danger px-4 py-2 text-interface-sm font-semibold text-white transition-[filter,background-color] hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:brightness-90 disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={action.disabled || action.loading}
                   onClick={() => { action.onSelect?.(); close(); }}
                   type="button"
@@ -438,15 +449,15 @@ export function ConfirmDestructiveAction({
     >
       <dl className="grid gap-3 rounded-container bg-surface-subtle p-4 text-interface-sm">
         <div className="grid gap-1">
-          <dt className="font-medium text-foreground-secondary">Description</dt>
+          <dt className="font-medium text-muted-foreground">Description</dt>
           <dd className="break-words text-foreground">{record.description}</dd>
         </div>
         <div className="grid gap-1">
-          <dt className="font-medium text-foreground-secondary">Amount</dt>
+          <dt className="font-medium text-muted-foreground">Amount</dt>
           <dd className="financial-value break-words text-foreground">{record.amount}</dd>
         </div>
         <div className="grid gap-1">
-          <dt className="font-medium text-foreground-secondary">Date</dt>
+          <dt className="font-medium text-muted-foreground">Date</dt>
           <dd className="break-words text-foreground">{record.date}</dd>
         </div>
       </dl>

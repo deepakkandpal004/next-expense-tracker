@@ -25,9 +25,27 @@ ChartJS.register(
   Tooltip,
 );
 
-export const LINE_COLOR = "#00DCE5";
+const LINE_COLOR_FALLBACK = "#7585F8";
+
+function readThemeColor(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = window.getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+function withAlpha(hex: string, alpha: number): string {
+  const match = hex.replace("#", "").match(/^([0-9a-f]{6})$/i);
+  if (!match) return `rgba(117, 133, 248, ${alpha})`;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(match[1].slice(i, i + 2), 16));
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+export function getLineColor(): string {
+  return readThemeColor("--color-primary", LINE_COLOR_FALLBACK);
+}
 
 export function buildData(projection: CashFlowProjection): ChartData<"line"> {
+  const lineColor = getLineColor();
   const labels = projection.daily.map((point) => point.label);
   const balances = projection.daily.map((point) => point.balanceMinor / 100);
   const recordedIndex = projection.daily.findIndex((point) => point.state === "projected");
@@ -39,8 +57,8 @@ export function buildData(projection: CashFlowProjection): ChartData<"line"> {
       {
         label: "Balance",
         data: balances,
-        borderColor: LINE_COLOR,
-        backgroundColor: "rgba(0, 220, 229, 0.10)",
+        borderColor: lineColor,
+        backgroundColor: withAlpha(lineColor, 0.1),
         fill: true,
         tension: 0.4,
         borderWidth: 2.5,

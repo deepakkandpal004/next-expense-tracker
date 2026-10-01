@@ -13,7 +13,7 @@ export function TrendPill({
 }) {
   if (!trend) {
     return (
-      <span className="inline-flex items-center gap-0.5 rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium text-on-surface-variant/50 tabular-nums">
+      <span className="inline-flex items-center gap-0.5 rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium text-muted-foreground tabular-nums">
         <Minus size={10} strokeWidth={2.5} />
         0%
       </span>
@@ -33,7 +33,7 @@ export function TrendPill({
       className={cn(
         "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-semibold tabular-nums",
         isFlat
-          ? "bg-white/5 text-on-surface-variant/50"
+          ? "bg-white/5 text-muted-foreground"
           : isFavourable
             ? "bg-kpi-income-surface text-kpi-income"
             : "bg-kpi-expense-surface text-kpi-expense",

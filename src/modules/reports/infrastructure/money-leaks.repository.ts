@@ -20,14 +20,27 @@ export async function getMoneyLeakReport(
 ): Promise<MoneyLeakReport> {
   const now = new Date();
 
-  const periodRecords = await db.record.findMany({
-    where: {
-      userId,
-      type: "expense",
-      date: { gte: boundaryAtStart(period.start), lte: boundaryAtEnd(period.end) },
-    },
-    select: { amount: true, category: true },
-  });
+  const historyStart = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - MONEY_LEAK_HISTORY_MONTHS, 1),
+  );
+  const [periodRecords, historyRecords] = await Promise.all([
+    db.record.findMany({
+      where: {
+        userId,
+        type: "expense",
+        date: { gte: boundaryAtStart(period.start), lte: boundaryAtEnd(period.end) },
+      },
+      select: { amount: true, category: true },
+    }),
+    db.record.findMany({
+      where: {
+        userId,
+        type: "expense",
+        date: { gte: historyStart, lt: boundaryAtStart(period.start) },
+      },
+      select: { amount: true, category: true, date: true },
+    }),
+  ]);
 
   const spendByCategory = new Map<string, number>();
   for (const record of periodRecords) {
@@ -54,22 +67,11 @@ export async function getMoneyLeakReport(
     currentMonthlySpendByCategory = Object.fromEntries(spendByCategory);
   }
 
-  const historyStart = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - MONEY_LEAK_HISTORY_MONTHS, 1),
-  );
-  const historyRecords = await db.record.findMany({
-    where: {
-      userId,
-      type: "expense",
-      date: { gte: historyStart, lt: boundaryAtStart(period.start) },
-    },
-    select: { amount: true, category: true, date: true },
-  });
-
   const months = trailingMonths(now, MONEY_LEAK_HISTORY_MONTHS);
+  const historyCategories = new Set(historyRecords.map((r) => r.category));
   const totalsByCategory = new Map<string, Map<string, number>>();
   for (const month of months) {
-    for (const category of new Set(historyRecords.map((r) => r.category))) {
+    for (const category of historyCategories) {
       if (!totalsByCategory.has(category)) totalsByCategory.set(category, new Map());
       totalsByCategory.get(category)!.set(month, 0);
     }

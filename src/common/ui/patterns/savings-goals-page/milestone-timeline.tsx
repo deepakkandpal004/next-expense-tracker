@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/src/common/ui/cn";
-import { CurrencyText } from "@/src/common/ui";
+import { CurrencyText, DateText } from "@/src/common/ui";
 import { toMinorUnits } from "./utils";
 import type { Milestone } from "./types";
 
@@ -20,7 +20,7 @@ export function MilestoneTimeline({
 }) {
   return (
     <div className="space-y-3">
-      <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground-secondary">
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         Milestones
       </h4>
       <div className="relative">
@@ -54,7 +54,7 @@ export function MilestoneTimeline({
                   ) : isCurrent ? (
                     <div className="h-2 w-2 rounded-full bg-white" />
                   ) : (
-                    <div className="h-2 w-2 rounded-full bg-foreground-secondary/30" />
+                    <div className="h-2 w-2 rounded-full bg-muted-foreground" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -62,18 +62,18 @@ export function MilestoneTimeline({
                     <span
                       className={cn(
                         "text-sm font-medium",
-                        isCompleted ? "text-foreground" : isCurrent ? "text-foreground" : "text-foreground-secondary",
+                        isCompleted ? "text-foreground" : isCurrent ? "text-foreground" : "text-muted-foreground",
                       )}
                     >
                       {milestone.label}
                     </span>
-                    <span className="text-xs text-foreground-secondary tabular-nums">
+                    <span className="text-xs text-muted-foreground tabular-nums">
                       <CurrencyText currency={currency} minorValue={toMinorUnits(milestone.amount)} />
                     </span>
                   </div>
                   {milestone.completedAt && (
-                    <span className="text-xs text-foreground-secondary">
-                      {new Date(milestone.completedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    <span className="text-xs text-muted-foreground">
+                      <DateText value={milestone.completedAt} />
                     </span>
                   )}
                 </div>

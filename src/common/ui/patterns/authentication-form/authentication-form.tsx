@@ -35,23 +35,36 @@ export function AuthenticationForm({
 }) {
   return (
     <div className="w-full">
-      <Link href="/" className="group mb-8 inline-flex items-center gap-1">
-        <span className="grid size-20 place-items-center rounded-3xl overflow-hidden -mr-1 transition-transform duration-300 group-hover:scale-110">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo1.png" alt="" className="h-full w-full object-cover" />
-        </span>
-        <span className="text-2xl font-extrabold">
-          <span className="text-white">Expense </span>
-          <span className="text-primary">AI</span>
-        </span>
-      </Link>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Link href="/" className="mb-8 inline-flex items-center gap-2">
+          <span className="grid size-10 place-items-center rounded-xl overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo1.png" alt="" className="h-full w-full object-cover" />
+          </span>
+          <span className="text-xl font-extrabold">
+            <span className="text-white">Expense Tracker </span>
+            <span className="text-primary">AI</span>
+          </span>
+        </Link>
+      </motion.div>
 
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+      >
         <h1 className="text-2xl font-bold tracking-tight text-white">{title}</h1>
-        <p className="mt-2 text-xs text-text-secondary">{description}</p>
-      </div>
+        <p className="mt-2 text-sm text-text-secondary">{description}</p>
+      </motion.div>
 
-      <form
+      <motion.form
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
         className="mt-6 grid gap-4"
         noValidate
         onSubmit={onSubmit}
@@ -75,7 +88,7 @@ export function AuthenticationForm({
         <button
           type="submit"
           disabled={pending}
-          className="group mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className="group mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? (
             <>
@@ -89,7 +102,7 @@ export function AuthenticationForm({
             </>
           )}
         </button>
-      </form>
+      </motion.form>
 
       {footer ? (
         <motion.footer

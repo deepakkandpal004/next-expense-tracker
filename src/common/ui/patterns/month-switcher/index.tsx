@@ -72,7 +72,7 @@ export function MonthSwitcher({ period }: MonthSwitcherProps) {
       </button>
       {!isCurrentMonth && currentMonthPeriod ? (
         <button
-          className="ml-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+          className="ml-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary-muted"
           onClick={() => navigateTo(currentMonthPeriod)}
           type="button"
         >

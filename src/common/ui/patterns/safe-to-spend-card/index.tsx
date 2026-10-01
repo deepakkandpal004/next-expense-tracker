@@ -68,7 +68,9 @@ export function SafeToSpendCard({
           <div>
             <h2 className="text-sm font-semibold text-on-surface">Safe to spend</h2>
             <p className="text-[11px] text-on-surface-variant/60">
-              Up to {breakdown.remainingDays} day{breakdown.remainingDays === 1 ? "" : "s"} left in this period
+              {breakdown.remainingDays <= 0
+                ? "No days left in this period"
+                : `${breakdown.remainingDays} day${breakdown.remainingDays === 1 ? "" : "s"} left in this period`}
             </p>
           </div>
         </div>
@@ -79,7 +81,7 @@ export function SafeToSpendCard({
           disabled={isPending}
           className="rounded-full border border-white/10 px-3 py-1 text-xs font-medium text-on-surface-variant/70 transition-colors hover:bg-white/5 hover:text-on-surface disabled:opacity-50"
         >
-          {isPending ? "Refreshing…" : "Recompute"}
+          {isPending ? "Refreshing…" : "Recalculate"}
         </button>
       </div>
 
@@ -103,7 +105,7 @@ export function SafeToSpendCard({
               className="text-4xl font-bold tabular-nums tracking-tight text-on-surface"
             />
             <p className="mt-1 text-xs text-on-surface-variant/60">
-              Available to spend risk-free this period
+              What you can still spend this period
             </p>
           </div>
           {perDay > 0 && breakdown.remainingDays > 0 && (

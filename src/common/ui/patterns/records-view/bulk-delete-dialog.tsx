@@ -38,11 +38,7 @@ export function BulkDeleteDialog({
     >
       {error ? (
         <Alert description={error} title="Delete failed" tone="danger" />
-      ) : (
-        <p className="text-interface-sm text-foreground-secondary">
-          The selected transactions will be removed from your history, dashboard, and reports.
-        </p>
-      )}
+      ) : null}
     </AlertDialog>
   );
 }

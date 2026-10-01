@@ -18,13 +18,13 @@ export function AISuggestions({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION_DURATION.standard, ease: MOTION_EASE.emphasized, delay: 0.25 }}
-      className="rounded-2xl border border-border/60 bg-surface p-5 shadow-premium-sm"
+      className="rounded-2xl border border-border bg-surface p-5 shadow-premium-sm"
     >
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted">
           <Lightbulb size={16} className="text-accent" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground">AI Suggestions</h3>
+        <h3 className="text-sm font-semibold text-foreground">Suggestions</h3>
       </div>
 
       <div className="space-y-3">
@@ -59,7 +59,7 @@ export function AISuggestions({
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-foreground">{suggestion.title}</p>
-                <p className="mt-0.5 text-xs text-foreground-secondary leading-relaxed">
+                <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
                   {suggestion.description}
                 </p>
               </div>

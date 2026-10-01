@@ -18,7 +18,11 @@ function createRedisClient(): Redis {
   const client = new Redis(url, {
     maxRetriesPerRequest: 3,
     lazyConnect: true,
-    enableOfflineQueue: true,
+    // Fail fast when disconnected: a down Redis must reject cache ops
+    // immediately instead of queueing them through reconnect backoff.
+    // The cache layer try/catches everything, so this keeps caching
+    // best-effort and never lets Redis stall a request.
+    enableOfflineQueue: false,
   });
   client.on("ready", () => {
     console.log(`[Redis] connected to ${client.options.host}:${client.options.port}`);

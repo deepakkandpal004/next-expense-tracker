@@ -6,16 +6,15 @@ import {
   Target,
   ShieldCheck,
   ArrowRight,
-  Play,
 } from "lucide-react";
 import Link from "next/link";
 import { DashboardPreview } from "./dashboard-preview";
 
 export function HeroSection() {
   return (
-    <section className="relative isolate -mt-[76px] overflow-hidden bg-bg-base">
+    <section className="relative isolate -mt-[69px] overflow-hidden bg-bg-base">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 bg-primary/[0.04] blur-[100px]" />
+        <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 bg-primary-muted blur-[100px]" />
       </div>
 
       <div className="relative z-10 pt-[150px] sm:pt-[175px] lg:pt-[190px]">
@@ -26,11 +25,9 @@ export function HeroSection() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
           >
-            Personal finance with
+            Know exactly where your
             <br />
-            <span className="bg-gradient-to-r from-primary via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
-              clarity, precision, and privacy.
-            </span>
+            money goes.
           </motion.h1>
 
           <motion.p
@@ -39,8 +36,8 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg"
           >
-            A high-precision expense tracker with automated cadence budgeting,
-            real-time runway calculations, and instant ledger analytics.
+            Log expenses in seconds, set monthly budgets, and see what you can
+            safely spend.
           </motion.p>
 
           <motion.div
@@ -51,7 +48,7 @@ export function HeroSection() {
           >
             <Link
               href="/sign-up"
-              className="group inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
+              className="group inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-foreground-inverse transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
             >
               Get started free
               <ArrowRight
@@ -62,13 +59,8 @@ export function HeroSection() {
 
             <Link
               href="/features"
-              className="group inline-flex h-11 items-center gap-2 rounded-lg border border-white/[0.1] bg-white/[0.03] px-5 text-sm font-medium text-white transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
+              className="inline-flex h-11 items-center gap-2 rounded-lg border border-white/[0.1] bg-white/[0.03] px-5 text-sm font-medium text-white transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.99]"
             >
-              <Play
-                size={13}
-                fill="currentColor"
-                className="text-text-secondary group-hover:text-white"
-              />
               Explore features
             </Link>
           </motion.div>
@@ -82,15 +74,15 @@ export function HeroSection() {
             {[
               {
                 icon: Target,
-                label: "Cadence Budgeting",
+                label: "Monthly budgets",
               },
               {
                 icon: ShieldCheck,
-                label: "Privacy-First Architecture",
+                label: "Private by default",
               },
               {
                 icon: BarChart3,
-                label: "Runway Forecasting",
+                label: "Safe-to-spend tracking",
               },
             ].map((item) => {
               const Icon = item.icon;

@@ -75,22 +75,22 @@ export function AISection() {
     <section className="relative isolate overflow-hidden border-t border-white/[0.06] bg-bg-base py-16 sm:py-20">
       <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto">
+        <div className="max-w-3xl">
           <AnimateInView>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
-              <span>Automated Spending Intelligence</span>
+              <span>AI insights</span>
             </div>
             <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
               The context behind your numbers.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-text-secondary leading-relaxed">
-              Every insight is calculated directly from ledger entries with verified citation chips and actionable monthly suggestions.
+              Every answer comes straight from your own transactions, with the numbers to back it up.
             </p>
           </AnimateInView>
         </div>
 
         {/* Interactive Playground */}
-        <div className="mt-12 max-w-4xl mx-auto">
+        <div className="mt-12">
           {/* Question Selector */}
           <div className="flex flex-wrap items-center justify-center gap-2 p-1 rounded-xl border border-white/[0.08] bg-white/[0.02]">
             {AI_DEMO_QUESTIONS.map((item) => {
@@ -118,7 +118,7 @@ export function AISection() {
             {/* Top Bar */}
             <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
               <div className="flex items-center gap-2">
-                <div className="flex size-6 items-center justify-center rounded-md bg-primary/10 text-primary">
+                <div className="flex size-6 items-center justify-center rounded-md bg-primary-muted text-primary">
                   <Brain size={13} />
                 </div>
                 <span className="text-xs font-semibold text-text-primary">Ledger Analysis Report</span>
@@ -126,7 +126,7 @@ export function AISection() {
 
               <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
                 <ShieldCheck size={11} />
-                <span>Summary-Only Privacy Guarantee</span>
+                <span>Summary only</span>
               </span>
             </div>
 
@@ -156,7 +156,7 @@ export function AISection() {
                 {/* Proof & Metrics */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                    <span className="text-[10px] text-text-tertiary block">Source Citation</span>
+                    <span className="text-[10px] text-text-tertiary block">Source</span>
                     <span className="text-xs font-medium text-primary mt-0.5 flex items-center gap-1">
                       <CheckCircle2 size={12} />
                       {activeQuestion.metrics.source}
@@ -164,14 +164,14 @@ export function AISection() {
                   </div>
 
                   <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                    <span className="text-[10px] text-text-tertiary block">Total Figure</span>
+                    <span className="text-[10px] text-text-tertiary block">Amount</span>
                     <span className="text-xs font-mono font-semibold text-text-primary mt-0.5 block">
                       {activeQuestion.metrics.amount}
                     </span>
                   </div>
 
                   <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                    <span className="text-[10px] text-text-tertiary block">Impact Delta</span>
+                    <span className="text-[10px] text-text-tertiary block">Trend</span>
                     <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">
                       {activeQuestion.metrics.trend}
                     </span>
@@ -191,22 +191,22 @@ export function AISection() {
         </div>
 
         {/* 3 Privacy Guarantees */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-4xl mx-auto">
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           {[
             {
               icon: EyeOff,
-              title: "Summary-Only Aggregation",
-              desc: "Only category sums and monthly totals are analyzed. Individual merchant names and notes remain strictly local.",
+              title: "Only totals, never details",
+              desc: "The AI sees category totals and monthly sums. Your merchant names and notes never leave your account.",
             },
             {
               icon: Lock,
-              title: "Explicit Opt-In",
-              desc: "Analysis features remain entirely on-demand. Master control toggle available anytime in settings.",
+              title: "Off until you ask",
+              desc: "AI only runs when you ask it to. Turn it off anytime in settings.",
             },
             {
               icon: DatabaseZap,
-              title: "Instant Invalidation",
-              desc: "Cached summaries automatically invalidate the moment you create, edit, or delete any record.",
+              title: "Always up to date",
+              desc: "Add or delete a transaction and every insight refreshes itself.",
             },
           ].map((item) => {
             return (

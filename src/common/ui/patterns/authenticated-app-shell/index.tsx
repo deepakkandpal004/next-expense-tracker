@@ -113,7 +113,7 @@ export function AuthenticatedAppShell({ children, user }: AuthenticatedAppShellP
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col relative z-10">
-        <div className="shrink-0 px-3 pt-3 sm:px-4">
+        <div className="shrink-0">
           <AppHeader
             accountError={accountError}
             onMobileMenuOpen={() => setMobileNavOpen(true)}

@@ -56,7 +56,7 @@ export const POST = withApiLogging(async (request: Request) => {
 
     // Generate nice avatar image using UI-Avatars
     const formattedName = encodeURIComponent(name);
-    const imageUrl = `https://ui-avatars.com/api/?name=${formattedName}&background=10b981&color=fff&bold=true&size=128`;
+    const imageUrl = `https://ui-avatars.com/api/?name=${formattedName}&background=7585F8&color=fff&bold=true&size=128`;
 
     // Create user in DB
     const newUser = await db.user.create({

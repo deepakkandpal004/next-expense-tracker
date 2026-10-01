@@ -66,19 +66,20 @@ export function TransactionFilters({
         <div className="relative flex-1 min-w-[200px] max-w-md">
           <Search
             size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <input
             type="text"
             value={localSearch}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search transactions..."
-            className="h-9 w-full rounded-xl border border-white/5 bg-white/[0.02] pl-9 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant/40 transition-colors focus:border-primary-fixed/50 focus:outline-none focus:ring-2 focus:ring-primary-fixed/20"
+            aria-label="Search transactions"
+            className="h-9 w-full rounded-xl border border-white/5 bg-white/[0.02] pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-muted"
           />
           {localSearch && (
             <button
               onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               type="button"
               aria-label="Clear search"
             >
@@ -107,11 +108,12 @@ export function TransactionFilters({
           value={sort}
           onChange={onSortChange}
           icon={<SlidersHorizontal size={14} />}
+          active={sort !== "date-desc"}
         />
       </div>
 
       <div className="flex flex-wrap items-center gap-2" aria-live="polite">
-        <span className="text-xs text-on-surface-variant/60">
+        <span className="text-xs text-muted-foreground">
           {recordCount} transaction{recordCount === 1 ? "" : "s"}
         </span>
 

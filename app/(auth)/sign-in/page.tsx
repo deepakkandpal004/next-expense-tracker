@@ -70,10 +70,10 @@ export default function SignInPage() {
   return (
     <AuthPageLayout>
       <AuthenticationForm
-        description="Sign in to continue to your recorded financial information."
+        description="Sign in to pick up where you left off."
         error={formError}
         errorAction={retry}
-        footer={<AuthTaskLinks />}
+        footer={<AuthTaskLinks variant="sign-in" />}
         formRef={formRef}
         onSubmit={submit}
         pending={pending}

@@ -4,9 +4,30 @@ export { checkRedisHealth, isRedisConnected, redis };
 
 const DEFAULT_TTL = 60 * 5;
 
+/**
+ * Hard ceiling for any single Redis op. A hung (but connected) Redis must
+ * never stall a request — the race rejects, the caller's try/catch treats
+ * it as a cache miss, and the request falls back to the database.
+ */
+const REDIS_OP_TIMEOUT_MS = 500;
+
+async function withRedisTimeout<T>(promise: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error("Redis operation timed out")), REDIS_OP_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}
+
 export async function getCache<T>(key: string): Promise<T | null> {
   try {
-    const raw = await redis.get(key);
+    const raw = await withRedisTimeout(redis.get(key));
     if (!raw) return null;
     return JSON.parse(raw) as T;
   } catch {
@@ -20,14 +41,14 @@ export async function setCache<T>(
   ttlSeconds = DEFAULT_TTL,
 ): Promise<void> {
   try {
-    await redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
+    await withRedisTimeout(redis.set(key, JSON.stringify(value), "EX", ttlSeconds));
   } catch {
   }
 }
 
 export async function deleteCache(...keys: string[]): Promise<void> {
   try {
-    if (keys.length > 0) await redis.del(...keys);
+    if (keys.length > 0) await withRedisTimeout(redis.del(...keys));
   } catch { /* silent */ }
 }
 
@@ -36,14 +57,14 @@ export async function deleteCacheByPattern(pattern: string): Promise<void> {
     let cursor = "0";
     const keysToDelete: string[] = [];
     do {
-      const [nextCursor, keys] = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
+      const [nextCursor, keys] = await withRedisTimeout(redis.scan(cursor, "MATCH", pattern, "COUNT", 100));
       cursor = nextCursor;
       if (keys.length > 0) keysToDelete.push(...keys);
       if (keysToDelete.length >= 100) {
-        await redis.del(...keysToDelete.splice(0, 100));
+        await withRedisTimeout(redis.del(...keysToDelete.splice(0, 100)));
       }
     } while (cursor !== "0");
-    if (keysToDelete.length > 0) await redis.del(...keysToDelete);
+    if (keysToDelete.length > 0) await withRedisTimeout(redis.del(...keysToDelete));
   } catch { /* silent */ }
 }
 
@@ -77,5 +98,5 @@ export const CacheKey = {
   userRecordsPattern: (userId: string) =>
     `app:records:${userId}:*`,
   userAllPattern: (userId: string) =>
-    `app:*:${userId}:*`,
+    `app:*:${userId}*`,
 };

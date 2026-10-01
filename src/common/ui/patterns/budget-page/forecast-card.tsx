@@ -32,18 +32,18 @@ export function ForecastCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION_DURATION.standard, ease: MOTION_EASE.emphasized, delay: 0.1 }}
-      className="rounded-2xl border border-border/60 bg-surface p-5 shadow-premium-sm"
+      className="rounded-2xl border border-border bg-surface p-5 shadow-premium-sm"
     >
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted">
           <TrendingUp size={16} className="text-accent" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground">Monthly Forecast</h3>
+        <h3 className="text-sm font-semibold text-foreground">Monthly forecast</h3>
       </div>
 
       <div className="space-y-4">
         <div className="flex items-baseline justify-between">
-          <span className="text-xs text-foreground-secondary">Projected total</span>
+          <span className="text-xs text-muted-foreground">Projected total</span>
           <span className="text-lg font-bold text-foreground tabular-nums">
             <CurrencyText currency={currency} minorValue={Math.round(forecast.projectedTotal)} />
           </span>
@@ -62,7 +62,7 @@ export function ForecastCard({
         </div>
 
         <div className="flex items-center justify-between text-xs">
-          <span className="text-foreground-secondary">
+          <span className="text-muted-foreground">
             {forecast.daysElapsed} of {forecast.daysInPeriod} days elapsed
           </span>
           {isOverProjection ? (

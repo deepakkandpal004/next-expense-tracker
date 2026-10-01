@@ -81,7 +81,7 @@ export function CategoriesView({ currency = "INR" }: CategoriesViewProps) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3, 4, 5, 6].map(i => (
-          <div key={i} className="h-32 animate-pulse rounded-xl bg-card/50" />
+          <div key={i} className="h-32 animate-shimmer rounded-2xl bg-card" />
         ))}
       </div>
     );
@@ -94,7 +94,7 @@ export function CategoriesView({ currency = "INR" }: CategoriesViewProps) {
           <h1 className="text-display-xl font-bold text-foreground">Categories</h1>
           <p className="mt-1 text-sm text-muted-foreground">Manage spending categories</p>
         </div>
-        <Button icon={<Plus size={16} />} label="Add" onClick={() => setCreating(true)} />
+        <Button icon={<Plus size={16} />} label="Add category" onClick={() => setCreating(true)} />
       </header>
 
       {message && <MessageBanner message={message} onDismiss={() => setMessage(null)} />}

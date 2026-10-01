@@ -166,10 +166,6 @@ export function DashboardPreview() {
               <span className="size-2.5 rounded-full bg-white/20" />
               <span className="size-2.5 rounded-full bg-white/20" />
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 rounded-md border border-white/[0.06] bg-black/40 px-2.5 py-0.5 text-[11px] font-mono text-text-tertiary">
-              <span className="text-emerald-400">https://</span>
-              <span>app.ledger.internal/dashboard</span>
-            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -286,7 +282,7 @@ export function DashboardPreview() {
                 </motion.div>
               </AnimatePresence>
               <p className="mt-2 text-[11px] text-text-tertiary">
-                Unallocated runway for this period
+                What you can still spend
               </p>
             </div>
           </div>
@@ -296,7 +292,7 @@ export function DashboardPreview() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div className="min-w-0">
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-text-tertiary">
-                  Monthly Pacing Observation
+                  Pacing this month
                 </span>
                 <AnimatePresence mode="wait">
                   <motion.p

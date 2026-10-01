@@ -31,7 +31,7 @@ export function EmptyState({
       {...props}
     >
       {icon && (
-        <div className="w-12 h-12 rounded-full bg-primary-muted border border-primary/20 flex items-center justify-center text-primary mb-4">
+        <div className="w-12 h-12 rounded-full bg-primary-muted border border-accent-border flex items-center justify-center text-primary mb-4">
           {icon}
         </div>
       )}
@@ -47,7 +47,7 @@ export function EmptyState({
           icon={<Plus className="w-4 h-4" />}
           onClick={onAction}
           type="button"
-          className="bg-primary text-foreground-inverse hover:bg-primary/90 font-semibold px-5 rounded-lg"
+          className="bg-primary text-foreground-inverse hover:opacity-90 font-semibold px-5 rounded-lg"
         />
       )}
     </GlassCard>

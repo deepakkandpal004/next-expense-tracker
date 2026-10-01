@@ -31,19 +31,22 @@ export const GET = withApiLogging(async (request: Request): Promise<NextResponse
       select: { userId: true },
     });
 
-    // Parallelize per-user processing (was sequential — 50 users = 50x latency)
-    const results = await Promise.all(
+    // Parallelize per-user processing (was sequential — 50 users = 50x latency).
+    // Only aggregate counts are returned: per-user ids must not leak in the response.
+    const createdCounts = await Promise.all(
       users.map(async ({ userId }) => {
         const created = await processDueRecurringRecords(userId);
         if (created > 0) {
           await deleteCacheByPattern(CacheKey.userAllPattern(userId));
-          return { userId, created };
         }
-        return null;
+        return created;
       }),
-    ).then((all) => all.filter((r): r is { userId: string; created: number } => r !== null));
+    );
 
-    return NextResponse.json({ processed: users.length, created: results.reduce((sum, r) => sum + r.created, 0), results });
+    return NextResponse.json({
+      usersProcessed: users.length,
+      occurrencesCreated: createdCounts.reduce((sum, n) => sum + n, 0),
+    });
   } catch (error) {
     console.error('Recurring cron failed', error);
     return NextResponse.json({ error: 'Cron failed' }, { status: 500 });

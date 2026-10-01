@@ -18,7 +18,7 @@ export function MoneyLeakDetectorCard({
   return (
     <section
       aria-labelledby="money-leak-title"
-      className="relative overflow-hidden glass-vessel"
+      className="relative overflow-hidden rounded-2xl border border-border bg-surface"
     >
       <div className="relative flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-4">
         <div className="flex items-center gap-2.5">
@@ -26,7 +26,7 @@ export function MoneyLeakDetectorCard({
             <h2 className="text-sm font-semibold text-foreground" id="money-leak-title">
               Money leak detector
             </h2>
-            <p className="mt-0.5 text-xs text-foreground-secondary">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               Spend above what you normally do — found in your last{" "}
               {Math.max(1, report.monthsAnalyzed)} months
             </p>
@@ -42,7 +42,7 @@ export function MoneyLeakDetectorCard({
 
       {report.status === "insufficient-data" && (
         <div className="relative px-5 pb-5">
-          <p className="text-sm text-foreground-secondary">
+          <p className="text-sm text-muted-foreground">
             Track a few more months of expenses and the leak scan will kick in. It
             compares each category against your own average, so it can only report
             once it has a baseline.
@@ -52,7 +52,7 @@ export function MoneyLeakDetectorCard({
 
       {report.status === "available" && !report.hasLeaks && (
         <div className="relative px-5 pb-5">
-          <p className="flex items-center gap-2 text-sm text-foreground-secondary">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Sparkles className="size-4 text-primary" aria-hidden="true" />
             No leaks detected — your discretionary spending is in line with your
             usual months.
@@ -68,7 +68,7 @@ export function MoneyLeakDetectorCard({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="relative px-5 pb-4"
           >
-            <p className="text-xs text-foreground-secondary">
+            <p className="text-xs text-muted-foreground">
               You could save, per month
             </p>
             <p className="mt-0.5 text-3xl font-bold tracking-tight tabular-nums text-foreground">
@@ -82,9 +82,9 @@ export function MoneyLeakDetectorCard({
             ))}
           </div>
 
-          <div className="relative border-t border-white/[0.06] px-5 py-4">
+          <div className="relative border-t border-border px-5 py-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="flex items-center gap-1.5 text-xs text-foreground-secondary">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Timer size={13} aria-hidden="true" />
                 Potential annual savings
               </p>

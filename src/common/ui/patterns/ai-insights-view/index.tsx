@@ -81,7 +81,7 @@ export function AiInsightsView({
       <div className="space-y-4">
         <ErrorState
           title="No data available"
-          description="Start tracking your expenses to see AI-powered financial insights."
+          description="Start tracking your expenses to see insights."
           action={
             <LinkButton
               label="Add transaction"
@@ -101,7 +101,7 @@ export function AiInsightsView({
             AI Insights
           </h1>
           <p className="mt-0.5 text-sm text-on-surface-variant/60">
-            Smart analysis of your spending habits and financial health.
+            A summary of your spending and saving this period.
           </p>
         </div>
         <MonthSwitcher period={resolvedPeriod} />

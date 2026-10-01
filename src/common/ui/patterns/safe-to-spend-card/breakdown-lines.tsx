@@ -25,7 +25,7 @@ export function BreakdownLines({
                 line.subtracts ? "text-kpi-expense" : "text-on-surface",
               )}
             >
-              {line.subtracts ? "−" : ""}
+              {line.subtracts && line.amountMinor !== 0 ? "−" : ""}
               {formatMinor(line.amountMinor, currency)}
             </span>
           </div>

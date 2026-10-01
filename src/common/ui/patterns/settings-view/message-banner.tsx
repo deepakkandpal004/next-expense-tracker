@@ -13,12 +13,12 @@ export function MessageBanner({
   onDismiss: () => void;
 }) {
   return (
-    <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs ${
-      message.type === "success" ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
+    <div className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs ${
+      message.type === "success" ? "bg-success-surface text-success" : "bg-danger-surface text-danger"
     }`}>
       {message.type === "success" ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
       <span>{message.text}</span>
-      <button onClick={onDismiss} className="ml-auto opacity-60 hover:opacity-100">
+      <button type="button" onClick={onDismiss} aria-label="Dismiss" className="ml-auto flex items-center opacity-60 transition-opacity hover:opacity-100">
         <X size={14} />
       </button>
     </div>

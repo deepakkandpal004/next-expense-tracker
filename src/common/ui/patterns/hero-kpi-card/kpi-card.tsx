@@ -58,7 +58,7 @@ export function KpiCard({
   const Icon = style.icon;
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-[#0c0e14]/60 p-4 transition-colors hover:border-white/[0.14]">
+    <div className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-surface p-4 transition-colors hover:border-white/[0.14]">
       <div className="flex items-center justify-between">
         <span
           className={cn("flex h-7 w-7 items-center justify-center rounded-md border", style.chip)}

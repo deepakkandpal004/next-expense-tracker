@@ -13,21 +13,32 @@ export async function processDueRecurringRecords(userId: string): Promise<number
 
   for (const record of recurringRecords) {
     const base = record.lastProcessed || record.startDate;
-    const nextDue = nextRecurrenceOccurrence(base, record.frequency, record.interval);
+    let nextDue = nextRecurrenceOccurrence(base, record.frequency, record.interval);
 
-    if (nextDue > now) continue;
-    if (record.endDate && nextDue > record.endDate) continue;
+    // Create every occurrence that came due since the last run instead of just
+    // one per run (a missed cron run used to lose occurrences forever).
+    // Capped so a very stale or misconfigured rule can't spin the loop forever.
+    let lastDue: Date | null = null;
+    let iterations = 0;
+    while (nextDue <= now && iterations < 31) {
+      if (record.endDate && nextDue > record.endDate) break;
 
-    toCreate.push({
-      text: record.text,
-      amount: record.amount,
-      type: record.type,
-      category: record.category,
-      date: nextDue,
-      userId,
-      recurringId: record.id,
-    });
-    toUpdate.push({ id: record.id, lastProcessed: nextDue });
+      toCreate.push({
+        text: record.text,
+        amount: record.amount,
+        type: record.type,
+        category: record.category,
+        date: nextDue,
+        userId,
+        recurringId: record.id,
+      });
+      lastDue = nextDue;
+
+      nextDue = nextRecurrenceOccurrence(nextDue, record.frequency, record.interval);
+      iterations += 1;
+    }
+
+    if (lastDue) toUpdate.push({ id: record.id, lastProcessed: lastDue });
   }
 
   if (toCreate.length === 0) return 0;
@@ -70,10 +81,14 @@ export async function create(data: {
   return db.recurringRecord.create({ data });
 }
 
-export async function remove(id: string) {
+export async function remove(id: string, userId: string) {
+  const found = await db.recurringRecord.findFirst({ where: { id, userId } });
+  if (!found) return null;
   return db.recurringRecord.delete({ where: { id } });
 }
 
-export async function toggle(id: string, active: boolean) {
+export async function toggle(id: string, active: boolean, userId: string) {
+  const found = await db.recurringRecord.findFirst({ where: { id, userId } });
+  if (!found) return null;
   return db.recurringRecord.update({ where: { id }, data: { active } });
 }

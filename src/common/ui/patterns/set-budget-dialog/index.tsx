@@ -44,8 +44,8 @@ export function SetBudgetDialog({
 
   return (
     <Dialog
-      closeLabel="Close set budget"
-      description="Set the monthly budget used to evaluate spending against your target."
+      closeLabel="Close dialog"
+      description="Set how much you can spend each month."
       onOpenChange={setOpen}
       open={open}
       title={isUpdate ? "Update budget" : "Set budget"}

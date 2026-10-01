@@ -207,7 +207,7 @@ export type PrimitiveName = keyof typeof PRIMITIVE_REGISTRY;
 const ACTION_VERBS = new Set([
   "add", "apply", "ask", "cancel", "change", "choose", "clear", "close", "confirm",
   "continue", "create", "delete", "dismiss", "download", "edit", "explore", "export", "get", "go",
-  "hide", "import", "learn", "open", "process", "refresh", "remove", "reset", "retry", "return",
+  "hide", "import", "learn", "open", "pause", "process", "refresh", "remove", "reset", "resume", "retry", "return",
   "save", "scan", "search", "select", "send", "set", "show", "sign", "sort", "start",
   "submit", "try", "update", "view",
 ]);

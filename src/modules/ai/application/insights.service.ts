@@ -2,6 +2,7 @@
 
 import { getAuthUser } from '@/src/modules/auth';
 import { db } from '@/src/database/client';
+import { getCache, setCache, CacheKey } from '@/src/common/cache';
 import { getCachedDashboardData } from '@/src/modules/dashboard';
 import { getCachedMoneyLeakReport } from '@/src/modules/reports/infrastructure/money-leaks.repository';
 import type { Prisma } from '@prisma/client';
@@ -83,9 +84,30 @@ export async function getAiFinancialInsights(
   }
 
   try {
-    const [dashboard, moneyLeaks] = await Promise.all([
+    const cacheKey = {
+      userId: user.id,
+      periodStart: normalized.period.start,
+      periodEnd: normalized.period.end,
+    };
+    // L1 Redis in front of the aiInsightCache table: the DB is in a far
+    // region, so even the cache-table lookup costs ~2s without this.
+    const aiCacheRedisKey = CacheKey.aiInsight(user.id, `${normalized.period.start}`, `${normalized.period.end}`);
+    const [dashboard, moneyLeaks, cachedAiInsights] = await Promise.all([
       getCachedDashboardData(user.id, normalized.period, user.currency),
       getCachedMoneyLeakReport(user.id, normalized.period),
+      (async (): Promise<AIInsight[]> => {
+        const fromRedis = await getCache<AIInsight[]>(aiCacheRedisKey);
+        if (fromRedis) return fromRedis;
+        const fromDb = await db.aiInsightCache.findUnique({
+          where: { userId_periodStart_periodEnd: cacheKey },
+        });
+        const insights: AIInsight[] =
+          fromDb && Array.isArray(fromDb.data) ? (fromDb.data as unknown as AIInsight[]) : [];
+        // Cache even the empty result: this lookup runs on every page load
+        // and the DB is in a far region. Regenerating overwrites this key.
+        await setCache(aiCacheRedisKey, insights, 3600);
+        return insights;
+      })(),
     ]);
     const computedLeakSavings = moneyLeaks.totalMonthlySavingsMinor;
 
@@ -130,7 +152,7 @@ export async function getAiFinancialInsights(
         id: 'spending-decreased',
         type: 'positive',
         title: 'Spending decreased',
-        description: `Great job! You spent ${Math.abs(spendingChangePercent)}% less than last period. Your discipline is paying off.`,
+        description: `You spent ${Math.abs(spendingChangePercent)}% less than last period.`,
         metric: `${spendingChangePercent}%`,
         actionLabel: 'View details',
         actionHref: '/records',
@@ -140,7 +162,7 @@ export async function getAiFinancialInsights(
         id: 'spending-stable',
         type: 'positive',
         title: 'Spending is stable',
-        description: `Your spending is consistent with last period. ${topCategory ? `Top category: ${topCategory.label}.` : ''} Keep tracking to maintain good habits.`,
+        description: `Your spending is in line with last period.${topCategory ? ` Top category: ${topCategory.label}.` : ''}`,
         metric: `${spendingChangePercent}%`,
         actionLabel: 'View records',
         actionHref: '/records',
@@ -152,17 +174,17 @@ export async function getAiFinancialInsights(
         id: 'savings-opportunity',
         type: 'savings-opportunity',
         title: 'You can save more',
-        description: `Reducing subscription expenses and late night orders can help boost your savings rate from ${Math.round(savingsRate * 100)}% to the recommended 20%.`,
+        description: `Trimming subscriptions and discretionary spending could lift your savings rate from ${Math.round(savingsRate * 100)}% toward the 20% target.`,
         metric: formatCurrency({ minorValue: potentialSavings, currency: dashboard.currency }),
         actionLabel: 'View details',
         actionHref: '/goals',
       });
-    } else if (savingsRate >= 25) {
+    } else if (savingsRate >= 0.25) {
       insights.push({
         id: 'savings-excellent',
         type: 'positive',
         title: 'Excellent savings rate',
-        description: `You're saving ${Math.round(savingsRate * 100)}% of your income — well above the 20% benchmark. Consider investing surplus for long-term growth.`,
+        description: `You're saving ${Math.round(savingsRate * 100)}% of your income — above the 20% benchmark.`,
         metric: `${Math.round(savingsRate * 100)}%`,
         actionLabel: 'Set goals',
         actionHref: '/goals',
@@ -172,7 +194,7 @@ export async function getAiFinancialInsights(
         id: 'savings-on-track',
         type: 'positive',
         title: 'Savings on track',
-        description: `Your savings rate is ${Math.round(savingsRate * 100)}%. ${savingsRate >= 20 ? 'Great job meeting the recommended target!' : 'Try to increase towards the 20% target.'}`,
+        description: `Your savings rate is ${Math.round(savingsRate * 100)}% — ${savingsRate >= 0.20 ? 'above' : 'below'} the 20% target.`,
         metric: `${Math.round(savingsRate * 100)}%`,
         actionLabel: 'View goals',
         actionHref: '/goals',
@@ -194,7 +216,7 @@ export async function getAiFinancialInsights(
         id: 'top-category',
         type: 'spending-trend',
         title: `Top category: ${topCategory.label}`,
-        description: `${topCategory.label} is your highest spending category at ${Math.round(topCategory.percentage * 100)}% of total expenses. ${topCategory.percentage > 0.2 ? 'Consider monitoring this category.' : 'This is well distributed.'}`,
+        description: `${topCategory.label} is your highest spending category at ${Math.round(topCategory.percentage * 100)}% of total expenses.`,
         metric: formatCurrency({ minorValue: topCategory.amountMinor, currency: dashboard.currency }),
         actionLabel: 'View budgets',
         actionHref: '/budgets',
@@ -203,8 +225,8 @@ export async function getAiFinancialInsights(
       insights.push({
         id: 'start-tracking',
         type: 'positive',
-        title: 'Start tracking categories',
-        description: 'Add more transactions to see category breakdowns and get insights on where your money goes.',
+        title: 'Add more transactions',
+        description: 'Add more transactions to see where your money goes.',
         actionLabel: 'Add transaction',
         actionHref: '/records?addTransaction=1',
       });
@@ -212,18 +234,7 @@ export async function getAiFinancialInsights(
 
     const daysInPeriod = dashboard.snapshot.daysInPeriod;
 
-    const cacheKey = {
-      userId: user.id,
-      periodStart: normalized.period.start,
-      periodEnd: normalized.period.end,
-    };
-    let aiInsights: AIInsight[] = [];
-    const cached = await db.aiInsightCache.findUnique({
-      where: { userId_periodStart_periodEnd: cacheKey },
-    });
-    if (cached && Array.isArray(cached.data)) {
-      aiInsights = cached.data as unknown as AIInsight[];
-    }
+    let aiInsights: AIInsight[] = cachedAiInsights ?? [];
 
     if (options.generateAi !== false && (options.refreshCache === true || aiInsights.length === 0)) {
         const limit = await rateLimitAiUser(user.id);
@@ -254,6 +265,7 @@ export async function getAiFinancialInsights(
             create: { ...cacheKey, data: aiInsights as unknown as Prisma.InputJsonValue },
             update: { data: aiInsights as unknown as Prisma.InputJsonValue },
           });
+          await setCache(aiCacheRedisKey, aiInsights, 3600);
         }
       } catch (aiError) {
         console.error('OpenAI insights generation failed, using fallback:', aiError);
@@ -296,7 +308,7 @@ export async function getAiFinancialInsights(
       },
     };
 
-    return { status: 'success', data: result, message: 'AI insights generated.' };
+    return { status: 'success', data: result, message: 'Insights generated.' };
   } catch (error) {
     console.error('AI insights generation failed', error);
     return {

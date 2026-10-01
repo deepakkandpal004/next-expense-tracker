@@ -41,9 +41,9 @@ export function BudgetPage({
   );
 
   return (
-    <div className="grid gap-6">
+    <div className="space-y-6">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-        <h1 className="text-display-2xl font-bold tracking-tight text-foreground">Budget</h1>
+        <h1 className="text-display-xl font-bold tracking-tight text-foreground">Budget</h1>
         <SetBudgetDialog
           currency={currency}
           label={hasBudget ? "Update budget" : "Set budget"}

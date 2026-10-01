@@ -1,6 +1,5 @@
-import { motion } from "motion/react";
 import { DollarSign } from "lucide-react";
-import { listItemVariants } from "@/src/common/ui/motion";
+import { Select } from "@/src/common/ui";
 import { CURRENCIES } from "./constants";
 
 export function CurrencyField({
@@ -11,9 +10,9 @@ export function CurrencyField({
   onChange: (value: string) => void;
 }) {
   return (
-    <motion.div variants={listItemVariants} className="rounded-xl border border-border/50 bg-surface p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <div className="rounded-2xl border border-border bg-surface p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-muted text-primary">
           <DollarSign size={18} />
         </div>
         <div>
@@ -21,15 +20,13 @@ export function CurrencyField({
           <p className="text-xs text-muted-foreground">Preferred currency for amounts</p>
         </div>
       </div>
-      <select
+      <Select
+        id="settings-currency"
+        label="Currency"
         value={value}
-        onChange={e => onChange(e.target.value)}
-        className="w-full rounded-lg border border-border/50 bg-muted px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-      >
-        {CURRENCIES.map(c => (
-          <option key={c.code} value={c.code}>{c.label}</option>
-        ))}
-      </select>
-    </motion.div>
+        onChange={(e) => onChange(e.target.value)}
+        options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
+      />
+    </div>
   );
 }

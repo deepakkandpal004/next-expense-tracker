@@ -77,14 +77,14 @@ export function RecurringView({ currency = "INR" }: { currency?: string }) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4 sm:p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Recurring Transactions</h1>
+          <h1 className="text-display-xl font-bold tracking-tight">Recurring transactions</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Automate your regular income and expenses
+            Income and expenses that repeat automatically.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Button icon={<RefreshCw className={`size-4 ${processing ? "animate-spin" : ""}`} />} intent="secondary" label="Process now" loading={processing} onClick={handleProcessNow} disabled={processing} />
           <Button icon={<Plus className="size-4" />} label="Add recurring" onClick={() => setShowForm(true)} />
         </div>
@@ -110,7 +110,7 @@ export function RecurringView({ currency = "INR" }: { currency?: string }) {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 animate-pulse rounded-xl bg-card/50" />
+            <div key={i} className="h-24 animate-shimmer rounded-2xl bg-card" />
           ))}
         </div>
       ) : records.length === 0 ? (

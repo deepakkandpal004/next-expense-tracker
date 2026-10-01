@@ -202,6 +202,15 @@ const prismaDashboardQuerySource: DashboardQuerySource = {
     db.record.findMany({
       where: { userId, date: { gte: startsAt, lte: endsAt } },
       orderBy: { date: "desc" },
+      select: {
+        id: true,
+        text: true,
+        amount: true,
+        type: true,
+        category: true,
+        date: true,
+        createdAt: true,
+      },
     }),
   loadBudget: getBudgetForUser,
 };

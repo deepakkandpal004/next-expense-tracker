@@ -3,6 +3,7 @@
 import { getAuthUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import type { ActionResult } from '@/lib/domain/types';
+import { CacheKey, getCache, setCache } from '@/lib/cache';
 
 export interface RecurringRecordDTO {
   id: string;
@@ -44,6 +45,10 @@ export async function getRecurringRecords(): Promise<ActionResult<{ records: Rec
   if (!user) return { status: 'error', message: 'Sign in to continue.', retryable: false };
 
   try {
+    const cacheKey = CacheKey.recurringRecords(user.id);
+    const cached = await getCache<{ records: RecurringRecordDTO[] }>(cacheKey);
+    if (cached) return { status: 'success', data: cached, message: 'Recurring records loaded.' };
+
     const rows = await db.recurringRecord.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
@@ -65,7 +70,9 @@ export async function getRecurringRecords(): Promise<ActionResult<{ records: Rec
       createdAt: row.createdAt.toISOString(),
     }));
 
-    return { status: 'success', data: { records }, message: 'Recurring records loaded.' };
+    const data = { records };
+    await setCache(cacheKey, data, 300);
+    return { status: 'success', data, message: 'Recurring records loaded.' };
   } catch (error) {
     console.error('Failed to load recurring records', error);
     return { status: 'error', message: 'Could not load recurring records.', retryable: true };

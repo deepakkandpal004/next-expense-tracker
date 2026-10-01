@@ -84,23 +84,23 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="space-y-6">
       <CelebrationEffect show={showCelebration} />
 
       <header className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-display-xl font-bold text-foreground">Savings Goals</h1>
-          <p className="mt-1 text-body text-foreground-secondary">
+          <p className="mt-1 text-body text-muted-foreground">
             Track progress toward your financial targets
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
           aria-label="Create new savings goal"
-          className="flex items-center gap-2 rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="flex items-center gap-2 rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-background transition-all active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
           <Plus size={16} />
-          New Goal
+          New goal
         </button>
       </header>
 
@@ -109,16 +109,16 @@ export function SavingsGoalsPage({ currency }: { currency?: string }) {
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="h-40 animate-shimmer rounded-2xl border border-border/50 bg-surface" />
+            <div key={i} className="h-40 animate-shimmer rounded-2xl border border-border bg-surface" />
           ))}
         </div>
       ) : goals.length === 0 ? (
         <EmptyState
           title="Set your first goal"
-          description="Define a target amount and deadline to start tracking your savings progress effortlessly."
+          description="Set a target amount and a deadline to track your savings."
           actionLabel="Set goal"
           onAction={() => setShowAddModal(true)}
-          icon={<Target className="w-6 h-6" />}
+          icon={<Target className="size-6" />}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

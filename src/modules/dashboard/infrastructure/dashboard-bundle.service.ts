@@ -36,7 +36,9 @@ export async function getDashboardBundle(
   const cached = await getCache<DashboardBundle>(bundleKey);
   if (cached) return cached;
 
-  const [dashboard, periodRecordsRaw, allRecurring, allGoals, forecastData, budget] =
+  const now = new Date();
+  const SMART_HISTORY = 6;
+  const [dashboard, periodRecordsRaw, allRecurring, allGoals, forecastData, budget, historyRecords] =
     await Promise.all([
       getDashboardData(userId, period, currency),
       db.record.findMany({
@@ -56,6 +58,13 @@ export async function getDashboardBundle(
       }),
       getForecastSummaries(userId, 6),
       getBudgetForUser(userId, period),
+      db.record.findMany({
+        where: {
+          userId, type: "expense",
+          date: { gte: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - SMART_HISTORY, 1)), lt: boundaryAtStart(period.start) },
+        },
+        select: { amount: true, category: true, date: true },
+      }),
     ]);
 
   const balanceMinor = periodRecordsRaw.reduce((acc, r) => {
@@ -75,7 +84,6 @@ export async function getDashboardBundle(
     goalContributionMinor, expectedRemainingExpensesMinor: expectedExpensesMinor, remainingDays,
   });
 
-  const now = new Date();
   const today = now.toISOString().slice(0, 10);
   const periodEnded = now.getTime() > boundaryAtEnd(period.end).getTime();
   const events = buildScheduledEvents(allRecurring as never, period.end);
@@ -112,14 +120,6 @@ export async function getDashboardBundle(
     };
   }
 
-  const SMART_HISTORY = 6;
-  const historyRecords = await db.record.findMany({
-    where: {
-      userId, type: "expense",
-      date: { gte: new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - SMART_HISTORY, 1)), lt: boundaryAtStart(period.start) },
-    },
-    select: { amount: true, category: true, date: true },
-  });
   const spendToDateByCategory: Record<string, number> = {};
   for (const r of periodRecordsRaw) {
     if (r.type !== "expense" || !r.category) continue;
@@ -151,6 +151,9 @@ export async function getDashboardBundle(
 
   await Promise.all([
     setCache(bundleKey, bundle, 60 * 5),
+    // Warm the plain dashboard-DTO key too: the AI insights page reads it
+    // via getCachedDashboardData, otherwise it recomputes from the DB.
+    setCache(CacheKey.dashboard(userId, `${period.start}_${period.end}`), dashboard, 60 * 5),
     setCache(CacheKey.safeToSpend(userId, `${period.start}_${period.end}`), safeToSpend, 60 * 5),
     setCache(CacheKey.cashFlow(userId, `${period.start}_${period.end}`), cashFlow, 60 * 5),
     setCache(CacheKey.smartAlerts(userId, `${period.start}_${period.end}`), smartPacing, 60 * 5),

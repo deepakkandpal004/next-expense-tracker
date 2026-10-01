@@ -11,22 +11,22 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div>
-            <h2 className="text-sm font-bold text-foreground">AI-Generated Insights</h2>
-            <p className="text-[11px] text-foreground-secondary">Derived from summary aggregate figures</p>
+            <h2 className="text-sm font-bold text-foreground">AI insights</h2>
+            <p className="text-[11px] text-foreground-secondary">Generated from your spending summary</p>
           </div>
         </div>
 
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400 font-mono">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
           <ShieldCheck size={12} />
-          <span className="hidden sm:inline font-sans">Summary Only</span>
+          <span className="hidden sm:inline">Summary only</span>
         </span>
       </div>
 
       {insights.length === 0 && (
         <div className="rounded-xl border border-dashed border-border/60 p-8 text-center">
-          <Lightbulb size={24} className="mx-auto text-primary/60 mb-2" />
-          <p className="text-sm text-foreground font-medium">No AI observations generated yet for this period</p>
-          <p className="text-xs text-foreground-secondary mt-1">Click &ldquo;Generate AI narrative&rdquo; above to analyze spending patterns.</p>
+          <Lightbulb size={24} className="mx-auto text-primary mb-2" />
+          <p className="text-sm text-foreground font-medium">No AI insights for this period yet</p>
+          <p className="text-xs text-foreground-secondary mt-1">Press &ldquo;Generate new insights&rdquo; above to analyze this period.</p>
         </div>
       )}
 
@@ -48,12 +48,12 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
             <div
               key={insight.id}
               className={cn(
-                "rounded-xl border p-4.5 transition-all relative overflow-hidden group",
+                "rounded-xl border p-4 transition-colors relative overflow-hidden group",
                 isWarning
-                  ? "border-danger/30 bg-danger/[0.04] hover:border-danger/50"
+                  ? "border-danger-border bg-danger-surface"
                   : isOpportunity
-                  ? "border-primary/30 bg-primary/[0.03] hover:border-primary/50"
-                  : "border-white/[0.08] bg-surface-subtle hover:border-primary/30"
+                  ? "border-accent-border bg-primary-muted"
+                  : "border-white/[0.08] bg-surface-subtle hover:border-accent-border"
               )}
             >
               <div className="flex px-5 py-2 items-start justify-between gap-3">
@@ -69,7 +69,7 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
                 </div>
 
                 {insight.confidence !== undefined && (
-                  <span className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary sm:px-3 sm:text-[11px]">
+                  <span className="shrink-0 rounded-full border border-accent-border bg-primary-muted px-2.5 py-1 text-[10px] font-semibold text-primary sm:px-3 sm:text-[11px]">
                     {Math.round(insight.confidence * 100)}% confidence
                   </span>
                 )}
@@ -83,9 +83,9 @@ export function AiGeneratedInsights({ insights }: { insights: AIInsight[] }) {
                 <div className="mt-3.5 px-5 py-2 mb-2 pl-5 sm:pl-6 flex items-center gap-3">
                   <Link
                     href={insight.action.startsWith("/") ? insight.action : "/records"}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover hover:underline underline-offset-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline underline-offset-4"
                   >
-                    <span>{insight.action.startsWith("/") ? "Drill into details" : insight.action}</span>
+                    <span>{insight.action.startsWith("/") ? "View details" : insight.action}</span>
                     <ArrowUpRight size={13} />
                   </Link>
                 </div>

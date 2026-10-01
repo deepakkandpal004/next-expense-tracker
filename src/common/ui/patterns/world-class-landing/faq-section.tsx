@@ -7,31 +7,31 @@ import { AnimateInView } from "./shared";
 const faqs = [
   {
     q: "What is Expense Tracker AI?",
-    a: "Expense Tracker AI is a smart financial tracking app that helps you record transactions, understand spending patterns, and get AI-powered insights to manage your money better.",
+    a: "A simple app to record your expenses and income, see where your money goes, and get optional AI insights on your spending.",
   },
   {
-    q: "Is Expense Tracker AI free?",
-    a: "Yes — completely free. There are no paid plans, no hidden charges, and no credit card required. Every feature, including AI insights, is available to everyone.",
+    q: "Is it free?",
+    a: "Yes. Every feature is free, no paid plans, no credit card required.",
   },
   {
     q: "Are there any limits on transactions?",
-    a: "None. Record as many transactions as you want. There are no caps on usage, budgets, categories, or AI insights.",
+    a: "No. Add as many transactions, budgets, and categories as you want.",
   },
   {
     q: "Is my data secure?",
-    a: "Absolutely. We use bank-grade encryption and never sell your data. Your financial information is encrypted at rest and in transit.",
+    a: "Yes. Your data is never sold, and you can export or delete it anytime.",
   },
   {
     q: "How does the AI work?",
-    a: "Our AI analyzes your spending patterns to provide personalized insights, categorize transactions automatically, and predict future expenses. All AI features are optional and completely free.",
+    a: "When you ask, it looks at your category totals and answers in plain English, like where you're overspending. It never sees merchant names or notes, and it's completely optional.",
   },
   {
     q: "Can I use it on mobile?",
-    a: "Yes! Expense Tracker AI works perfectly on all devices — desktop, tablet, and mobile. Your data syncs instantly across all your devices.",
+    a: "Yes. It works on phones, tablets, and desktops, and your data syncs across all of them.",
   },
   {
     q: "Can I export my data?",
-    a: "Yes, you can export your transaction data as CSV at any time. Your data is always accessible and portable.",
+    a: "Anytime. One click gives you a CSV download. It's your data.",
   },
 ];
 
@@ -39,10 +39,10 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="relative isolate border-b border-white/[0.06] bg-black py-14 sm:py-16">
+    <section className="relative isolate border-b border-white/[0.06] bg-bg-base py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <AnimateInView className="text-center">
-          <h2 className="font-bold tracking-tight mt-3 text-4xl text-white sm:text-5xl">
+        <AnimateInView>
+          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Frequently asked questions
           </h2>
         </AnimateInView>
@@ -55,13 +55,13 @@ export function FAQSection() {
                 <div
                   className={`rounded-xl border transition-colors ${
                     isOpen
-                      ? "border-primary/30 bg-primary/[0.05]"
+                      ? "border-border bg-primary-muted"
                       : "border-white/[0.06] bg-white/[0.02]"
                   }`}
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium text-sm tracking-wide text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/70"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium text-sm tracking-wide text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
                     aria-expanded={isOpen}
                   >
                     {faq.q}

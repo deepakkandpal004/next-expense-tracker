@@ -51,7 +51,7 @@ export function generateAISuggestions(
     suggestions.push({
       type: "warning",
       title: "Approaching limit",
-      description: `You've used ${formatPercentage(budget.utilization)} of your budget with ${forecast.daysRemaining} days remaining. Pace yourself carefully.`,
+      description: `You've used ${formatPercentage(budget.utilization)} of your budget with ${forecast.daysRemaining} days remaining.`,
       icon: AlertTriangle,
     });
   }
@@ -62,7 +62,7 @@ export function generateAISuggestions(
       suggestions.push({
         type: "insight",
         title: "Category concentration",
-        description: `${topCategory.label} accounts for ${formatPercentage(topCategory.percentage)} of spending. Diversifying could help balance your budget.`,
+        description: `${topCategory.label} accounts for ${formatPercentage(topCategory.percentage)} of spending.`,
         icon: Info,
       });
     }
@@ -72,7 +72,7 @@ export function generateAISuggestions(
     suggestions.push({
       type: "tip",
       title: "On track",
-      description: "Great job! You're within budget with time to spare. Consider setting aside savings for unexpected expenses.",
+      description: "You're within budget with time to spare.",
       icon: Lightbulb,
     });
   }
@@ -81,7 +81,7 @@ export function generateAISuggestions(
     suggestions.push({
       type: "tip",
       title: "Month ending soon",
-      description: `${forecast.daysRemaining} days left. ${budget.status === "approaching" ? "Be mindful of spending." : "You're doing well!"}`,
+      description: `${forecast.daysRemaining} day${forecast.daysRemaining === 1 ? "" : "s"} left.${budget.status === "approaching" ? " Be mindful of spending." : ""}`,
       icon: Clock,
     });
   }

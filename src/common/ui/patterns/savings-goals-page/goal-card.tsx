@@ -49,7 +49,7 @@ export function GoalCard({
       aria-label={`${goal.name} goal: ${Math.round(progress * 100)}% complete`}
       className={cn(
         "group relative cursor-pointer overflow-hidden rounded-2xl border bg-surface p-5 shadow-premium-sm transition-shadow hover:shadow-premium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-        isCompleted ? "border-success/30" : "border-border/60",
+        isCompleted ? "border-success-border" : "border-border",
       )}
     >
       {/* Gradient overlay */}
@@ -68,7 +68,7 @@ export function GoalCard({
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="absolute right-12 top-4"
         >
-          <div className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-1">
+          <div className="flex items-center gap-1 rounded-full bg-success-surface px-2 py-1">
             <Trophy size={12} className="text-success" />
             <span className="text-xs font-semibold text-success">Complete</span>
           </div>
@@ -83,7 +83,7 @@ export function GoalCard({
           e.stopPropagation();
           onDelete(goal);
         }}
-        className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-foreground-secondary/60 transition-colors hover:bg-error/10 hover:text-error focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
+        className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-danger-surface hover:text-danger focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger"
       >
         <Trash2 size={16} />
       </button>
@@ -94,15 +94,16 @@ export function GoalCard({
           className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl"
           style={{
             backgroundColor: `color-mix(in srgb, ${goal.color} 12%, transparent)`,
+            color: goal.color,
           }}
         >
-          <Icon size={24} className={`text-[${goal.color}]`} />
+          <Icon size={24} />
         </div>
 
         {/* Content */}
         <div className="min-w-0 flex-1">
           <h3 className="text-lg font-semibold text-foreground">{goal.name}</h3>
-          <div className="mt-1 flex items-center gap-2 text-sm text-foreground-secondary">
+          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
             <span>
               <CurrencyText currency={currency} minorValue={toMinorUnits(goal.currentAmount)} /> of{" "}
               <CurrencyText currency={currency} minorValue={toMinorUnits(goal.targetAmount)} />
@@ -123,12 +124,12 @@ export function GoalCard({
           </div>
 
           {/* Stats */}
-          <div className="mt-3 flex flex-wrap gap-3 text-xs text-foreground-secondary">
+          <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
             {!isCompleted && (
               <>
                 <div className="flex items-center gap-1">
                   <Clock size={12} />
-                  <span>{daysRemaining} days left</span>
+                  <span>{daysRemaining === 1 ? "1 day left" : `${daysRemaining} days left`}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar size={12} />
@@ -148,7 +149,7 @@ export function GoalCard({
         {/* Arrow */}
         <ChevronRight
           size={20}
-          className="shrink-0 text-foreground-secondary transition-transform group-hover:translate-x-1"
+          className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1"
         />
       </div>
     </motion.div>

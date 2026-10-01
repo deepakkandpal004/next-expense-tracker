@@ -18,6 +18,8 @@ export async function createGoal(data: { userId: string; name: string; targetAmo
 }
 
 export async function updateGoal(goalId: string, userId: string, data: Partial<{ name: string; targetAmount: number; currentAmount: number; monthlyContribution: number; deadline: Date | null }>) {
+  const found = await db.goal.findFirst({ where: { id: goalId, userId } });
+  if (!found) return null;
   return db.goal.update({ where: { id: goalId }, data: { ...data } });
 }
 

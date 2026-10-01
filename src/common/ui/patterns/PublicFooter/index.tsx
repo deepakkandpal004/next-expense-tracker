@@ -20,8 +20,8 @@ export function PublicFooter() {
             </Link>
             <div className="mt-8 h-0.5 w-full max-w-52 bg-gradient-to-r from-border-subtle to-border-subtle/0" />
             <p className="mt-6 max-w-[350px] text-sm leading-relaxed text-white/60">
-              Expense Tracker AI is a growing collection of beautifully designed, production-ready
-              expense tracking components with AI-powered insights.
+              A simple expense tracker for recording transactions, planning budgets,
+              and understanding your spending. Optional AI insights, free forever.
             </p>
           </div>
 
@@ -41,17 +41,6 @@ export function PublicFooter() {
             </div>
           </div>
 
-          {/* Social links */}
-          <div className="flex w-[45%] flex-col items-start text-left md:w-[45%] lg:w-[15%]">
-            <h3 className="text-sm font-medium text-white">Social Links</h3>
-            <div className="mt-6 flex flex-col gap-2">
-              <a href="#" className="text-sm text-white/60 transition-colors hover:text-white">Twitter</a>
-              <a href="#" className="text-sm text-white/60 transition-colors hover:text-white">Instagram</a>
-              <a href="#" className="text-sm text-white/60 transition-colors hover:text-white">Youtube</a>
-              <a href="#" className="text-sm text-white/60 transition-colors hover:text-white">Linkedin</a>
-            </div>
-          </div>
-
         </div>
 
         {/* Divider */}
@@ -61,8 +50,6 @@ export function PublicFooter() {
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-y-4 gap-x-2 sm:flex-row">
           <p className="text-xs text-white/60">&copy; {new Date().getFullYear()} Expense Tracker AI</p>
           <div className="flex items-center gap-6 text-right">
-            <a href="#" className="text-xs text-white/60 transition-colors hover:text-white">Terms &amp; Conditions</a>
-            <div className="h-4 w-px bg-white/20" />
             <Link href="/privacy" className="text-xs text-white/60 transition-colors hover:text-white">Privacy Policy</Link>
           </div>
         </div>

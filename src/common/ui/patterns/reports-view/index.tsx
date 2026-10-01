@@ -27,10 +27,10 @@ export function ReportsView({ initialData: data, initialCashFlow: cashFlow, curr
   const maxIncome = Math.max(...data.monthly.map(m => m.incomeMinor));
 
   return (
-    <div className="grid gap-8">
+    <div className="space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-display-xl font-bold text-foreground">Reports</h1>
+          <h1 className="text-display-xl font-bold tracking-tight text-foreground">Reports</h1>
           <p className="mt-1 text-sm text-muted-foreground">12-month spending analysis</p>
         </div>
         <Button icon={<Download size={16} />} label="Export CSV" onClick={() => exportCsv(data)} />

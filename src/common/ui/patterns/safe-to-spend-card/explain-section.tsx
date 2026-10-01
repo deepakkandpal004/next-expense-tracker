@@ -34,20 +34,20 @@ export function ExplainSection({
           {isExplaining ? (
             <p className="flex items-center gap-2 text-xs text-text-secondary">
               <Loader2 size={13} strokeWidth={2} className="animate-spin" />
-              Analyzing reserved commitments and cash runway…
+              Checking your bills and balances…
             </p>
           ) : explanation ? (
             <>
               <p className="text-xs leading-relaxed text-text-primary">{explanation}</p>
               <p className="mt-2 text-[11px] text-text-tertiary">
-                Automated analysis derived directly from current period balances and scheduled obligations.
+                Based on your balances and upcoming bills this period.
               </p>
             </>
           ) : (
             <p className="text-xs leading-relaxed text-text-secondary">
               {explanationUnavailable
                 ? "Detailed explanation is temporarily unavailable."
-                : "Safe to spend calculated directly from your ledger entries."}
+                : "Based on your entries this period."}
             </p>
           )}
         </div>

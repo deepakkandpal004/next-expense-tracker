@@ -45,19 +45,19 @@ function KpiCard({
   return (
     <motion.div
       variants={listItemVariants}
-      className="flex flex-col justify-between rounded-xl border border-border/50 bg-surface p-4 transition-all duration-300 hover:shadow-lg min-h-[110px]"
+      className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 transition-all duration-300 hover:shadow-lg min-h-[110px]"
     >
       <div className="flex items-start gap-2.5">
         <span
           className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
             iconBg,
           )}
         >
           {icon}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-medium text-foreground-secondary truncate">{label}</p>
+          <p className="text-[10px] font-medium text-muted-foreground truncate">{label}</p>
           <p className="mt-0.5 text-lg font-bold text-foreground tabular-nums truncate">{value}</p>
         </div>
       </div>
@@ -73,11 +73,11 @@ function KpiCard({
               {trend === "up" ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
               {trend === "up" ? "+" : ""}{changePercent}{suffix}
             </span>
-            <span className="text-[10px] text-foreground-secondary">vs last month</span>
+            <span className="text-[10px] text-muted-foreground">vs previous period</span>
           </div>
         )}
         {sublabel && (
-          <p className="text-[10px] text-foreground-secondary mt-0.5">{sublabel}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{sublabel}</p>
         )}
       </div>
     </motion.div>
@@ -104,7 +104,7 @@ export function SummaryKpiRow({
       <KpiCard
         icon={<TrendingUp size={16} className="text-danger" />}
         iconBg="bg-danger-surface"
-        label="Total Spending"
+        label="Total spending"
         value={totalSpending.value}
         changePercent={totalSpending.changePercent}
         trend={totalSpending.trend}
@@ -112,7 +112,7 @@ export function SummaryKpiRow({
       <KpiCard
         icon={<PiggyBank size={16} className="text-success" />}
         iconBg="bg-success-surface"
-        label="Potential Savings"
+        label="Potential savings"
         value={potentialSavings.value}
         changePercent={potentialSavings.changePercent}
         trend={potentialSavings.trend}
@@ -120,20 +120,20 @@ export function SummaryKpiRow({
       <KpiCard
         icon={<Tag size={16} className="text-warning" />}
         iconBg="bg-warning-surface"
-        label="Top Category"
+        label="Top category"
         value={topCategory.name}
         sublabel={`${topCategory.amount} (${topCategory.percentage})`}
       />
       <KpiCard
         icon={<Activity size={16} className="text-info" />}
         iconBg="bg-info-surface"
-        label="Financial Health"
+        label="Financial health"
         value={`${financialHealth.score} / 100`}
         changePercent={financialHealth.changePoints}
         trend={financialHealth.changePoints >= 0 ? "up" : "down"}
         positiveWhenUp
         suffix=""
-        sublabel={`${financialHealth.changePoints >= 0 ? "+" : ""}${financialHealth.changePoints} points vs last month`}
+        sublabel={`${financialHealth.changePoints >= 0 ? "+" : ""}${financialHealth.changePoints} points vs previous period`}
       />
     </motion.div>
   );

@@ -6,10 +6,10 @@ import { cn } from "@/src/common/ui/cn";
 import type { AiInsight } from "./types";
 
 const INSIGHT_STYLES = {
-  positive: { icon: TrendingUp, chip: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" },
-  warning: { icon: AlertCircle, chip: "bg-amber-500/10 text-amber-400 border border-amber-500/20" },
-  info: { icon: Info, chip: "bg-blue-500/10 text-blue-400 border border-blue-500/20" },
-  celebration: { icon: Target, chip: "bg-primary/10 text-primary border border-primary/20" },
+  positive: { icon: TrendingUp, chip: "bg-success-surface text-success border border-success-border" },
+  warning: { icon: AlertCircle, chip: "bg-warning-surface text-warning border border-warning-border" },
+  info: { icon: Info, chip: "bg-info-surface text-info border border-info-border" },
+  celebration: { icon: Target, chip: "bg-primary-muted text-primary border border-border" },
 } as const;
 
 export function AIInsightStrip({ insight }: { insight: AiInsight }) {
@@ -21,7 +21,7 @@ export function AIInsightStrip({ insight }: { insight: AiInsight }) {
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-[#0c0e14]/60 p-4 sm:flex-row sm:items-center"
+      className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-surface p-4 sm:flex-row sm:items-center"
     >
       <span
         className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg", style.chip)}
@@ -42,7 +42,7 @@ export function AIInsightStrip({ insight }: { insight: AiInsight }) {
           {insight.actionLabel && insight.actionHref && (
             <a
               href={insight.actionHref}
-              className="inline-flex items-center gap-1 rounded-lg bg-primary/15 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/25"
+              className="inline-flex items-center gap-1 rounded-lg bg-primary-muted px-3 py-1.5 text-xs font-medium text-primary transition-colors"
             >
               {insight.actionLabel}
             </a>

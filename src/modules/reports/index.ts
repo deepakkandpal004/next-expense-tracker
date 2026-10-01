@@ -25,6 +25,3 @@ export {
   fetchReportData,
   getCachedReportData,
 } from "./infrastructure/report-data.repository";
-export {
-  getReportData,
-} from "./application/reports.service";

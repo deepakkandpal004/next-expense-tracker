@@ -29,14 +29,14 @@ export function BudgetHero({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: MOTION_DURATION.slow, ease: MOTION_EASE.emphasized }}
-        className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface-subtle/30 px-6 py-16 text-center"
+        className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface-subtle px-6 py-16 text-center"
       >
         <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-subtle mb-4">
-          <Wallet size={32} className="text-foreground-secondary" strokeWidth={1.5} />
+          <Wallet size={32} className="text-muted-foreground" strokeWidth={1.5} />
         </div>
         <h2 className="text-lg font-semibold text-foreground">No budget set</h2>
-        <p className="mt-2 max-w-sm text-sm text-foreground-secondary">
-          Set a monthly budget to track your spending and stay on top of your finances.
+        <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+          Set a monthly budget to track your spending.
         </p>
       </motion.div>
     );
@@ -57,7 +57,7 @@ export function BudgetHero({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION_DURATION.slow, ease: MOTION_EASE.emphasized }}
-      className="rounded-2xl border border-border/60 bg-surface p-6 shadow-premium-sm"
+      className="rounded-2xl border border-border bg-surface p-6 shadow-premium-sm"
     >
       <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-start">
         <div className="flex flex-col items-center gap-4">
@@ -66,7 +66,7 @@ export function BudgetHero({
             status={budget.status}
           />
           <div className="text-center">
-            <p className="text-xs text-foreground-secondary">
+            <p className="text-xs text-muted-foreground">
               {budget.status === "exceeded" ? "Over budget" : "Under budget"}
             </p>
           </div>
@@ -74,7 +74,7 @@ export function BudgetHero({
 
         <div className="flex-1 space-y-4 text-center lg:text-left">
           <div>
-            <h2 className="text-sm font-semibold text-foreground-secondary">Monthly Budget</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">Monthly budget</h2>
             <p className="mt-1 text-3xl font-bold text-foreground tabular-nums">
               <CurrencyText currency={currency} minorValue={budget.budgetMinor} />
             </p>
@@ -82,7 +82,7 @@ export function BudgetHero({
 
           <div className="flex flex-wrap justify-center gap-4 lg:justify-start">
             <div className="rounded-xl bg-surface-subtle px-4 py-3">
-              <p className="text-xs text-foreground-secondary">Spent</p>
+              <p className="text-xs text-muted-foreground">Spent</p>
               <p className="text-lg font-bold text-foreground tabular-nums">
                 <CurrencyText currency={currency} minorValue={spentMinor} />
               </p>
@@ -106,10 +106,10 @@ export function BudgetHero({
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-foreground-secondary lg:justify-start">
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground lg:justify-start">
             <div className="flex items-center gap-1.5">
               <Calendar size={14} />
-              <span>{forecast.daysRemaining} days left</span>
+              <span>{forecast.daysRemaining} day{forecast.daysRemaining === 1 ? "" : "s"} left</span>
             </div>
             <div className="flex items-center gap-1.5">
               <TrendingUp size={14} />

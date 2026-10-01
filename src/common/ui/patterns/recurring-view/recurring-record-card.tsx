@@ -1,9 +1,44 @@
-import { Calendar, Clock, Pause, Play, Repeat, Tag, Trash2 } from "lucide-react";
-import { Card, CardContent } from "@/src/common/ui";
-import { CATEGORY_DEFINITIONS } from "@/src/common/domain/categories";
-import { formatCurrency } from "@/src/common/formatters/locale";
+import {
+  Car,
+  CircleDollarSign,
+  Film,
+  HeartPulse,
+  Pause,
+  Play,
+  Receipt,
+  Shapes,
+  ShoppingBag,
+  Trash2,
+  Utensils,
+} from "lucide-react";
+import { getCategoryDefinition } from "@/src/common/domain/categories";
+import { CurrencyText, DateText } from "@/src/common/ui";
 import type { RecurringRecordDTO } from "@/app/actions/getRecurringRecords";
 import { FREQUENCY_LABELS } from "./constants";
+
+const ICONS = {
+  Utensils,
+  Car,
+  ShoppingBag,
+  Film,
+  Receipt,
+  HeartPulse,
+  CircleDollarSign,
+  Shapes,
+} as const;
+
+const FREQUENCY_NOUNS: Record<string, string> = {
+  daily: "day",
+  weekly: "week",
+  monthly: "month",
+  yearly: "year",
+};
+
+function formatFrequency(interval: number, frequency: string): string {
+  if (interval <= 1) return FREQUENCY_LABELS[frequency] ?? frequency;
+  const noun = FREQUENCY_NOUNS[frequency];
+  return noun ? `Every ${interval} ${noun}s` : `Every ${interval} ${frequency}`;
+}
 
 export function RecurringRecordCard({
   record,
@@ -16,64 +51,72 @@ export function RecurringRecordCard({
   onToggle: (id: string, active: boolean) => void;
   onDelete: (id: string) => void;
 }) {
-  const nextDue = record.nextDue
-    ? new Date(record.nextDue).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-    : "Ended";
-  const getCategoryLabel = (id: string) => {
-    const def = CATEGORY_DEFINITIONS.find(d => d.id === id);
-    return def?.label || id;
-  };
-  const amountColor = record.type === "income" ? "text-success" : "text-danger";
+  const definition = getCategoryDefinition(record.category);
+  const Icon = ICONS[definition.lucideIcon as keyof typeof ICONS] ?? Shapes;
+  const color = `var(--color-${definition.semanticToken})`;
 
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between py-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className={`flex size-10 shrink-0 items-center justify-center rounded-full ${record.active ? "bg-primary/10" : "bg-muted"}`}>
-            <Repeat className={`size-4 ${record.active ? "text-primary" : "text-muted-foreground"}`} />
+    <div className="rounded-2xl border border-border bg-surface p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div
+            aria-hidden="true"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+            style={{
+              backgroundColor: `color-mix(in srgb, ${color} 14%, transparent)`,
+              color,
+            }}
+          >
+            <Icon size={18} />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium truncate">{record.text}</span>
-              <span className={`text-xs px-1.5 py-0.5 rounded-full ${record.active ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+              <h3 className="truncate text-[15px] font-semibold text-foreground">{record.text}</h3>
+              <span
+                className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                  record.active ? "bg-primary-muted text-primary" : "bg-muted text-muted-foreground"
+                }`}
+              >
                 {record.active ? "Active" : "Paused"}
               </span>
             </div>
-            <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground flex-wrap">
-              <span className="flex items-center gap-1">
-                <Calendar className="size-3" /> Every {record.interval} {FREQUENCY_LABELS[record.frequency]?.toLowerCase() || record.frequency}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="size-3" /> Next: {nextDue}
-              </span>
-              <span className="flex items-center gap-1">
-                <Tag className="size-3" /> {getCategoryLabel(record.category)}
-              </span>
-            </div>
+            <p className="mt-1 truncate text-xs text-muted-foreground">
+              {formatFrequency(record.interval, record.frequency)}
+              <span aria-hidden="true" className="mx-1.5">·</span>
+              {record.nextDue ? (
+                <>
+                  Next <DateText value={record.nextDue} />
+                </>
+              ) : (
+                "Ended"
+              )}
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className={`text-sm font-semibold ${amountColor}`}>
-            {formatCurrency({ minorValue: Math.round(Number(record.amount) * 100), currency })}
+        <div className="flex shrink-0 items-center gap-1">
+          <span className={`mr-1 text-[15px] font-semibold ${record.type === "income" ? "text-success" : "text-danger"}`}>
+            <CurrencyText currency={currency} minorValue={Math.round(Number(record.amount) * 100)} />
           </span>
           <button
             type="button"
             onClick={() => onToggle(record.id, !record.active)}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label={record.active ? "Pause" : "Activate"}
+            className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-subtle hover:text-foreground"
+            title={record.active ? "Pause" : "Resume"}
+            aria-label={record.active ? "Pause recurring transaction" : "Resume recurring transaction"}
           >
-            {record.active ? <Pause className="size-4" /> : <Play className="size-4" />}
+            {record.active ? <Pause size={16} /> : <Play size={16} />}
           </button>
           <button
             type="button"
             onClick={() => onDelete(record.id)}
-            className="text-muted-foreground hover:text-destructive transition-colors"
-            aria-label="Delete"
+            className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-subtle hover:text-danger"
+            title="Delete"
+            aria-label="Delete recurring transaction"
           >
-            <Trash2 className="size-4" />
+            <Trash2 size={16} />
           </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

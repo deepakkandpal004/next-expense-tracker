@@ -12,12 +12,15 @@ export interface FilterDropdownProps {
   value: string;
   onChange: (value: string) => void;
   icon?: React.ReactNode;
+  /** Override for the highlighted trigger state. Defaults to whether a value is set. */
+  active?: boolean;
 }
 
-export function FilterDropdown({ label, options, value, onChange, icon }: FilterDropdownProps) {
+export function FilterDropdown({ label, options, value, onChange, icon, active }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? label;
+  const isActive = active ?? value !== "";
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -35,9 +38,9 @@ export function FilterDropdown({ label, options, value, onChange, icon }: Filter
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "inline-flex h-9 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.97]",
-          value
-            ? "border-primary-fixed/30 bg-primary-fixed/5 text-primary-fixed"
-            : "border-white/5 bg-white/[0.02] text-on-surface-variant/60 hover:border-white/5 hover:bg-white/5",
+          isActive
+            ? "border-primary bg-primary-muted text-primary"
+            : "border-border bg-surface-subtle text-muted-foreground hover:border-border hover:bg-surface-subtle",
         )}
         type="button"
         aria-expanded={isOpen}
@@ -57,7 +60,7 @@ export function FilterDropdown({ label, options, value, onChange, icon }: Filter
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: MOTION_DURATION.fast, ease: MOTION_EASE.standard }}
-            className="absolute left-0 top-full z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl border border-white/5 bg-surface-container shadow-lg"
+            className="absolute left-0 top-full z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
             role="listbox"
           >
             {options.map((option) => (
@@ -70,8 +73,8 @@ export function FilterDropdown({ label, options, value, onChange, icon }: Filter
                 className={cn(
                   "flex w-full items-center px-3 py-2 text-left text-sm transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent",
                   option.value === value
-                    ? "bg-accent/10 text-accent font-medium"
-                    : "text-on-surface hover:bg-white/5",
+                    ? "bg-primary-muted text-primary font-medium"
+                    : "text-foreground hover:bg-surface-subtle",
                 )}
                 role="option"
                 aria-selected={option.value === value}

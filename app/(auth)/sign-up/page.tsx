@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type FormEvent } from 'react';
+import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Field, useToast } from '@/src/common/ui';
 import {
@@ -75,7 +75,7 @@ export default function SignUpPage() {
 
   const change =
     (key: string, setValue: (value: string) => void) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
       setErrors((current) => ({ ...current, [key]: undefined }));
       setFormError(null);
@@ -84,10 +84,10 @@ export default function SignUpPage() {
   return (
     <AuthPageLayout>
       <AuthenticationForm
-        description="Create an account to start recording your financial information."
+        description="Create an account to start tracking your expenses."
         error={formError}
         errorAction={retry}
-        footer={<AuthTaskLinks />}
+        footer={<AuthTaskLinks variant="sign-up" />}
         formRef={formRef}
         onSubmit={submit}
         pending={pending}

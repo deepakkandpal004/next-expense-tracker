@@ -20,12 +20,28 @@ export function toDomainBudget(b: PrismaBudget): Budget {
   };
 }
 
+// Dedupes identical concurrent lookups (e.g. the dashboard bundle fires two
+// getBudgetForUser calls with the same args in one tick) so they share a
+// single DB round-trip. Entries live only for the query duration.
+const budgetInFlight = new Map<string, Promise<Budget | null>>();
+
 export async function getBudgetForUser(userId: string, period: ResolvedPeriod): Promise<Budget | null> {
-  const budget = await db.budget.findFirst({
-    where: { userId, cadence: "monthly", effectiveFrom: { lte: endOfUtcDay(period.end) } },
-    orderBy: { effectiveFrom: "desc" },
-  });
-  return budget ? toDomainBudget(budget) : null;
+  const key = `${userId}:${period.start}:${period.end}`;
+  const existing = budgetInFlight.get(key);
+  if (existing) return existing;
+  const pending = (async (): Promise<Budget | null> => {
+    const budget = await db.budget.findFirst({
+      where: { userId, cadence: "monthly", effectiveFrom: { lte: endOfUtcDay(period.end) } },
+      orderBy: { effectiveFrom: "desc" },
+    });
+    return budget ? toDomainBudget(budget) : null;
+  })();
+  budgetInFlight.set(key, pending);
+  try {
+    return await pending;
+  } finally {
+    budgetInFlight.delete(key);
+  }
 }
 
 export async function saveBudgetForUser(

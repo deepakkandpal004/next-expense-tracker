@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/src/common/formatters/locale";
+import { CurrencyText } from "@/src/common/ui";
 
 export function SummaryCards({
   totalIncomeMinor,
@@ -12,23 +12,23 @@ export function SummaryCards({
   currency: string;
 }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
-      <div className="rounded-xl border border-border/50 bg-surface p-4">
-        <p className="text-xs text-muted-foreground">Total Income</p>
+    <div className="grid gap-3 sm:grid-cols-3">
+      <div className="rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs text-muted-foreground">Total income</p>
         <p className="mt-1 text-xl font-bold text-success">
-          {formatCurrency({ minorValue: totalIncomeMinor, currency })}
+          <CurrencyText currency={currency} minorValue={totalIncomeMinor} />
         </p>
       </div>
-      <div className="rounded-xl border border-border/50 bg-surface p-4">
-        <p className="text-xs text-muted-foreground">Total Expenses</p>
+      <div className="rounded-2xl border border-border bg-surface p-4">
+        <p className="text-xs text-muted-foreground">Total expenses</p>
         <p className="mt-1 text-xl font-bold text-danger">
-          {formatCurrency({ minorValue: totalExpenseMinor, currency })}
+          <CurrencyText currency={currency} minorValue={totalExpenseMinor} />
         </p>
       </div>
-      <div className="rounded-xl border border-border/50 bg-surface p-4">
+      <div className="rounded-2xl border border-border bg-surface p-4">
         <p className="text-xs text-muted-foreground">Net</p>
         <p className={`mt-1 text-xl font-bold ${netMinor >= 0 ? "text-success" : "text-danger"}`}>
-          {formatCurrency({ minorValue: netMinor, currency })}
+          <CurrencyText currency={currency} minorValue={netMinor} />
         </p>
       </div>
     </div>

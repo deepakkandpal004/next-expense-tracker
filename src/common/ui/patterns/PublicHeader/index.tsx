@@ -50,14 +50,14 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-gradient-to-b from-black via-black/60 to-transparent px-4 pt-5">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/[0.12] bg-white/[0.06] px-6 py-3 text-white shadow-[0_8px_32px_rgba(0,0,0,0.36),inset_0_1px_0_0_rgba(255,255,255,0.12)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-black/80 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-6 py-4 text-white">
         <Link
           aria-label="Expense Tracker AI home"
-          className="flex shrink-0 items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+          className="flex shrink-0 items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           href="/"
         >
-          <span className="relative grid size-9 place-items-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-110 sm:size-10">
+          <span className="relative grid size-9 place-items-center overflow-hidden rounded-full sm:size-10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo1.png" alt="" className="h-full w-full object-cover" />
           </span>
@@ -74,19 +74,14 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
               <Link
                 aria-current={current ? "page" : undefined}
                 className={cn(
-                   "group relative h-6 overflow-hidden text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
-                   current ? "text-primary" : "text-white/80 hover:text-white"
+                  "text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                  current ? "text-primary" : "text-white/70 hover:text-white"
                 )}
                 href={item.href}
                 key={item.id}
                 onClick={(e) => handleScrollClick(e, item.sectionId)}
               >
-                <span className="block transition-transform duration-300 group-hover:-translate-y-full">
-                  {item.label}
-                </span>
-                <span className="absolute left-0 top-full block transition-transform duration-300 group-hover:-translate-y-full">
-                  {item.label}
-                </span>
+                {item.label}
               </Link>
             );
           })}
@@ -96,7 +91,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
           {isAuthenticated ? (
             <Link
               href="/dashboard"
-              className="hidden h-9 items-center gap-2 rounded-lg bg-primary px-4 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
+              className="hidden h-9 items-center gap-2 rounded-lg bg-primary px-4 text-xs font-semibold text-foreground-inverse transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
             >
               <LayoutDashboard size={14} strokeWidth={2} />
               Dashboard
@@ -112,7 +107,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
               </Link>
               <Link
                 href="/sign-up"
-                className="group hidden h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-xs font-semibold text-color-text-inverse transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
+                className="group hidden h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-xs font-semibold text-foreground-inverse transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] md:inline-flex"
               >
                 Get Started
                 <ArrowRight
@@ -136,7 +131,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
       </div>
 
       {mobileOpen && (
-        <div className="mt-2 w-full overflow-hidden rounded-3xl border border-white/[0.12] bg-black/80 px-6 py-5 text-white shadow-[0_12px_36px_rgba(0,0,0,0.36)] backdrop-blur-2xl md:hidden">
+        <div className="w-full border-t border-white/[0.08] bg-black/95 px-6 py-5 text-white md:hidden">
           <nav aria-label="Mobile navigation" className="flex flex-col items-center gap-5">
             {navLinks.map((item) => {
               const current = !item.sectionId && isCurrentRoute(pathname, item.href);
@@ -144,7 +139,7 @@ export function PublicHeader({ isAuthenticated = false }: PublicHeaderProps) {
                 <Link
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "text-base transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+                    "text-base transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                     current ? "text-primary" : "text-white/80"
                   )}
                   href={item.href}

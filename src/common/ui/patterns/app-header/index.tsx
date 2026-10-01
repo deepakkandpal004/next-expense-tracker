@@ -35,11 +35,11 @@ export function AppHeader({
   };
 
   return (
-    <header className="sticky top-3 z-50 w-full rounded-xl border border-white/[0.08] bg-[#0c0e14]/90 shadow-lg shadow-black/40 backdrop-blur-xl transition-all duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-surface">
       <div className="flex h-[52px] w-full items-center gap-3 px-3 sm:px-4 md:gap-4 lg:px-5">
         <button
           aria-label="Open navigation"
-          className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-on-surface-variant/80 transition-colors hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 md:hidden"
+          className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-muted-foreground transition-colors hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden"
           onClick={onMobileMenuOpen}
           type="button"
         >
@@ -58,7 +58,7 @@ export function AppHeader({
           <Link
             href="/dashboard"
             aria-label="Go to dashboard"
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-transparent px-2.5 text-xs font-medium text-text-secondary transition-colors hover:border-white/[0.08] hover:bg-white/[0.05] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-transparent px-2.5 text-xs font-medium text-text-secondary transition-colors hover:border-white/[0.08] hover:bg-white/[0.05] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <LayoutDashboard size={14} strokeWidth={2} />
             <span className="hidden sm:inline">Dashboard</span>

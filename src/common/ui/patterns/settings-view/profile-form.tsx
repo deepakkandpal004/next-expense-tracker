@@ -1,6 +1,5 @@
-import { motion } from "motion/react";
 import { User } from "lucide-react";
-import { listItemVariants } from "@/src/common/ui/motion";
+import { Field } from "@/src/common/ui";
 
 export function ProfileForm({
   name,
@@ -12,9 +11,9 @@ export function ProfileForm({
   onNameChange: (value: string) => void;
 }) {
   return (
-    <motion.div variants={listItemVariants} className="rounded-xl border border-border/50 bg-surface p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <div className="rounded-2xl border border-border bg-surface p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-muted text-primary">
           <User size={18} />
         </div>
         <div>
@@ -23,24 +22,20 @@ export function ProfileForm({
         </div>
       </div>
       <div className="grid gap-4">
-        <div>
-          <label className="text-xs font-medium text-muted-foreground">Name</label>
-          <input
-            value={name}
-            onChange={e => onNameChange(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-border/50 bg-muted px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-          />
-        </div>
-        <div>
-          <label className="text-xs font-medium text-muted-foreground">Email</label>
-          <input
-            value={email}
-            disabled
-            className="mt-1 w-full rounded-lg border border-border/50 bg-muted/50 px-3 py-2 text-sm text-muted-foreground outline-none cursor-not-allowed"
-          />
-          <p className="mt-1 text-[10px] text-muted-foreground">Email cannot be changed.</p>
-        </div>
+        <Field
+          id="settings-name"
+          label="Name"
+          value={name}
+          onChange={(e) => onNameChange(e.target.value)}
+        />
+        <Field
+          id="settings-email"
+          label="Email"
+          value={email}
+          disabled
+          description="Email cannot be changed."
+        />
       </div>
-    </motion.div>
+    </div>
   );
 }

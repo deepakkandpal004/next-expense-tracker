@@ -48,10 +48,10 @@ const TONE_ICON: Record<ToastTone, typeof CheckCircle2> = {
 };
 
 const TONE_SURFACE_CLASS: Record<ToastTone, string> = {
-  success: "border-success-border/80 bg-gradient-to-br from-success-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(34,197,94,0.85)]",
-  error: "border-danger-border/80 bg-gradient-to-br from-danger-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(240,68,56,0.85)]",
-  info: "border-info-border/80 bg-gradient-to-br from-info-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(0,220,229,0.85)]",
-  warning: "border-warning-border/80 bg-gradient-to-br from-warning-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(245,166,35,0.85)]",
+  success: "border-success-border bg-gradient-to-br from-success-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(34,197,94,0.85)]",
+  error: "border-danger-border bg-gradient-to-br from-danger-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(240,68,56,0.85)]",
+  info: "border-info-border bg-gradient-to-br from-info-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(0,220,229,0.85)]",
+  warning: "border-warning-border bg-gradient-to-br from-warning-surface via-surface to-surface shadow-[0_20px_45px_-28px_rgba(245,166,35,0.85)]",
 };
 
 const TONE_BADGE_CLASS: Record<ToastTone, string> = {
@@ -147,7 +147,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   <p className="text-sm font-semibold leading-5 text-foreground">
                     {item.title ?? TONE_TITLE[item.tone]}
                   </p>
-                  <p className="mt-0.5 text-sm leading-5 text-foreground-secondary">
+                  <p className="mt-0.5 text-sm leading-5 text-muted-foreground">
                     {item.description}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   type="button"
                   aria-label="Dismiss notification"
                   onClick={() => dismiss(item.id)}
-                  className="-mr-1 -mt-1 flex size-8 shrink-0 items-center justify-center rounded-lg text-foreground-secondary/70 transition-colors hover:bg-black/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info focus-visible:ring-offset-2 focus-visible:ring-offset-surface dark:hover:bg-white/10"
+                  className="-mr-1 -mt-1 flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info focus-visible:ring-offset-2 focus-visible:ring-offset-surface dark:hover:bg-white/10"
                 >
                   <X size={16} />
                 </button>

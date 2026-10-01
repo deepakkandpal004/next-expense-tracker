@@ -57,13 +57,13 @@ export function ExportRecordsDialog({
       title="Export records"
     >
       <div className="grid gap-4">
-        <dl className="grid gap-2 rounded-container border border-white/5 bg-white/5 p-4 text-interface-sm">
-          <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Reporting period</dt><dd>{scope.summary.period.label}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Active filters</dt><dd>{scope.summary.activeFilters.length || "None"}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Format</dt><dd>{scope.summary.format.toUpperCase()}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-on-surface-variant/60">Records</dt><dd>{scope.summary.recordCount}</dd></div>
-          <div className="grid gap-1 border-t border-white/5 pt-2">
-            <dt className="text-on-surface-variant/60">Included columns</dt>
+        <dl className="grid gap-2 rounded-container border border-border bg-surface-subtle p-4 text-interface-sm">
+          <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Reporting period</dt><dd>{scope.summary.period.label}</dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Active filters</dt><dd>{scope.summary.activeFilters.length || "None"}</dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Format</dt><dd>{scope.summary.format.toUpperCase()}</dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Records</dt><dd>{scope.summary.recordCount}</dd></div>
+          <div className="grid gap-1 border-t border-border pt-2">
+            <dt className="text-muted-foreground">Included columns</dt>
             <dd>{scope.summary.columns.join(", ")}</dd>
           </div>
         </dl>

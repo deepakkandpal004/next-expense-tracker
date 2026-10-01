@@ -16,7 +16,7 @@ export function NavRow({
   expanded: boolean;
 }) {
   const baseClass = cn(
-    "group relative flex h-9 items-center rounded-lg text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+    "group relative flex h-9 items-center rounded-lg text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
     expanded ? "w-full gap-2.5 px-2.5" : "mx-auto w-9 justify-center px-0",
     isActive
       ? "bg-white/[0.08] text-white font-semibold"

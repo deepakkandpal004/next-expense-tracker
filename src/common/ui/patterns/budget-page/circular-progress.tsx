@@ -23,8 +23,8 @@ export function CircularProgress({
     "on-track": "stroke-kpi-income",
     approaching: "stroke-warning",
     exceeded: "stroke-danger",
-    "not-configured": "stroke-foreground-secondary/30",
-    unavailable: "stroke-foreground-secondary/30",
+    "not-configured": "stroke-border",
+    unavailable: "stroke-border",
   };
 
   return (
@@ -62,7 +62,7 @@ export function CircularProgress({
         <span className="text-3xl font-bold text-foreground tabular-nums">
           {Math.round(progress * 100)}%
         </span>
-        <span className="text-xs text-foreground-secondary">used</span>
+        <span className="text-xs text-muted-foreground">used</span>
       </div>
     </div>
   );

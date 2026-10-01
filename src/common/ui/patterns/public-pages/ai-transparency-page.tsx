@@ -1,77 +1,105 @@
 'use client';
 
-import { ShieldIcon } from './shared';
+import { Brain, Filter, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
+import { AnimateInView } from './shared';
 
 export function AiTransparencyPageContent() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-bg-base">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-kpi-savings/[0.04] blur-[120px]" />
-        </div>
-        <div className="content-frame relative py-16 sm:py-24 lg:py-32">
-          <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-kpi-savings/20 bg-kpi-savings/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-kpi-savings uppercase">
+      <section className="relative overflow-hidden py-16 sm:py-24 border-b border-white/[0.06]">
+        <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+          <AnimateInView>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
               AI Transparency
             </span>
-            <h1 className="mt-6 text-[clamp(2.5rem,6vw,4rem)] font-semibold text-white tracking-tight leading-[1.1]">
+            <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
               How AI uses your data.
             </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              AI features are optional. When enabled, we send only aggregated totals — never raw descriptions or IDs.
+            <p className="mx-auto mt-3 max-w-xl text-xs sm:text-sm text-text-secondary leading-relaxed">
+              AI features are entirely optional. When activated, only high-level numeric aggregates are evaluated — never raw merchant descriptions.
             </p>
-          </div>
+          </AnimateInView>
         </div>
       </section>
 
       {/* Key points */}
-      <section className="content-frame py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto space-y-10">
-          <AiItem
-            icon={<BrainIcon />}
-            title="What AI does"
-            description="Generates category suggestions and spending interpretations for the reporting period you select."
-          />
-          <AiItem
-            icon={<FilterIcon />}
-            title="What we send"
-            description="Period dates, currency, transaction count, income, spending, balance, and category totals."
-          />
-          <AiItem
-            icon={<ShieldIcon />}
-            title="What we never send"
-            description="Raw transaction descriptions, account IDs, timestamps, or any personally identifiable information."
-          />
+      <section className="relative bg-bg-base py-14 sm:py-20 border-b border-white/[0.06]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                icon: Brain,
+                title: 'What AI Does',
+                desc: 'Generates category spending summaries and trend overviews for the specific reporting period you request.',
+                color: '#7585F8',
+              },
+              {
+                icon: Filter,
+                title: 'What We Send',
+                desc: 'Period date ranges, default currency, transaction totals, and category rollups only.',
+                color: '#37C98C',
+              },
+              {
+                icon: ShieldCheck,
+                title: 'What We Exclude',
+                desc: 'Raw merchant names, individual transaction notes, timestamps, account IDs, and user identities.',
+                color: '#F0B66A',
+              },
+            ].map((item, index) => (
+              <AnimateInView key={item.title} delay={index * 0.05}>
+                <div className="flex h-full flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 transition-colors hover:border-white/[0.14]">
+                  <div className="flex size-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
+                    <item.icon size={18} style={{ color: item.color }} />
+                  </div>
+                  <h3 className="mt-3.5 text-sm font-semibold text-white">{item.title}</h3>
+                  <p className="mt-1.5 flex-1 text-xs leading-relaxed text-text-secondary">{item.desc}</p>
+                </div>
+              </AnimateInView>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Disclosure table */}
-      <section className="content-frame border-t border-white/5 py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold text-white mb-8 text-center">Data disclosure</h2>
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
-            <div className="grid grid-cols-2 border-b border-white/[0.06] bg-white/[0.02]">
-              <div className="px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Field</div>
-              <div className="px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</div>
+      <section className="relative bg-bg-base py-14 sm:py-20 border-b border-white/[0.06]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <AnimateInView className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Data Payload Disclosure
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-text-secondary">
+              Granular auditing of every field transmitted during an AI insight query.
+            </p>
+          </AnimateInView>
+
+          <div className="mt-10 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]">
+            <div className="grid grid-cols-2 border-b border-white/[0.06] bg-white/[0.03] px-5 sm:px-6 py-3.5 text-[11px] font-mono font-semibold uppercase tracking-wider text-text-secondary">
+              <div>Field Name</div>
+              <div>Transmission Status</div>
             </div>
-            <DisclosureRow field="Period dates" included />
-            <DisclosureRow field="Currency" included />
-            <DisclosureRow field="Transaction count" included />
-            <DisclosureRow field="Income & spending totals" included />
-            <DisclosureRow field="Category breakdown" included />
-            <DisclosureRow field="Transaction descriptions" included={false} />
-            <DisclosureRow field="Account IDs" included={false} />
-            <DisclosureRow field="Timestamps" included={false} />
+            <DisclosureRow field="Period date bounds (e.g. 2026-09-01 to 2026-09-30)" included />
+            <DisclosureRow field="Currency ISO code (e.g. INR, USD)" included />
+            <DisclosureRow field="Transaction count per category" included />
+            <DisclosureRow field="Aggregated category totals (e.g. Dining: ₹4,500)" included />
+            <DisclosureRow field="Total income & spending totals" included />
+            <DisclosureRow field="Raw transaction description text" included={false} />
+            <DisclosureRow field="Account IDs & user database keys" included={false} />
+            <DisclosureRow field="Exact transaction timestamps" included={false} />
+            <DisclosureRow field="Payment methods & bank identifiers" included={false} />
           </div>
         </div>
       </section>
 
       {/* Disclaimer */}
-      <section className="content-frame border-t border-white/5 py-12 sm:py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            AI-generated insights are informational only and are not professional financial advice. Provider retention behavior has not been verified.
+      <section className="relative bg-bg-base py-12 sm:py-16 text-center">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <p className="text-xs text-text-secondary leading-relaxed">
+            AI-generated summaries are purely informational and do not constitute financial advice. Have questions? Reach out to{' '}
+            <Link href="mailto:deepakkandpal.tech@gmail.com" className="font-medium text-primary hover:underline">
+              deepakkandpal.tech@gmail.com
+            </Link>
           </p>
         </div>
       </section>
@@ -79,54 +107,23 @@ export function AiTransparencyPageContent() {
   );
 }
 
-function AiItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-  return (
-    <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-kpi-savings border border-white/[0.06]">
-        {icon}
-      </div>
-      <div>
-        <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-}
-
 function DisclosureRow({ field, included }: { field: string; included: boolean }) {
   return (
-    <div className="grid grid-cols-2 border-b border-white/[0.06] last:border-b-0">
-      <div className="px-5 py-3.5 text-sm text-white">{field}</div>
-      <div className="px-5 py-3.5">
+    <div className="grid grid-cols-2 border-b border-white/[0.04] px-5 sm:px-6 py-3.5 last:border-b-0">
+      <div className="text-xs text-white flex items-center">{field}</div>
+      <div>
         {included ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" />
-            Included
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Included (Aggregate)
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-danger/10 px-2.5 py-1 text-[11px] font-medium text-danger">
-            <span className="h-1.5 w-1.5 rounded-full bg-danger" />
-            Excluded
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-2.5 py-1 text-[11px] font-medium text-red-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
+            Excluded (Never Sent)
           </span>
         )}
       </div>
     </div>
-  );
-}
-
-function BrainIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9.5 2A5.5 5.5 0 004 7.5c0 1.58.67 3 1.74 4.01L4 14l3-1c.78.82 1.87 1.34 3.07 1.37A5.5 5.5 0 0018 9.5 5.5 5.5 0 0012.5 4c-.52 0-1.02.08-1.5.23" />
-      <path d="M12 2v20" />
-    </svg>
-  );
-}
-
-function FilterIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-    </svg>
   );
 }

@@ -18,13 +18,13 @@ export function CategoryRow({
   return (
     <motion.div
       animate={{ opacity: 1, x: 0 }}
-      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle/50"
+      className="group flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle"
       initial={{ opacity: 0, x: 8 }}
       transition={{ duration: 0.25, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
     >
       <span
         aria-hidden="true"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-transform duration-150 group-hover:scale-110"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-transform duration-150"
         style={{ backgroundColor: `color-mix(in srgb, ${cssVar} 15%, transparent)` }}
       >
         <span
@@ -48,7 +48,7 @@ export function CategoryRow({
         />
       </div>
 
-      <span className="w-10 shrink-0 text-right text-[10px] tabular-nums text-foreground-secondary">{percentDisplay}</span>
+      <span className="w-10 shrink-0 text-right text-[10px] tabular-nums text-muted-foreground">{percentDisplay}</span>
     </motion.div>
   );
 }

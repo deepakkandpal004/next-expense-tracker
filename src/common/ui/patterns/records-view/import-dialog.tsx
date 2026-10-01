@@ -60,7 +60,7 @@ export function ImportTransactionsDialog({
         {!result ? (
           <>
             <div
-              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/20 p-8 text-center hover:border-primary/50 transition-colors"
+              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8 text-center hover:border-primary transition-colors"
               onClick={() => document.getElementById("csv-input")?.click()}
             >
               <Upload className="mb-2 size-8 text-muted-foreground" />
@@ -69,19 +69,24 @@ export function ImportTransactionsDialog({
               <input id="csv-input" type="file" accept=".csv" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
             </div>
             {file && (
-              <dl className="grid gap-1 rounded-container border border-white/5 bg-white/5 p-3 text-interface-sm">
-                <div className="flex justify-between"><dt className="text-on-surface-variant/60">File</dt><dd>{file.name}</dd></div>
-                <div className="flex justify-between"><dt className="text-on-surface-variant/60">Size</dt><dd>{(file.size / 1024).toFixed(1)} KB</dd></div>
+              <dl className="grid gap-1 rounded-container border border-border bg-surface-subtle p-3 text-interface-sm">
+                <div className="flex justify-between"><dt className="text-muted-foreground">File</dt><dd>{file.name}</dd></div>
+                <div className="flex justify-between"><dt className="text-muted-foreground">Size</dt><dd>{(file.size / 1024).toFixed(1)} KB</dd></div>
               </dl>
             )}
           </>
         ) : (
           <div className="flex flex-col items-center gap-2 py-4">
             <CheckCircle2 className="size-10 text-success" />
-            <p className="text-sm font-medium text-on-surface">Import complete</p>
-            <p className="text-xs text-muted-foreground">{result.imported} imported, {result.duplicates} duplicate(s) skipped, {result.skipped} skipped</p>
+            <p className="text-sm font-medium text-foreground">Import complete</p>
+            <p className="text-xs text-muted-foreground">
+              {[`${result.imported} imported`,
+                result.duplicates > 0 ? `${result.duplicates} duplicate${result.duplicates === 1 ? "" : "s"} skipped` : null,
+                result.skipped > 0 ? `${result.skipped} row${result.skipped === 1 ? "" : "s"} had errors` : null,
+              ].filter(Boolean).join(", ")}
+            </p>
             {result.errors.length > 0 && (
-              <ul className="mt-2 max-h-40 w-full space-y-1 overflow-y-auto rounded-container border border-white/5 bg-white/5 p-3 text-left text-xs text-danger-foreground">
+              <ul className="mt-2 max-h-40 w-full space-y-1 overflow-y-auto rounded-container border border-border bg-surface-subtle p-3 text-left text-xs text-danger-foreground">
                 {result.errors.map((error, index) => <li key={index}>{error}</li>)}
               </ul>
             )}

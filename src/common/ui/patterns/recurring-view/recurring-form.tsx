@@ -1,7 +1,19 @@
 import { useState } from "react";
-import { Alert, Button, Input } from "@/src/common/ui";
+import { Alert, Button, Field, Select } from "@/src/common/ui";
 import { CATEGORY_DEFINITIONS } from "@/src/common/domain/categories";
 import type { RecurringRequest } from "@/app/actions/createRecurringRecord";
+
+const FREQUENCY_OPTIONS = [
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" },
+] as const;
+
+const CATEGORY_OPTIONS = CATEGORY_DEFINITIONS.map((definition) => ({
+  value: definition.id,
+  label: definition.label,
+}));
 
 export function RecurringForm({
   submitting,
@@ -23,6 +35,11 @@ export function RecurringForm({
   const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [endDate, setEndDate] = useState("");
 
+  const handleTypeChange = (next: "income" | "expense") => {
+    setType(next);
+    setCategory(next === "income" ? "Income" : "Food");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
@@ -38,56 +55,96 @@ export function RecurringForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-primary/20 bg-card p-4 space-y-4">
-      <h2 className="font-semibold text-sm">New recurring transaction</h2>
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-5">
+      <h2 className="text-sm font-semibold text-foreground">New recurring transaction</h2>
 
-      {error && <Alert title="Error" description={error} tone="danger" />}
+      {error && <Alert title="Recurring transaction could not be created" description={error} tone="danger" />}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Description</label>
-          <Input value={text} onChange={e => setText(e.target.value)} required placeholder="e.g. Netflix subscription" />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Amount</label>
-          <Input type="number" step="0.01" min="0.01" value={amount} onChange={e => setAmount(e.target.value)} required placeholder="9.99" />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Type</label>
-          <select value={type} onChange={e => setType(e.target.value as "income" | "expense")} className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm">
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
-          </select>
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Category</label>
-          <select value={category} onChange={e => setCategory(e.target.value)} className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm">
-            {CATEGORY_DEFINITIONS.map(def => (
-              <option key={def.id} value={def.id}>{def.label}</option>
+        <Field
+          id="recurring-text"
+          label="Description"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          required
+          placeholder="e.g. Netflix subscription"
+        />
+        <Field
+          id="recurring-amount"
+          label="Amount"
+          type="number"
+          step="0.01"
+          min="0.01"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          required
+          placeholder="9.99"
+        />
+        <div className="grid gap-1.5">
+          <span id="recurring-type-label" className="text-interface-sm font-medium text-foreground">
+            Type
+          </span>
+          <div
+            role="radiogroup"
+            aria-labelledby="recurring-type-label"
+            className="grid min-h-11 grid-cols-2 gap-1 rounded-xl border border-border bg-surface-subtle p-1"
+          >
+            {(["expense", "income"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="radio"
+                aria-checked={type === option}
+                onClick={() => handleTypeChange(option)}
+                className={`rounded-lg px-3 py-2 text-interface-sm font-medium transition-colors ${
+                  type === option
+                    ? "bg-surface text-foreground shadow-flat"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {option === "expense" ? "Expense" : "Income"}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Frequency</label>
-          <select value={frequency} onChange={e => setFrequency(e.target.value)} className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Every (interval)</label>
-          <Input type="number" min="1" max="365" value={interval} onChange={e => setInterval(parseInt(e.target.value) || 1)} />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">Start date</label>
-          <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">End date (optional)</label>
-          <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-        </div>
+        <Select
+          id="recurring-category"
+          label="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          options={CATEGORY_OPTIONS}
+        />
+        <Select
+          id="recurring-frequency"
+          label="Frequency"
+          value={frequency}
+          onChange={(e) => setFrequency(e.target.value)}
+          options={FREQUENCY_OPTIONS}
+        />
+        <Field
+          id="recurring-interval"
+          label="Repeat every"
+          type="number"
+          min="1"
+          max="365"
+          value={interval}
+          onChange={(e) => setInterval(parseInt(e.target.value) || 1)}
+        />
+        <Field
+          id="recurring-start"
+          label="Start date"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          required
+        />
+        <Field
+          id="recurring-end"
+          label="End date (optional)"
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
       </div>
 
       <div className="flex justify-end gap-2">

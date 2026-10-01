@@ -1,75 +1,102 @@
 'use client';
 
-import { ShieldIcon } from './shared';
+import { EyeOff, Lock, ShieldCheck, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { AnimateInView } from './shared';
 
 export function PrivacyPageContent() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-bg-base">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/[0.04] blur-[120px]" />
-        </div>
-        <div className="content-frame relative py-16 sm:py-24 lg:py-32">
-          <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.08] px-3 py-1 font-medium text-[11px] tracking-wider text-primary uppercase">
-              Privacy
+      <section className="relative overflow-hidden py-16 sm:py-24 border-b border-white/[0.06]">
+        <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+          <AnimateInView>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs font-medium text-text-secondary">
+              Data Privacy
             </span>
-            <h1 className="mt-6 text-[clamp(2.5rem,6vw,4rem)] font-semibold text-white tracking-tight leading-[1.1]">
-              Your data stays yours.
+            <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+              Your financial data stays yours.
             </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              We collect only what&apos;s needed to power your expense tracking. Nothing more.
+            <p className="mx-auto mt-3 max-w-xl text-xs sm:text-sm text-text-secondary leading-relaxed">
+              We collect strictly what is required to calculate your cash runway and ledgers. Nothing is sold or monetized.
             </p>
-          </div>
+          </AnimateInView>
         </div>
       </section>
 
       {/* Principles */}
-      <section className="content-frame py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto space-y-10">
-          <PrivacyItem
-            icon={<ShieldIcon />}
-            title="Minimal collection"
-            description="We store only your account credentials and transaction records required to run the app."
-          />
-          <PrivacyItem
-            icon={<LockIcon />}
-            title="Encrypted at rest"
-            description="All data is encrypted in our database. Authentication is handled by a trusted third-party provider."
-          />
-          <PrivacyItem
-            icon={<EyeOffIcon />}
-            title="No third-party sharing"
-            description="Your financial data is never shared, sold, or used for advertising."
-          />
-          <PrivacyItem
-            icon={<TrashIcon />}
-            title="Delete anytime"
-            description="Remove your account and all data is permanently deleted. No hidden retention."
-          />
+      <section className="relative bg-bg-base py-14 sm:py-20 border-b border-white/[0.06]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                icon: ShieldCheck,
+                title: 'Minimal Collection',
+                desc: 'We store only your user credentials and authenticated transaction rows required to render the application.',
+                color: '#7585F8',
+              },
+              {
+                icon: Lock,
+                title: 'Encrypted Storage',
+                desc: 'All database records are protected with PostgreSQL column encryption and strict authentication tokens.',
+                color: '#37C98C',
+              },
+              {
+                icon: EyeOff,
+                title: 'Zero Third-Party Trackers',
+                desc: 'No affiliate ad scripts, behavioral profiling tools, or marketing trackers are loaded.',
+                color: '#F0B66A',
+              },
+              {
+                icon: Trash2,
+                title: 'Immediate Deletion',
+                desc: 'Requesting account deletion wipes all associated ledgers, recurring profiles, and settings permanently.',
+                color: '#F16F6F',
+              },
+            ].map((item, index) => (
+              <AnimateInView key={item.title} delay={index * 0.05}>
+                <div className="flex h-full flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 transition-colors hover:border-white/[0.14]">
+                  <div className="flex size-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
+                    <item.icon size={18} style={{ color: item.color }} />
+                  </div>
+                  <h3 className="mt-3.5 text-sm font-semibold text-white">{item.title}</h3>
+                  <p className="mt-1.5 flex-1 text-xs leading-relaxed text-text-secondary">{item.desc}</p>
+                </div>
+              </AnimateInView>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* What we store */}
-      <section className="content-frame border-t border-white/5 py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold text-white mb-8 text-center">What we store</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DataCard label="Account" items={["Email address", "Display name", "Password hash"]} />
-            <DataCard label="Transactions" items={["Amount & currency", "Category & date", "Description"]} />
-            <DataCard label="Preferences" items={["Theme setting", "Currency preference", "Budget limits"]} />
-            <DataCard label="AI requests" items={["Aggregated totals only", "No raw descriptions", "Period-scoped"]} />
+      <section className="relative bg-bg-base py-14 sm:py-20 border-b border-white/[0.06]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <AnimateInView className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Data Retention Boundaries
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-text-secondary">
+              A transparent breakdown of data elements stored in the system.
+            </p>
+          </AnimateInView>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <DataCard label="Account" items={['Email address', 'Display name', 'Bcrypt password hash']} />
+            <DataCard label="Transactions" items={['Amount & currency', 'Category & date', 'Merchant label']} />
+            <DataCard label="Preferences" items={['Theme setting', 'Default currency', 'Budget targets']} />
+            <DataCard label="AI Scopes" items={['Aggregated totals only', 'Zero raw merchant notes', 'Time-period scoped']} />
           </div>
         </div>
       </section>
 
       {/* Footer note */}
-      <section className="content-frame border-t border-white/5 py-12 sm:py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm text-muted-foreground">
-            Questions? Contact us at{' '}
-            <span className="text-primary">privacy@expenseai.app</span>
+      <section className="relative bg-bg-base py-12 sm:py-16 text-center">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <p className="text-xs text-text-secondary leading-relaxed">
+            Questions regarding our privacy architecture? Contact us at{' '}
+            <Link href="mailto:deepakkandpal.tech@gmail.com" className="font-medium text-primary hover:underline">
+              deepakkandpal.tech@gmail.com
+            </Link>
           </p>
         </div>
       </section>
@@ -77,60 +104,18 @@ export function PrivacyPageContent() {
   );
 }
 
-function PrivacyItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-  return (
-    <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-primary border border-white/[0.06]">
-        {icon}
-      </div>
-      <div>
-        <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-}
-
 function DataCard({ label, items }: { label: string; items: string[] }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
-      <p className="text-[11px] font-medium text-primary uppercase tracking-wider mb-3">{label}</p>
+    <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 transition-colors hover:border-white/[0.14]">
+      <p className="text-[11px] font-mono font-semibold text-primary uppercase tracking-wider mb-3">{label}</p>
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-            {item}
+          <li key={item} className="flex items-center gap-2 text-xs text-text-secondary">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/20 shrink-0" />
+            <span>{item}</span>
           </li>
         ))}
       </ul>
     </div>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0110 0v4" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  );
-}
-
-function TrashIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 6h18" />
-      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-    </svg>
   );
 }

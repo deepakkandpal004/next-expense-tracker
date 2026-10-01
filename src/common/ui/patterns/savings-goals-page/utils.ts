@@ -40,10 +40,10 @@ export function mapDbGoalToSavingsGoal(db: DbGoal): SavingsGoal {
     deadline: db.deadline ?? null,
     category: db.category as SavingsGoal["category"],
     milestones: [
-      { id: "m1", label: "25% Saved", amount: target * 0.25, completed: current >= target * 0.25 },
-      { id: "m2", label: "50% Saved", amount: target * 0.5, completed: current >= target * 0.5 },
-      { id: "m3", label: "75% Saved", amount: target * 0.75, completed: current >= target * 0.75 },
-      { id: "m4", label: "Full Amount", amount: target, completed: current >= target },
+      { id: "m1", label: "25% saved", amount: target * 0.25, completed: current >= target * 0.25 },
+      { id: "m2", label: "50% saved", amount: target * 0.5, completed: current >= target * 0.5 },
+      { id: "m3", label: "75% saved", amount: target * 0.75, completed: current >= target * 0.75 },
+      { id: "m4", label: "Full amount", amount: target, completed: current >= target },
     ],
   };
 }
@@ -63,7 +63,7 @@ export function calculateEstimatedCompletion(
   const months = Math.ceil(remaining / monthlyContribution);
   const date = new Date();
   date.setMonth(date.getMonth() + months);
-  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return date.toLocaleDateString(undefined, { month: "short", year: "numeric" });
 }
 
 export function calculateDaysRemaining(

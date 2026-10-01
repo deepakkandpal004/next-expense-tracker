@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/src/database/client";
 import { getAuthUser } from "@/src/modules/auth";
 import { withApiLogging } from "@/src/common/server/logger";
+import { getCache, setCache, deleteCache, deleteCacheByPattern, CacheKey } from "@/src/common/cache";
+import type { Goal } from "@prisma/client";
 import z from "zod";
 
 export const GET = withApiLogging(async () => {
@@ -11,10 +13,18 @@ export const GET = withApiLogging(async () => {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const goals = await db.goal.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-    });
+    // Read-through cache: the DB is in a far region, so an uncached query
+    // costs ~2s of network latency. Goals change rarely, and POST/DELETE
+    // below invalidate this key.
+    const cacheKey = CacheKey.goals(user.id);
+    let goals = await getCache<Goal[]>(cacheKey);
+    if (!goals) {
+      goals = await db.goal.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+      });
+      await setCache(cacheKey, goals, 300);
+    }
 
     return NextResponse.json({ goals });
   } catch (error) {
@@ -50,6 +60,8 @@ export const DELETE = withApiLogging(async (request: Request) => {
     }
 
     await db.goal.delete({ where: { id } });
+    await deleteCache(CacheKey.goals(user.id));
+    await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
@@ -108,6 +120,9 @@ export const POST = withApiLogging(async (request: Request) => {
         deadline: deadline ? new Date(deadline) : null,
       },
     });
+
+    await deleteCache(CacheKey.goals(user.id));
+    await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
 
     return NextResponse.json({ goal }, { status: 201 });
   } catch (error) {

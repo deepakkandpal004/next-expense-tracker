@@ -36,7 +36,7 @@ export function MonthlyRemaining({
       value: forecast.daysRemaining.toString(),
       icon: Calendar,
       color: "text-accent",
-      bg: "bg-accent/10",
+      bg: "bg-primary-muted",
     },
     {
       label: "Money left",
@@ -50,7 +50,7 @@ export function MonthlyRemaining({
       value: formatCurrency({ minorValue: Math.max(dailyAllowance, 0), currency }),
       icon: Target,
       color: "text-accent",
-      bg: "bg-accent/10",
+      bg: "bg-primary-muted",
     },
     {
       label: "Daily rate",
@@ -66,13 +66,13 @@ export function MonthlyRemaining({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: MOTION_DURATION.standard, ease: MOTION_EASE.emphasized, delay: 0.2 }}
-      className="rounded-2xl border border-border/60 bg-surface p-5 shadow-premium-sm"
+      className="rounded-2xl border border-border bg-surface p-5 shadow-premium-sm"
     >
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted">
           <Clock size={16} className="text-accent" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground">Monthly Overview</h3>
+        <h3 className="text-sm font-semibold text-foreground">Monthly overview</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -90,7 +90,7 @@ export function MonthlyRemaining({
                 <div className={cn("flex h-6 w-6 items-center justify-center rounded-md", stat.bg)}>
                   <Icon size={12} className={stat.color} />
                 </div>
-                <span className="text-xs text-foreground-secondary">{stat.label}</span>
+                <span className="text-xs text-muted-foreground">{stat.label}</span>
               </div>
               <p className="text-lg font-bold text-foreground tabular-nums">{stat.value}</p>
             </motion.div>

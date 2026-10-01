@@ -15,7 +15,7 @@ export { type CanIAffordDialogProps } from "./types";
 export function CanIAffordDialog({
   period,
   currency,
-  triggerLabel = "Ask affordability check",
+  triggerLabel = "Ask if I can afford this",
 }: CanIAffordDialogProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -87,7 +87,7 @@ export function CanIAffordDialog({
   return (
     <Dialog
       closeLabel="Close can I afford dialog"
-      description="Check a planned purchase against your current Safe-to-Spend space before buying."
+      description="See if a planned purchase fits your budget before you buy."
       onOpenChange={setOpen}
       open={open}
       title={breakdown ? "Affordability check" : "Can I afford this?"}
@@ -121,7 +121,7 @@ export function CanIAffordDialog({
           />
           <div className="flex flex-wrap justify-end gap-3 border-t border-white/10 pt-5">
             <Button disabled={checking} intent="secondary" label="Cancel" onClick={close} />
-            <Button label="Submit" loading={checking} type="submit" />
+            <Button label="Show result" loading={checking} type="submit" />
           </div>
         </form>
       ) : (

@@ -76,7 +76,7 @@ export function TransactionEmptyState({
         <div className="mt-8 flex items-center gap-2 text-xs text-foreground-secondary/60">
           <span>Quick tip</span>
           <ArrowRight size={12} />
-          <span>Use the button above or press <kbd className="rounded bg-surface-subtle px-1.5 py-0.5 font-mono text-foreground-secondary">⌘N</kbd></span>
+          <span>Press <kbd className="rounded bg-surface-subtle px-1.5 py-0.5 font-mono text-foreground-secondary">⌘K</kbd> and type &ldquo;Coffee 250&rdquo; to add a record instantly</span>
         </div>
       )}
     </motion.div>

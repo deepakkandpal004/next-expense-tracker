@@ -265,7 +265,7 @@ export function CommandPaletteModal({ open, onOpenChange }: CommandPaletteProps)
                 type="button"
                 onClick={handleQuickAdd}
                 disabled={isSubmitting}
-                className="w-full text-left rounded-xl border border-primary/40 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent p-3 transition-all hover:border-primary hover:scale-[1.005] group"
+                className="w-full text-left rounded-xl border border-primary/40 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent p-3 transition-all hover:border-primary group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -282,7 +282,7 @@ export function CommandPaletteModal({ open, onOpenChange }: CommandPaletteProps)
                         </span>
                       </div>
                       <p className="text-sm font-semibold text-white mt-0.5">
-                        Add {quickParsed.type === "income" ? "Income" : "Expense"}: &ldquo;{quickParsed.description}&rdquo; for ₹{quickParsed.amount.toLocaleString("en-IN")}
+                        Add {quickParsed.type === "income" ? "income" : "expense"}: &ldquo;{quickParsed.description}&rdquo; for ₹{quickParsed.amount.toLocaleString("en-IN")}
                       </p>
                     </div>
                   </div>
@@ -357,7 +357,7 @@ export function CommandPaletteModal({ open, onOpenChange }: CommandPaletteProps)
         {/* Footer info bar */}
         <div className="flex items-center justify-between border-t border-white/[0.08] px-4 py-2 bg-white/[0.01] text-[11px] text-white/40 font-mono">
           <span>Tip: Type &ldquo;Uber 450&rdquo; or &ldquo;Coffee 150&rdquo; for instant quick-add</span>
-          <span>Expense AI</span>
+          <span>Expense Tracker AI</span>
         </div>
       </motion.div>
     </div>

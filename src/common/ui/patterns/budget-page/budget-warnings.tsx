@@ -43,7 +43,7 @@ export function BudgetWarnings({
   if (forecast.daysRemaining <= 3 && budget.status !== "exceeded") {
     warnings.push({
       title: "Month ending soon",
-      description: `Only ${forecast.daysRemaining} day${forecast.daysRemaining === 1 ? "" : "s"} left in the month. ${budget.status === "on-track" ? "Great job staying within budget!" : "Keep an eye on your spending."}`,
+      description: `Only ${forecast.daysRemaining} day${forecast.daysRemaining === 1 ? "" : "s"} left in the month. ${budget.status === "on-track" ? "You're within budget." : "Keep an eye on your spending."}`,
       tone: "warning",
       icon: Clock,
     });
@@ -89,7 +89,7 @@ export function BudgetWarnings({
               </p>
               <p className={cn(
                 "mt-1 text-xs",
-                warning.tone === "danger" ? "text-danger-foreground/80" : "text-warning-foreground/80",
+                warning.tone === "danger" ? "text-danger-foreground" : "text-warning-foreground",
               )}>
                 {warning.description}
               </p>

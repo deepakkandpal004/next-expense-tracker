@@ -47,17 +47,17 @@ export function SettingsView() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-8 w-48 animate-pulse rounded bg-card/50" />
-        <div className="h-48 animate-pulse rounded-xl bg-card/50" />
+      <div className="space-y-3">
+        <div className="h-10 w-48 animate-shimmer rounded-2xl bg-card" />
+        <div className="h-48 animate-shimmer rounded-2xl bg-card" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl grid gap-8">
+    <div className="mx-auto max-w-2xl space-y-6">
       <header>
-        <h1 className="text-display-xl font-bold text-foreground">Settings</h1>
+        <h1 className="text-display-xl font-bold tracking-tight">Settings</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your account and preferences</p>
       </header>
 

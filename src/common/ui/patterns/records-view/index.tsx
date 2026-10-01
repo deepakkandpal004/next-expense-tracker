@@ -246,19 +246,19 @@ export function RecordsView({ records, period, resolvedPeriod, pagination }: Rec
     <div className="grid gap-6">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-white">Transactions</h1>
+          <h1 className="text-display-xl font-bold tracking-tight text-foreground">Transactions</h1>
           <MonthSwitcher period={resolvedPeriod} />
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button icon={<Upload size={14} />} intent="secondary" label="Import" onClick={() => setImportOpen(true)} />
           <Button icon={<Download size={14} />} intent="secondary" label="Export" onClick={() => setExportOpen(true)} />
-          <Button label="Add Record" onClick={() => window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }))} />
+          <Button label="Add record" onClick={() => window.dispatchEvent(new CustomEvent("open-add-transaction", { detail: { type: "expense" } }))} />
         </div>
       </header>
 
       <section
         aria-label="Filter and sort records"
-        className="relative z-10 rounded-xl border border-white/[0.08] bg-[#0c0e14]/60 p-4"
+        className="relative z-20 rounded-2xl border border-border bg-surface p-4"
       >
         <TransactionFilters
           search={query.search}

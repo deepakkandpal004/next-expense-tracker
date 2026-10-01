@@ -34,7 +34,7 @@ export function AppSidebar({
         "flex items-center shrink-0 transition-colors",
         expanded ? "px-4 py-5 gap-2.5" : "justify-center px-0 py-5 gap-0",
       )}>
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl overflow-hidden transition-transform duration-300 ease-out hover:scale-110">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo1.png" alt="" className="h-full w-full object-cover" />
         </div>
@@ -108,7 +108,7 @@ export function AppSidebar({
         <button
           onClick={() => onNewRecord?.()}
           className={cn(
-            "flex items-center justify-center rounded-lg bg-primary font-medium text-color-text-inverse transition-all duration-150 hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]",
+            "flex items-center justify-center rounded-lg bg-primary font-medium text-foreground-inverse transition-all duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]",
             expanded ? "h-10 w-full gap-2 px-3 text-xs" : "mx-auto size-9",
           )}
         >
@@ -117,7 +117,7 @@ export function AppSidebar({
             "whitespace-nowrap transition-all duration-150",
             expanded ? "opacity-100" : "opacity-0 w-0 overflow-hidden",
           )}>
-            New Record
+            New record
           </span>
         </button>
 
@@ -128,7 +128,7 @@ export function AppSidebar({
             title={expanded ? "Collapse sidebar" : "Expand sidebar"}
             onClick={onToggleCollapsed}
             className={cn(
-              "mt-2 flex items-center justify-center rounded-lg text-text-tertiary transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
+              "mt-2 flex items-center justify-center rounded-lg text-text-tertiary transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
               expanded ? "h-8 w-full" : "mx-auto size-8",
             )}
           >

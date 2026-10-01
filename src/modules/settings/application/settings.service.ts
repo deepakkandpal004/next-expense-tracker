@@ -1,10 +1,11 @@
 'use server';
 
-import { getAuthUser } from "@/src/modules/auth";
+import { cookies } from "next/headers";
+import { getAuthUser, hashSessionToken, SESSION_COOKIE_NAME } from "@/src/modules/auth";
 import { db } from "@/src/database/client";
 import { countStoredAmounts, getExchangeRate } from "@/src/modules/settings/infrastructure/currency-conversion.repository";
 import type { ActionResult } from "@/src/common/domain/types";
-import { CacheKey, deleteCacheByPattern } from "@/src/common/cache";
+import { CacheKey, deleteCache, deleteCacheByPattern } from "@/src/common/cache";
 
 export interface UserSettings {
   name: string;
@@ -69,6 +70,16 @@ export async function updateSettings(data: Partial<Pick<UserSettings, "name" | "
     };
     const updated = await db.user.update({ where: { id: user.id }, data: updateData });
     await deleteCacheByPattern(CacheKey.userAllPattern(user.id));
+    // The session cache (app:session:<tokenHash>) carries the user's name and
+    // currency but embeds no userId, so the pattern above cannot reach it.
+    // Clear it directly so the updated profile shows up immediately instead
+    // of staying stale for up to 5 minutes. Done here in the service (a server
+    // action) because the client caller cannot read the httpOnly session
+    // cookie to supply the token hash itself.
+    const sessionToken = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
+    if (sessionToken) {
+      await deleteCache(CacheKey.session(hashSessionToken(sessionToken)));
+    }
     return {
       status: "success",
       data: { name: updated.name ?? "", email: updated.email, currency: updated.currency ?? "INR" },

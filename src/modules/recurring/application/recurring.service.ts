@@ -1,7 +1,7 @@
 'use server';
 import { getAuthUser } from "@/src/modules/auth";
 import { processDueRecurringRecords, findByIdAndUser, create, remove, toggle, findByUser } from "../infrastructure/recurring.repository";
-import { CacheKey, deleteCache, deleteCacheByPattern } from "@/src/common/cache";
+import { CacheKey, deleteCache, deleteCacheByPattern, getCache, setCache } from "@/src/common/cache";
 import { revalidatePath } from "next/cache";
 import { createActionBoundary, parsed } from "@/src/common/server/action-boundary";
 import type { ActionResult } from "@/src/common/domain/types";
@@ -25,6 +25,22 @@ const createRecurringSchema = z.object({
 export type RecurringRequest = z.infer<typeof createRecurringSchema>;
 type RecurringField = keyof RecurringRequest;
 
+export interface RecurringRecordDto {
+  id: string;
+  text: string;
+  amount: number;
+  type: 'income' | 'expense';
+  category: string;
+  frequency: string;
+  interval: number;
+  startDate: string;
+  endDate: string | null;
+  lastProcessed: string | null;
+  active: boolean;
+  nextDue: string | null;
+  createdAt: string;
+}
+
 export async function processRecurringNow() {
   return run({
     scope: "record",
@@ -32,10 +48,19 @@ export async function processRecurringNow() {
     parse: () => parsed({}),
     execute: async (actor) => {
       const created = await processDueRecurringRecords(actor.userId);
-      if (created > 0) await deleteCacheByPattern(CacheKey.userAllPattern(actor.userId));
+      if (created > 0) {
+        await deleteCacheByPattern(CacheKey.userAllPattern(actor.userId));
+        // userAllPattern (`app:*:uid:*`) never matches keys without a trailing
+        // segment, so clear those explicitly.
+        await deleteCache(
+          CacheKey.recurringRecords(actor.userId),
+          CacheKey.categories(actor.userId),
+          CacheKey.budget(actor.userId),
+        );
+      }
       return { created };
     },
-    message: "Recurring processed",
+    message: "Recurring transactions processed.",
     revalidatePaths: ["/recurring", "/dashboard", "/records"],
   });
 }
@@ -90,7 +115,7 @@ export async function deleteRecurringRecord(
     const record = await findByIdAndUser(recordId, user.id);
     if (!record) return { status: 'error', message: 'Recurring transaction not found.', retryable: false };
 
-    await remove(recordId);
+    await remove(recordId, user.id);
 
     revalidatePath('/recurring');
     await deleteCache(CacheKey.recurringRecords(user.id));
@@ -112,7 +137,7 @@ export async function toggleRecurringRecord(
     const record = await findByIdAndUser(recordId, user.id);
     if (!record) return { status: 'error', message: 'Recurring transaction not found.', retryable: false };
 
-    await toggle(recordId, active);
+    await toggle(recordId, active, user.id);
 
     revalidatePath('/recurring');
     await deleteCache(CacheKey.recurringRecords(user.id));
@@ -123,25 +148,15 @@ export async function toggleRecurringRecord(
   }
 }
 
-export async function getRecurringRecords(): Promise<ActionResult<{ records: Array<{
-  id: string;
-  text: string;
-  amount: number;
-  type: 'income' | 'expense';
-  category: string;
-  frequency: string;
-  interval: number;
-  startDate: string;
-  endDate: string | null;
-  lastProcessed: string | null;
-  active: boolean;
-  nextDue: string | null;
-  createdAt: string;
-}> }, never>> {
+export async function getRecurringRecords(): Promise<ActionResult<{ records: RecurringRecordDto[] }, never>> {
   const user = await getAuthUser();
   if (!user) return { status: 'error', message: 'Sign in to continue.', retryable: false };
 
   try {
+    const cacheKey = CacheKey.recurringRecords(user.id);
+    const cached = await getCache<{ records: RecurringRecordDto[] }>(cacheKey);
+    if (cached) return { status: 'success', data: cached, message: 'Recurring records loaded.' };
+
     const rows = await findByUser(user.id);
 
     function computeNextDue(record: {
@@ -179,7 +194,9 @@ export async function getRecurringRecords(): Promise<ActionResult<{ records: Arr
       createdAt: row.createdAt.toISOString(),
     }));
 
-    return { status: 'success', data: { records }, message: 'Recurring records loaded.' };
+    const data = { records };
+    await setCache(cacheKey, data, 300);
+    return { status: 'success', data, message: 'Recurring records loaded.' };
   } catch (error) {
     console.error('Failed to load recurring records', error);
     return { status: 'error', message: 'Could not load recurring records.', retryable: true };

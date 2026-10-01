@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { ViewportMount } from "@/src/common/ui";
+import { Button, ViewportMount } from "@/src/common/ui";
 import { cn } from "@/src/common/ui/cn";
 import { formatCurrency } from "@/src/common/formatters/locale";
 import { CategoryRow } from "./category-row";
@@ -32,19 +32,19 @@ export function CategoryBreakdownPanel({
   return (
     <section
       aria-labelledby="category-breakdown-title"
-      className="relative overflow-hidden glass-vessel"
+      className="relative overflow-hidden rounded-2xl border border-border bg-surface"
     >
       <div className="relative px-5 pt-4 pb-3">
         <h2 className="text-sm font-semibold text-foreground" id="category-breakdown-title">
-          Spending by Category
+          Spending by category
         </h2>
-        <p className="mt-0.5 text-xs text-foreground-secondary">{period}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{period}</p>
       </div>
 
       {breakdown.length > 0 ? (
         <div className="relative px-5 pb-4">
           <div className="relative mx-auto" style={{ height: 200, width: 200 }}>
-            <ViewportMount className="absolute inset-0" fallback={<div className="h-full animate-pulse rounded-full bg-surface-subtle/60" />}>
+            <ViewportMount className="absolute inset-0" fallback={<div className="h-full animate-pulse rounded-full bg-surface-subtle" />}>
               <CategoryChartCanvas breakdown={breakdown} currency={currency} />
             </ViewportMount>
             <div
@@ -52,7 +52,7 @@ export function CategoryBreakdownPanel({
               className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
             >
               <p className="text-lg font-bold text-foreground tabular-nums leading-none">{totalFormatted}</p>
-              <p className="text-[10px] text-foreground-secondary mt-1">Total spent</p>
+              <p className="text-[10px] text-muted-foreground mt-1">Total spent</p>
             </div>
           </div>
         </div>
@@ -72,13 +72,13 @@ export function CategoryBreakdownPanel({
           ))}
         </div>
         {hasMore ? (
-          <button
-            className="mt-2 w-full rounded-lg py-2 text-center text-xs font-medium text-foreground-secondary transition-colors duration-150 hover:bg-surface-subtle/50 hover:text-foreground"
+          <Button
+            label={viewAll ? "Show less" : `Show all ${breakdown.length} categories`}
+            intent="ghost"
+            width="full"
             onClick={() => setViewAll((prev) => !prev)}
-            type="button"
-          >
-            {viewAll ? "Show less" : `Show all ${breakdown.length} categories`}
-          </button>
+            className="mt-2 py-2 text-xs"
+          />
         ) : null}
       </div>
     </section>
